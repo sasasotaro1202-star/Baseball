@@ -46,7 +46,7 @@ jobs:
       - name: Preflight syntax check
         run: |
           set -euo pipefail
-          python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py
+          python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py baseball_backtest_runtime_patch.py
 
       - name: Collect and resume NPB data
         env:
@@ -71,6 +71,12 @@ jobs:
           if [ -f data/source_coverage.csv ]; then
             cat data/source_coverage.csv
           fi
+
+      - name: Apply backtest hardening patch
+        run: |
+          set -euo pipefail
+          python baseball_backtest_runtime_patch.py
+          python -m py_compile baseball_backtest.py
 
       - name: Run resumable NPB backtest when data is ready
         env:
