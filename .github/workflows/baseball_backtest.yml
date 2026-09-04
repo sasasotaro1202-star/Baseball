@@ -1,36 +1,83 @@
-name: Baseball Backtest NPB MLB
+name: Baseball Backtest NPB
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "30 18 * * *"
+    - cron: '30 18 * * *'
+
+permissions:
+  contents: read
 
 jobs:
   backtest:
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 30
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Setup Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: '3.11'
           cache: pip
+          cache-dependency-path: requirements.txt
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
 
-      - name: Run NPB + MLB backtest
+      - name: Download NPB PBP data
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p data
+          BASE='https://raw.githubusercontent.com/armstjc/Nippon-Baseball-Data-Repository/main/pbp'
+
+          for month in 02 03 04 05 06 07 08 09; do
+            file="2026-${month}_pbp.csv"
+            echo "Downloading ${file}"
+            curl --fail --location --retry 3 --retry-delay 2 \
+              --connect-timeout 20 --max-time 300 \
+              "${BASE}/${file}" \
+              --output "data/${file}"
+            test -s "data/${file}"
+            echo "Downloaded ${file}: $(du -h "data/${file}" | cut -f1)"
+          done
+
+          echo '=== Downloaded PBP files ==='
+          find data -maxdepth 1 -type f -name '*_pbp.csv' -printf '%f %s bytes\n' | sort
+          COUNT=$(find data -maxdepth 1 -type f -name '*_pbp.csv' | wc -l)
+          test "${COUNT}" -eq 8
+
+      - name: Run NPB walk-forward backtest
         env:
-          PYTHONUNBUFFERED: "1"
-          MLB_ENRICH_STARTERS: "0"
-        run: python baseball_backtest.py
+          PYTHONUNBUFFERED: '1'
+          BASEBALL_TIME_BUDGET_SEC: '1620'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p results
+          python baseball_backtest.py --npb-only --data-dir data
+
+      - name: Show result files
+        if: always()
+        shell: bash
+        run: |
+          echo '=== results ==='
+          find results -maxdepth 2 -type f -printf '%p %s bytes\n' | sort || true
+          if [ -f results/npb_backtest_metrics.json ]; then
+            echo '=== npb_backtest_metrics.json ==='
+            cat results/npb_backtest_metrics.json
+          fi
 
       - name: Upload results
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: baseball-backtest-results
           path: results/
           if-no-files-found: warn
+          retention-days: 30
