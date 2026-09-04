@@ -2,6 +2,8 @@ name: Baseball Backtest NPB Continuous
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
   schedule:
     - cron: '*/30 * * * *'
 
@@ -33,11 +35,17 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
+      - name: Preflight syntax check
+        run: |
+          set -euo pipefail
+          python -m py_compile npb_multi_source.py baseball_backtest.py
+
       - name: Collect and resume NPB data
         env:
           NPB_START_YEAR: '1990'
+          NPB_END_YEAR: '2026'
           NPB_DOWNLOAD_WORKERS: '6'
-          # Stop before the GitHub Actions hard timeout so state can be committed.
+          NPB_MIN_STARTER_LINE_COVERAGE: '70'
           NPB_COLLECTION_BUDGET_SEC: '1500'
           NPB_COLLECTION_SAFETY_SEC: '180'
           PYTHONUNBUFFERED: '1'
