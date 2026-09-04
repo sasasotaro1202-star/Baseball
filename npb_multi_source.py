@@ -187,7 +187,7 @@ def fetch_game_enrichment(r):
     date=pd.Timestamp(r.datetime).strftime('%Y%m%d')
     hm=pitcher_line(r.game_id,date,home) if home else None
     am=pitcher_line(r.game_id,date,away) if away else None
-    z=r.to_dict(); z.update({'home_starter':home,'away_starter':away})
+    z=r._asdict();z.update({'home_starter':home,'away_starter':away})
     for side,m in [('home',hm),('away',am)]:
         for k in ('era','whip','k9','bb9','hr9','fip'):
             z[f'{side}_starter_{k}']=m.get(k) if m else np.nan
