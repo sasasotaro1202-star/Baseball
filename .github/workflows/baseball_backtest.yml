@@ -1,18 +1,27 @@
-name: Baseball Backtest NPB
+name: Baseball Backtest NPB Multi-Source
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 18 * * *'
+    - cron: '0 10 * * *'
+  push:
+    paths:
+      - 'baseball_backtest.py'
+      - 'npb_multi_source.py'
+      - 'requirements.txt'
+      - '.github/workflows/baseball_backtest.yml'
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: baseball-backtest
+  cancel-in-progress: true
 
 jobs:
   backtest:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,58 +35,75 @@ jobs:
 
       - name: Install dependencies
         run: |
+          set -euo pipefail
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-      - name: Download NPB PBP data
-        shell: bash
+      - name: Prepare multi-source NPB dataset
+        env:
+          NPB_YEAR: '2026'
+          NPB_END_DATE: '2026-09-03'
+          NPB_DOWNLOAD_WORKERS: '6'
+          PYTHONUNBUFFERED: '1'
         run: |
           set -euo pipefail
-          mkdir -p data
-          BASE='https://raw.githubusercontent.com/armstjc/Nippon-Baseball-Data-Repository/main/pbp'
-
-          for month in 02 03 04 05 06 07 08 09; do
-            file="2026-${month}_pbp.csv"
-            echo "Downloading ${file}"
-            curl --fail --location --retry 3 --retry-delay 2 \
-              --connect-timeout 20 --max-time 300 \
-              "${BASE}/${file}" \
-              --output "data/${file}"
-            test -s "data/${file}"
-            echo "Downloaded ${file}: $(du -h "data/${file}" | cut -f1)"
-          done
-
-          echo '=== Downloaded PBP files ==='
-          find data -maxdepth 1 -type f -name '*_pbp.csv' -printf '%f %s bytes\n' | sort
-          COUNT=$(find data -maxdepth 1 -type f -name '*_pbp.csv' | wc -l)
-          test "${COUNT}" -eq 8
+          mkdir -p data results
+          python npb_multi_source.py
+          test -s data/2026_multi_source_pbp.csv
+          python - <<'PY'
+          import pandas as pd
+          p='data/2026_multi_source_pbp.csv'
+          d=pd.read_csv(p)
+          starters=((d.home_starter.fillna('').astype(str)!='') & (d.away_starter.fillna('').astype(str)!='')).sum()
+          lines=(d.home_starter_era.notna() & d.away_starter_era.notna()).sum()
+          print('games=',d.game_id.nunique(),'starters=',starters,'starter_lines=',lines)
+          print('weather=',d.weather_temp_c.notna().sum())
+          assert d.game_id.nunique() >= 600
+          assert starters >= 500
+          PY
 
       - name: Run NPB walk-forward backtest
         env:
           PYTHONUNBUFFERED: '1'
-          BASEBALL_TIME_BUDGET_SEC: '1620'
-        shell: bash
+          BASEBALL_TIME_BUDGET_SEC: '1560'
         run: |
           set -euo pipefail
-          mkdir -p results
           python baseball_backtest.py --npb-only --data-dir data
 
-      - name: Show result files
+      - name: Validate and show results
         if: always()
-        shell: bash
         run: |
-          echo '=== results ==='
-          find results -maxdepth 2 -type f -printf '%p %s bytes\n' | sort || true
-          if [ -f results/npb_backtest_metrics.json ]; then
-            echo '=== npb_backtest_metrics.json ==='
-            cat results/npb_backtest_metrics.json
-          fi
+          set -euo pipefail
+          echo '=== result files ==='
+          find results -maxdepth 1 -type f -printf '%f %s bytes\n' | sort || true
+          echo '=== NPB summary ==='
+          if [ -f results/npb_backtest_summary.csv ]; then cat results/npb_backtest_summary.csv; fi
+          echo '=== model comparison ==='
+          if [ -f results/npb_model_comparison.csv ]; then cat results/npb_model_comparison.csv; fi
+          echo '=== source audit ==='
+          if [ -f data/source_official_npb_audit.csv ]; then cat data/source_official_npb_audit.csv; fi
 
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: baseball-backtest-results
-          path: results/
+          path: |
+            results/
+            data/source_official_npb_audit.csv
           if-no-files-found: warn
           retention-days: 30
+
+      - name: Commit results
+        if: success()
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add results/
+          if git diff --cached --quiet; then
+            echo 'No result changes to commit.'
+          else
+            git commit -m 'Update NPB multi-source backtest results'
+            git push
+          fi
