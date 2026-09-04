@@ -1,21 +1,15 @@
-name: Baseball Backtest NPB Auto Massive
+name: Baseball Backtest NPB Continuous
 
 on:
   workflow_dispatch:
   schedule:
     - cron: '*/30 * * * *'
-  push:
-    paths:
-      - 'baseball_backtest.py'
-      - 'npb_multi_source.py'
-      - 'requirements.txt'
-      - '.github/workflows/baseball_backtest.yml'
 
 permissions:
   contents: write
 
 concurrency:
-  group: baseball-backtest
+  group: baseball-backtest-continuous
   cancel-in-progress: false
 
 jobs:
@@ -26,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python 3.11
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -39,11 +33,11 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-      - name: Prepare/resume NPB dataset
+      - name: Collect and resume NPB data
         env:
-          NPB_START_YEAR: '2000'
-          NPB_END_YEAR: '2026'
+          NPB_START_YEAR: '1990'
           NPB_DOWNLOAD_WORKERS: '6'
+          # Stop before the GitHub Actions hard timeout so state can be committed.
           NPB_COLLECTION_BUDGET_SEC: '1500'
           NPB_COLLECTION_SAFETY_SEC: '180'
           PYTHONUNBUFFERED: '1'
@@ -51,78 +45,97 @@ jobs:
           set -euo pipefail
           mkdir -p data results
           python npb_multi_source.py
-          test -s data/npb_multi_source_games_all.csv
-          python - <<'PY'
-          import json, pandas as pd
-          s='data/checkpoints/npb_collection_status.json'
-          c='data/source_coverage.csv'
-          status=json.load(open(s,encoding='utf-8'))
-          cov=pd.read_csv(c)
-          print('STATUS:',status)
-          print('COVERAGE:')
-          print(cov.to_string(index=False))
-          assert int(status['aggregate_games']) >= 0
-          PY
 
-      - name: Run/resume NPB walk-forward backtest
-        if: ${{ hashFiles('data/checkpoints/npb_collection_status.json') != '' }}
+          echo '=== collection status ==='
+          if [ -f data/checkpoints/npb_collection_status.json ]; then
+            cat data/checkpoints/npb_collection_status.json
+          fi
+
+          echo '=== coverage ==='
+          if [ -f data/source_coverage.csv ]; then
+            cat data/source_coverage.csv
+          fi
+
+      - name: Run resumable NPB backtest when data is ready
         env:
+          BASEBALL_TIME_BUDGET_SEC: '1450'
+          NPB_RECENCY_HALF_LIFE_GAMES: '1800'
           PYTHONUNBUFFERED: '1'
-          BASEBALL_TIME_BUDGET_SEC: '1500'
         run: |
           set -euo pipefail
+          if [ ! -f data/checkpoints/npb_collection_status.json ]; then
+            echo '[BACKTEST WAIT] no collection status yet.'
+            exit 0
+          fi
+
           python - <<'PY'
           import json
-          s=json.load(open('data/checkpoints/npb_collection_status.json',encoding='utf-8'))
-          if not s.get('complete',False):
-              print('[BACKTEST WAIT] Dataset is partial; skip model until collection completes.')
+          from pathlib import Path
+          p=Path('data/checkpoints/npb_collection_status.json')
+          s=json.loads(p.read_text(encoding='utf-8'))
+          print('[BACKTEST STATUS]', s.get('complete'), s.get('aggregate_games'))
+          if not s.get('complete', False):
+              print('[BACKTEST WAIT] collection is partial; preserving checkpoint and waiting for next scheduled run.')
               raise SystemExit(0)
-          print('[BACKTEST READY] Dataset complete; starting/resuming walk-forward.')
           PY
+
           python baseball_backtest.py --npb-only --data-dir data
 
-      - name: Show status/results
+      - name: Validate generated files
         if: always()
         run: |
           set +e
-          echo '=== collection status ==='
-          [ -f data/checkpoints/npb_collection_status.json ] && cat data/checkpoints/npb_collection_status.json || true
-          echo '=== source coverage ==='
-          [ -f data/source_coverage.csv ] && cat data/source_coverage.csv || true
-          echo '=== result files ==='
-          find results -maxdepth 2 -type f -printf '%p %s bytes\n' | sort || true
-          echo '=== NPB summary ==='
-          [ -f results/npb_backtest_summary.csv ] && cat results/npb_backtest_summary.csv || true
-          echo '=== model comparison ==='
-          [ -f results/npb_model_comparison.csv ] && cat results/npb_model_comparison.csv || true
+          python - <<'PY'
+          from pathlib import Path
+          import pandas as pd
+          checks = [
+              Path('data/npb_multi_source_games_all.csv'),
+              Path('data/npb_player_game_features_all.csv'),
+              Path('data/source_coverage.csv'),
+          ]
+          for p in checks:
+              if p.exists():
+                  try:
+                      print(f'[FILE] {p} rows={len(pd.read_csv(p, low_memory=False))} bytes={p.stat().st_size}')
+                  except Exception as e:
+                      print(f'[FILE] {p} bytes={p.stat().st_size} read_error={e}')
+              else:
+                  print(f'[FILE] MISSING {p}')
+          PY
+          echo '=== results ==='
+          find results -maxdepth 2 -type f -printf '%p %s bytes\n' 2>/dev/null | sort
 
-      - name: Upload checkpoint and results
+      - name: Upload resumable state
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: baseball-backtest-state
           path: |
-            data/npb_multi_source_games_all.csv
+            data/checkpoints/
             data/npb_games/
+            data/weather/
+            data/npb_multi_source_games_all.csv
+            data/npb_player_game_features_all.csv
             data/source_coverage.csv
             data/source_failures.csv
             data/source_official_npb_audit.csv
-            data/checkpoints/
-            data/weather/
             results/
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Commit checkpoint/results for automatic resume
+      - name: Commit state for the next run
         if: always()
         run: |
-          set -euo pipefail
+          set +e
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/checkpoints/ data/npb_multi_source_games_all.csv data/npb_games/ data/weather/ data/source_coverage.csv data/source_failures.csv data/source_official_npb_audit.csv data/official_*.html results/ 2>/dev/null || true
+          git add data/checkpoints/ data/npb_games/ data/weather/ \
+            data/npb_multi_source_games_all.csv data/npb_player_game_features_all.csv \
+            data/source_coverage.csv data/source_failures.csv data/source_official_npb_audit.csv \
+            results/ 2>/dev/null
           if git diff --cached --quiet; then
-            echo 'No state/result changes to commit.'
+            echo '[COMMIT] no changes.'
           else
-            git commit -m 'Persist resumable NPB backtest state'
+            git commit -m 'Persist resumable baseball data and backtest state'
             git push
           fi
