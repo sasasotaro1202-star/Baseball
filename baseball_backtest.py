@@ -42,20 +42,7 @@ from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 import numpy as np
 import pandas as pd
 import requests
-from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassifier, ExtraTreesClassifier, HistGradientBoostingRegressor, RandomForestRegressor, ExtraTreesRegressor, VotingClassifier
-
-try:
-    from lightgbm import LGBMClassifier
-except Exception:
-    LGBMClassifier = None
-try:
-    from xgboost import XGBClassifier
-except Exception:
-    XGBClassifier = None
-try:
-    from catboost import CatBoostClassifier
-except Exception:
-    CatBoostClassifier = None
+from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression, PoissonRegressor
 from sklearn.metrics import accuracy_score, brier_score_loss, log_loss, mean_absolute_error, roc_auc_score
 from sklearn.pipeline import Pipeline
@@ -71,13 +58,13 @@ REQUEST_TIMEOUT = 30
 
 # Backtest controls
 MIN_TRAIN = 100
-RETRAIN_EVERY = 30
+RETRAIN_EVERY = 20
 VALIDATION_RATIO = 0.20
-MIN_VALIDATION = 45
-MAX_FORM = 30
+MIN_VALIDATION = 40
+MAX_FORM = 20
 ELO_START = 1500.0
-ELO_K = 20.0
-ELO_HOME = 25.0
+ELO_K = 22.0
+ELO_HOME = 28.0
 ELO_REGRESSION = 0.20
 
 # NPB game-type strings seen in common NPB PBP exports.
@@ -142,25 +129,20 @@ def poisson_grid(lam_h: float, lam_a: float, max_runs: int = 14) -> np.ndarray:
 
 
 def score_candidates(lam_h: float, lam_a: float, n: int = 4) -> List[Tuple[str, float]]:
-    """Return top-N display candidates; every 7+ outcome is aggregated as その他."""
-    m = poisson_grid(lam_h, lam_a, max_runs=14)
-    cells: List[Tuple[str, float]] = []
-    tail = 0.0
+    m = poisson_grid(lam_h, lam_a, 14)
+    rows = []
     for h in range(m.shape[0]):
         for a in range(m.shape[1]):
-            prob = float(m[h, a])
-            if h >= 7 or a >= 7:
-                tail += prob
-            else:
-                cells.append((f"{h}-{a}", prob))
-    cells.sort(key=lambda z: z[1], reverse=True)
-    # Aggregate all omitted Poisson mass (including the >=15 numerical tail) into その他.
-    tail = min(1.0, max(0.0, tail + max(0.0, 1.0 - float(m.sum()))))
-    out = cells[:n]
-    if tail > 0:
-        out.append(("その他", tail))
-    out.sort(key=lambda z: z[1], reverse=True)
-    return out[:n]
+            rows.append((h, a, float(m[h, a])))
+    rows.sort(key=lambda z: z[2], reverse=True)
+    out = []
+    for h, a, p in rows:
+        label = "その他" if h >= 7 or a >= 7 else f"{h}-{a}"
+        out.append((label, p))
+        if len(out) == n:
+            break
+    return out
+
 
 def low_high_probs(lam_h: float, lam_a: float) -> Tuple[float, float]:
     # Low = both teams 0..6. High = complement.
@@ -205,11 +187,9 @@ class BaseballBacktest:
     def __init__(self, data_dir: Path = DATA):
         self.data_dir = Path(data_dir)
         self.states: Dict[Tuple[str, str], TeamState] = {}
-        self.elo_ratings: Dict[Tuple[str, str], float] = {}
+        self.elo: Dict[Tuple[str, str], float] = {}
         self.results: List[Dict[str, Any]] = []
         self.model_scores: List[Dict[str, Any]] = []
-        self.started_at = time.time()
-        self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1740")), 1740.0)  # hard cap: 29:00
         self.audit: List[Dict[str, Any]] = []
 
     # ------------------------------------------------------------------
@@ -225,8 +205,6 @@ class BaseballBacktest:
 
         chunks = []
         for f in files:
-            if time.time() - self.started_at >= self.time_budget_sec:
-                raise TimeoutError("30-minute hard cap reached during NPB loading")
             try:
                 df = pd.read_csv(f, low_memory=False)
             except Exception as e:
@@ -486,7 +464,7 @@ class BaseballBacktest:
 
     def elo(self, league: str, team: str) -> float:
         key = (league, team)
-        return self.elo_ratings.get(key, ELO_START)
+        return self.elo.get(key, ELO_START)
 
     def _team_features(self, league: str, team: str, venue: str, dt: pd.Timestamp) -> Dict[str, float]:
         s = self.state(league, team)
@@ -557,7 +535,7 @@ class BaseballBacktest:
         }
 
     def build_features(self, games: pd.DataFrame) -> Tuple[pd.DataFrame, np.ndarray, pd.DataFrame]:
-        self.states.clear(); self.elo_ratings.clear(); self.pitcher_history = defaultdict(list)
+        self.states.clear(); self.elo.clear(); self.pitcher_history = defaultdict(list)
         Xrows, y, meta = [], [], []
         # Deterministic chronological order: datetime then game_id. This handles doubleheaders better than date-only logic.
         games = games.sort_values(["datetime", "game_id"]).reset_index(drop=True)
@@ -610,8 +588,8 @@ class BaseballBacktest:
         actual_h = 1.0 if hs > aas else 0.0 if hs < aas else 0.5
         margin = math.log1p(abs(hs - aas))
         k = ELO_K * (1.0 + 0.35 * margin)
-        self.elo_ratings[(league, home)] = eh + k * (actual_h - expected_h)
-        self.elo_ratings[(league, away)] = ea - k * (actual_h - expected_h)
+        self.elo[(league, home)] = eh + k * (actual_h - expected_h)
+        self.elo[(league, away)] = ea - k * (actual_h - expected_h)
         # Gentle seasonal/competition regression is handled when a team first appears in a new dataset;
         # no future information is injected here.
 
@@ -629,95 +607,37 @@ class BaseballBacktest:
     # Models
     # ------------------------------------------------------------------
     def models(self, league: str) -> Dict[str, Any]:
-        """High-diversity model pool. Every candidate is trained only on past data."""
-        k = 3 if league == "NPB" else 2
-        m: Dict[str, Any] = {
-            "Logistic": Pipeline([("scale", StandardScaler()), ("m", LogisticRegression(C=0.5, max_iter=2500, class_weight="balanced", random_state=RANDOM_STATE))]),
-            "HistGB": HistGradientBoostingClassifier(max_iter=280, learning_rate=0.035, max_leaf_nodes=15, min_samples_leaf=12, l2_regularization=2.0, random_state=RANDOM_STATE),
-            "RandomForest": RandomForestClassifier(n_estimators=320, max_depth=10, min_samples_leaf=6, max_features=0.55, class_weight="balanced_subsample", random_state=RANDOM_STATE, n_jobs=-1),
-            "ExtraTrees": ExtraTreesClassifier(n_estimators=320, max_depth=12, min_samples_leaf=5, max_features=0.65, class_weight="balanced", random_state=RANDOM_STATE, n_jobs=-1),
+        models = {
+            "Logistic_C0.3": Pipeline([("scale", StandardScaler()), ("m", LogisticRegression(C=0.3, max_iter=1500, random_state=RANDOM_STATE))]),
+            "Logistic_C1": Pipeline([("scale", StandardScaler()), ("m", LogisticRegression(C=1.0, max_iter=1500, random_state=RANDOM_STATE))]),
+            "RandomForest": RandomForestClassifier(n_estimators=350, max_depth=9, min_samples_leaf=8, max_features="sqrt", class_weight="balanced_subsample", random_state=RANDOM_STATE, n_jobs=-1),
+            "HistGB": HistGradientBoostingClassifier(max_iter=250, learning_rate=0.04, max_leaf_nodes=15, l2_regularization=1.0, random_state=RANDOM_STATE),
         }
-        if LGBMClassifier is not None:
-            m["LightGBM"] = LGBMClassifier(n_estimators=300, learning_rate=0.025, num_leaves=15, max_depth=6, min_child_samples=18, subsample=0.85, colsample_bytree=0.8, reg_alpha=0.2, reg_lambda=2.0, objective="multiclass" if k==3 else "binary", num_class=k if k==3 else None, verbosity=-1, random_state=RANDOM_STATE, n_jobs=-1)
-        if XGBClassifier is not None:
-            m["XGBoost"] = XGBClassifier(n_estimators=300, max_depth=4, learning_rate=0.025, min_child_weight=8, subsample=0.85, colsample_bytree=0.8, reg_alpha=0.2, reg_lambda=3.0, objective="multi:softprob" if k==3 else "binary:logistic", num_class=k if k==3 else None, eval_metric="mlogloss" if k==3 else "logloss", tree_method="hist", random_state=RANDOM_STATE, n_jobs=-1)
-        if CatBoostClassifier is not None:
-            m["CatBoost"] = CatBoostClassifier(iterations=300, depth=6, learning_rate=0.03, loss_function="MultiClass" if k==3 else "Logloss", verbose=False, random_seed=RANDOM_STATE, thread_count=-1, l2_leaf_reg=5.0)
-        return m
-
-    def _validation_splits(self, n: int) -> List[Tuple[int,int]]:
-        """Several chronological validation windows; no random CV and no future leakage."""
-        if n < 120: return []
-        windows=[]
-        for frac in (0.70, 0.86):
-            cut=max(60, int(n*frac))
-            val=max(25, min(MIN_VALIDATION, n-cut))
-            if cut+val <= n and cut >= 60:
-                windows.append((cut, val))
-        return list(dict.fromkeys(windows))
+        return models
 
     def fit_best(self, X: pd.DataFrame, y: np.ndarray, league: str) -> Tuple[str, Any, Dict[str, float]]:
+        # Time-ordered validation. Never random shuffle.
         if len(X) < MIN_TRAIN or len(np.unique(y)) < 2:
             raise ValueError("Insufficient training data")
-        scores=[]
-        models=self.models(league)
-        splits=self._validation_splits(len(X))
-        for name, model in models.items():
-            losses=[]
-            for cut,val in splits:
-                Xfit,Xval=X.iloc[:cut],X.iloc[cut:cut+val]
-                yfit,yval=y[:cut],y[cut:cut+val]
-                if len(np.unique(yfit)) < (3 if league=="NPB" else 2): continue
-                try:
-                    model.fit(Xfit,yfit)
-                    p=self.align_proba(model.predict_proba(Xval),model.classes_,league)
-                    losses.append(log_loss(yval,p,labels=list(range(3 if league=="NPB" else 2))))
-                except Exception as e:
-                    self.audit.append({"type":"model_error","model":name,"error":str(e)})
-                    break
-            if losses:
-                scores.append((float(np.mean(losses)),name))
-        if not scores: raise RuntimeError("All models failed")
-        scores.sort()
-        # Fit the best single model for fallback/reporting.
-        best_name=scores[0][1]
-        best=models[best_name]
-        best.fit(X,y)
-        # Store a compact validation leaderboard for the caller.
-        return best_name,best,{name:float(sc) for sc,name in scores}
-
-    def fit_ensemble(self, X: pd.DataFrame, y: np.ndarray, league: str):
-        """Fit all robust candidates and weight them by inverse chronological validation loss."""
-        models=self.models(league); k=3 if league=="NPB" else 2
-        splits=self._validation_splits(len(X))
-        scored=[]
-        for name,model in models.items():
-            losses=[]
-            for cut,val in splits:
-                try:
-                    model.fit(X.iloc[:cut],y[:cut])
-                    p=self.align_proba(model.predict_proba(X.iloc[cut:cut+val]),model.classes_,league)
-                    losses.append(log_loss(y[cut:cut+val],p,labels=list(range(k))))
-                except Exception:
-                    losses=[]; break
-            if losses: scored.append((name,float(np.mean(losses))))
-        if not scored: return None,{},None
-        scored.sort(key=lambda z:z[1])
-        top=scored[:5]
-        inv=np.array([1/max(x[1],1e-6) for x in top]); inv/=inv.sum()
-        fitted=[]
-        for (name,loss),w in zip(top,inv):
-            model=models[name]
-            model.fit(X,y)
-            fitted.append((model,float(w),name))
-        return fitted,{n:float(l) for n,l in scored},top[0][0]
-
-    def ensemble_proba(self, fitted, X: pd.DataFrame, league: str) -> np.ndarray:
-        k=3 if league=="NPB" else 2
-        p=np.zeros((len(X),k))
-        for model,w,_ in fitted:
-            p += float(w)*self.align_proba(model.predict_proba(X),model.classes_,league)
-        return np.apply_along_axis(clip_prob,1,p)
+        nval = max(MIN_VALIDATION, int(len(X) * VALIDATION_RATIO))
+        if nval >= len(X) - 20: nval = max(20, len(X) // 5)
+        cut = len(X) - nval
+        Xfit, Xval, yfit, yval = X.iloc[:cut], X.iloc[cut:], y[:cut], y[cut:]
+        scores = []
+        for name, model in self.models(league).items():
+            try:
+                model.fit(Xfit, yfit)
+                p = self.align_proba(model.predict_proba(Xval), model.classes_, league)
+                ll = log_loss(yval, p, labels=list(range(3 if league == "NPB" else 2)))
+                scores.append((ll, name, model))
+            except Exception as e:
+                self.audit.append({"type": "model_error", "model": name, "error": str(e)})
+        if not scores:
+            raise RuntimeError("All models failed")
+        scores.sort(key=lambda x: x[0])
+        _, name, model = scores[0]
+        model.fit(X, y)
+        return name, model, {n: float(s) for s, n, _ in scores}
 
     def align_proba(self, raw: np.ndarray, classes: np.ndarray, league: str) -> np.ndarray:
         k = 3 if league == "NPB" else 2
@@ -730,57 +650,6 @@ class BaseballBacktest:
     # ------------------------------------------------------------------
     # Walk-forward
     # ------------------------------------------------------------------
-    def fit_score_ensemble(self, X: pd.DataFrame, y_home: np.ndarray, y_away: np.ndarray, league: str):
-        """Chronological OOS ensemble for run scoring. Uses only pregame X/y history."""
-        if len(X) < max(80, MIN_TRAIN // 2):
-            return None
-        splits = self._validation_splits(len(X))
-        specs = [
-            ("Poisson", lambda: PoissonRegressor(alpha=0.15, max_iter=1000)),
-            ("HistPoisson", lambda: HistGradientBoostingRegressor(loss="poisson", max_iter=180, learning_rate=0.035, max_leaf_nodes=15, l2_regularization=1.5, random_state=42)),
-            ("RFReg", lambda: RandomForestRegressor(n_estimators=180, min_samples_leaf=5, max_features=0.75, random_state=42, n_jobs=-1)),
-            ("ExtraTreesReg", lambda: ExtraTreesRegressor(n_estimators=180, min_samples_leaf=4, max_features=0.8, random_state=42, n_jobs=-1)),
-        ]
-        scored=[]
-        for name, factory in specs:
-            losses=[]
-            for tr, va in splits:
-                if time.time() - self.started_at >= self.time_budget_sec:
-                    break
-                try:
-                    mh=factory(); ma=factory()
-                    mh.fit(X.iloc[tr], y_home[tr]); ma.fit(X.iloc[tr], y_away[tr])
-                    ph=np.clip(mh.predict(X.iloc[va]), 0.05, 15)
-                    pa=np.clip(ma.predict(X.iloc[va]), 0.05, 15)
-                    # Poisson deviance-like NLL; robustly defined for integer/float observed runs.
-                    nll_h=np.mean(ph - y_home[va]*np.log(ph) + np.array([math.lgamma(v+1) for v in y_home[va]]))
-                    nll_a=np.mean(pa - y_away[va]*np.log(pa) + np.array([math.lgamma(v+1) for v in y_away[va]]))
-                    losses.append(float((nll_h+nll_a)/2))
-                except Exception:
-                    continue
-            if losses: scored.append((float(np.mean(losses)), name, factory))
-        if not scored: return None
-        scored.sort(key=lambda z:z[0])
-        top=scored[:3]
-        fitted=[]
-        weights=[]
-        for loss,name,factory in top:
-            mh=factory(); ma=factory()
-            mh.fit(X, y_home); ma.fit(X, y_away)
-            w=1.0/max(loss,1e-6)
-            fitted.append((name,mh,ma)); weights.append(w)
-        weights=np.asarray(weights,float); weights/=weights.sum()
-        return {"models":fitted,"weights":weights,"scores":{n:float(l) for l,n,_ in scored}}
-
-    def predict_scores(self, fitted, xrow: pd.DataFrame, league: str) -> Tuple[float,float]:
-        if fitted is None:
-            return 2.35 if league=="NPB" else 4.55, 2.35 if league=="NPB" else 4.55
-        lh=la=0.0
-        for w,(name,mh,ma) in zip(fitted["weights"], fitted["models"]):
-            lh += float(w)*float(np.clip(mh.predict(xrow)[0],0.05,15.0))
-            la += float(w)*float(np.clip(ma.predict(xrow)[0],0.05,15.0))
-        return lh,la
-
     def run_walkforward(self, games: pd.DataFrame, league: str) -> pd.DataFrame:
         games = games.copy()
         games = games[games["league"] == league].sort_values(["datetime", "game_id"]).reset_index(drop=True)
@@ -791,20 +660,13 @@ class BaseballBacktest:
         all_rows = []
         start = max(MIN_TRAIN, int(len(X) * 0.25))
         for bstart in range(start, len(X), RETRAIN_EVERY):
-            if time.time() - self.started_at >= self.time_budget_sec:
-                self.audit.append({"type":"time_budget","league":league,"bstart":int(bstart),"budget_sec":self.time_budget_sec})
-                print(f"[{league}] time budget reached; stopping walk-forward cleanly")
-                break
             bend = min(len(X), bstart + RETRAIN_EVERY)
             try:
-                fitted, val_scores, best_name = self.fit_ensemble(X.iloc[:bstart], y[:bstart], league)
-                if not fitted: raise RuntimeError("ensemble fitting failed")
-                name = "Ensemble(" + "+".join(x[2] for x in fitted) + ")"
-                p = self.ensemble_proba(fitted, X.iloc[bstart:bend], league)
-                score_fit = self.fit_score_ensemble(X.iloc[:bstart], games.iloc[:bstart]["home_score"].astype(float).values, games.iloc[:bstart]["away_score"].astype(float).values, league)
+                name, model, val_scores = self.fit_best(X.iloc[:bstart], y[:bstart], league)
             except Exception as e:
                 print(f"[{league}] block {bstart}: model failure {e}")
                 continue
+            p = self.align_proba(model.predict_proba(X.iloc[bstart:bend]), model.classes_, league)
             for j, idx in enumerate(range(bstart, bend)):
                 r = meta.iloc[idx]
                 prob = p[j]
@@ -813,19 +675,15 @@ class BaseballBacktest:
                 target = np.zeros(len(prob)); target[actual] = 1
                 ll = float(-math.log(max(prob[actual], 1e-12)))
                 br = float(np.sum((prob-target)**2))
-                # Dedicated chronological run model.
+                # Internal score expectation: use recent team scoring in pregame feature row.
                 fx = X.iloc[idx]
-                lam_h, lam_a = self.predict_scores(score_fit, X.iloc[[idx]], league)
-                # Small, bounded win-probability consistency adjustment.
-                if league == "NPB":
-                    split = float(np.clip(prob[0] - prob[2], -0.35, 0.35))
-                else:
-                    split = float(np.clip(prob[0] - 0.5, -0.35, 0.35))
-                lam_h *= (1.0 + 0.08 * split)
-                lam_a *= (1.0 - 0.08 * split)
+                h_attack = max(0.15, 0.55 * fx.get("h_gf_10", 1.0) + 0.25 * fx.get("a_ga_10", 1.0))
+                a_attack = max(0.15, 0.55 * fx.get("a_gf_10", 1.0) + 0.25 * fx.get("h_ga_10", 1.0))
+                # Normalize to a plausible league scoring environment.
+                env = 2.1 if league == "NPB" else 4.4
+                scale = env / max(h_attack + a_attack, 0.5)
+                lam_h, lam_a = h_attack * scale, a_attack * scale
                 scores = score_candidates(lam_h, lam_a, 4)
-                while len(scores) < 4:
-                    scores.append(("その他", 0.0))
                 low, high = low_high_probs(lam_h, lam_a)
                 all_rows.append({
                     "league": league, "game_id": r["game_id"], "datetime": r["datetime"],
@@ -853,8 +711,6 @@ class BaseballBacktest:
             "LogLoss": float(df.logloss.mean()), "Brier": float(df.brier.mean()),
             "MeanAbsoluteScoreError": float((abs(df.actual_home_score-df.lambda_home)+abs(df.actual_away_score-df.lambda_away)).mean()/2),
             "HighActualRate": float(((df.actual_home_score >= 7) | (df.actual_away_score >= 7)).mean()),
-            "LowHighAccuracy": float((((df.high >= 0.5).astype(int)) == (((df.actual_home_score >= 7) | (df.actual_away_score >= 7)).astype(int))).mean()),
-            "Top4ScoreHitRate": float(df.apply(lambda r: (("その他" in {str(r.score1),str(r.score2),str(r.score3),str(r.score4)}) if (r.actual_home_score >= 7 or r.actual_away_score >= 7) else (f"{int(r.actual_home_score)}-{int(r.actual_away_score)}" in {str(r.score1),str(r.score2),str(r.score3),str(r.score4)})), axis=1).mean()),
         }
         if league == "MLB":
             try:
@@ -905,9 +761,6 @@ class BaseballBacktest:
     def run(self, npb: bool = True, mlb: bool = True, mlb_start: int = 2020, mlb_end: int = 2026):
         RESULTS.mkdir(exist_ok=True)
         print("="*72); print("BASEBALL BACKTEST SYSTEM / NPB + MLB"); print("="*72)
-        if time.time() - self.started_at >= self.time_budget_sec:
-            print("[HARD STOP] 30-minute limit reached before processing")
-            return
         if npb:
             try:
                 npb_raw = self.load_npb_pbp()
@@ -916,13 +769,9 @@ class BaseballBacktest:
                 r = self.run_walkforward(npb_games, "NPB")
                 self.save_reports(r, "NPB")
                 if not r.empty: self.results.extend(r.to_dict("records"))
-            except TimeoutError as e:
-                print(f"[NPB STOP] {e}")
             except Exception as e:
                 print(f"[NPB ERROR] {type(e).__name__}: {e}")
-        if time.time() - self.started_at >= self.time_budget_sec:
-            print("[HARD STOP] 30-minute limit reached; skipping remaining leagues")
-        elif mlb:
+        if mlb:
             try:
                 mlb_games = self.load_mlb(mlb_start, mlb_end)
                 # Actual starters are obtained from completed game feeds where possible.
@@ -934,23 +783,12 @@ class BaseballBacktest:
                 r = self.run_walkforward(mlb_games, "MLB")
                 self.save_reports(r, "MLB")
                 if not r.empty: self.results.extend(r.to_dict("records"))
-            except TimeoutError as e:
-                print(f"[NPB STOP] {e}")
             except Exception as e:
                 print(f"[MLB ERROR] {type(e).__name__}: {e}")
         if self.results:
             pd.DataFrame(self.results).to_csv(RESULTS / "combined_backtest_results.csv", index=False)
-        if time.time() - self.started_at >= self.time_budget_sec:
-            print("[HARD STOP] computation budget exhausted; writing emergency summary")
         audit = pd.DataFrame(self.audit)
         audit.to_csv(RESULTS / "audit_log.csv", index=False)
-        pd.DataFrame([{
-            "runtime_seconds": round(time.time() - self.started_at, 2),
-            "time_budget_seconds": self.time_budget_sec,
-            "budget_ok": bool(time.time() - self.started_at <= self.time_budget_sec),
-            "npb_predictions": int(sum(1 for x in self.results if x.get("league") == "NPB")),
-            "mlb_predictions": int(sum(1 for x in self.results if x.get("league") == "MLB")),
-        }]).to_csv(RESULTS / "runtime_summary.csv", index=False)
         print("="*72); print("COMPLETE"); print("="*72)
 
 
