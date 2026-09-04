@@ -134,102 +134,215 @@ def num(v):
         return float(s)
     except: return np.nan
 
-def pitcher_line(game_id, match_date, starter_id):
-    try:
-        raw=get_json(f'{SPAIA}/both_pitcher_game_stats',{'gameId':game_id,'matchDate':match_date})
-    except Exception:
+
+def _norm_key(k):
+    return re.sub(r'[^a-z0-9]', '', str(k).lower())
+
+def _walk_dicts(obj, seen=None):
+    """Yield every dict nested in an arbitrary SPAIA JSON response."""
+    if seen is None:
+        seen=set()
+    if isinstance(obj, dict):
+        oid=id(obj)
+        if oid in seen:
+            return
+        seen.add(oid)
+        yield obj
+        for v in obj.values():
+            yield from _walk_dicts(v, seen)
+    elif isinstance(obj, list):
+        for v in obj:
+            yield from _walk_dicts(v, seen)
+
+def _get_any(d, names):
+    wanted={_norm_key(x) for x in names}
+    for k,v in d.items():
+        if _norm_key(k) in wanted and v not in (None,'','-'):
+            return v
+    return None
+
+def _looks_like_pitcher_record(d):
+    keys={_norm_key(k) for k in d}
+    id_keys={'pitchercd','playercd','personinfoid','pitcherid','pitcheridno','playerid','playercdid'}
+    return bool(keys & id_keys)
+
+def _extract_pitcher_records(raw):
+    return [d for d in _walk_dicts(raw) if _looks_like_pitcher_record(d)]
+
+def _metric_from_record(d):
+    ip=num(_get_any(d,['InningsPitched','Innings','IP','投球回','投球回数','投球イニング','PitchingInnings']))
+    ip3=num(_get_any(d,['InningsPitched3rd','IP3','inningsPitched3rd','投球回3分の1','投球回数3分の1']))
+    if np.isfinite(ip3):
+        # SPAIA represents thirds separately; 1 means 1/3, 2 means 2/3.
+        if np.isfinite(ip):
+            ip=ip + ip3/3.0
+        elif ip3 > 0:
+            ip=ip3/3.0
+    er=num(_get_any(d,['EarnedRun','EarnedRuns','ER','自責点','自責点数','EarnedRunCount']))
+    h=num(_get_any(d,['HitsAllowed','Hit','Hits','H','被安打','被安打数','HitAllowed']))
+    hr=num(_get_any(d,['HomeRun','HomeRunsAllowed','HR','被本塁打','被本塁打数','HomeRunAllowed']))
+    bb=num(_get_any(d,['Walk','Walks','BB','BaseOnBalls','与四球','四球','与四球数']))
+    so=num(_get_any(d,['Strikeout','Strikeouts','SO','奪三振','奪三振数','StrikeoutCount']))
+    era=num(_get_any(d,['ERA','EarnedRunAverage','防御率']))
+    whip=num(_get_any(d,['WHIP','Whip']))
+    k9=num(_get_any(d,['K9','StrikeoutPer9']))
+    bb9=num(_get_any(d,['BB9','WalkPer9']))
+    hr9=num(_get_any(d,['HR9','HomeRunPer9']))
+    fip=num(_get_any(d,['FIP','Fip']))
+    if not np.isfinite(ip) or ip<=0:
         return None
-    candidates=[]
-    for d in flat_dicts(raw):
-        pid=val(d,['PitcherCD','PlayerCD','PersonInfoID','pitcherId','pitcherID','PitcherId','PlayerId','playerId'],None)
-        if pid is not None: candidates.append((str(pid),d))
-    exact=[d for pid,d in candidates if str(pid)==str(starter_id)]
-    if not exact and candidates: exact=[candidates[0][1]]
-    if not exact: return None
-    d=exact[0]
-    ip=num(val(d,['InningsPitched','IP','inningsPitched','投球回']))
-    ip3=num(val(d,['InningsPitched3rd','IP3','inningsPitched3rd']))
-    if np.isfinite(ip) and np.isfinite(ip3) and ip3 < 3: ip=ip+ip3/3.0
-    h=num(val(d,['HitsAllowed','Hit','Hits','H','被安打']))
-    er=num(val(d,['EarnedRun','EarnedRuns','ER','自責点']))
-    hr=num(val(d,['HomeRun','HomeRunsAllowed','HR','被本塁打']))
-    bb=num(val(d,['Walk','Walks','BB','BaseOnBalls','与四球']))
-    so=num(val(d,['Strikeout','Strikeouts','SO','奪三振']))
-    if not np.isfinite(ip) or ip<=0: return None
-    era=9*er/ip if np.isfinite(er) else np.nan
-    whip=(h+bb)/ip if np.isfinite(h) and np.isfinite(bb) else np.nan
-    k9=9*so/ip if np.isfinite(so) else np.nan
-    bb9=9*bb/ip if np.isfinite(bb) else np.nan
-    hr9=9*hr/ip if np.isfinite(hr) else np.nan
-    # FIP constant is not known from the game feed; use a neutral run-environment
-    # constant only for relative history, never claim it is official FIP.
-    fip=(13*hr+3*bb-2*so)/ip+3.20 if all(np.isfinite(x) for x in (hr,bb,so)) else np.nan
-    return {'era':era,'whip':whip,'k9':k9,'bb9':bb9,'hr9':hr9,'fip':fip,'ip':ip,'er':er,'h':h,'hr':hr,'bb':bb,'so':so}
+    if not np.isfinite(era) and np.isfinite(er): era=9*er/ip
+    if not np.isfinite(whip) and np.isfinite(h) and np.isfinite(bb): whip=(h+bb)/ip
+    if not np.isfinite(k9) and np.isfinite(so): k9=9*so/ip
+    if not np.isfinite(bb9) and np.isfinite(bb): bb9=9*bb/ip
+    if not np.isfinite(hr9) and np.isfinite(hr): hr9=9*hr/ip
+    if not np.isfinite(fip) and all(np.isfinite(x) for x in (hr,bb,so)):
+        fip=(13*hr+3*bb-2*so)/ip+3.20
+    return {'era':era,'whip':whip,'k9':k9,'bb9':bb9,'hr9':hr9,'fip':fip,
+            'ip':ip,'er':er,'h':h,'hr':hr,'bb':bb,'so':so}
+
+def _record_pid(d):
+    return _get_any(d,['PitcherCD','PlayerCD','PersonInfoID','pitcherId','PitcherId','PlayerId','playerId','PitcherCDID'])
+
+def _fetch_game_pitcher_records(game_id, match_date):
+    """Try the documented endpoint with both parameter spellings used by public clients."""
+    attempts=[
+        ('both_pitcher_game_stats', {'gameId':game_id,'matchDate':match_date}),
+        ('both_pitcher_game_stats', {'GameID':game_id,'matchDate':match_date}),
+        ('both_pitcher_game_stats', {'GameID':game_id,'MatchDate':match_date}),
+        ('both_pitcher_game_stats', {'gameId':game_id,'MatchDate':match_date}),
+        ('both_pitcher_game_stats', {'game_id':game_id,'match_date':match_date}),
+    ]
+    last=None
+    for endpoint,params in attempts:
+        try:
+            raw=get_json(f'{SPAIA}/{endpoint}',params)
+            recs=_extract_pitcher_records(raw)
+            if recs:
+                return recs, raw, None
+            last=raw
+        except Exception as e:
+            last=e
+    return [], last, 'no_pitcher_records'
+
+def pitcher_line(game_id, match_date, starter_id):
+    recs, raw, err=_fetch_game_pitcher_records(game_id,match_date)
+    sid=str(starter_id)
+    # Exact ID match first.
+    for d in recs:
+        pid=_record_pid(d)
+        if pid is not None and str(pid)==sid:
+            m=_metric_from_record(d)
+            if m: return m
+    # Numeric normalization catches 1800028 vs 1800028.0 style differences.
+    try:
+        s_num=int(float(sid))
+        for d in recs:
+            pid=_record_pid(d)
+            try:
+                if int(float(str(pid)))==s_num:
+                    m=_metric_from_record(d)
+                    if m: return m
+            except Exception:
+                pass
+    except Exception:
+        pass
+    return None
 
 def fetch_games():
     raw=get_json(f'{SPAIA}/schedules',{'Year':YEAR})
-    end=pd.Timestamp(END_DATE)+pd.Timedelta(days=1)-pd.Timedelta(seconds=1)
+    end=pd.Timestamp(END_DATE).normalize()+pd.Timedelta(days=1)-pd.Timedelta(microseconds=1)
     rows=[]
     for g in raw if isinstance(raw,list) else []:
         dt=parse_dt(g)
-        if pd.isna(dt) or dt>end or dt<pd.Timestamp(f'{YEAR}-03-20') or not official_game(g): continue
+        if pd.isna(dt) or dt>end or dt<pd.Timestamp(f'{YEAR}-03-20') or not official_game(g):
+            continue
         gid=str(g.get('GameID') or g.get('game_id') or '')
         if not gid: continue
-        hs=num(g.get('HScore',g.get('home_score'))); aas=num(g.get('VScore',g.get('away_score')))
+        hs=num(g.get('HScore',g.get('home_score')))
+        aas=num(g.get('VScore',g.get('away_score')))
         if not np.isfinite(hs) or not np.isfinite(aas): continue
         park=str(g.get('StadiumName') or g.get('stadiumName') or g.get('BallparkName') or g.get('ballpark') or '')
-        rows.append({'game_id':gid,'datetime':dt,'home':official_name(g.get('HTeamNameS',g.get('home_team_short_name'))),'away':official_name(g.get('VTeamNameS',g.get('away_team_short_name'))),'home_score':hs,'away_score':aas,'game_type':game_kind(g) or '公式戦','venue':park})
-    d=pd.DataFrame(rows).drop_duplicates('game_id').sort_values(['datetime','game_id']).reset_index(drop=True)
-    return d
+        rows.append({'game_id':gid,'datetime':dt,'home':official_name(g.get('HTeamNameS',g.get('home_team_short_name'))),
+                     'away':official_name(g.get('VTeamNameS',g.get('away_team_short_name'))),
+                     'home_score':hs,'away_score':aas,'game_type':game_kind(g) or '公式戦','venue':park})
+    return pd.DataFrame(rows).drop_duplicates('game_id').sort_values(['datetime','game_id']).reset_index(drop=True)
 
 def fetch_game_enrichment(r):
     away,home=first_pitchers(r.game_id)
     date=pd.Timestamp(r.datetime).strftime('%Y%m%d')
     hm=pitcher_line(r.game_id,date,home) if home else None
     am=pitcher_line(r.game_id,date,away) if away else None
-    z=r._asdict();z.update({'home_starter':home,'away_starter':away})
+    z=r._asdict() if hasattr(r,'_asdict') else dict(r)
+    z.update({'home_starter':home,'away_starter':away})
     for side,m in [('home',hm),('away',am)]:
-        for k in ('era','whip','k9','bb9','hr9','fip'):
+        for k in ('era','whip','k9','bb9','hr9','fip','ip','er','h','hr','bb','so'):
             z[f'{side}_starter_{k}']=m.get(k) if m else np.nan
+    z['home_starter_line_ok']=bool(hm)
+    z['away_starter_line_ok']=bool(am)
     return z
+
 
 def weather_for_venue(venue, start, end):
     if venue not in PARKS: return pd.DataFrame()
     lat,lon=PARKS[venue]
     try:
-        raw=get_json(OPEN_METEO,{'latitude':lat,'longitude':lon,'start_date':start,'end_date':end,'hourly':'temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m','timezone':'Asia/Tokyo'})
+        raw=get_json(OPEN_METEO,{'latitude':lat,'longitude':lon,'start_date':start,'end_date':end,
+                                 'hourly':'temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m',
+                                 'timezone':'Asia/Tokyo'})
     except Exception as e:
         print('[WEATHER SKIP]',venue,e); return pd.DataFrame()
     h=raw.get('hourly',{})
-    return pd.DataFrame({'datetime':pd.to_datetime(h.get('time',[])),'weather_temp_c':h.get('temperature_2m',[]),'weather_humidity_pct':h.get('relative_humidity_2m',[]),'weather_precip_mm':h.get('precipitation',[]),'weather_wind_kmh':h.get('wind_speed_10m',[])})
+    return pd.DataFrame({'datetime':pd.to_datetime(h.get('time',[])),
+                         'weather_temp_c':h.get('temperature_2m',[]),
+                         'weather_humidity_pct':h.get('relative_humidity_2m',[]),
+                         'weather_precip_mm':h.get('precipitation',[]),
+                         'weather_wind_kmh':h.get('wind_speed_10m',[])})
 
 def official_audit():
-    out=[]
-    for url in [f'{NPB}/bis/{YEAR}/stats/std_c.html',f'{NPB}/bis/{YEAR}/stats/std_p.html',f'{NPB}/bis/{YEAR}/stats/tmb_c.html',f'{NPB}/bis/{YEAR}/stats/tmb_p.html',f'{NPB}/bis/{YEAR}/stats/tmp_c.html',f'{NPB}/bis/{YEAR}/stats/tmp_p.html']:
-        try:
-            html=requests.get(url,timeout=TIMEOUT,headers={'User-Agent':'Mozilla/5.0'}); html.raise_for_status()
-            tables=pd.read_html(html.text)
-            for i,t in enumerate(tables):
-                if len(t)>0:
-                    p=Path('data')/('official_'+url.rsplit('/',1)[-1].replace('.html','')+f'_{i}.csv')
-                    t.to_csv(p,index=False)
-                    out.append({'url':url,'table_index':i,'rows':len(t),'cols':len(t.columns)})
-        except Exception as e: print('[OFFICIAL AUDIT SKIP]',url,e)
+    # Independent NPB.jp audit. Never blocks the baseball dataset.
     Path('data').mkdir(exist_ok=True)
+    out=[]
+    urls=[
+        f'{NPB}/bis/{YEAR}/stats/std_c.html',f'{NPB}/bis/{YEAR}/stats/std_p.html',
+        f'{NPB}/bis/{YEAR}/stats/tmb_c.html',f'{NPB}/bis/{YEAR}/stats/tmb_p.html',
+        f'{NPB}/bis/{YEAR}/stats/tmp_c.html',f'{NPB}/bis/{YEAR}/stats/tmp_p.html'
+    ]
+    for url in urls:
+        try:
+            r=requests.get(url,timeout=TIMEOUT,headers={'User-Agent':'Mozilla/5.0 baseball-backtest'})
+            r.raise_for_status()
+            name='official_'+url.rsplit('/',1)[-1]
+            Path('data',name).write_text(r.text,encoding='utf-8',errors='ignore')
+            out.append({'url':url,'status':'ok','bytes':len(r.content)})
+        except Exception as e:
+            print('[OFFICIAL AUDIT SKIP]',url,str(e)[:160])
+            out.append({'url':url,'status':'skip','error':str(e)[:300]})
     pd.DataFrame(out).to_csv('data/source_official_npb_audit.csv',index=False)
 
 def main():
     Path('data').mkdir(exist_ok=True)
-    games=fetch_games(); print('[SPAIA] games=',len(games))
-    if len(games)<600: raise RuntimeError(f'too few official games: {len(games)}')
+    games=fetch_games()
+    print('[SPAIA] games=',len(games))
+    if len(games)<600:
+        raise RuntimeError(f'too few official games: {len(games)}')
+
     enriched=[]
+    failures=[]
     with cf.ThreadPoolExecutor(max_workers=WORKERS) as ex:
-        fs=[ex.submit(fetch_game_enrichment,r) for r in games.itertuples(index=False)]
-        for i,f in enumerate(cf.as_completed(fs),1):
-            enriched.append(f.result())
-            if i%50==0 or i==len(fs): print(f'[SPAIA] game enrichment {i}/{len(fs)}')
+        futures={ex.submit(fetch_game_enrichment,r):r.game_id for r in games.itertuples(index=False)}
+        for i,f in enumerate(cf.as_completed(futures),1):
+            gid=futures[f]
+            try:
+                enriched.append(f.result())
+            except Exception as e:
+                failures.append({'game_id':gid,'error':repr(e)})
+            if i%50==0 or i==len(futures):
+                print(f'[SPAIA] game enrichment {i}/{len(futures)}')
+
     d=pd.DataFrame(enriched).sort_values(['datetime','game_id']).reset_index(drop=True)
-    # Weather: one request per known venue, then exact hour merge.
+
+    # Weather: one request per known venue, then exact scheduled-hour merge.
     for v in sorted(set(d.venue.astype(str))):
         w=weather_for_venue(v,f'{YEAR}-03-20',END_DATE)
         if w.empty: continue
@@ -237,14 +350,47 @@ def main():
         sub['datetime']=pd.to_datetime(sub.datetime).dt.floor('h')
         w['datetime']=pd.to_datetime(w.datetime).dt.floor('h')
         sub=sub.merge(w,on='datetime',how='left')
-        d=d.merge(sub[['game_id','weather_temp_c','weather_humidity_pct','weather_precip_mm','weather_wind_kmh']],on='game_id',how='left')
-    # Save compact game rows using the *_pbp.csv naming expected by the engine.
-    d['league']='NPB'; d['date']=pd.to_datetime(d.datetime); d['inning']=1; d['half']=''; d['event']=''; d['addedRuns']=0; d['pitcher']=''
-    d.to_csv(OUT,index=False)
-    official_audit()
-    starters=((d.home_starter.fillna('').astype(str)!='')&(d.away_starter.fillna('').astype(str)!='')).sum()
-    metric=((d.home_starter_era.notna())&(d.away_starter_era.notna())).sum()
-    print(f'[OUTPUT] {OUT} games={len(d)} starters={starters} both_starter_lines={metric}')
-    if len(d)<600 or starters<500: raise RuntimeError('insufficient NPB starter coverage')
+        d=d.merge(sub[['game_id','weather_temp_c','weather_humidity_pct','weather_precip_mm','weather_wind_kmh']],
+                  on='game_id',how='left')
 
-if __name__=='__main__': main()
+    d['league']='NPB'
+    d['date']=pd.to_datetime(d.datetime)
+    d['inning']=1
+    d['half']=''
+    d['event']=''
+    d['addedRuns']=0
+    d['pitcher']=''
+    d.to_csv(OUT,index=False)
+
+    official_audit()
+
+    both_starters=((d.home_starter.fillna('').astype(str)!='')&(d.away_starter.fillna('').astype(str)!='')).sum()
+    both_lines=((d.home_starter_line_ok.fillna(False))&(d.away_starter_line_ok.fillna(False))).sum()
+    home_lines=int(d.home_starter_line_ok.fillna(False).sum())
+    away_lines=int(d.away_starter_line_ok.fillna(False).sum())
+
+    pd.DataFrame([{
+        'games':len(d),'both_starters':int(both_starters),
+        'home_starter_lines':home_lines,'away_starter_lines':away_lines,
+        'both_starter_lines':int(both_lines),
+        'starter_line_coverage_pct':round(100*both_lines/max(1,both_starters),2),
+        'worker_failures':len(failures)
+    }]).to_csv('data/source_coverage.csv',index=False)
+
+    if failures:
+        pd.DataFrame(failures).to_csv('data/source_failures.csv',index=False)
+
+    print(f'[OUTPUT] {OUT} games={len(d)} starters={both_starters} both_starter_lines={both_lines}')
+    print(f'[COVERAGE] home_lines={home_lines} away_lines={away_lines} both={both_lines}/{both_starters}')
+
+    if len(d)<600 or both_starters<500:
+        raise RuntimeError('insufficient NPB starter coverage')
+    if both_lines < max(300, int(0.70*both_starters)):
+        raise RuntimeError(
+            f'insufficient per-game starter pitching-stat coverage: '
+            f'{both_lines}/{both_starters} ({100*both_lines/max(1,both_starters):.1f}%). '
+            'Check data/source_coverage.csv before running the model.'
+        )
+
+if __name__=='__main__':
+    main()
