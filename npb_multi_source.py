@@ -95,18 +95,51 @@ def get_json(url, params=None, retries=4):
 
 def official_name(x): return ALIASES.get(str(x or '').strip(), str(x or '').strip())
 
-def parse_dt(g):
-    d=str(g.get('DateJPN') or g.get('date_jpn') or '')
-    t=str(g.get('TimeJPN') or g.get('time_jpn') or '1800')
-    try: return pd.to_datetime(d+t,format='%Y%m%d%H%M')
-    except Exception: return pd.NaT
+def _first(g, *names, default=None):
+    if not isinstance(g, dict):
+        return default
+    # Exact lookup first, then normalized lookup so DateJPN/date_jpn/gameDate/etc.
+    # are treated consistently across SPAIA schema revisions.
+    for name in names:
+        if name in g and g[name] not in (None, '', '-'):
+            return g[name]
+    wanted={_norm_key(n) for n in names}
+    for k,v in g.items():
+        if _norm_key(k) in wanted and v not in (None, '', '-'):
+            return v
+    return default
 
-def game_kind(g): return str(g.get('GameKindName') or g.get('game_kind_name') or '')
+def parse_dt(g):
+    # SPAIA schemas have changed field casing/names over time. Prefer the
+    # documented season-schedule fields, but accept all known variants.
+    direct=_first(g, 'datetime','gameDateTime','game_datetime','dateTime','DateTime')
+    if direct is not None:
+        dt=pd.to_datetime(direct, errors='coerce')
+        if pd.notna(dt): return dt
+    d=_first(g, 'DateJPN','date_jpn','GameDate','gameDate','game_date','MatchDate','matchDate','Date','date')
+    t=_first(g, 'TimeJPN','time_jpn','GameTime','gameTime','gametime','game_time','MatchTime','matchTime','Time','time', default='1800')
+    if d is None: return pd.NaT
+    ds=str(d).strip()
+    ts=str(t).strip() if t is not None else '1800'
+    # Normalize numeric YYYYMMDD / YYYY-MM-DD and HHMM / HH:MM.
+    ds=re.sub(r'[^0-9]','',ds)
+    ts=re.sub(r'[^0-9]','',ts) or '1800'
+    if len(ds) == 8:
+        ts=(ts+'0000')[:4]
+        try: return pd.to_datetime(ds+ts,format='%Y%m%d%H%M')
+        except Exception: pass
+    dt=pd.to_datetime(str(d), errors='coerce')
+    return dt
+
+def game_kind(g):
+    return str(_first(g, 'GameKindName','game_kind_name','GameTypeName','game_type_name','gameTypeName','LeagueName','league_name', default='') or '')
 
 def official_game(g):
     s=game_kind(g)
-    if any(x in s for x in ('オープン戦','オールスター','ファーム','二軍','教育')): return False
-    return ('公式戦' in s) or ('交流戦' in s) or s==''
+    if any(x in s for x in ('オープン戦','オールスター','ファーム','二軍','教育','練習試合')): return False
+    # Known official labels. Empty is retained for compatibility with older
+    # SPAIA responses, but only after a valid final score is present.
+    return ('公式戦' in s) or ('交流戦' in s) or ('セ・リーグ' in s) or ('パ・リーグ' in s) or s==''
 
 def num(v):
     try:
@@ -465,13 +498,22 @@ def fetch_games(year):
     for g in raw if isinstance(raw,list) else []:
         dt=parse_dt(g)
         if pd.isna(dt) or dt>end or dt<start or not official_game(g): continue
-        gid=str(g.get('GameID') or g.get('game_id') or '')
+        gid=str(_first(g,'GameID','game_id','gameId','gameID','gamePk','GamePk',default='') or '')
         if not gid: continue
-        hs=num(g.get('HScore',g.get('home_score'))); aas=num(g.get('VScore',g.get('away_score')))
+        hs=num(_first(g,'HScore','home_score','homeScore','HomeScore','HomeTeamScore'))
+        aas=num(_first(g,'VScore','away_score','awayScore','AwayScore','VisitorScore','VTeamScore'))
         if not np.isfinite(hs) or not np.isfinite(aas): continue
-        park=str(g.get('StadiumName') or g.get('stadiumName') or g.get('BallparkName') or g.get('ballpark') or '')
-        rows.append({'game_id':gid,'datetime':dt,'home':official_name(g.get('HTeamNameS',g.get('home_team_short_name'))),'away':official_name(g.get('VTeamNameS',g.get('away_team_short_name'))),'home_score':hs,'away_score':aas,'game_type':game_kind(g) or '公式戦','venue':park})
-    return pd.DataFrame(rows).drop_duplicates('game_id').sort_values(['datetime','game_id']).reset_index(drop=True)
+        park=str(_first(g,'StadiumName','stadiumName','BallparkName','ballpark','venue','VenueName',default='') or '')
+        home=official_name(_first(g,'HTeamNameS','home_team_short_name','homeTeamShort','homeTeam','home_team','HomeTeamName',default=''))
+        away=official_name(_first(g,'VTeamNameS','away_team_short_name','visitorTeamShort','visitorTeam','away_team','AwayTeamName',default=''))
+        if not home or not away: continue
+        rows.append({'game_id':gid,'datetime':dt,'home':home,'away':away,'home_score':hs,'away_score':aas,'game_type':game_kind(g) or '公式戦','venue':park})
+    columns=['game_id','datetime','home','away','home_score','away_score','game_type','venue']
+    out=pd.DataFrame(rows,columns=columns)
+    if out.empty:
+        print(f'[SP AIA] year={year} no parseable completed schedule rows; raw schema may have changed')
+        return out
+    return out.drop_duplicates('game_id').sort_values(['datetime','game_id']).reset_index(drop=True)
 
 def load_checkpoint(year):
     paths=season_paths(year)
