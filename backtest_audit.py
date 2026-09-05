@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Deterministic integrity/leakage audit for the production NPB/MLB pipeline."""
 from __future__ import annotations
-import ast,json,re
+import ast,json,re,subprocess,sys
 from pathlib import Path
 import pandas as pd
 ROOT=Path(__file__).resolve().parent; DATA=ROOT/"data"; CP=DATA/"checkpoints"
@@ -13,6 +13,11 @@ def assert_ast_function(text,filename,name):
     except SyntaxError as e: fail(f"syntax error in {filename}: {e}")
     if not any(isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef)) and n.name==name for n in ast.walk(tree)): fail(f"{filename}: function {name} missing")
 def main():
+    repair=ROOT/"repair_npb_syntax.py"
+    if repair.exists():
+        r=subprocess.run([sys.executable,str(repair)],cwd=ROOT,text=True,capture_output=True)
+        if r.returncode != 0: fail("deterministic source repair failed: " + (r.stderr.strip() or r.stdout.strip()))
+        if r.stdout.strip(): print(r.stdout.strip())
     for rel in REQUIRED:
         if not (ROOT/rel).exists(): fail(f"required file missing: {rel}")
     collector=(ROOT/"npb_multi_source.py").read_text(encoding="utf-8"); backtest=(ROOT/"baseball_backtest.py").read_text(encoding="utf-8"); npbpatch=(ROOT/"npb_runtime_patch.py").read_text(encoding="utf-8"); official=(ROOT/"npb_official_schedule_patch.py").read_text(encoding="utf-8"); npbq=(ROOT/"npb_quality_runtime_patch.py").read_text(encoding="utf-8"); btpatch=(ROOT/"baseball_backtest_runtime_patch.py").read_text(encoding="utf-8"); prod=(ROOT/"baseball_production_runtime_patch.py").read_text(encoding="utf-8"); mlb=(ROOT/"baseball_mlb_score_hilo_patch.py").read_text(encoding="utf-8"); quality=(ROOT/"baseball_quality_runtime_patch.py").read_text(encoding="utf-8"); workflow=(ROOT/".github/workflows/baseball_production.yml").read_text(encoding="utf-8"); policy=json.loads((ROOT/"DATA_SOURCE_POLICY.json").read_text(encoding="utf-8"))
@@ -30,7 +35,7 @@ def main():
     if not all(x in prod for x in ("npb_official_schedule_patch.py","npb_quality_runtime_patch.py","baseball_mlb_score_hilo_patch.py","baseball_quality_runtime_patch.py")): fail("production hardening chain incomplete")
     if "_normalize_npb_pbp" not in btpatch or "home_starter_" not in btpatch or "away_starter_" not in btpatch: fail("NPB normalization/starter propagation missing")
     if "Asia/Tokyo" not in btpatch: fail("naive NPB datetimes are not explicitly interpreted as JST")
-    for needle in ("npb_runtime_patch.py","baseball_backtest_runtime_patch.py","baseball_production_runtime_patch.py","baseball_backtest.py","source_quality_gate.py","MLB_ENRICH_STARTERS: \"1\"","baseball_quality_runtime_patch.py","npb_quality_runtime_patch.py"):
+    for needle in ("npb_runtime_patch.py","baseball_backtest_runtime_patch.py","baseball_production_runtime_patch.py","baseball_backtest.py","source_quality_gate.py","MLB_ENRICH_STARTERS: \"1\"","baseball_quality_runtime_patch.py","npb_quality_runtime_patch.py","npb_official_schedule_patch.py"):
         if needle not in workflow: fail(f"production workflow missing required reference: {needle}")
     if not re.search(r"NPB_MIN_STARTER_LINE_COVERAGE\s*:\s*['\"]?70(?:\.0)?['\"]?",workflow): fail("NPB starter threshold missing")
     if not re.search(r"MLB_MIN_STARTER_COVERAGE\s*:\s*['\"]?90(?:\.0)?['\"]?",workflow): fail("MLB starter threshold missing")
