@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Production quality patch: meaningful score candidates, overdispersed tails,
-robust granular evaluation, and richer audit outputs."""
+robust granular evaluation, and safe boolean/provenance handling."""
 from __future__ import annotations
 import re
 from pathlib import Path
@@ -17,9 +17,15 @@ repl='''        weights=np.asarray(weights,float); weights/=weights.sum()\n     
 if needle not in s: raise SystemExit("score return target not found")
 s=s.replace(needle,repl,1)
 old='                low, high = low_high_probs(lam_h, lam_a)\n'
-new='''                low, high = low_high_probs(lam_h, lam_a, (score_fit or {}).get("dispersion_home") if score_fit else None, (score_fit or {}).get("dispersion_away") if score_fit else None)\n'''
+new='                low, high = low_high_probs(lam_h, lam_a, (score_fit or {}).get("dispersion_home") if score_fit else None, (score_fit or {}).get("dispersion_away") if score_fit else None)\n'
 if old not in s: raise SystemExit("low/high call target not found")
 s=s.replace(old,new,1)
+# Normalize string/bool starter flags from CSV/API instead of Python's unsafe bool("False").
+helper='''\ndef _quality_flag(v) -> bool:\n    if isinstance(v,bool): return v\n    if v is None: return False\n    t=str(v).strip().lower()\n    return t in {"1","true","t","yes","y","on"}\n\n'''
+anchor='def score_candidates('
+if anchor not in s: raise SystemExit("score anchor missing")
+s=s.replace(anchor,helper+anchor,1)
+s=s.replace('confirmed = games["confirmed_starters"].fillna(False).astype(bool)', 'confirmed = games["confirmed_starters"].map(_quality_flag)',1)
 pat=re.compile(r'    def evaluate\(self, df: pd\.DataFrame, league: str\) -> Dict\[str, Any\]:.*?\n    def save_reports',re.S)
 new='''    def evaluate(self, df: pd.DataFrame, league: str) -> Dict[str, Any]:\n        if df.empty: return {}\n        actual_high=((df.actual_home_score>=7)|(df.actual_away_score>=7)).astype(int); pred_high=(df.high>=0.5).astype(int)\n        exact=df.apply(lambda r: f"{int(r.actual_home_score)}-{int(r.actual_away_score)}" in {str(r.score1),str(r.score2),str(r.score3),str(r.score4)},axis=1)\n        out={"League":league,"Predictions":len(df),"Accuracy":float(df.correct.mean()),"LogLoss":float(df.logloss.mean()),"Brier":float(df.brier.mean()),\n             "MeanAbsoluteScoreError":float((abs(df.actual_home_score-df.lambda_home)+abs(df.actual_away_score-df.lambda_away)).mean()/2),\n             "HomeScoreMAE":float(abs(df.actual_home_score-df.lambda_home).mean()),"AwayScoreMAE":float(abs(df.actual_away_score-df.lambda_away).mean()),\n             "TotalScoreMAE":float(abs((df.actual_home_score+df.actual_away_score)-(df.lambda_home+df.lambda_away)).mean()),\n             "HighActualRate":float(actual_high.mean()),"LowAccuracy":float(((pred_high==0)&(actual_high==0)).sum()/max(1,(actual_high==0).sum())),\n             "HighAccuracy":float(((pred_high==1)&(actual_high==1)).sum()/max(1,(actual_high==1).sum())),"LowHighAccuracy":float((pred_high==actual_high).mean()),\n             "HighTP":int(((pred_high==1)&(actual_high==1)).sum()),"HighFP":int(((pred_high==1)&(actual_high==0)).sum()),"HighFN":int(((pred_high==0)&(actual_high==1)).sum()),\n             "ExactScoreHitRate":float(exact.mean()),"Top4ScoreHitRate":float(exact.mean())}\n        if league=="MLB":\n            try: out["AUC"]=float(roc_auc_score(df.actual,df.pred_home))\n            except Exception: out["AUC"]=np.nan\n        return out\n\n    def save_reports(self, df: pd.DataFrame, league: str):\n'''
 if not pat.search(s): raise SystemExit("evaluate block not found")
