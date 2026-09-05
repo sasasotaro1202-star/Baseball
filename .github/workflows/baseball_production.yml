@@ -50,7 +50,7 @@ jobs:
       PYTHONUNBUFFERED: "1"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -149,12 +149,18 @@ jobs:
           python -m pip install -r requirements.txt
       - name: Validate source policy
         run: python source_quality_gate.py
+      - name: Apply MLB score and Low-High hardening
+        run: python baseball_mlb_score_hilo_patch.py
+      - name: Apply quality hardening
+        run: python baseball_quality_runtime_patch.py
+      - name: Apply backtest hardening
+        run: python baseball_backtest_runtime_patch.py
       - name: Apply production hardening
         run: python baseball_production_runtime_patch.py
       - name: Preflight
         run: |
           set -euo pipefail
-          python -m py_compile baseball_backtest.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py backtest_audit.py source_quality_gate.py
+          python -m py_compile baseball_backtest.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py backtest_audit.py source_quality_gate.py
           python backtest_audit.py
       - name: Run MLB starter-enriched OOS backtest
         run: |
@@ -186,7 +192,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Download NPB artifact
         if: always() && needs.npb.result != 'cancelled'
         continue-on-error: true
