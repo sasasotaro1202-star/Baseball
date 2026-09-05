@@ -1,34 +1,32 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Final CI hardening for baseball_backtest.py.
+"""Final CI hardening for baseball_backtest.py and NPB source provenance.
 
-The historical OOS engine must simulate a pregame decision state.  Therefore
+The historical OOS engine must simulate a pregame decision state. Therefore
 starter-incomplete samples are rejected instead of silently receiving generic
-pitcher priors.  The patch is idempotent and creates a new checkpoint namespace
+pitcher priors. The patch is idempotent and creates a new checkpoint namespace
 so results produced under the older contract are never mixed into production.
 """
 from __future__ import annotations
 from pathlib import Path
+import runpy
 
 P = Path("baseball_backtest.py")
 s = P.read_text(encoding="utf-8")
 
-if "# BASEBALL_PRODUCTION_HARDENING_V1" in s:
-    print("[PRODUCTION PATCH] V1 already applied")
-    raise SystemExit(0)
+if "# BASEBALL_PRODUCTION_HARDENING_V1" not in s:
+    old_version = 'self.checkpoint_version = "npb-massive-resume-v4-100target"'
+    s = s.replace(old_version, 'self.checkpoint_version = "baseball-production-v1-quality-gated"')
 
-old_version = 'self.checkpoint_version = "npb-massive-resume-v4-100target"'
-s = s.replace(old_version, 'self.checkpoint_version = "baseball-production-v1-quality-gated"')
-
-anchor = '''        # Data-quality gates: the backtest must not silently run on a tiny
+    anchor = '''        # Data-quality gates: the backtest must not silently run on a tiny
         # or starter-free sample.
 '''
-start = s.find(anchor)
-end = s.find('        X, y, meta = self.build_features(games)', start)
-if start < 0 or end < 0:
-    raise SystemExit("[PRODUCTION PATCH] expected walk-forward gate block not found")
+    start = s.find(anchor)
+    end = s.find('        X, y, meta = self.build_features(games)', start)
+    if start < 0 or end < 0:
+        raise SystemExit("[PRODUCTION PATCH] expected walk-forward gate block not found")
 
-gate = '''        # STRICT STARTER COVERAGE GATE
+    gate = '''        # STRICT STARTER COVERAGE GATE
         # A historical backtest is a simulation of the pregame decision state.
         # Unknown starters must not be silently replaced by league priors.
         # NPB requires >=70%; MLB requires >=90% for the production contract.
@@ -51,7 +49,17 @@ gate = '''        # STRICT STARTER COVERAGE GATE
             )
 
 '''
-s = s[:start] + gate + s[end:]
-s = "# BASEBALL_PRODUCTION_HARDENING_V1\n" + s
-P.write_text(s, encoding="utf-8")
-print("[PRODUCTION PATCH] V1 applied")
+    s = s[:start] + gate + s[end:]
+    s = "# BASEBALL_PRODUCTION_HARDENING_V1\n" + s
+    P.write_text(s, encoding="utf-8")
+    print("[PRODUCTION PATCH] V1 applied")
+else:
+    print("[PRODUCTION PATCH] V1 already applied")
+
+# The production workflow already executes this hardening layer. Chain the
+# official NPB validator here so no separate workflow step can be forgotten.
+validator = Path("npb_official_schedule_patch.py")
+if validator.exists():
+    runpy.run_path(str(validator), run_name="__main__")
+else:
+    raise SystemExit("[PRODUCTION PATCH] official NPB schedule validator missing")
