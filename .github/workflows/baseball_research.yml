@@ -52,10 +52,18 @@ jobs:
           python -m py_compile research/research_loop.py backtest_audit.py source_quality_gate.py
           python backtest_audit.py
 
-      - name: Run autonomous research controller
+      - name: Run autonomous research controller with bounded retries
         run: |
           set -euo pipefail
-          python research/research_loop.py
+          for attempt in 1 2 3; do
+            echo "[RESEARCH] controller attempt ${attempt}/3"
+            if python research/research_loop.py; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then sleep 15; fi
+          done
+          echo "[RESEARCH] all controller retries failed"
+          exit 1
 
       - name: Validate research artifacts
         run: |
