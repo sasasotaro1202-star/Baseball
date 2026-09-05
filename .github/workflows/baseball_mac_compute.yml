@@ -21,7 +21,7 @@ jobs:
   mac-research:
     name: High-throughput Mac OOS research
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
-    runs-on: [self-hosted, macOS, ARM64]
+    runs-on: [self-hosted, macOS]
     timeout-minutes: 70
     steps:
       - name: Checkout latest main state
