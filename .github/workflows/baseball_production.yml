@@ -59,20 +59,24 @@ jobs:
           set -euo pipefail
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
+      - name: Validate source policy
+        run: python source_quality_gate.py
       - name: Apply collector hardening
         run: python npb_runtime_patch.py
-      - name: Apply backtest hardening and preflight
+      - name: Apply backtest hardening
+        run: python baseball_backtest_runtime_patch.py
+      - name: Apply production hardening
+        run: python baseball_production_runtime_patch.py
+      - name: Preflight
         run: |
           set -euo pipefail
-          python baseball_backtest_runtime_patch.py
-          python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py baseball_backtest_runtime_patch.py backtest_audit.py
+          python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py backtest_audit.py source_quality_gate.py
+          python backtest_audit.py
       - name: Collect/resume NPB
         run: |
           set -euo pipefail
           mkdir -p data results
           python npb_multi_source.py
-      - name: Audit
-        run: python backtest_audit.py
       - name: Run NPB OOS backtest when collection is complete
         run: |
           set -euo pipefail
@@ -80,37 +84,34 @@ jobs:
           import json
           from pathlib import Path
           p=Path("data/checkpoints/npb_collection_status.json")
-          if not p.exists(): raise SystemExit("NPB collection status missing")
+          if not p.exists():
+              raise SystemExit("NPB collection status missing")
           s=json.loads(p.read_text(encoding="utf-8"))
+          print("[NPB STATUS]", s.get("complete"), s.get("aggregate_games"))
           if not s.get("complete", False):
               print("[NPB WAIT] collection incomplete; checkpoint retained")
               raise SystemExit(0)
           PY
           python baseball_backtest.py --npb-only --data-dir data
-      - name: Validate and persist NPB state
+      - name: Build NPB artifact payload
         if: always()
         run: |
           set +e
-          test -f results/production_contract.json && cat results/production_contract.json || true
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/checkpoints/ data/npb_games/ data/weather/ data/npb_multi_source_games_all.csv data/npb_player_game_features_all.csv data/source_coverage.csv data/source_failures.csv data/source_official_npb_audit.csv results/ 2>/dev/null
-          if ! git diff --cached --quiet; then git commit -m "Persist NPB production backtest state" && git push; fi
+          rm -rf artifact_payload
+          mkdir -p artifact_payload/results/npb artifact_payload/data
+          cp -a data/checkpoints artifact_payload/data/ 2>/dev/null || true
+          cp -a data/npb_games artifact_payload/data/ 2>/dev/null || true
+          cp -a data/weather artifact_payload/data/ 2>/dev/null || true
+          for f in data/npb_multi_source_games_all.csv data/npb_player_game_features_all.csv data/source_coverage.csv data/source_failures.csv data/source_official_npb_audit.csv; do
+            [ -f "$f" ] && cp "$f" artifact_payload/data/
+          done
+          cp -a results/. artifact_payload/results/npb/ 2>/dev/null || true
       - name: Upload NPB state
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: baseball-npb-production
-          path: |
-            data/checkpoints/
-            data/npb_games/
-            data/weather/
-            data/npb_multi_source_games_all.csv
-            data/npb_player_game_features_all.csv
-            data/source_coverage.csv
-            data/source_failures.csv
-            data/source_official_npb_audit.csv
-            results/
+          path: artifact_payload/
           if-no-files-found: warn
           retention-days: 30
 
@@ -137,32 +138,82 @@ jobs:
           set -euo pipefail
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
+      - name: Validate source policy
+        run: python source_quality_gate.py
+      - name: Apply production hardening
+        run: python baseball_production_runtime_patch.py
       - name: Preflight
         run: |
           set -euo pipefail
-          python -m py_compile baseball_backtest.py baseball_backtest_runtime_patch.py backtest_audit.py
+          python -m py_compile baseball_backtest.py baseball_production_runtime_patch.py backtest_audit.py source_quality_gate.py
           python backtest_audit.py
       - name: Run MLB starter-enriched OOS backtest
         run: |
           set -euo pipefail
           mkdir -p data results
           python baseball_backtest.py --mlb-only --data-dir data --mlb-start "${{ inputs.mlb_start_year || '2020' }}" --mlb-end "${{ inputs.mlb_end_year || '2026' }}"
-      - name: Validate and persist MLB state
+      - name: Build MLB artifact payload
         if: always()
         run: |
           set +e
-          test -f results/production_contract.json && cat results/production_contract.json || true
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/mlb_games.csv results/ 2>/dev/null
-          if ! git diff --cached --quiet; then git commit -m "Persist MLB production backtest state" && git push; fi
+          rm -rf artifact_payload
+          mkdir -p artifact_payload/results/mlb artifact_payload/data
+          [ -f data/mlb_games.csv ] && cp data/mlb_games.csv artifact_payload/data/
+          cp -a results/. artifact_payload/results/mlb/ 2>/dev/null || true
       - name: Upload MLB state
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: baseball-mlb-production
+          path: artifact_payload/
+          if-no-files-found: warn
+          retention-days: 30
+
+  persist:
+    name: Persist combined production state
+    needs: [npb, mlb]
+    if: always() && (needs.npb.result == 'success' || needs.mlb.result == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download NPB artifact
+        if: needs.npb.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: baseball-npb-production
+          path: _artifacts/npb
+      - name: Download MLB artifact
+        if: needs.mlb.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: baseball-mlb-production
+          path: _artifacts/mlb
+      - name: Merge and persist state
+        run: |
+          set -euo pipefail
+          if [ -d _artifacts/npb/data ]; then cp -a _artifacts/npb/data/. data/ 2>/dev/null || true; fi
+          if [ -d _artifacts/npb/results/npb ]; then mkdir -p results/npb; cp -a _artifacts/npb/results/npb/. results/npb/; fi
+          if [ -d _artifacts/mlb/data ]; then cp -a _artifacts/mlb/data/. data/ 2>/dev/null || true; fi
+          if [ -d _artifacts/mlb/results/mlb ]; then mkdir -p results/mlb; cp -a _artifacts/mlb/results/mlb/. results/mlb/; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/ results/npb/ results/mlb/ 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "[COMMIT] no changes."
+          else
+            git commit -m "Persist combined baseball production state"
+            git push
+          fi
+      - name: Upload merged production state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseball-production-merged
           path: |
-            data/mlb_games.csv
-            results/
+            data/
+            results/npb/
+            results/mlb/
           if-no-files-found: warn
           retention-days: 30
