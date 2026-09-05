@@ -140,6 +140,6 @@ jobs:
         run: |
           set +e
           git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot].noreply.github.com'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data/checkpoints/ data/npb_games/ data/weather/ data/npb_multi_source_games_all.csv data/npb_player_game_features_all.csv data/source_coverage.csv data/source_failures.csv data/source_official_npb_audit.csv results/ 2>/dev/null
           if git diff --cached --quiet; then echo '[COMMIT] no changes.'; else git commit -m 'Persist resumable baseball data and backtest state'; git push; fi
