@@ -4,6 +4,7 @@
 from __future__ import annotations
 import ast
 import json
+import re
 from pathlib import Path
 import pandas as pd
 
@@ -80,7 +81,8 @@ def main() -> None:
     for needle in ("npb_runtime_patch.py", "baseball_backtest_runtime_patch.py", "baseball_backtest.py"):
         if needle not in workflow:
             fail(f"workflow missing required reference: {needle}")
-    if "NPB_MIN_STARTER_LINE_COVERAGE=70" not in workflow:
+    # YAML uses ':' while shell assignments use '='; accept either representation.
+    if not re.search(r"NPB_MIN_STARTER_LINE_COVERAGE\s*(?:[:=])\s*['\"]?70(?:\.0)?['\"]?", workflow):
         fail("workflow starter coverage threshold missing")
 
     agg = DATA / "npb_multi_source_games_all.csv"
