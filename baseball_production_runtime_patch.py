@@ -57,9 +57,16 @@ else:
     print("[PRODUCTION PATCH] V1 already applied")
 
 # The production workflow already executes this hardening layer. Chain the
-# official NPB validator here so no separate workflow step can be forgotten.
+# official NPB validator and MLB score/Low-High budget patch here so no
+# separate workflow step can be forgotten.
 validator = Path("npb_official_schedule_patch.py")
 if validator.exists():
     runpy.run_path(str(validator), run_name="__main__")
 else:
     raise SystemExit("[PRODUCTION PATCH] official NPB schedule validator missing")
+
+mlb_patch = Path("baseball_mlb_score_hilo_patch.py")
+if mlb_patch.exists():
+    runpy.run_path(str(mlb_patch), run_name="__main__")
+else:
+    raise SystemExit("[PRODUCTION PATCH] MLB score/Low-High patch missing")
