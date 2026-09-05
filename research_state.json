@@ -1,0 +1,13 @@
+{
+  "version": "research_v1",
+  "best_model": null,
+  "metrics": {
+    "win_accuracy": null,
+    "score_mae": null,
+    "low_high_accuracy": null
+  },
+  "tested_models": [],
+  "tested_features": [],
+  "next_tasks": ["evaluation_engine", "weakness_analysis"],
+  "last_update": null
+}
