@@ -17,6 +17,7 @@ REQUIRED = (
     "baseball_backtest.py",
     "baseball_backtest_runtime_patch.py",
     "baseball_production_runtime_patch.py",
+    "baseball_mlb_score_hilo_patch.py",
     "npb_multi_source.py",
     "npb_runtime_patch.py",
     "npb_official_schedule_patch.py",
@@ -49,6 +50,7 @@ def main() -> None:
     officialpatch = (ROOT / "npb_official_schedule_patch.py").read_text(encoding="utf-8")
     btpatch = (ROOT / "baseball_backtest_runtime_patch.py").read_text(encoding="utf-8")
     prodpatch = (ROOT / "baseball_production_runtime_patch.py").read_text(encoding="utf-8")
+    mlbpatch = (ROOT / "baseball_mlb_score_hilo_patch.py").read_text(encoding="utf-8")
     workflow = (ROOT / ".github/workflows/baseball_production.yml").read_text(encoding="utf-8")
     policy = json.loads((ROOT / "DATA_SOURCE_POLICY.json").read_text(encoding="utf-8"))
 
@@ -58,6 +60,15 @@ def main() -> None:
         fail("backtest runtime hardening V3 missing")
     if "BASEBALL_PRODUCTION_HARDENING_V1" not in prodpatch:
         fail("production hardening V1 missing")
+    if "MLB_SCORE_HILO_PATCH_V2" not in mlbpatch:
+        fail("MLB score/Low-High hardening V2 missing")
+    for needle in ("pred_score1", "pred_score4", "pred_low_prob", "pred_high_prob", "actual_low_high", "score_exact_hit", "low_high_hit"):
+        if needle not in mlbpatch:
+            fail(f"MLB internal prediction contract missing: {needle}")
+    if "confirmed_starters" not in mlbpatch or "starter_rate < 0.90" not in mlbpatch:
+        fail("MLB confirmed-starter gate missing")
+    if "weather_forecast_asof_cutoff" not in mlbpatch:
+        fail("MLB observed-weather leakage guard missing")
     if "_official_starters_from_npb" not in npbpatch:
         fail("official NPB starter resolver missing")
     if "Strict rule: unresolved starters remain unresolved" not in npbpatch:
@@ -70,8 +81,8 @@ def main() -> None:
         fail("official NPB schedule/result validation patch missing")
     if "_official_validate_games" not in officialpatch or "schedule_{month:02d}_detail.html" not in officialpatch:
         fail("official NPB monthly schedule validation implementation missing")
-    if "npb_official_schedule_patch.py" not in prodpatch:
-        fail("production hardening does not chain official NPB validation")
+    if "npb_official_schedule_patch.py" not in prodpatch or "baseball_mlb_score_hilo_patch.py" not in prodpatch:
+        fail("production hardening does not chain required league patches")
     if "_normalize_npb_pbp" not in btpatch:
         fail("NPB loader normalization missing")
     if "home_starter_" not in btpatch or "away_starter_" not in btpatch:
@@ -80,12 +91,8 @@ def main() -> None:
         fail("naive NPB datetimes are not explicitly interpreted as JST")
 
     for needle in (
-        "npb_runtime_patch.py",
-        "baseball_backtest_runtime_patch.py",
-        "baseball_production_runtime_patch.py",
-        "baseball_backtest.py",
-        "source_quality_gate.py",
-        "MLB_ENRICH_STARTERS: \"1\"",
+        "npb_runtime_patch.py", "baseball_backtest_runtime_patch.py", "baseball_production_runtime_patch.py",
+        "baseball_backtest.py", "source_quality_gate.py", "MLB_ENRICH_STARTERS: \"1\"",
     ):
         if needle not in workflow:
             fail(f"production workflow missing required reference: {needle}")
@@ -93,6 +100,12 @@ def main() -> None:
         fail("production workflow NPB starter coverage threshold missing")
     if not re.search(r"MLB_MIN_STARTER_COVERAGE\s*:\s*['\"]?90(?:\.0)?['\"]?", workflow):
         fail("production workflow MLB starter coverage threshold missing")
+    if not re.search(r"NPB_COLLECTION_BUDGET_SEC\s*:\s*['\"]?12600['\"]?", workflow):
+        fail("NPB 210-minute collection budget missing")
+    if not re.search(r"BASEBALL_TIME_BUDGET_SEC\s*:\s*['\"]?12600['\"]?", workflow):
+        fail("NPB 210-minute backtest budget missing")
+    if "timeout-minutes: 220" not in workflow:
+        fail("NPB job timeout does not leave execution headroom beyond 210-minute collector budget")
     if "if: always()" not in workflow or "actions/download-artifact@v4" not in workflow:
         fail("production workflow artifact recovery is not fail-safe")
 
@@ -109,7 +122,8 @@ def main() -> None:
     for name, text in (("baseball_backtest.py", backtest), ("npb_multi_source.py", collector),
                        ("npb_runtime_patch.py", npbpatch), ("npb_official_schedule_patch.py", officialpatch),
                        ("baseball_backtest_runtime_patch.py", btpatch),
-                       ("baseball_production_runtime_patch.py", prodpatch)):
+                       ("baseball_production_runtime_patch.py", prodpatch),
+                       ("baseball_mlb_score_hilo_patch.py", mlbpatch)):
         try:
             ast.parse(text, filename=name)
         except SyntaxError as e:
