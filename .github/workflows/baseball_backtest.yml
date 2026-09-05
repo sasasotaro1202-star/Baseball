@@ -1,150 +1,16 @@
-name: Baseball Backtest NPB Continuous
+name: Baseball Backtest (Legacy - manual only)
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths-ignore:
-      - 'data/**'
-      - 'results/**'
-  schedule:
-    - cron: '*/30 * * * *'
 
 permissions:
   contents: write
 
-concurrency:
-  group: baseball-backtest-continuous
-  cancel-in-progress: false
-
 jobs:
-  backtest:
+  legacy-notice:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: pip
-          cache-dependency-path: requirements.txt
-
-      - name: Install dependencies
+      - name: Explain production workflow
         run: |
-          set -euo pipefail
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
-
-      - name: Validate feature-specific data source policy
-        run: |
-          set -euo pipefail
-          python source_quality_gate.py
-
-      - name: Apply NPB hardening patch
-        run: |
-          set -euo pipefail
-          python npb_runtime_patch.py
-
-      - name: Preflight syntax check
-        run: |
-          set -euo pipefail
-          python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py baseball_backtest_runtime_patch.py source_quality_gate.py
-
-      - name: Collect and resume NPB data
-        env:
-          NPB_START_YEAR: '1990'
-          NPB_END_YEAR: '2026'
-          NPB_DOWNLOAD_WORKERS: '6'
-          NPB_MIN_STARTER_LINE_COVERAGE: '70'
-          NPB_COLLECTION_BUDGET_SEC: '1500'
-          NPB_COLLECTION_SAFETY_SEC: '180'
-          PYTHONUNBUFFERED: '1'
-        run: |
-          set -euo pipefail
-          mkdir -p data results
-          python npb_multi_source.py
-          echo '=== collection status ==='
-          if [ -f data/checkpoints/npb_collection_status.json ]; then cat data/checkpoints/npb_collection_status.json; fi
-          echo '=== coverage ==='
-          if [ -f data/source_coverage.csv ]; then cat data/source_coverage.csv; fi
-
-      - name: Apply backtest hardening patch
-        run: |
-          set -euo pipefail
-          python baseball_backtest_runtime_patch.py
-          python -m py_compile baseball_backtest.py
-
-      - name: Run integrity and leakage audit
-        run: |
-          set -euo pipefail
-          python backtest_audit.py
-
-      - name: Run resumable NPB backtest when data is ready
-        env:
-          BASEBALL_TIME_BUDGET_SEC: '1450'
-          NPB_RECENCY_HALF_LIFE_GAMES: '1800'
-          PYTHONUNBUFFERED: '1'
-        run: |
-          set -euo pipefail
-          if [ ! -f data/checkpoints/npb_collection_status.json ]; then
-            echo '[BACKTEST WAIT] no collection status yet.'
-            exit 0
-          fi
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          p=Path('data/checkpoints/npb_collection_status.json')
-          s=json.loads(p.read_text(encoding='utf-8'))
-          print('[BACKTEST STATUS]', s.get('complete'), s.get('aggregate_games'))
-          if not s.get('complete', False):
-              print('[BACKTEST WAIT] collection is partial; preserving checkpoint and waiting for next scheduled run.')
-              raise SystemExit(0)
-          PY
-          python baseball_backtest.py --npb-only --data-dir data
-
-      - name: Validate generated files
-        if: always()
-        run: |
-          set +e
-          python - <<'PY'
-          from pathlib import Path
-          import pandas as pd
-          checks=[Path('data/npb_multi_source_games_all.csv'),Path('data/npb_player_game_features_all.csv'),Path('data/source_coverage.csv')]
-          for p in checks:
-              if p.exists():
-                  try: print(f'[FILE] {p} rows={len(pd.read_csv(p,low_memory=False))} bytes={p.stat().st_size}')
-                  except Exception as e: print(f'[FILE] {p} bytes={p.stat().st_size} read_error={e}')
-              else: print(f'[FILE] MISSING {p}')
-          PY
-          echo '=== results ==='
-          find results -maxdepth 2 -type f -printf '%p %s bytes\n' 2>/dev/null | sort
-
-      - name: Upload resumable state
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: baseball-backtest-state
-          path: |
-            data/checkpoints/
-            data/npb_games/
-            data/weather/
-            data/npb_multi_source_games_all.csv
-            data/npb_player_game_features_all.csv
-            data/source_coverage.csv
-            data/source_failures.csv
-            data/source_official_npb_audit.csv
-            results/
-          if-no-files-found: warn
-          retention-days: 30
-
-      - name: Commit state for the next run
-        if: always()
-        run: |
-          set +e
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/checkpoints/ data/npb_games/ data/weather/ data/npb_multi_source_games_all.csv data/npb_player_game_features_all.csv data/source_coverage.csv data/source_failures.csv data/source_official_npb_audit.csv results/ 2>/dev/null
-          if git diff --cached --quiet; then echo '[COMMIT] no changes.'; else git commit -m 'Persist resumable baseball data and backtest state'; git push; fi
+          echo 'The legacy continuous workflow is intentionally manual-only.'
+          echo 'Use .github/workflows/baseball_production.yml for the production NPB + MLB pipeline.'
