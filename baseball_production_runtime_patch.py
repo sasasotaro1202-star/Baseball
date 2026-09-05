@@ -40,7 +40,12 @@ if "# BASEBALL_PRODUCTION_HARDENING_V1" not in s:
 else:
     print("[PRODUCTION PATCH] V1 already applied")
 
-for patch in ("npb_official_schedule_patch.py", "baseball_mlb_score_hilo_patch.py", "baseball_quality_runtime_patch.py"):
+for patch in (
+    "npb_official_schedule_patch.py",
+    "npb_quality_runtime_patch.py",
+    "baseball_mlb_score_hilo_patch.py",
+    "baseball_quality_runtime_patch.py",
+):
     p = Path(patch)
     if not p.exists():
         raise SystemExit(f"[PRODUCTION PATCH] required patch missing: {patch}")
