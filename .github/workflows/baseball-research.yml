@@ -1,0 +1,29 @@
+name: Baseball Research AI
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Research placeholder
+        run: |
+          echo "Baseball autonomous research pipeline initialized"
+
+      - name: Save state
+        run: |
+          git config user.name "baseball-research-bot"
+          git config user.email "actions@github.com"
+          git add research_state.json research_history.json
+          git commit -m "Update research state" || true
+          git push || true
