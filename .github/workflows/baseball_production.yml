@@ -1,3 +1,232 @@
-# Time-budget policy: production jobs intentionally run in resumable 60-minute slices.
-# Checkpoints/artifacts are persisted by the existing persist job so later runs
-# continue from the saved state instead of requiring a single long execution.
+name: Baseball Production Backtest
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      npb_start_year:
+        description: "NPB start year"
+        required: false
+        default: "1990"
+      npb_end_year:
+        description: "NPB end year"
+        required: false
+        default: "2026"
+      mlb_start_year:
+        description: "MLB start year"
+        required: false
+        default: "2020"
+      mlb_end_year:
+        description: "MLB end year"
+        required: false
+        default: "2026"
+  schedule:
+    - cron: "17 */6 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: baseball-production
+  cancel-in-progress: false
+
+jobs:
+  npb:
+    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Persist combined baseball production state')
+    name: NPB collect + OOS backtest
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    env:
+      NPB_START_YEAR: ${{ inputs.npb_start_year || '1990' }}
+      NPB_END_YEAR: ${{ inputs.npb_end_year || '2026' }}
+      NPB_DOWNLOAD_WORKERS: "6"
+      NPB_MIN_STARTER_LINE_COVERAGE: "70"
+      NPB_MIN_STARTER_COVERAGE: "70"
+      NPB_COLLECTION_BUDGET_SEC: "3600"
+      NPB_COLLECTION_SAFETY_SEC: "300"
+      BASEBALL_TIME_BUDGET_SEC: "3600"
+      NPB_RECENCY_HALF_LIFE_GAMES: "1800"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+      - name: Validate source policy
+        run: python source_quality_gate.py
+      - name: Repair known NPB collector syntax defect
+        run: python repair_npb_syntax.py
+      - name: Apply collector hardening
+        run: python npb_runtime_patch.py
+      - name: Apply NPB quality hardening
+        run: python npb_quality_runtime_patch.py
+      - name: Apply backtest hardening
+        run: python baseball_backtest_runtime_patch.py
+      - name: Apply production hardening
+        run: python baseball_production_runtime_patch.py
+      - name: Preflight
+        run: |
+          set -euo pipefail
+          python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py npb_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
+          python backtest_audit.py
+      - name: Collect/resume NPB
+        run: |
+          set -euo pipefail
+          mkdir -p data results
+          python npb_multi_source.py
+      - name: Run NPB OOS backtest when collection is complete
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("data/checkpoints/npb_collection_status.json")
+          if not p.exists():
+              raise SystemExit("NPB collection status missing")
+          s=json.loads(p.read_text(encoding="utf-8"))
+          print("[NPB STATUS]", s.get("complete"), s.get("aggregate_games"))
+          if not s.get("complete", False):
+              print("[NPB WAIT] collection incomplete; checkpoint retained")
+              raise SystemExit(0)
+          PY
+          python baseball_backtest.py --npb-only --data-dir data
+      - name: Build NPB artifact payload
+        if: always()
+        run: |
+          set +e
+          rm -rf artifact_payload
+          mkdir -p artifact_payload/results/npb artifact_payload/data
+          cp -a data/checkpoints artifact_payload/data/ 2>/dev/null || true
+          cp -a data/npb_games artifact_payload/data/ 2>/dev/null || true
+          cp -a data/weather artifact_payload/data/ 2>/dev/null || true
+          for f in data/npb_multi_source_games_all.csv data/npb_player_game_features_all.csv data/source_coverage.csv data/source_failures.csv data/source_official_npb_audit.csv; do
+            [ -f "$f" ] && cp "$f" artifact_payload/data/
+          done
+          [ -f npb_multi_source.py ] && cp npb_multi_source.py artifact_payload/npb_multi_source.py
+          cp -a results/. artifact_payload/results/npb/ 2>/dev/null || true
+      - name: Upload NPB state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseball-npb-production
+          path: artifact_payload/
+          if-no-files-found: warn
+          retention-days: 30
+
+  mlb:
+    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Persist combined baseball production state')
+    name: MLB starter-enriched OOS backtest
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    env:
+      BASEBALL_TIME_BUDGET_SEC: "3600"
+      MLB_ENRICH_STARTERS: "1"
+      MLB_MIN_STARTER_COVERAGE: "90"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+      - name: Validate source policy
+        run: python source_quality_gate.py
+      - name: Apply production hardening
+        run: python baseball_production_runtime_patch.py
+      - name: Preflight
+        run: |
+          set -euo pipefail
+          python -m py_compile baseball_backtest.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py backtest_audit.py source_quality_gate.py
+          python backtest_audit.py
+      - name: Run MLB starter-enriched OOS backtest
+        run: |
+          set -euo pipefail
+          mkdir -p data results
+          python baseball_backtest.py --mlb-only --data-dir data --mlb-start "${{ inputs.mlb_start_year || '2020' }}" --mlb-end "${{ inputs.mlb_end_year || '2026' }}"
+      - name: Build MLB artifact payload
+        if: always()
+        run: |
+          set +e
+          rm -rf artifact_payload
+          mkdir -p artifact_payload/results/mlb artifact_payload/data
+          [ -f data/mlb_games.csv ] && cp data/mlb_games.csv artifact_payload/data/
+          cp -a results/. artifact_payload/results/mlb/ 2>/dev/null || true
+      - name: Upload MLB state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseball-mlb-production
+          path: artifact_payload/
+          if-no-files-found: warn
+          retention-days: 30
+
+  persist:
+    name: Persist combined production state
+    needs: [npb, mlb]
+    if: always() && (github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Persist combined baseball production state'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download NPB artifact
+        if: always() && needs.npb.result != 'cancelled'
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: baseball-npb-production
+          path: _artifacts/npb
+      - name: Download MLB artifact
+        if: always() && needs.mlb.result != 'cancelled'
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: baseball-mlb-production
+          path: _artifacts/mlb
+      - name: Merge and persist state
+        run: |
+          set -euo pipefail
+          if [ -d _artifacts/npb/data ]; then cp -a _artifacts/npb/data/. data/ 2>/dev/null || true; fi
+          if [ -d _artifacts/npb/results/npb ]; then mkdir -p results/npb; cp -a _artifacts/npb/results/npb/. results/npb/; fi
+          if [ -f _artifacts/npb/npb_multi_source.py ]; then cp _artifacts/npb/npb_multi_source.py npb_multi_source.py; fi
+          if [ -d _artifacts/mlb/data ]; then cp -a _artifacts/mlb/data/. data/ 2>/dev/null || true; fi
+          if [ -d _artifacts/mlb/results/mlb ]; then mkdir -p results/mlb; cp -a _artifacts/mlb/results/mlb/. results/mlb/; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/ results/npb/ results/mlb/ npb_multi_source.py 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "[COMMIT] no changes."
+          else
+            git commit -m "Persist combined baseball production state and repaired collector"
+            git push
+          fi
+      - name: Upload merged production state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseball-production-merged
+          path: |
+            data/
+            results/npb/
+            results/mlb/
+            npb_multi_source.py
+          if-no-files-found: warn
+          retention-days: 30
