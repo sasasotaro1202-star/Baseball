@@ -38,6 +38,11 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
+      - name: Validate feature-specific data source policy
+        run: |
+          set -euo pipefail
+          python source_quality_gate.py
+
       - name: Apply NPB hardening patch
         run: |
           set -euo pipefail
@@ -46,7 +51,7 @@ jobs:
       - name: Preflight syntax check
         run: |
           set -euo pipefail
-          python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py baseball_backtest_runtime_patch.py
+          python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py baseball_backtest_runtime_patch.py source_quality_gate.py
 
       - name: Collect and resume NPB data
         env:
