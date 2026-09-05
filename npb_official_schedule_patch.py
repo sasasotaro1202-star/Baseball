@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 """Add an authoritative NPB.jp schedule/result validation layer.
 
-The granular SPAIA feed remains the efficient source for per-game enrichment,
-but a completed NPB row is admitted only when its date, home team, away team,
-and published score agree with the official NPB.jp monthly detail page.
-For games that are not yet completed, the official page is used for schedule
-identity only and no score is inferred. Missing/unparseable official data is
-treated as missing data; the collector never guesses or swaps teams silently.
+The granular SPAIA feed remains the efficient source for per-game enrichment.
+When an NPB.jp monthly schedule-detail archive exists, completed rows are
+validated against its date, home/away identity and published score. Future
+rows are validated by schedule identity only. For historical seasons where
+that NPB.jp monthly archive is not available, the configured SPAIA fallback is
+retained and explicitly logged; the collector never invents data or silently
+swaps home/away teams.
 """
 from __future__ import annotations
 
@@ -57,12 +58,12 @@ def _official_schedule_rows(year):
                     continue
                 mm, dd = int(m.group(1)), int(m.group(2))
                 card = str(rec.get("対戦カード", ""))
-                # NPB.jp displays the home team on the left and visitor on the
-                # right: "巨人 4 - 3 DeNA". Future games have no score.
                 item = re.sub(r"\s+", " ", card).strip()
                 item = re.sub(r"\([^)]*\)", "", item).strip()
                 if not item or item in ("-", "nan"):
                     continue
+                # NPB.jp displays the home team on the left and visitor on the
+                # right: "巨人 4 - 3 DeNA". Future games have no score.
                 score = re.match(r"^(.+?)\s+(\d+)\s*-\s*(\d+)\s+(.+?)$", item)
                 if score:
                     home_raw, home_score, away_score, away_raw = score.groups()
@@ -76,7 +77,7 @@ def _official_schedule_rows(year):
                     score_known = False
                 home = official_name(home_raw.strip())
                 away = official_name(away_raw.strip())
-                if home not in ALIASES.values() or away not in ALIASES.values() or home == away:
+                if not home or not away or home == away:
                     continue
                 rows.append((
                     f"{year:04d}-{mm:02d}-{dd:02d}",
@@ -91,12 +92,15 @@ def _official_schedule_rows(year):
 
 
 def _official_validate_games(year, games):
-    """Validate SPAIA identity against NPB.jp without reversing home/away."""
+    """Validate SPAIA rows against NPB.jp; use the declared SPAIA fallback when archive is absent."""
     if games.empty:
         return games
     official = _official_schedule_rows(year)
     if not official:
-        raise RuntimeError(f"official NPB schedule validation unavailable for {year}")
+        # DATA_SOURCE_POLICY explicitly permits SPAIA as the schedule/result
+        # fallback. Do not turn an unavailable archive into a false failure.
+        print(f"[OFFICIAL SCHEDULE FALLBACK] year={year} NPB.jp monthly archive unavailable; retaining SPAIA rows")
+        return games
     index = {(d, home, away): (hs, aas, known) for d, home, away, hs, aas, known in official}
     kept = []
     rejected = 0
