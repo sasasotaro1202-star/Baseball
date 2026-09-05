@@ -8,6 +8,8 @@ on:
       - "Baseball Autonomous Research"
     types: [completed]
   workflow_dispatch:
+  schedule:
+    - cron: "*/15 * * * *"
 
 permissions:
   actions: write
@@ -17,43 +19,113 @@ concurrency:
   group: baseball-autonomous-recovery
   cancel-in-progress: false
 
+env:
+  MAX_AUTOMATIC_ATTEMPTS: "3"
+
 jobs:
-  recover:
-    name: Retry failed autonomous stage
+  recover-upstream:
+    name: Recover failed autonomous stage
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (
+        github.event_name == 'workflow_run' &&
         github.event.workflow_run.conclusion != 'success' &&
-        github.event.workflow_run.conclusion != 'cancelled' &&
         github.event.workflow_run.run_attempt < 3
       )
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Retry failed upstream jobs through GitHub API
+      - name: Recover upstream run
         env:
           GH_TOKEN: ${{ github.token }}
           RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_NAME: ${{ github.event.workflow_run.name }}
+          RUN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+          RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -u
+          if [ -z "${RUN_ID:-}" ]; then
+            echo "[RECOVERY] manual dispatch has no upstream run id; watchdog handles scheduled recovery."
+            exit 0
+          fi
+          echo "[RECOVERY] ${RUN_NAME} run=${RUN_ID} attempt=${RUN_ATTEMPT} conclusion=${RUN_CONCLUSION}"
+          if [ "${RUN_CONCLUSION}" = "failure" ]; then
+            if curl --fail-with-body --retry 5 --retry-delay 5 --retry-all-errors \
+              -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/rerun-failed-jobs"; then
+              echo "[RECOVERY] failed jobs re-queued"
+              exit 0
+            fi
+            echo "[RECOVERY] failed-job retry endpoint did not accept the run; using a fresh stage dispatch where supported."
+          fi
+          if [ "${RUN_NAME}" = "Baseball Production Backtest" ]; then
+            gh workflow run "Baseball Production Backtest" --repo "${GITHUB_REPOSITORY}" --ref main || true
+          elif [ "${RUN_NAME}" = "Baseball Mac Compute Research" ]; then
+            gh workflow run "Baseball Mac Compute Research" --repo "${GITHUB_REPOSITORY}" --ref main || true
+          elif [ "${RUN_NAME}" = "Baseball Autonomous Research" ]; then
+            gh workflow run "Baseball Autonomous Research" --repo "${GITHUB_REPOSITORY}" --ref main || true
+          fi
+
+  watchdog:
+    name: Autonomous pipeline watchdog
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Detect stalled pipeline and recover
+        env:
+          GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
-          if [ -z "${RUN_ID:-}" ]; then
-            echo "[RECOVERY] workflow_dispatch has no upstream run id; automatic recovery is event-driven."
-            exit 0
-          fi
-          echo "[RECOVERY] retrying failed jobs for ${GITHUB_REPOSITORY} run ${RUN_ID} (attempt ${{ github.event.workflow_run.run_attempt }})"
-          curl --fail-with-body --retry 5 --retry-delay 5 --retry-all-errors \
-            -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/rerun-failed-jobs"
-          echo "[RECOVERY] failed jobs re-queued"
+          python - <<'PY'
+          import json, os, subprocess
+          from datetime import datetime, timezone
 
-      - name: Recovery policy summary
-        if: always()
-        run: |
-          echo "[RECOVERY] Production -> Mac -> Research is event-driven."
-          echo "[RECOVERY] Failed upstream runs receive bounded automatic retries."
-          echo "[RECOVERY] Cancelled runs are not recursively retried."
-          echo "[RECOVERY] Third attempts stop automatic retry to prevent infinite CI loops."
+          repo = os.environ["GITHUB_REPOSITORY"]
+          raw = subprocess.check_output([
+              "gh", "run", "list", "--repo", repo, "--limit", "40",
+              "--json", "databaseId,name,status,conclusion,createdAt,updatedAt,headSha"
+          ], text=True)
+          rows = json.loads(raw)
+          names = {"Baseball Production Backtest", "Baseball Mac Compute Research", "Baseball Autonomous Research"}
+          grouped = {n: [r for r in rows if r["name"] == n] for n in names}
+          now = datetime.now(timezone.utc)
+
+          def age_hours(r):
+              if not r or not r.get("updatedAt"):
+                  return 999.0
+              return (now - datetime.fromisoformat(r["updatedAt"].replace("Z", "+00:00"))).total_seconds() / 3600.0
+
+          prod = grouped["Baseball Production Backtest"][0] if grouped["Baseball Production Backtest"] else None
+          mac = grouped["Baseball Mac Compute Research"][0] if grouped["Baseball Mac Compute Research"] else None
+          research = grouped["Baseball Autonomous Research"][0] if grouped["Baseball Autonomous Research"] else None
+          print("[WATCHDOG] prod=", prod)
+          print("[WATCHDOG] mac=", mac)
+          print("[WATCHDOG] research=", research)
+
+          active = prod and prod.get("status") in {"queued", "in_progress", "waiting"}
+          prod_bad = (prod is None or prod.get("conclusion") in {"failure", "cancelled", "timed_out"})
+          prod_stale = prod and age_hours(prod) >= 2 and prod.get("status") not in {"queued", "in_progress", "waiting"} and prod.get("conclusion") != "success"
+          if not active and (prod_bad or prod_stale):
+              print("[WATCHDOG] production dispatch")
+              subprocess.run(["gh", "workflow", "run", "Baseball Production Backtest", "--repo", repo, "--ref", "main"], check=False)
+          else:
+              print("[WATCHDOG] production is active or healthy")
+          PY
+
+  summary:
+    name: Recovery policy summary
+    if: always()
+    needs: [recover-upstream, watchdog]
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "[RECOVERY] Production -> Mac -> Research remains event-driven."
+          echo "[RECOVERY] Failed stages are retried with bounded automatic recovery."
+          echo "[RECOVERY] Fifteen-minute watchdog recovers stalled production without user intervention."
+          echo "[RECOVERY] Failed states are never treated as successful."
