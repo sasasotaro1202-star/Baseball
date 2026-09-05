@@ -3,6 +3,12 @@ name: Baseball Production Backtest
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'data/**'
+      - 'results/**'
+      - 'research_state.json'
+      - 'research_history.json'
+      - 'research_plan.json'
   workflow_dispatch:
     inputs:
       npb_start_year:
@@ -26,10 +32,14 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: baseball-production
   cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
 
 jobs:
   npb:
@@ -91,8 +101,7 @@ jobs:
           import json
           from pathlib import Path
           p=Path("data/checkpoints/npb_collection_status.json")
-          if not p.exists():
-              raise SystemExit("NPB collection status missing")
+          if not p.exists(): raise SystemExit("NPB collection status missing")
           s=json.loads(p.read_text(encoding="utf-8"))
           print("[NPB STATUS]", s.get("complete"), s.get("aggregate_games"))
           if not s.get("complete", False):
@@ -109,9 +118,7 @@ jobs:
           cp -a data/checkpoints artifact_payload/data/ 2>/dev/null || true
           cp -a data/npb_games artifact_payload/data/ 2>/dev/null || true
           cp -a data/weather artifact_payload/data/ 2>/dev/null || true
-          for f in data/npb_multi_source_games_all.csv data/npb_player_game_features_all.csv data/source_coverage.csv data/source_failures.csv data/source_official_npb_audit.csv; do
-            [ -f "$f" ] && cp "$f" artifact_payload/data/
-          done
+          for f in data/npb_multi_source_games_all.csv data/npb_player_game_features_all.csv data/source_coverage.csv data/source_failures.csv data/source_official_npb_audit.csv; do [ -f "$f" ] && cp "$f" artifact_payload/data/; done
           [ -f npb_multi_source.py ] && cp npb_multi_source.py artifact_payload/npb_multi_source.py
           cp -a results/. artifact_payload/results/npb/ 2>/dev/null || true
       - name: Upload NPB state
@@ -218,9 +225,20 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/ results/npb/ results/mlb/ npb_multi_source.py 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "[COMMIT] no changes."
-          else
-            git commit -m "Persist combined baseball production state"
-            git push
-          fi
+          if git diff --cached --quiet; then echo "[COMMIT] no changes."; else git commit -m "Persist combined baseball production state"; git push; fi
+
+      - name: Start Mac research only after both production jobs succeed
+        if: needs.npb.result == 'success' && needs.mlb.result == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            if gh workflow run "Baseball Mac Compute Research" --ref main --repo "${GITHUB_REPOSITORY}"; then
+              echo "[PIPELINE] Mac research dispatched"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "[PIPELINE] failed to dispatch Mac research"
+          exit 1
