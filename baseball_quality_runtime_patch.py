@@ -1,37 +1,133 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Production quality patch: meaningful score candidates, overdispersed tails,
-robust granular evaluation, and safe boolean/provenance handling."""
+"""Production quality patch for score/Low-High integrity and granular evaluation.
+
+This patch is intentionally structural: it does not depend on the exact tuple
+shape of fit_score_ensemble(), so upstream changes cannot fail CI merely because
+an internal return dictionary was reformatted.
+"""
 from __future__ import annotations
 import re
 from pathlib import Path
-P=Path("baseball_backtest.py"); s=P.read_text(encoding="utf-8"); MARK="# BASEBALL_QUALITY_HARDENING_V1"
+
+P = Path("baseball_backtest.py")
+s = P.read_text(encoding="utf-8")
+MARK = "# BASEBALL_QUALITY_HARDENING_V2"
 if MARK in s:
-    print("[QUALITY PATCH] V1 already applied"); raise SystemExit(0)
-pat=re.compile(r"def score_candidates\(.*?\n\ndef low_high_probs",re.S)
-new='''def score_candidates(lam_h: float, lam_a: float, n: int = 4) -> List[Tuple[str, float]]:\n    """Return the n highest exact score patterns; keep 7+ as a separate tail."""\n    lam_h=max(float(lam_h),1e-6); lam_a=max(float(lam_a),1e-6)\n    cells=[(f"{h}-{a}",poisson_pmf(h,lam_h)*poisson_pmf(a,lam_a)) for h in range(7) for a in range(7)]\n    cells.sort(key=lambda z:z[1],reverse=True); return cells[:max(1,int(n))]\n\ndef _nb_cdf_6(mu: float, size: float) -> float:\n    """Negative-binomial P(X<=6), with Poisson as size -> infinity."""\n    mu=max(float(mu),1e-9); size=max(float(size),1e-6); p=size/(size+mu); pmf=p**size; total=pmf\n    for k in range(1,7): pmf*=((k-1+size)/k)*(1-p); total+=pmf\n    return float(np.clip(total,0.0,1.0))\n\ndef low_high_probs(lam_h: float, lam_a: float, dispersion_h: float | None = None, dispersion_a: float | None = None) -> Tuple[float,float]:\n    dh=float(dispersion_h) if dispersion_h is not None and np.isfinite(dispersion_h) else 1e6\n    da=float(dispersion_a) if dispersion_a is not None and np.isfinite(dispersion_a) else 1e6\n    low=_nb_cdf_6(lam_h,dh)*_nb_cdf_6(lam_a,da); low=float(np.clip(low,0.0,1.0)); return low,1.0-low\n\n'''
-if not pat.search(s): raise SystemExit("score function block not found")
-s=pat.sub(new,s,count=1)
-needle='''        weights=np.asarray(weights,float); weights/=weights.sum()\n        return {"models":fitted,"weights":weights,"scores":{n:float(l) for n,l in scored}}\n'''
-repl='''        weights=np.asarray(weights,float); weights/=weights.sum()\n        def _disp(y):\n            y=np.asarray(y,dtype=float); mu=float(np.mean(y)) if len(y) else 1.0; var=float(np.var(y,ddof=1)) if len(y)>1 else mu\n            return float(max(1e-6,mu*mu/max(var-mu,1e-6))) if var>mu else 1e6\n        return {"models":fitted,"weights":weights,"scores":{n:float(l) for n,l in scored},"dispersion_home":_disp(y_home),"dispersion_away":_disp(y_away)}\n'''
-if needle not in s: raise SystemExit("score return target not found")
-s=s.replace(needle,repl,1)
-old='                low, high = low_high_probs(lam_h, lam_a)\n'
-new='                low, high = low_high_probs(lam_h, lam_a, (score_fit or {}).get("dispersion_home") if score_fit else None, (score_fit or {}).get("dispersion_away") if score_fit else None)\n'
-if old not in s: raise SystemExit("low/high call target not found")
-s=s.replace(old,new,1)
-# Normalize string/bool starter flags from CSV/API instead of Python's unsafe bool("False").
-helper='''\ndef _quality_flag(v) -> bool:\n    if isinstance(v,bool): return v\n    if v is None: return False\n    t=str(v).strip().lower()\n    return t in {"1","true","t","yes","y","on"}\n\n'''
-anchor='def score_candidates('
-if anchor not in s: raise SystemExit("score anchor missing")
-s=s.replace(anchor,helper+anchor,1)
-s=s.replace('confirmed = games["confirmed_starters"].fillna(False).astype(bool)', 'confirmed = games["confirmed_starters"].map(_quality_flag)',1)
-pat=re.compile(r'    def evaluate\(self, df: pd\.DataFrame, league: str\) -> Dict\[str, Any\]:.*?\n    def save_reports',re.S)
-new='''    def evaluate(self, df: pd.DataFrame, league: str) -> Dict[str, Any]:\n        if df.empty: return {}\n        actual_high=((df.actual_home_score>=7)|(df.actual_away_score>=7)).astype(int); pred_high=(df.high>=0.5).astype(int)\n        exact=df.apply(lambda r: f"{int(r.actual_home_score)}-{int(r.actual_away_score)}" in {str(r.score1),str(r.score2),str(r.score3),str(r.score4)},axis=1)\n        out={"League":league,"Predictions":len(df),"Accuracy":float(df.correct.mean()),"LogLoss":float(df.logloss.mean()),"Brier":float(df.brier.mean()),\n             "MeanAbsoluteScoreError":float((abs(df.actual_home_score-df.lambda_home)+abs(df.actual_away_score-df.lambda_away)).mean()/2),\n             "HomeScoreMAE":float(abs(df.actual_home_score-df.lambda_home).mean()),"AwayScoreMAE":float(abs(df.actual_away_score-df.lambda_away).mean()),\n             "TotalScoreMAE":float(abs((df.actual_home_score+df.actual_away_score)-(df.lambda_home+df.lambda_away)).mean()),\n             "HighActualRate":float(actual_high.mean()),"LowAccuracy":float(((pred_high==0)&(actual_high==0)).sum()/max(1,(actual_high==0).sum())),\n             "HighAccuracy":float(((pred_high==1)&(actual_high==1)).sum()/max(1,(actual_high==1).sum())),"LowHighAccuracy":float((pred_high==actual_high).mean()),\n             "HighTP":int(((pred_high==1)&(actual_high==1)).sum()),"HighFP":int(((pred_high==1)&(actual_high==0)).sum()),"HighFN":int(((pred_high==0)&(actual_high==1)).sum()),\n             "ExactScoreHitRate":float(exact.mean()),"Top4ScoreHitRate":float(exact.mean())}\n        if league=="MLB":\n            try: out["AUC"]=float(roc_auc_score(df.actual,df.pred_home))\n            except Exception: out["AUC"]=np.nan\n        return out\n\n    def save_reports(self, df: pd.DataFrame, league: str):\n'''
-if not pat.search(s): raise SystemExit("evaluate block not found")
-s=pat.sub(new,s,count=1)
-needle='''        model = df.groupby("model").agg(Predictions=("correct", "size"), Accuracy=("correct", "mean"), LogLoss=("logloss", "mean"), Brier=("brier", "mean")).reset_index()\n        model.to_csv(RESULTS / f"{league.lower()}_model_comparison.csv", index=False)\n'''
-repl='''        model = df.groupby("model").agg(Predictions=("correct", "size"), Accuracy=("correct", "mean"), LogLoss=("logloss", "mean"), Brier=("brier", "mean")).reset_index()\n        model.to_csv(RESULTS / f"{league.lower()}_model_comparison.csv", index=False)\n        pd.DataFrame([self.evaluate(df,league)]).to_csv(RESULTS / f"{league.lower()}_accuracy_detail.csv",index=False)\n        tmp=df.copy(); tmp["actual_high"]=((tmp.actual_home_score>=7)|(tmp.actual_away_score>=7)).astype(int); tmp["pred_high"]=(tmp.high>=0.5).astype(int)\n        tmp["exact_score_hit"]=tmp.apply(lambda r:int(f"{int(r.actual_home_score)}-{int(r.actual_away_score)}" in {str(r.score1),str(r.score2),str(r.score3),str(r.score4)}),axis=1)\n        cols=["game_id","datetime","model","prediction","actual","correct","pred_home","pred_away","actual_home_score","actual_away_score","lambda_home","lambda_away","score1","score2","score3","score4","pred_high","actual_high","exact_score_hit"]\n        tmp[[c for c in cols if c in tmp.columns]].to_csv(RESULTS / f"{league.lower()}_prediction_audit.csv",index=False)\n'''
-if needle not in s: raise SystemExit("save report target not found")
-s=s.replace(needle,repl,1)
-s=MARK+'\n'+s; P.write_text(s,encoding='utf-8'); print('[QUALITY PATCH] V1 applied')
+    print("[QUALITY PATCH] V2 already applied")
+    raise SystemExit(0)
+
+# Exact score candidates: 4 real scorelines, never a pseudo-score tail bucket.
+pat = re.compile(r"def score_candidates\(.*?\n\ndef low_high_probs", re.S)
+new_scores = '''def _quality_flag(v) -> bool:
+    if isinstance(v, bool): return v
+    if v is None: return False
+    return str(v).strip().lower() in {"1", "true", "t", "yes", "y", "on"}
+
+def score_candidates(lam_h: float, lam_a: float, n: int = 4) -> List[Tuple[str, float]]:
+    """Return the n highest exact score patterns from 0..6 runs."""
+    lam_h = max(float(lam_h), 1e-6); lam_a = max(float(lam_a), 1e-6)
+    cells = [(f"{h}-{a}", poisson_pmf(h, lam_h) * poisson_pmf(a, lam_a))
+             for h in range(7) for a in range(7)]
+    cells.sort(key=lambda z: z[1], reverse=True)
+    return cells[:max(1, int(n))]
+
+def _nb_cdf_6(mu: float, size: float) -> float:
+    """Negative-binomial P(X<=6); large size approaches Poisson."""
+    mu = max(float(mu), 1e-9); size = max(float(size), 1e-6)
+    p = size / (size + mu)
+    pmf = p ** size; total = pmf
+    for k in range(1, 7):
+        pmf *= ((k - 1 + size) / k) * (1 - p)
+        total += pmf
+    return float(np.clip(total, 0.0, 1.0))
+
+def _score_dispersion(values) -> float:
+    y = np.asarray(values, dtype=float)
+    y = y[np.isfinite(y)]
+    if len(y) < 8: return 1e6
+    mu = float(np.mean(y)); var = float(np.var(y, ddof=1))
+    if var <= mu + 1e-9: return 1e6
+    return float(np.clip(mu * mu / (var - mu), 0.25, 1e6))
+
+def low_high_probs(lam_h: float, lam_a: float, dispersion_h: float | None = None, dispersion_a: float | None = None) -> Tuple[float, float]:
+    dh = float(dispersion_h) if dispersion_h is not None and np.isfinite(dispersion_h) else 1e6
+    da = float(dispersion_a) if dispersion_a is not None and np.isfinite(dispersion_a) else 1e6
+    low = _nb_cdf_6(lam_h, dh) * _nb_cdf_6(lam_a, da)
+    low = float(np.clip(low, 0.0, 1.0))
+    return low, 1.0 - low
+
+'''
+if not pat.search(s):
+    raise SystemExit("score function block not found")
+s = pat.sub(new_scores, s, count=1)
+
+# Remove the old pseudo-tail padding; 4 exact candidates are always available.
+s = s.replace('''                while len(scores) < 4:\n                    scores.append(("その他", 0.0))\n''', '', 1)
+
+# Compute overdispersion strictly from games before the current OOS block.
+old = '                low, high = low_high_probs(lam_h, lam_a)\n'
+new = '''                disp_h = _score_dispersion(games.iloc[:bstart]["home_score"].astype(float).values)
+                disp_a = _score_dispersion(games.iloc[:bstart]["away_score"].astype(float).values)
+                low, high = low_high_probs(lam_h, lam_a, disp_h, disp_a)
+'''
+if old not in s:
+    raise SystemExit("low/high call target not found")
+s = s.replace(old, new, 1)
+
+# Confirmed-starter flags must be parsed safely when CSVs contain strings.
+s = s.replace('confirmed = games["confirmed_starters"].fillna(False).astype(bool)', 'confirmed = games["confirmed_starters"].map(_quality_flag)', 1)
+
+# Replace evaluation with granular, denominator-safe metrics.
+pat = re.compile(r'    def evaluate\(self, df: pd\.DataFrame, league: str\) -> Dict\[str, Any\]:.*?\n    def save_reports', re.S)
+new_eval = '''    def evaluate(self, df: pd.DataFrame, league: str) -> Dict[str, Any]:
+        if df.empty: return {}
+        actual_high = ((df.actual_home_score >= 7) | (df.actual_away_score >= 7)).astype(int)
+        pred_high = (df.high >= 0.5).astype(int)
+        exact = df.apply(lambda r: f"{int(r.actual_home_score)}-{int(r.actual_away_score)}" in {str(r.score1), str(r.score2), str(r.score3), str(r.score4)}, axis=1)
+        low_mask = actual_high == 0; high_mask = actual_high == 1
+        out = {
+            "League": league, "Predictions": len(df),
+            "Accuracy": float(df.correct.mean()), "LogLoss": float(df.logloss.mean()), "Brier": float(df.brier.mean()),
+            "MeanAbsoluteScoreError": float((abs(df.actual_home_score-df.lambda_home)+abs(df.actual_away_score-df.lambda_away)).mean()/2),
+            "HomeScoreMAE": float(abs(df.actual_home_score-df.lambda_home).mean()),
+            "AwayScoreMAE": float(abs(df.actual_away_score-df.lambda_away).mean()),
+            "TotalScoreMAE": float(abs((df.actual_home_score+df.actual_away_score)-(df.lambda_home+df.lambda_away)).mean()),
+            "HighActualRate": float(actual_high.mean()),
+            "LowAccuracy": float(((pred_high == 0) & low_mask).sum() / max(1, low_mask.sum())),
+            "HighAccuracy": float(((pred_high == 1) & high_mask).sum() / max(1, high_mask.sum())),
+            "LowHighAccuracy": float((pred_high == actual_high).mean()),
+            "HighTP": int(((pred_high == 1) & high_mask).sum()),
+            "HighFP": int(((pred_high == 1) & low_mask).sum()),
+            "HighFN": int(((pred_high == 0) & high_mask).sum()),
+            "ExactScoreHitRate": float(exact.mean()), "Top4ScoreHitRate": float(exact.mean()),
+        }
+        if league == "MLB":
+            try: out["AUC"] = float(roc_auc_score(df.actual, df.pred_home))
+            except Exception: out["AUC"] = np.nan
+        return out
+
+    def save_reports(self, df: pd.DataFrame, league: str):
+'''
+if not pat.search(s):
+    raise SystemExit("evaluate block not found")
+s = pat.sub(new_eval, s, count=1)
+
+# Extend report artifacts without assuming columns added by other patches.
+needle = '''        model.to_csv(RESULTS / f"{league.lower()}_model_comparison.csv", index=False)\n'''
+repl = '''        model.to_csv(RESULTS / f"{league.lower()}_model_comparison.csv", index=False)
+        pd.DataFrame([self.evaluate(df, league)]).to_csv(RESULTS / f"{league.lower()}_accuracy_detail.csv", index=False)
+        tmp = df.copy()
+        tmp["actual_high"] = ((tmp.actual_home_score >= 7) | (tmp.actual_away_score >= 7)).astype(int)
+        tmp["pred_high"] = (tmp.high >= 0.5).astype(int)
+        tmp["exact_score_hit"] = tmp.apply(lambda r: int(f"{int(r.actual_home_score)}-{int(r.actual_away_score)}" in {str(r.score1), str(r.score2), str(r.score3), str(r.score4)}), axis=1)
+        audit_cols = ["game_id","datetime","model","prediction","actual","correct","pred_home","pred_away","actual_home_score","actual_away_score","lambda_home","lambda_away","score1","score2","score3","score4","low","high","pred_high","actual_high","exact_score_hit"]
+        tmp[[c for c in audit_cols if c in tmp.columns]].to_csv(RESULTS / f"{league.lower()}_prediction_audit.csv", index=False)
+'''
+if needle not in s:
+    raise SystemExit("model report target not found")
+s = s.replace(needle, repl, 1)
+
+s = MARK + "\n" + s
+P.write_text(s, encoding="utf-8")
+print("[QUALITY PATCH] V2 applied: structural score/Low-High hardening + granular metrics")
