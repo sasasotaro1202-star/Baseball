@@ -127,15 +127,15 @@ jobs:
     if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Persist combined baseball production state')
     name: MLB starter-enriched OOS backtest
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 220
     env:
-      BASEBALL_TIME_BUDGET_SEC: "2100"
+      BASEBALL_TIME_BUDGET_SEC: "12600"
       MLB_ENRICH_STARTERS: "1"
       MLB_MIN_STARTER_COVERAGE: "90"
       PYTHONUNBUFFERED: "1"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
