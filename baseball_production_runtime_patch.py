@@ -8,6 +8,22 @@ import runpy
 P = Path("baseball_backtest.py")
 s = P.read_text(encoding="utf-8")
 
+# The engine historically capped BASEBALL_TIME_BUDGET_SEC at 1500 seconds,
+# which silently defeated the quality-first production workflow's 12600-second
+# budget. Lift that implementation cap to the workflow ceiling while retaining
+# an explicit upper bound against accidental runaway local runs.
+if "# BASEBALL_RUNTIME_BUDGET_HARDENING_V1" not in s:
+    old = 'self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 1500.0)  # hard cap: 29:00'
+    new = 'self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 12600.0)  # production ceiling: 210:00'
+    if old not in s:
+        raise SystemExit("[PRODUCTION PATCH] runtime budget anchor not found")
+    s = s.replace(old, new, 1)
+    s = "# BASEBALL_RUNTIME_BUDGET_HARDENING_V1\n" + s
+    P.write_text(s, encoding="utf-8")
+    print("[PRODUCTION PATCH] runtime budget hardening applied")
+else:
+    print("[PRODUCTION PATCH] runtime budget hardening already applied")
+
 if "# BASEBALL_PRODUCTION_HARDENING_V1" not in s:
     old_version = 'self.checkpoint_version = "npb-massive-resume-v4-100target"'
     s = s.replace(old_version, 'self.checkpoint_version = "baseball-production-v1-quality-gated"')
