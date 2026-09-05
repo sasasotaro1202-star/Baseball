@@ -1,0 +1,168 @@
+name: Baseball Production Backtest
+
+on:
+  workflow_dispatch:
+    inputs:
+      npb_start_year:
+        description: "NPB start year"
+        required: false
+        default: "1990"
+      npb_end_year:
+        description: "NPB end year"
+        required: false
+        default: "2026"
+      mlb_start_year:
+        description: "MLB start year"
+        required: false
+        default: "2020"
+      mlb_end_year:
+        description: "MLB end year"
+        required: false
+        default: "2026"
+  schedule:
+    - cron: "17 */6 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: baseball-production
+  cancel-in-progress: false
+
+jobs:
+  npb:
+    name: NPB collect + OOS backtest
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NPB_START_YEAR: ${{ inputs.npb_start_year || '1990' }}
+      NPB_END_YEAR: ${{ inputs.npb_end_year || '2026' }}
+      NPB_DOWNLOAD_WORKERS: "6"
+      NPB_MIN_STARTER_LINE_COVERAGE: "70"
+      NPB_MIN_STARTER_COVERAGE: "70"
+      NPB_COLLECTION_BUDGET_SEC: "1450"
+      NPB_COLLECTION_SAFETY_SEC: "180"
+      BASEBALL_TIME_BUDGET_SEC: "1450"
+      NPB_RECENCY_HALF_LIFE_GAMES: "1800"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+      - name: Apply collector hardening
+        run: python npb_runtime_patch.py
+      - name: Apply backtest hardening and preflight
+        run: |
+          set -euo pipefail
+          python baseball_backtest_runtime_patch.py
+          python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py baseball_backtest_runtime_patch.py backtest_audit.py
+      - name: Collect/resume NPB
+        run: |
+          set -euo pipefail
+          mkdir -p data results
+          python npb_multi_source.py
+      - name: Audit
+        run: python backtest_audit.py
+      - name: Run NPB OOS backtest when collection is complete
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("data/checkpoints/npb_collection_status.json")
+          if not p.exists(): raise SystemExit("NPB collection status missing")
+          s=json.loads(p.read_text(encoding="utf-8"))
+          if not s.get("complete", False):
+              print("[NPB WAIT] collection incomplete; checkpoint retained")
+              raise SystemExit(0)
+          PY
+          python baseball_backtest.py --npb-only --data-dir data
+      - name: Validate and persist NPB state
+        if: always()
+        run: |
+          set +e
+          test -f results/production_contract.json && cat results/production_contract.json || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/checkpoints/ data/npb_games/ data/weather/ data/npb_multi_source_games_all.csv data/npb_player_game_features_all.csv data/source_coverage.csv data/source_failures.csv data/source_official_npb_audit.csv results/ 2>/dev/null
+          if ! git diff --cached --quiet; then git commit -m "Persist NPB production backtest state" && git push; fi
+      - name: Upload NPB state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseball-npb-production
+          path: |
+            data/checkpoints/
+            data/npb_games/
+            data/weather/
+            data/npb_multi_source_games_all.csv
+            data/npb_player_game_features_all.csv
+            data/source_coverage.csv
+            data/source_failures.csv
+            data/source_official_npb_audit.csv
+            results/
+          if-no-files-found: warn
+          retention-days: 30
+
+  mlb:
+    name: MLB starter-enriched OOS backtest
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BASEBALL_TIME_BUDGET_SEC: "1450"
+      MLB_ENRICH_STARTERS: "1"
+      MLB_MIN_STARTER_COVERAGE: "90"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+      - name: Preflight
+        run: |
+          set -euo pipefail
+          python -m py_compile baseball_backtest.py baseball_backtest_runtime_patch.py backtest_audit.py
+          python backtest_audit.py
+      - name: Run MLB starter-enriched OOS backtest
+        run: |
+          set -euo pipefail
+          mkdir -p data results
+          python baseball_backtest.py --mlb-only --data-dir data --mlb-start "${{ inputs.mlb_start_year || '2020' }}" --mlb-end "${{ inputs.mlb_end_year || '2026' }}"
+      - name: Validate and persist MLB state
+        if: always()
+        run: |
+          set +e
+          test -f results/production_contract.json && cat results/production_contract.json || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/mlb_games.csv results/ 2>/dev/null
+          if ! git diff --cached --quiet; then git commit -m "Persist MLB production backtest state" && git push; fi
+      - name: Upload MLB state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseball-mlb-production
+          path: |
+            data/mlb_games.csv
+            results/
+          if-no-files-found: warn
+          retention-days: 30
