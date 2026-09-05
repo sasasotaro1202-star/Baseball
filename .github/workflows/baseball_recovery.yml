@@ -1,0 +1,54 @@
+name: Baseball Autonomous Recovery
+
+on:
+  workflow_run:
+    workflows:
+      - "Baseball Production Backtest"
+      - "Baseball Mac Compute Research"
+      - "Baseball Autonomous Research"
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: baseball-autonomous-recovery
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    name: Retry failed autonomous stage
+    # A workflow_run event is actionable only when the upstream workflow failed
+    # and its current attempt is below the bounded retry ceiling. Successful
+    # workflows are intentionally ignored so the normal dependency chain runs.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.workflow_run.conclusion != 'success' &&
+        github.event.workflow_run.run_attempt < 3
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Retry failed upstream jobs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          if [ -z "${RUN_ID:-}" ]; then
+            echo "[RECOVERY] workflow_dispatch requires selecting a failed run manually; no automatic run id is available."
+            exit 0
+          fi
+          echo "[RECOVERY] retrying failed jobs for run ${RUN_ID} (attempt ${{ github.event.workflow_run.run_attempt }})"
+          gh run rerun "${RUN_ID}" --failed
+          echo "[RECOVERY] failed jobs re-queued"
+
+      - name: Recovery policy summary
+        if: always()
+        run: |
+          echo "[RECOVERY] Production -> Mac -> Research remains event-driven."
+          echo "[RECOVERY] Each failed run receives at most two automatic failed-job retries."
+          echo "[RECOVERY] A third failed attempt is not retried indefinitely, preventing an infinite CI loop."
