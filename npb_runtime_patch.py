@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Idempotent NPB collector hardening applied immediately before collection."""
+"""Idempotent NPB collector hardening and source-hierarchy patch.
+
+Source hierarchy used by the collector:
+1. NPB.jp official pages for canonical schedule/result validation and official
+   starting-pitcher fallback.
+2. SPAIA game APIs for granular PBP, player-game, pitcher-game and lineup data.
+3. Open-Meteo archive for historical weather.
+
+No source is silently substituted with guessed values. Missing fields remain
+missing and keep the season below the completion gate.
+"""
 from __future__ import annotations
 import html
 import os
@@ -9,18 +19,20 @@ from pathlib import Path
 
 P = Path("npb_multi_source.py")
 s = P.read_text(encoding="utf-8")
-if "# RUNTIME_HARDENING_V4" in s:
-    print("[RUNTIME PATCH] V4 already applied")
+if "# RUNTIME_HARDENING_V5" in s:
+    print("[RUNTIME PATCH] V5 already applied")
     raise SystemExit(0)
 
-anchor = 'SAFETY_SEC = float(os.getenv("NPB_COLLECTION_SAFETY_SEC", "90"))\n'
-if 'MIN_STARTER_LINE_COVERAGE' not in s:
-    if anchor not in s:
-        raise RuntimeError("collector config anchor not found")
-    s = s.replace(anchor, anchor + 'MIN_STARTER_LINE_COVERAGE = float(os.getenv("NPB_MIN_STARTER_LINE_COVERAGE", "70"))\n', 1)
+# Keep the existing V4 hardening if the base collector has not been patched yet.
+if "# RUNTIME_HARDENING_V4" not in s:
+    anchor = 'SAFETY_SEC = float(os.getenv("NPB_COLLECTION_SAFETY_SEC", "90"))\n'
+    if 'MIN_STARTER_LINE_COVERAGE' not in s:
+        if anchor not in s:
+            raise RuntimeError("collector config anchor not found")
+        s = s.replace(anchor, anchor + 'MIN_STARTER_LINE_COVERAGE = float(os.getenv("NPB_MIN_STARTER_LINE_COVERAGE", "70"))\n', 1)
 
-pat = re.compile(r"def first_pitchers\(game_id\):.*?\n\ndef _norm_key", re.S)
-new = '''def _official_starters_from_npb(game_id, home="", away=""):
+    pat = re.compile(r"def first_pitchers\(game_id\):.*?\n\ndef _norm_key", re.S)
+    new = '''def _official_starters_from_npb(game_id, home="", away=""):
     team_codes={
       "読売ジャイアンツ":"g","東京ヤクルトスワローズ":"s","横浜DeNAベイスターズ":"db",
       "広島東洋カープ":"c","阪神タイガース":"t","中日ドラゴンズ":"d",
@@ -73,13 +85,13 @@ def first_pitchers(game_id, home="", away=""):
     return _official_starters_from_npb(game_id,home,away)
 
 def _norm_key'''
-s,n=pat.subn(lambda m:new,s,count=1)
-if n != 1:
-    raise RuntimeError("first_pitchers replacement target not found")
-s=s.replace('away,home=first_pitchers(r.game_id); date=', 'away,home=first_pitchers(r.game_id,r.home,r.away); date=', 1)
+    s,n=pat.subn(lambda m:new,s,count=1)
+    if n != 1:
+        raise RuntimeError("first_pitchers replacement target not found")
+    s=s.replace('away,home=first_pitchers(r.game_id); date=', 'away,home=first_pitchers(r.game_id,r.home,r.away); date=', 1)
 
-pat = re.compile(r"        if games\.empty:\n.*?        if not cp\.empty and 'game_id' in cp:", re.S)
-new = '''        if games.empty:
+    pat = re.compile(r"        if games\.empty:\n.*?        if not cp\.empty and 'game_id' in cp:", re.S)
+    new = '''        if games.empty:
             if not cp.empty and 'game_id' in cp:
                 prev_games=len(cp)
                 both_starters=int(((cp.get('home_starter','').fillna('').astype(str)!='')&(cp.get('away_starter','').fillna('').astype(str)!='')).sum()) if 'home_starter' in cp and 'away_starter' in cp else 0
@@ -92,12 +104,47 @@ new = '''        if games.empty:
             print(f'[SP AIA] year={year} no schedule rows; marked unavailable/INCOMPLETE')
             continue
         if not cp.empty and 'game_id' in cp:'''
-s,n=pat.subn(lambda m:new,s,count=1)
-if n != 1:
-    raise RuntimeError("empty schedule replacement target not found")
-s=s.replace('save_status(year,games,cp,completed,failures,complete=complete)', 'save_status(year,games,cp,completed,failures,complete=(complete and coverage >= MIN_STARTER_LINE_COVERAGE))', 1)
-s=s.replace('bad=eligible[eligible.starter_line_coverage_pct < 70]', 'bad=eligible[eligible.starter_line_coverage_pct < MIN_STARTER_LINE_COVERAGE]', 1)
-s=s.replace("complete_all=bool(statuses) and all(x.get('complete',False) for x in statuses if START_YEAR <= int(x.get('year',-1)) <= END_YEAR) and len(statuses) >= (END_YEAR-START_YEAR+1)", "complete_all=(len(statuses) >= (END_YEAR-START_YEAR+1) and all((START_YEAR <= int(x.get('year',-1)) <= END_YEAR) and bool(x.get('complete',False)) and not bool(x.get('unavailable',False)) and float(x.get('coverage_pct',0.0)) >= MIN_STARTER_LINE_COVERAGE for x in statuses))", 1)
-s='# RUNTIME_HARDENING_V4\n'+s
+    s,n=pat.subn(lambda m:new,s,count=1)
+    if n != 1:
+        raise RuntimeError("empty schedule replacement target not found")
+    s=s.replace('save_status(year,games,cp,completed,failures,complete=complete)', 'save_status(year,games,cp,completed,failures,complete=(complete and coverage >= MIN_STARTER_LINE_COVERAGE))', 1)
+    s=s.replace('bad=eligible[eligible.starter_line_coverage_pct < 70]', 'bad=eligible[eligible.starter_line_coverage_pct < MIN_STARTER_LINE_COVERAGE]', 1)
+    s=s.replace("complete_all=bool(statuses) and all(x.get('complete',False) for x in statuses if START_YEAR <= int(x.get('year',-1)) <= END_YEAR) and len(statuses) >= (END_YEAR-START_YEAR+1)", "complete_all=(len(statuses) >= (END_YEAR-START_YEAR+1) and all((START_YEAR <= int(x.get('year',-1)) <= END_YEAR) and bool(x.get('complete',False)) and not bool(x.get('unavailable',False)) and float(x.get('coverage_pct',0.0)) >= MIN_STARTER_LINE_COVERAGE for x in statuses))", 1)
+
+# V5: checkpoint quality is now based on prediction-critical enrichment, not
+# merely on whether a row was written previously. This specifically repairs
+# stale checkpoints such as the old 2017 12-row/0-starter state.
+marker = "# RUNTIME_HARDENING_V5\n"
+needle = "        missing_ids=set(games.game_id.astype(str)) - player_done_ids\n        missing=games[games.game_id.astype(str).isin(missing_ids)].copy()\n        print(f'[CHECKPOINT] year={year} existing={len(existing_ids)} player_enriched={len(player_done_ids)} missing_for_full_enrichment={len(missing)}')"
+replacement = '''        # Re-enrich any checkpoint row whose prediction-critical data is incomplete.
+        # A previously written row is NOT considered done when either starter or
+        # either starter game line is missing. Player-level enrichment is also
+        # required, but never allowed to suppress starter repair.
+        needs_ids=set()
+        for gid in games.game_id.astype(str):
+            if gid not in existing_ids:
+                needs_ids.add(gid); continue
+            rr=cp[cp.game_id.astype(str)==gid].iloc[-1]
+            hs=str(rr.get('home_starter','') or '').strip(); aw=str(rr.get('away_starter','') or '').strip()
+            hl=bool(rr.get('home_starter_line_ok',False)); al=bool(rr.get('away_starter_line_ok',False))
+            if not (hs and aw and hl and al):
+                needs_ids.add(gid); continue
+            if gid not in player_done_ids:
+                needs_ids.add(gid)
+        missing=games[games.game_id.astype(str).isin(needs_ids)].copy()
+        print(f'[CHECKPOINT] year={year} existing={len(existing_ids)} player_enriched={len(player_done_ids)} repair_or_missing={len(missing)}')'''
+if needle not in s:
+    raise RuntimeError("checkpoint enrichment target not found")
+s=s.replace(needle,replacement,1)
+
+# Add source provenance fields to every enriched game without changing the
+# feature values. This makes the dataset auditable by source and failure mode.
+needle2 = "    z['home_starter_line_ok']=bool(hm); z['away_starter_line_ok']=bool(am)\n    z['_player_rows']=players"
+replacement2 = "    z['home_starter_line_ok']=bool(hm); z['away_starter_line_ok']=bool(am)\n    z['starter_source']='SPAIA game API + NPB.jp official fallback'\n    z['player_source']='SPAIA game API'\n    z['weather_source']='Open-Meteo archive'\n    z['_player_rows']=players"
+if needle2 not in s:
+    raise RuntimeError("provenance target not found")
+s=s.replace(needle2,replacement2,1)
+
+s = marker + s
 P.write_text(s,encoding='utf-8')
-print('[RUNTIME PATCH] V4 applied: official starter fallback, no guessing, non-destructive checkpoints, coverage gate')
+print('[RUNTIME PATCH] V5 applied: source hierarchy + stale-checkpoint repair + strict official starter fallback + coverage gate')
