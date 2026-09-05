@@ -1,12 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Final CI hardening for baseball_backtest.py and NPB source provenance.
-
-The historical OOS engine must simulate a pregame decision state. Therefore
-starter-incomplete samples are rejected instead of silently receiving generic
-pitcher priors. The patch is idempotent and creates a new checkpoint namespace
-so results produced under the older contract are never mixed into production.
-"""
+"""Final CI hardening chain for the baseball production backtest."""
 from __future__ import annotations
 from pathlib import Path
 import runpy
@@ -17,7 +11,6 @@ s = P.read_text(encoding="utf-8")
 if "# BASEBALL_PRODUCTION_HARDENING_V1" not in s:
     old_version = 'self.checkpoint_version = "npb-massive-resume-v4-100target"'
     s = s.replace(old_version, 'self.checkpoint_version = "baseball-production-v1-quality-gated"')
-
     anchor = '''        # Data-quality gates: the backtest must not silently run on a tiny
         # or starter-free sample.
 '''
@@ -25,7 +18,6 @@ if "# BASEBALL_PRODUCTION_HARDENING_V1" not in s:
     end = s.find('        X, y, meta = self.build_features(games)', start)
     if start < 0 or end < 0:
         raise SystemExit("[PRODUCTION PATCH] expected walk-forward gate block not found")
-
     gate = '''        # STRICT STARTER COVERAGE GATE
         # A historical backtest is a simulation of the pregame decision state.
         # Unknown starters must not be silently replaced by league priors.
@@ -35,18 +27,10 @@ if "# BASEBALL_PRODUCTION_HARDENING_V1" not in s:
              (games["away_starter"].fillna("").astype(str).str.strip().str.len() > 0)).mean()
         )
         threshold = 0.90 if league == "MLB" else 0.70
-        self.audit.append({
-            "type": f"{league.lower()}_starter_coverage",
-            "games": int(len(games)),
-            "both_starter_rate": starter_rate,
-            "required_rate": threshold,
-        })
+        self.audit.append({"type": f"{league.lower()}_starter_coverage", "games": int(len(games)), "both_starter_rate": starter_rate, "required_rate": threshold})
         print(f"[{league} AUDIT] both-starter coverage={starter_rate:.1%} required={threshold:.0%}")
         if starter_rate < threshold:
-            raise RuntimeError(
-                f"{league} starter coverage too low: {starter_rate:.1%}; "
-                f"required >= {threshold:.0%}. Refusing to run a misleading backtest."
-            )
+            raise RuntimeError(f"{league} starter coverage too low: {starter_rate:.1%}; required >= {threshold:.0%}. Refusing to run a misleading backtest.")
 
 '''
     s = s[:start] + gate + s[end:]
@@ -56,17 +40,8 @@ if "# BASEBALL_PRODUCTION_HARDENING_V1" not in s:
 else:
     print("[PRODUCTION PATCH] V1 already applied")
 
-# The production workflow already executes this hardening layer. Chain the
-# official NPB validator and MLB score/Low-High budget patch here so no
-# separate workflow step can be forgotten.
-validator = Path("npb_official_schedule_patch.py")
-if validator.exists():
-    runpy.run_path(str(validator), run_name="__main__")
-else:
-    raise SystemExit("[PRODUCTION PATCH] official NPB schedule validator missing")
-
-mlb_patch = Path("baseball_mlb_score_hilo_patch.py")
-if mlb_patch.exists():
-    runpy.run_path(str(mlb_patch), run_name="__main__")
-else:
-    raise SystemExit("[PRODUCTION PATCH] MLB score/Low-High patch missing")
+for patch in ("npb_official_schedule_patch.py", "baseball_mlb_score_hilo_patch.py", "baseball_quality_runtime_patch.py"):
+    p = Path(patch)
+    if not p.exists():
+        raise SystemExit(f"[PRODUCTION PATCH] required patch missing: {patch}")
+    runpy.run_path(str(p), run_name="__main__")
