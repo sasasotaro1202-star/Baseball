@@ -2,7 +2,7 @@ name: Baseball Autonomous Research
 
 on:
   workflow_run:
-    workflows: ["Baseball Production Backtest"]
+    workflows: ["Baseball Production Backtest", "Baseball Mac Compute Research"]
     types: [completed]
   schedule:
     - cron: "47 */6 * * *"
