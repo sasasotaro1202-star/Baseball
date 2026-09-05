@@ -13,8 +13,9 @@ from pathlib import Path
 P = Path("baseball_backtest.py")
 s = P.read_text(encoding="utf-8")
 MARK = "# BASEBALL_QUALITY_HARDENING_V2"
-if MARK in s:
-    print("[QUALITY PATCH] V2 already applied")
+LEGACY_MARK = "# BASEBALL_QUALITY_HARDENING_V1"
+if MARK in s or LEGACY_MARK in s:
+    print("[QUALITY PATCH] already applied")
     raise SystemExit(0)
 
 # Exact score candidates: 4 real scorelines, never a pseudo-score tail bucket.
@@ -128,6 +129,6 @@ if needle not in s:
     raise SystemExit("model report target not found")
 s = s.replace(needle, repl, 1)
 
-s = MARK + "\n" + s
+s = LEGACY_MARK + "\n" + MARK + "\n" + s
 P.write_text(s, encoding="utf-8")
 print("[QUALITY PATCH] V2 applied: structural score/Low-High hardening + granular metrics")
