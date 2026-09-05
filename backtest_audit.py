@@ -19,6 +19,7 @@ REQUIRED = (
     "baseball_production_runtime_patch.py",
     "npb_multi_source.py",
     "npb_runtime_patch.py",
+    "npb_official_schedule_patch.py",
     "source_quality_gate.py",
     "DATA_SOURCE_POLICY.json",
 )
@@ -45,6 +46,7 @@ def main() -> None:
     collector = (ROOT / "npb_multi_source.py").read_text(encoding="utf-8")
     backtest = (ROOT / "baseball_backtest.py").read_text(encoding="utf-8")
     npbpatch = (ROOT / "npb_runtime_patch.py").read_text(encoding="utf-8")
+    officialpatch = (ROOT / "npb_official_schedule_patch.py").read_text(encoding="utf-8")
     btpatch = (ROOT / "baseball_backtest_runtime_patch.py").read_text(encoding="utf-8")
     prodpatch = (ROOT / "baseball_production_runtime_patch.py").read_text(encoding="utf-8")
     workflow = (ROOT / ".github/workflows/baseball_production.yml").read_text(encoding="utf-8")
@@ -64,6 +66,12 @@ def main() -> None:
         fail("empty-schedule checkpoint protection missing")
     if "MIN_STARTER_LINE_COVERAGE" not in npbpatch:
         fail("starter coverage gate missing")
+    if "OFFICIAL_NPB_SCHEDULE_VALIDATION_V1" not in officialpatch:
+        fail("official NPB schedule/result validation patch missing")
+    if "_official_validate_games" not in officialpatch or "schedule_{month:02d}_detail.html" not in officialpatch:
+        fail("official NPB monthly schedule validation implementation missing")
+    if "npb_official_schedule_patch.py" not in prodpatch:
+        fail("production hardening does not chain official NPB validation")
     if "_normalize_npb_pbp" not in btpatch:
         fail("NPB loader normalization missing")
     if "home_starter_" not in btpatch or "away_starter_" not in btpatch:
@@ -71,7 +79,6 @@ def main() -> None:
     if "Asia/Tokyo" not in btpatch:
         fail("naive NPB datetimes are not explicitly interpreted as JST")
 
-    # Production workflow must use the production hardening layer and strict starter gates.
     for needle in (
         "npb_runtime_patch.py",
         "baseball_backtest_runtime_patch.py",
@@ -89,7 +96,6 @@ def main() -> None:
     if "if: always()" not in workflow or "actions/download-artifact@v4" not in workflow:
         fail("production workflow artifact recovery is not fail-safe")
 
-    # Policy must explicitly retain official/authoritative source hierarchy.
     try:
         npb_policy = policy["NPB"]
         mlb_policy = policy["MLB"]
@@ -101,7 +107,8 @@ def main() -> None:
         fail("MLB policy does not name MLB Stats API")
 
     for name, text in (("baseball_backtest.py", backtest), ("npb_multi_source.py", collector),
-                       ("npb_runtime_patch.py", npbpatch), ("baseball_backtest_runtime_patch.py", btpatch),
+                       ("npb_runtime_patch.py", npbpatch), ("npb_official_schedule_patch.py", officialpatch),
+                       ("baseball_backtest_runtime_patch.py", btpatch),
                        ("baseball_production_runtime_patch.py", prodpatch)):
         try:
             ast.parse(text, filename=name)
