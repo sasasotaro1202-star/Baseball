@@ -1,15 +1,9 @@
 name: Baseball Autonomous Recovery
 
 on:
-  workflow_run:
-    workflows:
-      - "Baseball Production Backtest"
-      - "Baseball Mac Compute Research"
-      - "Baseball Autonomous Research"
-    types: [completed]
-  workflow_dispatch:
   schedule:
     - cron: "*/15 * * * *"
+  workflow_dispatch:
 
 permissions:
   actions: write
@@ -19,64 +13,13 @@ concurrency:
   group: baseball-autonomous-recovery
   cancel-in-progress: false
 
-env:
-  MAX_AUTOMATIC_ATTEMPTS: "3"
-
 jobs:
-  recover-upstream:
-    name: Recover failed autonomous stage
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (
-        github.event_name == 'workflow_run' &&
-        github.event.workflow_run.conclusion != 'success' &&
-        github.event.workflow_run.run_attempt < 3
-      )
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: Recover upstream run
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RUN_ID: ${{ github.event.workflow_run.id }}
-          RUN_NAME: ${{ github.event.workflow_run.name }}
-          RUN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
-          RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        run: |
-          set -u
-          if [ -z "${RUN_ID:-}" ]; then
-            echo "[RECOVERY] manual dispatch has no upstream run id; watchdog handles scheduled recovery."
-            exit 0
-          fi
-          echo "[RECOVERY] ${RUN_NAME} run=${RUN_ID} attempt=${RUN_ATTEMPT} conclusion=${RUN_CONCLUSION}"
-          if [ "${RUN_CONCLUSION}" = "failure" ]; then
-            if curl --fail-with-body --retry 5 --retry-delay 5 --retry-all-errors \
-              -X POST \
-              -H "Accept: application/vnd.github+json" \
-              -H "Authorization: Bearer ${GH_TOKEN}" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
-              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/rerun-failed-jobs"; then
-              echo "[RECOVERY] failed jobs re-queued"
-              exit 0
-            fi
-            echo "[RECOVERY] failed-job retry endpoint did not accept the run; using a fresh stage dispatch where supported."
-          fi
-          if [ "${RUN_NAME}" = "Baseball Production Backtest" ]; then
-            gh workflow run "Baseball Production Backtest" --repo "${GITHUB_REPOSITORY}" --ref main || true
-          elif [ "${RUN_NAME}" = "Baseball Mac Compute Research" ]; then
-            gh workflow run "Baseball Mac Compute Research" --repo "${GITHUB_REPOSITORY}" --ref main || true
-          elif [ "${RUN_NAME}" = "Baseball Autonomous Research" ]; then
-            gh workflow run "Baseball Autonomous Research" --repo "${GITHUB_REPOSITORY}" --ref main || true
-          fi
-
   watchdog:
     name: Autonomous pipeline watchdog
-    if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Detect stalled pipeline and recover
+      - name: Reconcile and recover the autonomous pipeline
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -84,48 +27,79 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           import json, os, subprocess
-          from datetime import datetime, timezone
+          from datetime import datetime
 
           repo = os.environ["GITHUB_REPOSITORY"]
-          raw = subprocess.check_output([
-              "gh", "run", "list", "--repo", repo, "--limit", "40",
-              "--json", "databaseId,name,status,conclusion,createdAt,updatedAt,headSha"
-          ], text=True)
-          rows = json.loads(raw)
-          names = {"Baseball Production Backtest", "Baseball Mac Compute Research", "Baseball Autonomous Research"}
-          grouped = {n: [r for r in rows if r["name"] == n] for n in names}
-          now = datetime.now(timezone.utc)
+          workflows = {
+              "production": "Baseball Production Backtest",
+              "mac": "Baseball Mac Compute Research",
+              "research": "Baseball Autonomous Research",
+          }
 
-          def age_hours(r):
-              if not r or not r.get("updatedAt"):
-                  return 999.0
-              return (now - datetime.fromisoformat(r["updatedAt"].replace("Z", "+00:00"))).total_seconds() / 3600.0
+          def runs(name):
+              raw = subprocess.check_output([
+                  "gh", "run", "list", "--repo", repo, "--workflow", name,
+                  "--limit", "20", "--json", "databaseId,status,conclusion,createdAt,updatedAt,headSha"
+              ], text=True)
+              return json.loads(raw)
 
-          prod = grouped["Baseball Production Backtest"][0] if grouped["Baseball Production Backtest"] else None
-          mac = grouped["Baseball Mac Compute Research"][0] if grouped["Baseball Mac Compute Research"] else None
-          research = grouped["Baseball Autonomous Research"][0] if grouped["Baseball Autonomous Research"] else None
-          print("[WATCHDOG] prod=", prod)
-          print("[WATCHDOG] mac=", mac)
-          print("[WATCHDOG] research=", research)
+          data = {k: runs(v) for k, v in workflows.items()}
+          for k, rows in data.items():
+              print(f"[WATCHDOG] {k}: {rows[:3]}")
 
-          active = prod and prod.get("status") in {"queued", "in_progress", "waiting"}
-          prod_bad = (prod is None or prod.get("conclusion") in {"failure", "cancelled", "timed_out"})
-          prod_stale = prod and age_hours(prod) >= 2 and prod.get("status") not in {"queued", "in_progress", "waiting"} and prod.get("conclusion") != "success"
-          if not active and (prod_bad or prod_stale):
-              print("[WATCHDOG] production dispatch")
-              subprocess.run(["gh", "workflow", "run", "Baseball Production Backtest", "--repo", repo, "--ref", "main"], check=False)
-          else:
-              print("[WATCHDOG] production is active or healthy")
+          def active(row):
+              return row and row["status"] in {"queued", "in_progress", "waiting", "pending"}
+
+          def success(row):
+              return row and row["conclusion"] == "success"
+
+          def ts(row):
+              if not row:
+                  return datetime.min
+              return datetime.fromisoformat(row["updatedAt"].replace("Z", "+00:00")).replace(tzinfo=None)
+
+          prod = data["production"][0] if data["production"] else None
+          mac = data["mac"][0] if data["mac"] else None
+          research = data["research"][0] if data["research"] else None
+
+          def dispatch(label, workflow):
+              print(f"[WATCHDOG] dispatch {label}: {workflow}")
+              subprocess.run(["gh", "workflow", "run", workflow, "--repo", repo, "--ref", "main"], check=True)
+
+          # 1. Recover Production first. A failed/cancelled production stage is
+          #    retried as a fresh run; queued/in-progress runs are never duplicated.
+          if not active(prod) and not success(prod):
+              dispatch("production recovery", workflows["production"])
+              raise SystemExit(0)
+
+          # 2. A successful Production completion must eventually have a successful
+          #    Mac OOS run newer than it. Otherwise launch/recover Mac.
+          if success(prod) and (not success(mac) or ts(mac) < ts(prod)):
+              if not active(mac):
+                  dispatch("Mac OOS", workflows["mac"])
+              raise SystemExit(0)
+
+          # 3. A successful Mac OOS completion must eventually have a successful
+          #    Research run newer than it. Otherwise launch/recover Research.
+          if success(mac) and (not success(research) or ts(research) < ts(mac)):
+              if not active(research):
+                  dispatch("autonomous research", workflows["research"])
+              raise SystemExit(0)
+
+          # 4. Once Research succeeds after the latest Production, start the next
+          #    autonomous production cycle. This closes the continuous loop.
+          if success(research) and ts(research) > ts(prod):
+              if not active(prod):
+                  dispatch("next production cycle", workflows["production"])
+              raise SystemExit(0)
+
+          print("[WATCHDOG] pipeline healthy or already active; no action required")
           PY
 
-  summary:
-    name: Recovery policy summary
-    if: always()
-    needs: [recover-upstream, watchdog]
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "[RECOVERY] Production -> Mac -> Research remains event-driven."
-          echo "[RECOVERY] Failed stages are retried with bounded automatic recovery."
-          echo "[RECOVERY] Fifteen-minute watchdog recovers stalled production without user intervention."
-          echo "[RECOVERY] Failed states are never treated as successful."
+      - name: Recovery policy summary
+        if: always()
+        run: |
+          echo "[RECOVERY] 15-minute autonomous state reconciliation is enabled."
+          echo "[RECOVERY] Production -> Mac OOS -> Research -> next Production is enforced as a state machine."
+          echo "[RECOVERY] Failed/cancelled stages are dispatched again; active stages are never duplicated."
+          echo "[RECOVERY] Research success automatically closes the loop into the next Production cycle."
