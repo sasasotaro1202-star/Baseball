@@ -22,18 +22,16 @@ jobs:
     timeout-minutes: 70
     steps:
       - name: Checkout latest main state
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
           ref: main
           clean: true
-
       - name: Verify Mac worker
         run: |
           set -euo pipefail
           sw_vers
           uname -m
           python3 --version
-
       - name: Prepare isolated Python environment
         run: |
           set -euo pipefail
@@ -42,7 +40,6 @@ jobs:
           . .venv/bin/activate
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
-
       - name: Apply production-quality hardening
         run: |
           set -euo pipefail
@@ -55,14 +52,12 @@ jobs:
           python baseball_quality_runtime_patch.py
           python baseball_backtest_runtime_patch.py
           python baseball_production_runtime_patch.py
-
       - name: Preflight
         run: |
           set -euo pipefail
           . .venv/bin/activate
           python -m py_compile baseball_backtest.py npb_multi_source.py npb_runtime_patch.py npb_quality_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py backtest_audit.py source_quality_gate.py repair_npb_syntax.py research/research_loop.py
           python backtest_audit.py
-
       - name: Run NPB deep OOS backtest with checkpoint-safe retries
         run: |
           set -euo pipefail
@@ -75,7 +70,6 @@ jobs:
           done
           echo "[MAC NPB] all retries failed"
           exit 1
-
       - name: Run MLB deep OOS backtest with retries
         run: |
           set -euo pipefail
@@ -88,7 +82,6 @@ jobs:
           done
           echo "[MAC MLB] all retries failed"
           exit 1
-
       - name: Persist Mac OOS results
         run: |
           set -euo pipefail
@@ -96,7 +89,6 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/ results/npb/ results/mlb/ 2>/dev/null || true
           if git diff --cached --quiet; then echo "[MAC] no new OOS state"; else git commit -m "Persist Mac OOS research results"; git push; fi
-
       - name: Start autonomous research analysis
         env:
           GH_TOKEN: ${{ github.token }}
@@ -111,7 +103,6 @@ jobs:
           done
           echo "[PIPELINE] failed to dispatch autonomous research"
           exit 1
-
       - name: Upload Mac research artifact
         if: always()
         uses: actions/upload-artifact@v4
