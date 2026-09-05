@@ -1,13 +1,10 @@
 {
-  "version": "research_v1",
-  "best_model": null,
-  "metrics": {
-    "win_accuracy": null,
-    "score_mae": null,
-    "low_high_accuracy": null
-  },
-  "tested_models": [],
-  "tested_features": [],
-  "next_tasks": ["evaluation_engine", "weakness_analysis"],
-  "last_update": null
+  "schema_version": 1,
+  "goal": "maximize validated out-of-sample accuracy for every prediction item",
+  "processing_budget_seconds": 3600,
+  "status": "controller-enabled",
+  "best_models": {},
+  "tried_objectives": [],
+  "next_research": {"league": "NPB", "objective": "win"},
+  "updated_at": null
 }
