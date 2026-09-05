@@ -24,6 +24,13 @@ if "# BASEBALL_RUNTIME_BUDGET_HARDENING_V1" not in s:
 else:
     print("[PRODUCTION PATCH] runtime budget hardening already applied")
 
+# Keep operator-facing hard-stop diagnostics consistent with the actual
+# production ceiling. This is correctness/observability, not a model change.
+s = P.read_text(encoding="utf-8")
+s = s.replace("[HARD STOP] 30-minute limit reached before processing", "[HARD STOP] 210-minute production limit reached before processing")
+s = s.replace("[HARD STOP] 30-minute limit reached; skipping remaining leagues", "[HARD STOP] 210-minute production limit reached; skipping remaining leagues")
+P.write_text(s, encoding="utf-8")
+
 if "# BASEBALL_PRODUCTION_HARDENING_V1" not in s:
     old_version = 'self.checkpoint_version = "npb-massive-resume-v4-100target"'
     s = s.replace(old_version, 'self.checkpoint_version = "baseball-production-v1-quality-gated"')
