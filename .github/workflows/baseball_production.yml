@@ -65,6 +65,8 @@ jobs:
         run: python repair_npb_syntax.py
       - name: Apply collector hardening
         run: python npb_runtime_patch.py
+      - name: Apply NPB quality hardening
+        run: python npb_quality_runtime_patch.py
       - name: Apply backtest hardening
         run: python baseball_backtest_runtime_patch.py
       - name: Apply production hardening
@@ -72,7 +74,7 @@ jobs:
       - name: Preflight
         run: |
           set -euo pipefail
-          python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
+          python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py npb_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
           python backtest_audit.py
       - name: Collect/resume NPB
         run: |
@@ -123,7 +125,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
-      BASEBALL_TIME_BUDGET_SEC: "2400"
+      BASEBALL_TIME_BUDGET_SEC: "2100"
       MLB_ENRICH_STARTERS: "1"
       MLB_MIN_STARTER_COVERAGE: "90"
       PYTHONUNBUFFERED: "1"
@@ -148,7 +150,7 @@ jobs:
       - name: Preflight
         run: |
           set -euo pipefail
-          python -m py_compile baseball_backtest.py baseball_production_runtime_patch.py backtest_audit.py source_quality_gate.py
+          python -m py_compile baseball_backtest.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py backtest_audit.py source_quality_gate.py
           python backtest_audit.py
       - name: Run MLB starter-enriched OOS backtest
         run: |
