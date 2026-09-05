@@ -1,6 +1,8 @@
 name: Baseball Production Backtest
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       npb_start_year:
@@ -31,6 +33,7 @@ concurrency:
 
 jobs:
   npb:
+    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Persist combined baseball production state')
     name: NPB collect + OOS backtest
     runs-on: ubuntu-latest
     timeout-minutes: 220
@@ -121,6 +124,7 @@ jobs:
           retention-days: 30
 
   mlb:
+    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Persist combined baseball production state')
     name: MLB starter-enriched OOS backtest
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -177,7 +181,7 @@ jobs:
   persist:
     name: Persist combined production state
     needs: [npb, mlb]
-    if: always() && (needs.npb.result != 'cancelled' || needs.mlb.result != 'cancelled')
+    if: always() && (github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Persist combined baseball production state'))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
