@@ -8,32 +8,33 @@ import runpy
 P = Path("baseball_backtest.py")
 s = P.read_text(encoding="utf-8")
 
-# The engine historically capped BASEBALL_TIME_BUDGET_SEC at 1500 seconds,
-# which silently defeated the quality-first production workflow's 12600-second
-# budget. Lift that implementation cap to the workflow ceiling while retaining
-# an explicit upper bound against accidental runaway local runs.
-if "# BASEBALL_RUNTIME_BUDGET_HARDENING_V1" not in s:
-    old = 'self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 1500.0)  # hard cap: 29:00'
-    new = 'self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 12600.0)  # production ceiling: 210:00'
-    if old not in s:
-        raise SystemExit("[PRODUCTION PATCH] runtime budget anchor not found")
-    s = s.replace(old, new, 1)
-    s = "# BASEBALL_RUNTIME_BUDGET_HARDENING_V1\n" + s
+# Quality-first production ceiling: one hour per workflow slice.
+# The workflow and engine must agree so the budget cannot be silently defeated.
+if "# BASEBALL_RUNTIME_BUDGET_HARDENING_V2" not in s:
+    old = 'self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 12600.0)  # production ceiling: 210:00'
+    if old in s:
+        new = 'self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 3600.0)  # production ceiling: 60:00'
+        s = s.replace(old, new, 1)
+    else:
+        # Be robust to an older/newer implementation while preserving the env contract.
+        import re
+        pat = r'self\.time_budget_sec\s*=\s*min\(float\(os\.getenv\("BASEBALL_TIME_BUDGET_SEC",\s*"1500"\)\),\s*[0-9.]+\)\s*#.*'
+        s, n = re.subn(pat, 'self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 3600.0)  # production ceiling: 60:00', s, count=1)
+        if n == 0:
+            raise SystemExit("[PRODUCTION PATCH] runtime budget anchor not found")
+    s = s.replace("[HARD STOP] 210-minute production limit reached before processing", "[HARD STOP] 60-minute production limit reached before processing")
+    s = s.replace("[HARD STOP] 210-minute production limit reached; skipping remaining leagues", "[HARD STOP] 60-minute production limit reached; skipping remaining leagues")
+    s = "# BASEBALL_RUNTIME_BUDGET_HARDENING_V2\n" + s
     P.write_text(s, encoding="utf-8")
-    print("[PRODUCTION PATCH] runtime budget hardening applied")
+    print("[PRODUCTION PATCH] 60-minute runtime budget hardening applied")
 else:
-    print("[PRODUCTION PATCH] runtime budget hardening already applied")
+    print("[PRODUCTION PATCH] 60-minute runtime budget hardening already applied")
 
-# Keep operator-facing hard-stop diagnostics consistent with the actual
-# production ceiling. This is correctness/observability, not a model change.
 s = P.read_text(encoding="utf-8")
-s = s.replace("[HARD STOP] 30-minute limit reached before processing", "[HARD STOP] 210-minute production limit reached before processing")
-s = s.replace("[HARD STOP] 30-minute limit reached; skipping remaining leagues", "[HARD STOP] 210-minute production limit reached; skipping remaining leagues")
-P.write_text(s, encoding="utf-8")
-
 if "# BASEBALL_PRODUCTION_HARDENING_V1" not in s:
     old_version = 'self.checkpoint_version = "npb-massive-resume-v4-100target"'
-    s = s.replace(old_version, 'self.checkpoint_version = "baseball-production-v1-quality-gated"')
+    if old_version in s:
+        s = s.replace(old_version, 'self.checkpoint_version = "baseball-production-v1-quality-gated"')
     anchor = '''        # Data-quality gates: the backtest must not silently run on a tiny
         # or starter-free sample.
 '''
@@ -63,6 +64,7 @@ if "# BASEBALL_PRODUCTION_HARDENING_V1" not in s:
 else:
     print("[PRODUCTION PATCH] V1 already applied")
 
+# Apply the complete quality/source/model hardening chain during production.
 for patch in (
     "npb_official_schedule_patch.py",
     "npb_quality_runtime_patch.py",
