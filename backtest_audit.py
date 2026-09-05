@@ -11,17 +11,17 @@ def fail(msg): raise SystemExit('[AUDIT FAIL] '+msg)
 def main():
     collector=(ROOT/'npb_multi_source.py').read_text(encoding='utf-8')
     backtest=(ROOT/'baseball_backtest.py').read_text(encoding='utf-8')
-    patch=(ROOT/'baseball_backtest_runtime_patch.py').read_text(encoding='utf-8')
-    if 'def _official_starters_from_npb' not in collector: fail('official NPB starter fallback missing from collector patch path')
-    if 'def _official_starters_from_npb' not in (ROOT/'npb_runtime_patch.py').read_text(encoding='utf-8'): fail('official starter runtime patch missing')
-    if 'EMPTY SCHEDULE -> preserved checkpoint' not in (ROOT/'npb_runtime_patch.py').read_text(encoding='utf-8'): fail('empty-schedule protection missing')
-    if 'def _normalize_npb_pbp' not in patch: fail('NPB loader normalization patch missing')
-    if 'home_starter_' not in patch or 'away_starter_' not in patch: fail('starter metadata propagation patch missing')
+    npbpatch=(ROOT/'npb_runtime_patch.py').read_text(encoding='utf-8')
+    btpatch=(ROOT/'baseball_backtest_runtime_patch.py').read_text(encoding='utf-8')
+    if 'def _official_starters_from_npb' not in npbpatch: fail('official NPB starter runtime patch missing')
+    if 'EMPTY SCHEDULE -> preserved checkpoint' not in npbpatch: fail('empty-schedule protection missing')
+    if 'def _normalize_npb_pbp' not in btpatch: fail('NPB loader normalization patch missing')
+    if 'home_starter_' not in btpatch or 'away_starter_' not in btpatch: fail('starter metadata propagation patch missing')
     if 'def _update_pitcher_history' not in backtest or 'self._update_pitcher_history(row)' not in backtest: fail('backtest history/update path missing')
     if backtest.find('match_features(row)') > backtest.find('self._update_pitcher_history(row)'): fail('pitcher history update appears before feature generation')
+    if 'def aggregate_npb_games' not in backtest: fail('NPB aggregation missing')
     agg=DATA/'npb_multi_source_games_all.csv'
-    if not agg.exists():
-        print('[AUDIT] code checks passed; aggregate data not present yet'); return
+    if not agg.exists(): print('[AUDIT] code checks passed; aggregate data not present yet'); return
     d=pd.read_csv(agg,low_memory=False)
     if 'game_id' not in d: fail('aggregate has no game_id')
     dup=int(d.game_id.astype(str).duplicated().sum())
