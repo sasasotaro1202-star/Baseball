@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Deterministic integrity/leakage audit for the NPB collector/backtest pipeline."""
+"""Deterministic integrity/leakage audit for the production NPB/MLB pipeline."""
 from __future__ import annotations
 import ast
 import json
@@ -12,16 +12,21 @@ ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "data"
 CP = DATA / "checkpoints"
 REQUIRED = (
-    ".github/workflows/baseball_backtest.yml",
+    ".github/workflows/baseball_production.yml",
     ".github/workflows/baseball_audit.yml",
     "baseball_backtest.py",
     "baseball_backtest_runtime_patch.py",
+    "baseball_production_runtime_patch.py",
     "npb_multi_source.py",
     "npb_runtime_patch.py",
+    "source_quality_gate.py",
+    "DATA_SOURCE_POLICY.json",
 )
+
 
 def fail(msg: str) -> None:
     raise SystemExit("[AUDIT FAIL] " + msg)
+
 
 def assert_ast_function(text: str, filename: str, name: str) -> None:
     try:
@@ -30,6 +35,7 @@ def assert_ast_function(text: str, filename: str, name: str) -> None:
         fail(f"syntax error in {filename}: {e}")
     if not any(isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name == name for n in ast.walk(tree)):
         fail(f"{filename}: function {name} missing")
+
 
 def main() -> None:
     for rel in REQUIRED:
@@ -40,12 +46,16 @@ def main() -> None:
     backtest = (ROOT / "baseball_backtest.py").read_text(encoding="utf-8")
     npbpatch = (ROOT / "npb_runtime_patch.py").read_text(encoding="utf-8")
     btpatch = (ROOT / "baseball_backtest_runtime_patch.py").read_text(encoding="utf-8")
-    workflow = (ROOT / ".github/workflows/baseball_backtest.yml").read_text(encoding="utf-8")
+    prodpatch = (ROOT / "baseball_production_runtime_patch.py").read_text(encoding="utf-8")
+    workflow = (ROOT / ".github/workflows/baseball_production.yml").read_text(encoding="utf-8")
+    policy = json.loads((ROOT / "DATA_SOURCE_POLICY.json").read_text(encoding="utf-8"))
 
     if "RUNTIME_HARDENING_V4" not in npbpatch:
         fail("NPB runtime hardening V4 missing")
     if "BACKTEST_RUNTIME_HARDENING_V3" not in btpatch:
         fail("backtest runtime hardening V3 missing")
+    if "BASEBALL_PRODUCTION_HARDENING_V1" not in prodpatch:
+        fail("production hardening V1 missing")
     if "_official_starters_from_npb" not in npbpatch:
         fail("official NPB starter resolver missing")
     if "Strict rule: unresolved starters remain unresolved" not in npbpatch:
@@ -61,8 +71,38 @@ def main() -> None:
     if "Asia/Tokyo" not in btpatch:
         fail("naive NPB datetimes are not explicitly interpreted as JST")
 
+    # Production workflow must use the production hardening layer and strict starter gates.
+    for needle in (
+        "npb_runtime_patch.py",
+        "baseball_backtest_runtime_patch.py",
+        "baseball_production_runtime_patch.py",
+        "baseball_backtest.py",
+        "source_quality_gate.py",
+        "MLB_ENRICH_STARTERS: \"1\"",
+    ):
+        if needle not in workflow:
+            fail(f"production workflow missing required reference: {needle}")
+    if not re.search(r"NPB_MIN_STARTER_LINE_COVERAGE\s*:\s*['\"]?70(?:\.0)?['\"]?", workflow):
+        fail("production workflow NPB starter coverage threshold missing")
+    if not re.search(r"MLB_MIN_STARTER_COVERAGE\s*:\s*['\"]?90(?:\.0)?['\"]?", workflow):
+        fail("production workflow MLB starter coverage threshold missing")
+    if "if: always()" not in workflow or "actions/download-artifact@v4" not in workflow:
+        fail("production workflow artifact recovery is not fail-safe")
+
+    # Policy must explicitly retain official/authoritative source hierarchy.
+    try:
+        npb_policy = policy["NPB"]
+        mlb_policy = policy["MLB"]
+    except KeyError as e:
+        fail(f"DATA_SOURCE_POLICY missing league section: {e}")
+    if "npb.jp" not in json.dumps(npb_policy, ensure_ascii=False).lower():
+        fail("NPB policy does not name official NPB as an authoritative source")
+    if "statsapi.mlb.com" not in json.dumps(mlb_policy, ensure_ascii=False).lower():
+        fail("MLB policy does not name MLB Stats API")
+
     for name, text in (("baseball_backtest.py", backtest), ("npb_multi_source.py", collector),
-                       ("npb_runtime_patch.py", npbpatch), ("baseball_backtest_runtime_patch.py", btpatch)):
+                       ("npb_runtime_patch.py", npbpatch), ("baseball_backtest_runtime_patch.py", btpatch),
+                       ("baseball_production_runtime_patch.py", prodpatch)):
         try:
             ast.parse(text, filename=name)
         except SyntaxError as e:
@@ -78,16 +118,9 @@ def main() -> None:
     if feature_pos > update_pos:
         fail("pitcher history is updated before target feature generation")
 
-    for needle in ("npb_runtime_patch.py", "baseball_backtest_runtime_patch.py", "baseball_backtest.py"):
-        if needle not in workflow:
-            fail(f"workflow missing required reference: {needle}")
-    # YAML uses ':' while shell assignments use '='; accept either representation.
-    if not re.search(r"NPB_MIN_STARTER_LINE_COVERAGE\s*(?:[:=])\s*['\"]?70(?:\.0)?['\"]?", workflow):
-        fail("workflow starter coverage threshold missing")
-
     agg = DATA / "npb_multi_source_games_all.csv"
     if not agg.exists():
-        print("[AUDIT] code/leakage checks passed; aggregate data not present yet")
+        print("[AUDIT] code/leakage-order/workflow/source-policy checks passed; aggregate data not present yet")
         print("[AUDIT PASS]")
         return
 
@@ -136,9 +169,11 @@ def main() -> None:
 
     if "home_starter" in d.columns and "away_starter" in d.columns:
         both = (d["home_starter"].fillna("").astype(str).str.strip() != "") & (d["away_starter"].fillna("").astype(str).str.strip() != "")
-        print(f"[AUDIT] both_starter_rows={int(both.sum())}/{len(d)} coverage_pct={100.0*float(both.mean()):.1f}")
+        coverage = 100.0 * float(both.mean()) if len(d) else 0.0
+        print(f"[AUDIT] both_starter_rows={int(both.sum())}/{len(d)} coverage_pct={coverage:.1f}")
 
-    print("[AUDIT PASS] static, leakage-order, workflow, and data-integrity checks passed")
+    print("[AUDIT PASS] static, leakage-order, workflow, source-policy, and data-integrity checks passed")
+
 
 if __name__ == "__main__":
     main()
