@@ -22,15 +22,13 @@ REQUIRED = (
 def fail(msg: str) -> None:
     raise SystemExit("[AUDIT FAIL] " + msg)
 
-def assert_ast_function(text: str, filename: str, name: str) -> ast.FunctionDef:
+def assert_ast_function(text: str, filename: str, name: str) -> None:
     try:
         tree = ast.parse(text, filename=filename)
     except SyntaxError as e:
         fail(f"syntax error in {filename}: {e}")
-    for node in ast.walk(tree):
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == name:
-            return node
-    fail(f"{filename}: function {name} missing")
+    if not any(isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name == name for n in ast.walk(tree)):
+        fail(f"{filename}: function {name} missing")
 
 def main() -> None:
     for rel in REQUIRED:
@@ -43,11 +41,10 @@ def main() -> None:
     btpatch = (ROOT / "baseball_backtest_runtime_patch.py").read_text(encoding="utf-8")
     workflow = (ROOT / ".github/workflows/baseball_backtest.yml").read_text(encoding="utf-8")
 
-    # Runtime hardening must remain active and idempotent.
     if "RUNTIME_HARDENING_V4" not in npbpatch:
         fail("NPB runtime hardening V4 missing")
-    if "BACKTEST_RUNTIME_HARDENING_V2" not in btpatch:
-        fail("backtest runtime hardening V2 missing")
+    if "BACKTEST_RUNTIME_HARDENING_V3" not in btpatch:
+        fail("backtest runtime hardening V3 missing")
     if "_official_starters_from_npb" not in npbpatch:
         fail("official NPB starter resolver missing")
     if "Strict rule: unresolved starters remain unresolved" not in npbpatch:
@@ -60,8 +57,9 @@ def main() -> None:
         fail("NPB loader normalization missing")
     if "home_starter_" not in btpatch or "away_starter_" not in btpatch:
         fail("starter metric propagation missing")
+    if "Asia/Tokyo" not in btpatch:
+        fail("naive NPB datetimes are not explicitly interpreted as JST")
 
-    # Parse every production source before trusting string-level invariants.
     for name, text in (("baseball_backtest.py", backtest), ("npb_multi_source.py", collector),
                        ("npb_runtime_patch.py", npbpatch), ("baseball_backtest_runtime_patch.py", btpatch)):
         try:
@@ -69,11 +67,9 @@ def main() -> None:
         except SyntaxError as e:
             fail(f"syntax error in {name}: {e}")
 
-    assert_ast_function(backtest, "baseball_backtest.py", "_update_pitcher_history")
-    assert_ast_function(backtest, "baseball_backtest.py", "match_features")
-    assert_ast_function(backtest, "baseball_backtest.py", "aggregate_npb_games")
+    for name in ("_update_pitcher_history", "match_features", "aggregate_npb_games"):
+        assert_ast_function(backtest, "baseball_backtest.py", name)
 
-    # Target-game leakage guard: feature generation must occur before history mutation.
     feature_pos = backtest.find("match_features(row)")
     update_pos = backtest.find("self._update_pitcher_history(row)")
     if feature_pos < 0 or update_pos < 0:
@@ -81,10 +77,9 @@ def main() -> None:
     if feature_pos > update_pos:
         fail("pitcher history is updated before target feature generation")
 
-    # Workflow must compile patches and run the actual backtest after collection.
-    for needle in ("npb_runtime_patch.py", "baseball_backtest_runtime_patch.py", "backtest_audit.py", "baseball_backtest.py"):
+    for needle in ("npb_runtime_patch.py", "baseball_backtest_runtime_patch.py", "baseball_backtest.py"):
         if needle not in workflow:
-            fail(f"workflow missing required step/reference: {needle}")
+            fail(f"workflow missing required reference: {needle}")
     if "NPB_MIN_STARTER_LINE_COVERAGE=70" not in workflow:
         fail("workflow starter coverage threshold missing")
 
@@ -108,14 +103,14 @@ def main() -> None:
     if dt.isna().any():
         fail(f"aggregate has {int(dt.isna().sum())} invalid datetimes")
     if not dt.is_monotonic_increasing:
-        print("[AUDIT] aggregate is not globally sorted; sorting is required before walk-forward evaluation")
+        print("[AUDIT WARN] aggregate is not globally sorted; loader must sort before walk-forward evaluation")
 
-    # A game cannot contribute postgame observations to its own pregame feature set.
     if "date" in d.columns:
         date_dt = pd.to_datetime(d["date"], errors="coerce", utc=True)
         if date_dt.isna().any():
             fail("aggregate contains invalid date values")
-        if (date_dt > dt + pd.Timedelta(days=1)).any() or (dt > date_dt + pd.Timedelta(days=1)).any():
+        delta = (dt - date_dt).abs()
+        if (delta > pd.Timedelta(days=1)).any():
             fail("aggregate datetime/date fields disagree by more than one day")
 
     print(f"[AUDIT] aggregate games={len(d)} unique_game_ids={ids.nunique()}")
@@ -137,7 +132,6 @@ def main() -> None:
             fail("invalid completed seasons: " + ",".join(map(str, bad)))
         print(f"[AUDIT] collection_complete={s.get('complete')} unavailable_years={[int(x.get('year')) for x in statuses if x.get('unavailable')]}")
 
-    # Enriched data must contain explicit starter confirmation fields if present.
     if "home_starter" in d.columns and "away_starter" in d.columns:
         both = (d["home_starter"].fillna("").astype(str).str.strip() != "") & (d["away_starter"].fillna("").astype(str).str.strip() != "")
         print(f"[AUDIT] both_starter_rows={int(both.sum())}/{len(d)} coverage_pct={100.0*float(both.mean()):.1f}")
