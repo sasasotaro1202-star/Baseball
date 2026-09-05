@@ -4,6 +4,7 @@
 from __future__ import annotations
 from pathlib import Path
 import runpy
+import re
 
 P = Path("baseball_backtest.py")
 s = P.read_text(encoding="utf-8")
@@ -11,17 +12,25 @@ s = P.read_text(encoding="utf-8")
 # Quality-first production ceiling: one hour per workflow slice.
 # The workflow and engine must agree so the budget cannot be silently defeated.
 if "# BASEBALL_RUNTIME_BUDGET_HARDENING_V2" not in s:
-    old = 'self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 12600.0)  # production ceiling: 210:00'
-    if old in s:
-        new = 'self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 3600.0)  # production ceiling: 60:00'
-        s = s.replace(old, new, 1)
-    else:
-        # Be robust to an older/newer implementation while preserving the env contract.
-        import re
-        pat = r'self\.time_budget_sec\s*=\s*min\(float\(os\.getenv\("BASEBALL_TIME_BUDGET_SEC",\s*"1500"\)\),\s*[0-9.]+\)\s*#.*'
-        s, n = re.subn(pat, 'self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 3600.0)  # production ceiling: 60:00', s, count=1)
-        if n == 0:
-            raise SystemExit("[PRODUCTION PATCH] runtime budget anchor not found")
+    # This patch can run after MLB_SCORE_HILO_PATCH_V2 and/or other runtime
+    # patches. Accept either the historical min() form or the MLB max() form,
+    # and normalize both to the same one-hour workflow-controlled contract.
+    import re
+    pat = r'self\.time_budget_sec\s*=\s*(?:min\(float\(os\.getenv\("BASEBALL_TIME_BUDGET_SEC",\s*"1500"\)\),\s*[0-9.]+\)|max\(60\.0,\s*float\(os\.getenv\("BASEBALL_TIME_BUDGET_SEC",\s*"1500"\)\)))\s*(?:#.*)?'
+    s, n = re.subn(pat, 'self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 3600.0)  # production ceiling: 60:00', s, count=1)
+    if n == 0:
+        # Fallback for a future equivalent expression: locate the assignment
+        # line by its stable symbol and replace only that line.
+        lines = s.splitlines()
+        found = False
+        for i, line in enumerate(lines):
+            if "self.time_budget_sec" in line and "BASEBALL_TIME_BUDGET_SEC" in line and "=" in line:
+                lines[i] = '        self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 3600.0)  # production ceiling: 60:00'
+                found = True
+                break
+        if not found:
+            raise SystemExit("[PRODUCTION PATCH] runtime budget assignment not found")
+        s = "\n".join(lines) + ("\n" if s.endswith("\n") else "")
     s = s.replace("[HARD STOP] 210-minute production limit reached before processing", "[HARD STOP] 60-minute production limit reached before processing")
     s = s.replace("[HARD STOP] 210-minute production limit reached; skipping remaining leagues", "[HARD STOP] 60-minute production limit reached; skipping remaining leagues")
     s = "# BASEBALL_RUNTIME_BUDGET_HARDENING_V2\n" + s
