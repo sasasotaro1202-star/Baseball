@@ -16,7 +16,7 @@ def main():
     for rel in REQUIRED:
         if not (ROOT/rel).exists(): fail(f"required file missing: {rel}")
     collector=(ROOT/"npb_multi_source.py").read_text(encoding="utf-8"); backtest=(ROOT/"baseball_backtest.py").read_text(encoding="utf-8"); npbpatch=(ROOT/"npb_runtime_patch.py").read_text(encoding="utf-8"); official=(ROOT/"npb_official_schedule_patch.py").read_text(encoding="utf-8"); npbq=(ROOT/"npb_quality_runtime_patch.py").read_text(encoding="utf-8"); btpatch=(ROOT/"baseball_backtest_runtime_patch.py").read_text(encoding="utf-8"); prod=(ROOT/"baseball_production_runtime_patch.py").read_text(encoding="utf-8"); mlb=(ROOT/"baseball_mlb_score_hilo_patch.py").read_text(encoding="utf-8"); quality=(ROOT/"baseball_quality_runtime_patch.py").read_text(encoding="utf-8"); workflow=(ROOT/".github/workflows/baseball_production.yml").read_text(encoding="utf-8"); policy=json.loads((ROOT/"DATA_SOURCE_POLICY.json").read_text(encoding="utf-8"))
-    checks=[("RUNTIME_HARDENING_V5",npbpatch),("BACKTEST_RUNTIME_HARDENING_V3",btpatch),("BASEBALL_PRODUCTION_HARDENING_V1",prod),("MLB_SCORE_HILO_PATCH_V2",mlb),("BASEBALL_QUALITY_HARDENING_V1",quality),("NPB_QUALITY_HARDENING_V1",npbq),("OFFICIAL_NPB_SCHEDULE_VALIDATION_V1",official)]
+    checks=[("RUNTIME_HARDENING_V5",npbpatch),("BACKTEST_RUNTIME_HARDENING_V4",btpatch),("BASEBALL_PRODUCTION_HARDENING_V1",prod),("MLB_SCORE_HILO_PATCH_V2",mlb),("BASEBALL_QUALITY_HARDENING_V1",quality),("NPB_QUALITY_HARDENING_V1",npbq),("OFFICIAL_NPB_SCHEDULE_VALIDATION_V1",official)]
     for marker,text in checks:
         if marker not in text: fail(f"required hardening marker missing: {marker}")
     for needle in ("pred_score1","pred_score4","pred_low_prob","pred_high_prob","actual_low_high","score_exact_hit","low_high_hit"):
@@ -36,18 +36,20 @@ def main():
     if not re.search(r"MLB_MIN_STARTER_COVERAGE\s*:\s*['\"]?90(?:\.0)?['\"]?",workflow): fail("MLB starter threshold missing")
     if not re.search(r"NPB_COLLECTION_BUDGET_SEC\s*:\s*['\"]?12600['\"]?",workflow): fail("NPB 210-minute collection budget missing")
     if not re.search(r"BASEBALL_TIME_BUDGET_SEC\s*:\s*['\"]?12600['\"]?",workflow): fail("NPB 210-minute backtest budget missing")
-    if "timeout-minutes: 220" not in workflow: fail("NPB timeout headroom missing")
-    if not re.search(r"BASEBALL_TIME_BUDGET_SEC:\s*\"2100\"",workflow): fail("MLB runtime budget must leave runner headroom")
+    if not re.search(r"timeout-minutes:\s*220",workflow): fail("production timeout headroom missing")
+    if not re.search(r"BASEBALL_TIME_BUDGET_SEC:\s*\"12600\"",workflow): fail("MLB quality-first runtime budget missing")
     if "if: always()" not in workflow or "actions/download-artifact@v4" not in workflow: fail("artifact recovery missing")
     if "npb.jp" not in json.dumps(policy.get("NPB",{}),ensure_ascii=False).lower(): fail("NPB policy does not name official NPB")
     if "statsapi.mlb.com" not in json.dumps(policy.get("MLB",{}),ensure_ascii=False).lower(): fail("MLB policy does not name MLB Stats API")
     for name,text in (("baseball_backtest.py",backtest),("npb_multi_source.py",collector),("npb_runtime_patch.py",npbpatch),("npb_official_schedule_patch.py",official),("npb_quality_runtime_patch.py",npbq),("baseball_backtest_runtime_patch.py",btpatch),("baseball_production_runtime_patch.py",prod),("baseball_mlb_score_hilo_patch.py",mlb),("baseball_quality_runtime_patch.py",quality)):
         try: ast.parse(text,filename=name)
         except SyntaxError as e: fail(f"syntax error in {name}: {e}")
-    for name in ("_update_pitcher_history","match_features","aggregate_npb_games"): assert_ast_function(backtest,"baseball_backtest.py",name)
+    for name in ("_update_pitcher_history","match_features","aggregate_npb_games","fit_score_ensemble","predict_scores"): assert_ast_function(backtest,"baseball_backtest.py",name)
     feature_pos=backtest.find("match_features(row)"); update_pos=backtest.find("self._update_pitcher_history(row)")
     if feature_pos<0 or update_pos<0: fail("prediction/history call path missing")
     if feature_pos>update_pos: fail("pitcher history is updated before target feature generation")
+    for needle in ("_score_prior","prior_blend","_nb_nll","dispersion_home","dispersion_away"):
+        if needle not in backtest: fail(f"adaptive score layer missing: {needle}")
     agg=DATA/"npb_multi_source_games_all.csv"
     if not agg.exists(): print("[AUDIT] code/leakage-order/workflow/source-policy checks passed; aggregate data not present yet"); print("[AUDIT PASS]"); return
     d=pd.read_csv(agg,low_memory=False)
