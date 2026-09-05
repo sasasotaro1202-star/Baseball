@@ -34,10 +34,10 @@ def main():
         if needle not in workflow: fail(f"production workflow missing required reference: {needle}")
     if not re.search(r"NPB_MIN_STARTER_LINE_COVERAGE\s*:\s*['\"]?70(?:\.0)?['\"]?",workflow): fail("NPB starter threshold missing")
     if not re.search(r"MLB_MIN_STARTER_COVERAGE\s*:\s*['\"]?90(?:\.0)?['\"]?",workflow): fail("MLB starter threshold missing")
-    if not re.search(r"NPB_COLLECTION_BUDGET_SEC\s*:\s*['\"]?12600['\"]?",workflow): fail("NPB 210-minute collection budget missing")
-    if not re.search(r"BASEBALL_TIME_BUDGET_SEC\s*:\s*['\"]?12600['\"]?",workflow): fail("NPB 210-minute backtest budget missing")
-    if not re.search(r"timeout-minutes:\s*220",workflow): fail("production timeout headroom missing")
-    if not re.search(r"BASEBALL_TIME_BUDGET_SEC:\s*\"12600\"",workflow): fail("MLB quality-first runtime budget missing")
+    if not re.search(r"NPB_COLLECTION_BUDGET_SEC\s*:\s*['\"]?3600['\"]?",workflow): fail("NPB 60-minute collection budget missing")
+    if not re.search(r"BASEBALL_TIME_BUDGET_SEC\s*:\s*['\"]?3600['\"]?",workflow): fail("NPB 60-minute backtest budget missing")
+    if not re.search(r"timeout-minutes:\s*70",workflow): fail("production timeout missing")
+    if not re.search(r"BASEBALL_TIME_BUDGET_SEC:\s*\"3600\"",workflow): fail("MLB quality-first runtime budget missing")
     if "if: always()" not in workflow or "actions/download-artifact@v4" not in workflow: fail("artifact recovery missing")
     if "npb.jp" not in json.dumps(policy.get("NPB",{}),ensure_ascii=False).lower(): fail("NPB policy does not name official NPB")
     if "statsapi.mlb.com" not in json.dumps(policy.get("MLB",{}),ensure_ascii=False).lower(): fail("MLB policy does not name MLB Stats API")
@@ -48,10 +48,6 @@ def main():
     feature_pos=backtest.find("match_features(row)"); update_pos=backtest.find("self._update_pitcher_history(row)")
     if feature_pos<0 or update_pos<0: fail("prediction/history call path missing")
     if feature_pos>update_pos: fail("pitcher history is updated before target feature generation")
-    # Score hardening is intentionally delivered as a runtime patch so the
-    # immutable base engine stays compact. Audit the effective source contract
-    # across both files rather than incorrectly requiring patched symbols in the
-    # unmodified base module.
     effective_score = backtest + "\n" + btpatch
     for needle in ("_score_prior","prior_blend","_nb_nll","dispersion_home","dispersion_away"):
         if needle not in effective_score: fail(f"adaptive score layer missing: {needle}")
