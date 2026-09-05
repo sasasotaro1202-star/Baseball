@@ -1,0 +1,27 @@
+name: Baseball Backtest Audit
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile baseball_backtest.py baseball_backtest_runtime_patch.py npb_multi_source.py npb_runtime_patch.py backtest_audit.py
+      - name: Audit
+        run: python backtest_audit.py
