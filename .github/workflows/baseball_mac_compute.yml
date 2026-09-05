@@ -1,0 +1,113 @@
+name: Baseball Mac Compute Research
+
+on:
+  workflow_run:
+    workflows: ["Baseball Production Backtest"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  BASEBALL_TIME_BUDGET_SEC: "3600"
+  PYTHONUNBUFFERED: "1"
+
+concurrency:
+  group: baseball-mac-compute
+  cancel-in-progress: false
+
+jobs:
+  mac-research:
+    name: High-throughput Mac OOS research
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 70
+    steps:
+      - name: Checkout latest main state
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          clean: true
+
+      - name: Verify Mac worker
+        run: |
+          set -euo pipefail
+          sw_vers
+          uname -m
+          python3 --version
+
+      - name: Prepare isolated Python environment
+        run: |
+          set -euo pipefail
+          rm -rf .venv
+          python3 -m venv .venv
+          . .venv/bin/activate
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Apply production-quality hardening
+        run: |
+          set -euo pipefail
+          . .venv/bin/activate
+          python source_quality_gate.py
+          python repair_npb_syntax.py
+          python npb_runtime_patch.py
+          python npb_quality_runtime_patch.py
+          python baseball_mlb_score_hilo_patch.py
+          python baseball_quality_runtime_patch.py
+          python baseball_backtest_runtime_patch.py
+          python baseball_production_runtime_patch.py
+
+      - name: Preflight
+        run: |
+          set -euo pipefail
+          . .venv/bin/activate
+          python -m py_compile baseball_backtest.py npb_multi_source.py npb_runtime_patch.py npb_quality_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py backtest_audit.py source_quality_gate.py repair_npb_syntax.py research/research_loop.py
+          python backtest_audit.py
+
+      - name: Run NPB deep OOS backtest
+        run: |
+          set -euo pipefail
+          . .venv/bin/activate
+          mkdir -p data results
+          BASEBALL_TIME_BUDGET_SEC=1800 python baseball_backtest.py --npb-only --data-dir data
+
+      - name: Run MLB deep OOS backtest
+        run: |
+          set -euo pipefail
+          . .venv/bin/activate
+          mkdir -p data results
+          BASEBALL_TIME_BUDGET_SEC=1800 python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
+
+      - name: Run autonomous research analysis
+        run: |
+          set -euo pipefail
+          . .venv/bin/activate
+          python research/research_loop.py
+
+      - name: Persist Mac research state
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/ results/npb/ results/mlb/ research_state.json research_history.json research_plan.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "[MAC] no new state"
+          else
+            git commit -m "Persist baseball Mac compute research state"
+            git push
+          fi
+
+      - name: Upload Mac research artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseball-mac-research
+          path: |
+            results/
+            research_state.json
+            research_history.json
+            research_plan.json
+          if-no-files-found: warn
+          retention-days: 30
