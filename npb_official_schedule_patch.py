@@ -37,8 +37,10 @@ def _official_schedule_rows(year):
     if year in _OFFICIAL_SCHEDULE_CACHE:
         return _OFFICIAL_SCHEDULE_CACHE[year]
     rows = []
+    complete_fetch = True
     for month in range(3, 12):
         if near_deadline():
+            complete_fetch = False
             break
         url = f"{NPB}/games/{year}/schedule_{month:02d}_detail.html"
         try:
@@ -46,11 +48,14 @@ def _official_schedule_rows(year):
             r.raise_for_status()
             tables = pd.read_html(io.StringIO(r.text))
         except Exception as exc:
+            complete_fetch = False
             print(f"[OFFICIAL SCHEDULE SKIP] year={year} month={month}: {exc}")
-            continue
+            break
+        found_table = False
         for table in tables:
             if "月日" not in table.columns or "対戦カード" not in table.columns:
                 continue
+            found_table = True
             for _, rec in table.iterrows():
                 date_text = str(rec.get("月日", ""))
                 m = re.search(r"(\d{1,2})/(\d{1,2})", date_text)
@@ -87,6 +92,12 @@ def _official_schedule_rows(year):
                     int(away_score) if score_known else None,
                     score_known,
                 ))
+        if not found_table:
+            complete_fetch = False
+            print(f"[OFFICIAL SCHEDULE SKIP] year={year} month={month}: expected NPB.jp schedule table missing")
+            break
+    if not complete_fetch:
+        rows = []
     _OFFICIAL_SCHEDULE_CACHE[year] = rows
     return rows
 
