@@ -66,19 +66,35 @@ jobs:
           python -m py_compile baseball_backtest.py npb_multi_source.py npb_runtime_patch.py npb_quality_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py backtest_audit.py source_quality_gate.py repair_npb_syntax.py research/research_loop.py
           python backtest_audit.py
 
-      - name: Run NPB deep OOS backtest
+      - name: Run NPB deep OOS backtest with checkpoint-safe retries
         run: |
           set -euo pipefail
           . .venv/bin/activate
           mkdir -p data results
-          BASEBALL_TIME_BUDGET_SEC=1800 python baseball_backtest.py --npb-only --data-dir data
+          for attempt in 1 2 3; do
+            echo "[MAC NPB] attempt ${attempt}/3"
+            if BASEBALL_TIME_BUDGET_SEC=1800 python baseball_backtest.py --npb-only --data-dir data; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then sleep 15; fi
+          done
+          echo "[MAC NPB] all retries failed"
+          exit 1
 
-      - name: Run MLB deep OOS backtest
+      - name: Run MLB deep OOS backtest with retries
         run: |
           set -euo pipefail
           . .venv/bin/activate
           mkdir -p data results
-          BASEBALL_TIME_BUDGET_SEC=1800 python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
+          for attempt in 1 2 3; do
+            echo "[MAC MLB] attempt ${attempt}/3"
+            if BASEBALL_TIME_BUDGET_SEC=1800 python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then sleep 15; fi
+          done
+          echo "[MAC MLB] all retries failed"
+          exit 1
 
       - name: Persist Mac OOS results
         run: |
