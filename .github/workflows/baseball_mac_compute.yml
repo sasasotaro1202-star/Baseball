@@ -95,7 +95,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "[MAC] no new state"
           else
-            git commit -m "Persist baseball Mac compute research state"
+            git commit -m "Update autonomous baseball research state"
             git push
           fi
 
