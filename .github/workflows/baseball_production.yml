@@ -36,16 +36,16 @@ jobs:
     if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Persist combined baseball production state')
     name: NPB collect + OOS backtest
     runs-on: ubuntu-latest
-    timeout-minutes: 220
+    timeout-minutes: 70
     env:
       NPB_START_YEAR: ${{ inputs.npb_start_year || '1990' }}
       NPB_END_YEAR: ${{ inputs.npb_end_year || '2026' }}
       NPB_DOWNLOAD_WORKERS: "6"
       NPB_MIN_STARTER_LINE_COVERAGE: "70"
       NPB_MIN_STARTER_COVERAGE: "70"
-      NPB_COLLECTION_BUDGET_SEC: "12600"
+      NPB_COLLECTION_BUDGET_SEC: "3600"
       NPB_COLLECTION_SAFETY_SEC: "300"
-      BASEBALL_TIME_BUDGET_SEC: "12600"
+      BASEBALL_TIME_BUDGET_SEC: "3600"
       NPB_RECENCY_HALF_LIFE_GAMES: "1800"
       PYTHONUNBUFFERED: "1"
     steps:
@@ -127,9 +127,9 @@ jobs:
     if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Persist combined baseball production state')
     name: MLB starter-enriched OOS backtest
     runs-on: ubuntu-latest
-    timeout-minutes: 220
+    timeout-minutes: 70
     env:
-      BASEBALL_TIME_BUDGET_SEC: "12600"
+      BASEBALL_TIME_BUDGET_SEC: "3600"
       MLB_ENRICH_STARTERS: "1"
       MLB_MIN_STARTER_COVERAGE: "90"
       PYTHONUNBUFFERED: "1"
@@ -221,6 +221,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "[COMMIT] no changes."
           else
-            git commit -m "Persist combined baseball production state and repaired collector"
+            git commit -m "Persist combined baseball production state"
             git push
           fi
