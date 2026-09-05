@@ -33,16 +33,16 @@ jobs:
   npb:
     name: NPB collect + OOS backtest
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 220
     env:
       NPB_START_YEAR: ${{ inputs.npb_start_year || '1990' }}
       NPB_END_YEAR: ${{ inputs.npb_end_year || '2026' }}
       NPB_DOWNLOAD_WORKERS: "6"
       NPB_MIN_STARTER_LINE_COVERAGE: "70"
       NPB_MIN_STARTER_COVERAGE: "70"
-      NPB_COLLECTION_BUDGET_SEC: "1450"
-      NPB_COLLECTION_SAFETY_SEC: "180"
-      BASEBALL_TIME_BUDGET_SEC: "1450"
+      NPB_COLLECTION_BUDGET_SEC: "12600"
+      NPB_COLLECTION_SAFETY_SEC: "300"
+      BASEBALL_TIME_BUDGET_SEC: "12600"
       NPB_RECENCY_HALF_LIFE_GAMES: "1800"
       PYTHONUNBUFFERED: "1"
     steps:
@@ -121,9 +121,9 @@ jobs:
   mlb:
     name: MLB starter-enriched OOS backtest
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
-      BASEBALL_TIME_BUDGET_SEC: "1450"
+      BASEBALL_TIME_BUDGET_SEC: "2400"
       MLB_ENRICH_STARTERS: "1"
       MLB_MIN_STARTER_COVERAGE: "90"
       PYTHONUNBUFFERED: "1"
@@ -177,7 +177,7 @@ jobs:
     needs: [npb, mlb]
     if: always() && (needs.npb.result != 'cancelled' || needs.mlb.result != 'cancelled')
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
