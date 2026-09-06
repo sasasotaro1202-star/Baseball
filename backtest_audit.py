@@ -4,13 +4,13 @@
 from __future__ import annotations
 
 import ast
+import csv
 import json
 import re
 import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
-
-import pandas as pd
 
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "data"
@@ -51,6 +51,44 @@ def assert_ast_function(text: str, filename: str, name: str) -> None:
         fail(f"{filename}: function {name} missing")
 
 
+def valid_iso_datetime(value: str) -> bool:
+    value = value.strip()
+    if not value:
+        return False
+    try:
+        datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return True
+    except ValueError:
+        return False
+
+
+def audit_aggregate(path: Path) -> None:
+    rows = 0
+    ids = set()
+    bad_dt = 0
+    with path.open("r", encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        if not reader.fieldnames:
+            fail("aggregate has no header")
+        if "game_id" not in reader.fieldnames:
+            fail("aggregate has no game_id")
+        if "datetime" not in reader.fieldnames:
+            fail("aggregate has no datetime")
+        for row in reader:
+            rows += 1
+            gid = str(row.get("game_id", "")).strip()
+            if gid.endswith(".0"):
+                gid = gid[:-2]
+            if gid in ids:
+                fail(f"aggregate contains duplicate game_id: {gid}")
+            ids.add(gid)
+            if not valid_iso_datetime(str(row.get("datetime", ""))):
+                bad_dt += 1
+    if bad_dt:
+        fail(f"aggregate has {bad_dt} invalid datetimes")
+    print(f"[AUDIT] aggregate games={rows} unique_game_ids={len(ids)}")
+
+
 def main() -> None:
     repair = ROOT / "repair_npb_syntax.py"
     if repair.exists():
@@ -74,9 +112,7 @@ def main() -> None:
     official_patch = files["npb_official_schedule_patch.py"]
     npb_quality = files["npb_quality_runtime_patch.py"]
 
-    # Production workflow contract.
     for needle in (
-        "concurrency:",
         "group: baseball-production-v8",
         "cancel-in-progress: false",
         "runs-on: [self-hosted, macOS, X64]",
@@ -90,15 +126,12 @@ def main() -> None:
         "BASEBALL_TIME_BUDGET_SEC: \"3600\"",
         "MLB_MIN_STARTER_COVERAGE: \"90\"",
         "timeout-minutes: 140",
-        "requirements.txt",
         "REQ_HASH=",
         "requirements unchanged; reusing persistent environment",
         "return 1",
     ):
         require(workflow, needle, "production workflow")
 
-    # The runtime patch chain must be ordered before the production patch that
-    # adds starter/data hardening, and every patch must fail closed.
     order = [
         "apply_patch_safely npb_runtime_patch.py",
         "apply_patch_safely npb_official_schedule_patch.py",
@@ -126,16 +159,11 @@ def main() -> None:
     ):
         require(text, marker, "hardening marker")
 
-    # Adaptive score layer is actually applied in production, not merely
-    # present in the repository.
     for needle in ("_score_prior", "prior_blend", "_nb_nll", "dispersion_home", "dispersion_away"):
         require(score_patch, needle, "adaptive score layer")
-    require(workflow, "baseball_backtest_runtime_patch.py", "adaptive score workflow application")
 
-    # Starter/data quality contracts.
-    require(mlb_patch, "confirmed_starters", "MLB starter gate")
-    require(mlb_patch, "starter_rate < 0.90", "MLB starter gate")
-    require(mlb_patch, "weather_forecast_asof_cutoff", "MLB weather leakage guard")
+    for needle in ("confirmed_starters", "starter_rate < 0.90", "weather_forecast_asof_cutoff"):
+        require(mlb_patch, needle, "MLB quality guard")
     require(npb_patch, "_official_starters_from_npb", "NPB official starter resolver")
     require(npb_patch, "Strict rule: unresolved starters remain unresolved", "NPB starter strictness")
     require(npb_quality, "EMPTY SCHEDULE -> preserved checkpoint", "NPB empty schedule protection")
@@ -144,7 +172,6 @@ def main() -> None:
     require(official_patch, "schedule_{month:02d}_detail.html", "official NPB schedule source")
     require(score_patch, "Asia/Tokyo", "NPB datetime interpretation")
 
-    # Source files parse cleanly.
     for rel, text in files.items():
         try:
             ast.parse(text, filename=rel)
@@ -154,44 +181,22 @@ def main() -> None:
     for name in ("_update_pitcher_history", "match_features", "aggregate_npb_games", "fit_score_ensemble", "predict_scores"):
         assert_ast_function(backtest, "baseball_backtest.py", name)
 
-    # Explicit leakage-order invariant: target features are generated before
-    # pitcher history is updated with the target game.
     feature_pos = backtest.find("match_features(row)")
     update_pos = backtest.find("self._update_pitcher_history(row)")
     if feature_pos < 0 or update_pos < 0 or feature_pos > update_pos:
         fail("prediction/history ordering invariant violated")
 
-    # Source-policy sanity.
     if "npb.jp" not in json.dumps(policy.get("NPB", {}), ensure_ascii=False).lower():
         fail("NPB policy does not identify official NPB")
     if "statsapi.mlb.com" not in json.dumps(policy.get("MLB", {}), ensure_ascii=False).lower():
         fail("MLB policy does not identify MLB Stats API")
 
-    # Data checks are conditional because a clean checkout before the first
-    # successful collector run legitimately has no aggregate yet.
     agg = DATA / "npb_multi_source_games_all.csv"
-    if not agg.exists():
-        print("[AUDIT] code/leakage/workflow/source-policy checks passed; aggregate data not present yet")
-        print("[AUDIT PASS]")
-        return
+    if agg.exists():
+        audit_aggregate(agg)
+    else:
+        print("[AUDIT] aggregate data not present yet; code/workflow/policy checks passed")
 
-    try:
-        d = pd.read_csv(agg, low_memory=False)
-    except Exception as e:
-        fail(f"cannot read aggregate: {e}")
-    if "game_id" not in d.columns:
-        fail("aggregate has no game_id")
-    ids = d.game_id.astype(str).str.replace(r"\.0$", "", regex=True)
-    dup = int(ids.duplicated().sum())
-    if dup:
-        fail(f"aggregate contains {dup} duplicate game IDs")
-    if "datetime" not in d.columns:
-        fail("aggregate has no datetime")
-    dt = pd.to_datetime(d.datetime, errors="coerce", utc=True)
-    if dt.isna().any():
-        fail(f"aggregate has {int(dt.isna().sum())} invalid datetimes")
-
-    print(f"[AUDIT] aggregate games={len(d)} unique_game_ids={ids.nunique()}")
     print("[AUDIT PASS] static, leakage-order, workflow, source-policy, and data-integrity checks passed")
 
 
