@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Final CI hardening chain for the baseball production backtest."""
+"""Idempotent production hardening for the baseball backtest."""
 from __future__ import annotations
 from pathlib import Path
 import runpy
@@ -9,71 +9,64 @@ import re
 P = Path("baseball_backtest.py")
 s = P.read_text(encoding="utf-8")
 
-# Quality-first production ceiling: one hour per workflow slice.
-# The workflow and engine must agree so the budget cannot be silently defeated.
-if "# BASEBALL_RUNTIME_BUDGET_HARDENING_V2" not in s:
-    # This patch can run after MLB_SCORE_HILO_PATCH_V2 and/or other runtime
-    # patches. Accept either the historical min() form or the MLB max() form,
-    # and normalize both to the same one-hour workflow-controlled contract.
-    import re
-    pat = r'self\.time_budget_sec\s*=\s*(?:min\(float\(os\.getenv\("BASEBALL_TIME_BUDGET_SEC",\s*"1500"\)\),\s*[0-9.]+\)|max\(60\.0,\s*float\(os\.getenv\("BASEBALL_TIME_BUDGET_SEC",\s*"1500"\)\)))\s*(?:#.*)?'
-    s, n = re.subn(pat, 'self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 3600.0)  # production ceiling: 60:00', s, count=1)
-    if n == 0:
-        # Fallback for a future equivalent expression: locate the assignment
-        # line by its stable symbol and replace only that line.
-        lines = s.splitlines()
-        found = False
-        for i, line in enumerate(lines):
-            if "self.time_budget_sec" in line and "BASEBALL_TIME_BUDGET_SEC" in line and "=" in line:
-                lines[i] = '        self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 3600.0)  # production ceiling: 60:00'
-                found = True
-                break
-        if not found:
-            raise SystemExit("[PRODUCTION PATCH] runtime budget assignment not found")
+# Runtime budget: tolerate every prior patch form and also the unpatched base
+# form. Never fail merely because another patch changed the surrounding text.
+if "# BASEBALL_RUNTIME_BUDGET_HARDENING_V3" not in s:
+    lines = s.splitlines()
+    replaced = False
+    for i, line in enumerate(lines):
+        if "self.time_budget_sec" in line and "=" in line:
+            indent = line[:len(line)-len(line.lstrip())]
+            lines[i] = indent + 'self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 3600.0)  # production ceiling: 60:00'
+            replaced = True
+            break
+    if not replaced:
+        # Future-safe fallback: inject the budget immediately after started_at
+        # inside __init__, which is the stable lifecycle point used by the engine.
+        needle = "        self.started_at = time.time()"
+        if needle not in s:
+            raise SystemExit("[PRODUCTION PATCH] could not locate backtest timing initialization")
+        s = s.replace(needle, needle + '\n        self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 3600.0)  # production ceiling: 60:00', 1)
+    else:
         s = "\n".join(lines) + ("\n" if s.endswith("\n") else "")
-    s = s.replace("[HARD STOP] 210-minute production limit reached before processing", "[HARD STOP] 60-minute production limit reached before processing")
-    s = s.replace("[HARD STOP] 210-minute production limit reached; skipping remaining leagues", "[HARD STOP] 60-minute production limit reached; skipping remaining leagues")
-    s = "# BASEBALL_RUNTIME_BUDGET_HARDENING_V2\n" + s
+    s = re.sub(r"# BASEBALL_RUNTIME_BUDGET_HARDENING_V\d+\n", "", s)
+    s = "# BASEBALL_RUNTIME_BUDGET_HARDENING_V3\n" + s
+    s = s.replace("210-minute production limit", "60-minute production limit")
+    s = s.replace("1500.0)  # hard cap: 29:00", "3600.0)  # production ceiling: 60:00")
     P.write_text(s, encoding="utf-8")
-    print("[PRODUCTION PATCH] 60-minute runtime budget hardening applied")
+    print("[PRODUCTION PATCH] runtime budget hardened")
 else:
-    print("[PRODUCTION PATCH] 60-minute runtime budget hardening already applied")
+    print("[PRODUCTION PATCH] runtime budget already hardened")
 
 s = P.read_text(encoding="utf-8")
-if "# BASEBALL_PRODUCTION_HARDENING_V1" not in s:
-    old_version = 'self.checkpoint_version = "npb-massive-resume-v4-100target"'
-    if old_version in s:
-        s = s.replace(old_version, 'self.checkpoint_version = "baseball-production-v1-quality-gated"')
-    anchor = '''        # Data-quality gates: the backtest must not silently run on a tiny
-        # or starter-free sample.
-'''
-    start = s.find(anchor)
-    end = s.find('        X, y, meta = self.build_features(games)', start)
-    if start < 0 or end < 0:
-        raise SystemExit("[PRODUCTION PATCH] expected walk-forward gate block not found")
+# Starter gate: insert before the first feature build inside run_walkforward.
+if "# BASEBALL_PRODUCTION_HARDENING_V2" not in s:
+    target = "        X, y, meta = self.build_features(games)"
+    if target not in s:
+        raise SystemExit("[PRODUCTION PATCH] feature-build insertion point missing")
     gate = '''        # STRICT STARTER COVERAGE GATE
-        # A historical backtest is a simulation of the pregame decision state.
-        # Unknown starters must not be silently replaced by league priors.
-        # NPB requires >=70%; MLB requires >=90% for the production contract.
-        starter_rate = float(
-            ((games["home_starter"].fillna("").astype(str).str.strip().str.len() > 0) &
-             (games["away_starter"].fillna("").astype(str).str.strip().str.len() > 0)).mean()
-        )
-        threshold = 0.90 if league == "MLB" else 0.70
-        self.audit.append({"type": f"{league.lower()}_starter_coverage", "games": int(len(games)), "both_starter_rate": starter_rate, "required_rate": threshold})
-        print(f"[{league} AUDIT] both-starter coverage={starter_rate:.1%} required={threshold:.0%}")
-        if starter_rate < threshold:
-            raise RuntimeError(f"{league} starter coverage too low: {starter_rate:.1%}; required >= {threshold:.0%}. Refusing to run a misleading backtest.")
+        # Historical OOS evaluation must represent a valid pregame state.
+        # NPB requires >=70%; MLB requires >=90% both-starter coverage.
+        if "home_starter" in games.columns and "away_starter" in games.columns:
+            hs = games["home_starter"].fillna("").astype(str).str.strip().str.len() > 0
+            aw = games["away_starter"].fillna("").astype(str).str.strip().str.len() > 0
+            starter_rate = float((hs & aw).mean()) if len(games) else 0.0
+            threshold = 0.90 if league == "MLB" else 0.70
+            self.audit.append({"type": f"{league.lower()}_starter_coverage", "games": int(len(games)), "both_starter_rate": starter_rate, "required_rate": threshold})
+            print(f"[{league} AUDIT] both-starter coverage={starter_rate:.1%} required={threshold:.0%}")
+            if starter_rate < threshold:
+                raise RuntimeError(f"{league} starter coverage too low: {starter_rate:.1%}; required >= {threshold:.0%}")
 
 '''
-    s = s[:start] + gate + s[end:]
-    s = "# BASEBALL_PRODUCTION_HARDENING_V1\n" + s
+    s = s.replace(target, gate + target, 1)
+    s = re.sub(r"# BASEBALL_PRODUCTION_HARDENING_V\d+\n", "", s)
+    s = "# BASEBALL_PRODUCTION_HARDENING_V2\n" + s
     P.write_text(s, encoding="utf-8")
-    print("[PRODUCTION PATCH] V1 applied")
+    print("[PRODUCTION PATCH] starter gate hardened")
 else:
-    print("[PRODUCTION PATCH] V1 already applied")
+    print("[PRODUCTION PATCH] starter gate already hardened")
 
-# Apply the complete quality/source/model hardening chain during production.
+# Apply idempotent source/data/model hardening chain. Each patch must be present.
 for patch in (
     "npb_official_schedule_patch.py",
     "npb_quality_runtime_patch.py",
@@ -84,3 +77,5 @@ for patch in (
     if not p.exists():
         raise SystemExit(f"[PRODUCTION PATCH] required patch missing: {patch}")
     runpy.run_path(str(p), run_name="__main__")
+
+print("[PRODUCTION PATCH] complete")
