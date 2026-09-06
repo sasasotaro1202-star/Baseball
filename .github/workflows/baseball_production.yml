@@ -10,7 +10,7 @@ permissions:
   contents: write
   actions: write
 concurrency:
-  group: baseball-production-v7
+  group: baseball-production-v8
   cancel-in-progress: false
 env:
   PYTHONUNBUFFERED: "1"
@@ -25,15 +25,27 @@ jobs:
           set -euo pipefail
           VENV="$HOME/.baseball-production-venv"
           python3 -m venv "$VENV" 2>/dev/null || true
-          "$VENV/bin/python" -m pip install --upgrade pip
-          "$VENV/bin/python" -m pip install -r requirements.txt
+          REQ_HASH="$(shasum -a 256 requirements.txt | awk '{print $1}')"
+          MARKER="$VENV/.requirements-$REQ_HASH"
+          if [ ! -f "$MARKER" ]; then
+            "$VENV/bin/python" -m pip install --upgrade pip
+            "$VENV/bin/python" -m pip install -r requirements.txt
+            find "$VENV" -maxdepth 1 -name '.requirements-*' -type f -delete
+            touch "$MARKER"
+          else
+            echo "[DEPS] requirements unchanged; reusing persistent environment"
+          fi
+          "$VENV/bin/python" - <<'PY'
+          import numpy,pandas,sklearn,requests
+          print('[DEPS] core imports OK')
+          PY
           echo "$VENV/bin" >> "$GITHUB_PATH"
       - name: Preflight
         run: |
           set -euo pipefail
           python source_quality_gate.py
           python repair_npb_syntax.py
-          python -m py_compile npb_multi_source.py baseball_backtest.py repair_npb_syntax.py source_quality_gate.py backtest_audit.py
+          python -m py_compile npb_multi_source.py baseball_backtest.py baseball_backtest_runtime_patch.py repair_npb_syntax.py source_quality_gate.py backtest_audit.py
           apply_patch_safely() {
             local patch="$1"
             cp baseball_backtest.py /tmp/baseball_backtest_pre_patch.py
@@ -42,15 +54,17 @@ jobs:
             else
               echo "[PATCH] $patch rejected; restoring valid source"
               cp /tmp/baseball_backtest_pre_patch.py baseball_backtest.py
+              return 1
             fi
           }
           apply_patch_safely npb_runtime_patch.py
           apply_patch_safely npb_official_schedule_patch.py
           apply_patch_safely npb_quality_runtime_patch.py
+          apply_patch_safely baseball_backtest_runtime_patch.py
           apply_patch_safely baseball_production_runtime_patch.py
           apply_patch_safely baseball_mlb_score_hilo_patch.py
           apply_patch_safely baseball_quality_runtime_patch.py
-          python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
+          python -m py_compile npb_multi_source.py baseball_backtest.py baseball_backtest_runtime_patch.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
       - name: NPB collection and OOS
         env:
           NPB_START_YEAR: "1990"
@@ -58,9 +72,9 @@ jobs:
           NPB_DOWNLOAD_WORKERS: "4"
           NPB_MIN_STARTER_LINE_COVERAGE: "70"
           NPB_MIN_STARTER_COVERAGE: "70"
-          NPB_COLLECTION_BUDGET_SEC: "5400"
+          NPB_COLLECTION_BUDGET_SEC: "3600"
           NPB_COLLECTION_SAFETY_SEC: "300"
-          BASEBALL_TIME_BUDGET_SEC: "5400"
+          BASEBALL_TIME_BUDGET_SEC: "3600"
         run: |
           set -euo pipefail
           mkdir -p data results
@@ -77,7 +91,7 @@ jobs:
           python baseball_backtest.py --npb-only --data-dir data
       - name: MLB starter-enriched OOS
         env:
-          BASEBALL_TIME_BUDGET_SEC: "5400"
+          BASEBALL_TIME_BUDGET_SEC: "3600"
           MLB_ENRICH_STARTERS: "1"
           MLB_MIN_STARTER_COVERAGE: "90"
         run: python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
@@ -86,6 +100,7 @@ jobs:
           set -euo pipefail
           find results -maxdepth 2 -type f -print | head -100
           test -d results
+          test -n "$(find results -type f -print -quit)"
       - name: Persist
         if: always()
         run: |
