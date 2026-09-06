@@ -65,7 +65,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p data results
-          python npb_multi_source.py
+          caffeinate -dimsu python npb_multi_source.py
           python - <<'PY'
           import json
           from pathlib import Path
@@ -75,13 +75,13 @@ jobs:
           if not s.get('complete',False): raise SystemExit(2)
           if not s.get('aggregate_games'): raise SystemExit('NPB quality gate: zero aggregate games')
           PY
-          python baseball_backtest.py --npb-only --data-dir data
+          caffeinate -dimsu python baseball_backtest.py --npb-only --data-dir data
       - name: MLB data acquisition, starter quality gate and chronological OOS
         env:
           BASEBALL_TIME_BUDGET_SEC: "3600"
           MLB_ENRICH_STARTERS: "1"
           MLB_MIN_STARTER_COVERAGE: "90"
-        run: python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
+        run: caffeinate -dimsu python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
       - name: Validate OOS predictions before any state write
         run: |
           set -euo pipefail
