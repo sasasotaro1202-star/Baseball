@@ -10,7 +10,7 @@ permissions:
   contents: write
   actions: write
 concurrency:
-  group: baseball-production-v2
+  group: baseball-production
   cancel-in-progress: false
 env:
   PYTHONUNBUFFERED: "1"
