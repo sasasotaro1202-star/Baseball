@@ -66,28 +66,20 @@ jobs:
               print(f"[WATCHDOG] dispatch {label}: {workflow}")
               subprocess.run(["gh", "workflow", "run", workflow, "--repo", repo, "--ref", "main"], check=True)
 
-          # 1. Recover Production first. A failed/cancelled production stage is
-          #    retried as a fresh run; queued/in-progress runs are never duplicated.
           if not active(prod) and not success(prod):
               dispatch("production recovery", workflows["production"])
               raise SystemExit(0)
 
-          # 2. A successful Production completion must eventually have a successful
-          #    Mac OOS run newer than it. Otherwise launch/recover Mac.
           if success(prod) and (not success(mac) or ts(mac) < ts(prod)):
               if not active(mac):
                   dispatch("Mac OOS", workflows["mac"])
               raise SystemExit(0)
 
-          # 3. A successful Mac OOS completion must eventually have a successful
-          #    Research run newer than it. Otherwise launch/recover Research.
           if success(mac) and (not success(research) or ts(research) < ts(mac)):
               if not active(research):
                   dispatch("autonomous research", workflows["research"])
               raise SystemExit(0)
 
-          # 4. Once Research succeeds after the latest Production, start the next
-          #    autonomous production cycle. This closes the continuous loop.
           if success(research) and ts(research) > ts(prod):
               if not active(prod):
                   dispatch("next production cycle", workflows["production"])
@@ -103,3 +95,5 @@ jobs:
           echo "[RECOVERY] Production -> Mac OOS -> Research -> next Production is enforced as a state machine."
           echo "[RECOVERY] Failed/cancelled stages are dispatched again; active stages are never duplicated."
           echo "[RECOVERY] Research success automatically closes the loop into the next Production cycle."
+
+# HEARTBEAT: force a fresh Actions validation after hardening changes.
