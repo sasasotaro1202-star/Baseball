@@ -1,0 +1,171 @@
+name: Baseball Exact Parallel Verification
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: baseball-exact-parallel-verification
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  baseline:
+    runs-on: [self-hosted, macOS, X64]
+    timeout-minutes: 140
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          ref: ${{ github.sha }}
+      - name: Setup Python
+        run: |
+          set -euo pipefail
+          VENV="$HOME/.baseball-production-venv"
+          python3 -m venv "$VENV" 2>/dev/null || true
+          REQ_HASH="$(shasum -a 256 requirements.txt | awk '{print $1}')"
+          MARKER="$VENV/.requirements-$REQ_HASH"
+          if [ ! -f "$MARKER" ]; then
+            "$VENV/bin/python" -m pip install --upgrade pip
+            "$VENV/bin/python" -m pip install -r requirements.txt
+            find "$VENV" -maxdepth 1 -name '.requirements-*' -type f -delete
+            touch "$MARKER"
+          fi
+          echo "$VENV/bin" >> "$GITHUB_PATH"
+      - name: Apply exact production patch chain
+        run: |
+          set -euo pipefail
+          python source_quality_gate.py
+          python repair_npb_syntax.py
+          for p in npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py; do
+            python "$p"
+            python -m py_compile baseball_backtest.py
+          done
+      - name: Frozen data collection and canonical baseline
+        env:
+          NPB_START_YEAR: "2017"
+          NPB_END_YEAR: "2026"
+          NPB_DOWNLOAD_WORKERS: "4"
+          NPB_MIN_STARTER_LINE_COVERAGE: "70"
+          NPB_MIN_STARTER_COVERAGE: "70"
+          NPB_COLLECTION_BUDGET_SEC: "3600"
+          NPB_COLLECTION_SAFETY_SEC: "300"
+          BASEBALL_TIME_BUDGET_SEC: "3600"
+          MLB_ENRICH_STARTERS: "1"
+          MLB_MIN_STARTER_COVERAGE: "90"
+        run: |
+          set -euo pipefail
+          rm -rf results exact_parallel/baseline exact_parallel/out
+          mkdir -p data results exact_parallel/baseline
+          python npb_multi_source.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('data/checkpoints/npb_collection_status.json')
+          if not p.exists(): raise SystemExit('NPB collection status missing')
+          s=json.loads(p.read_text())
+          if not s.get('complete',False): raise SystemExit('NPB collection incomplete')
+          print('[NPB STATUS]',s.get('aggregate_games'))
+          PY
+          python baseball_backtest.py --npb-only --data-dir data
+          python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
+          test -s results/npb_backtest_results.csv
+          test -s results/mlb_backtest_results.csv
+          cp results/npb_backtest_results.csv exact_parallel/baseline/
+          cp results/mlb_backtest_results.csv exact_parallel/baseline/
+      - name: Upload frozen data and baseline
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseball-exact-input-${{ github.run_id }}
+          path: |
+            data/
+            exact_parallel/baseline/
+          if-no-files-found: error
+          retention-days: 7
+
+  worker:
+    needs: baseline
+    strategy:
+      fail-fast: true
+      max-parallel: 4
+      matrix:
+        worker: [0,1,2,3]
+    runs-on: [self-hosted, macOS, X64]
+    timeout-minutes: 140
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          ref: ${{ github.sha }}
+      - name: Setup Python
+        run: |
+          set -euo pipefail
+          VENV="$HOME/.baseball-production-venv"
+          python3 -m venv "$VENV" 2>/dev/null || true
+          REQ_HASH="$(shasum -a 256 requirements.txt | awk '{print $1}')"
+          MARKER="$VENV/.requirements-$REQ_HASH"
+          if [ ! -f "$MARKER" ]; then
+            "$VENV/bin/python" -m pip install --upgrade pip
+            "$VENV/bin/python" -m pip install -r requirements.txt
+            find "$VENV" -maxdepth 1 -name '.requirements-*' -type f -delete
+            touch "$MARKER"
+          fi
+          echo "$VENV/bin" >> "$GITHUB_PATH"
+      - name: Restore frozen input
+        uses: actions/download-artifact@v4
+        with:
+          name: baseball-exact-input-${{ github.run_id }}
+          path: .
+      - name: Exact replay and shard
+        env:
+          WORKER_ID: ${{ matrix.worker }}
+          WORKER_COUNT: "4"
+          GITHUB_SHA: ${{ github.sha }}
+        run: python exact_parallel/worker.py
+      - name: Upload worker result
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseball-exact-worker-${{ matrix.worker }}-${{ github.run_id }}
+          path: exact_parallel/out/
+          if-no-files-found: error
+          retention-days: 7
+
+  aggregate:
+    needs: worker
+    runs-on: [self-hosted, macOS, X64]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          ref: ${{ github.sha }}
+      - name: Restore baseline
+        uses: actions/download-artifact@v4
+        with:
+          name: baseball-exact-input-${{ github.run_id }}
+          path: .
+      - name: Restore workers
+        uses: actions/download-artifact@v4
+        with:
+          pattern: baseball-exact-worker-*-${{ github.run_id }}
+          path: exact_parallel/out
+          merge-multiple: true
+      - name: Strict equality gate
+        run: |
+          set -euo pipefail
+          python exact_parallel/aggregate.py
+          cat exact_parallel/equality_gate.json
+      - name: Upload verification report
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseball-exact-parallel-report-${{ github.run_id }}
+          path: |
+            exact_parallel/equality_gate.json
+            exact_parallel/merged_*_backtest_results.csv
+          if-no-files-found: error
+          retention-days: 30
