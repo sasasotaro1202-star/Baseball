@@ -1,269 +1,118 @@
 name: Baseball Production Backtest
 
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - 'data/**'
-      - 'results/**'
-      - 'research_state.json'
-      - 'research_history.json'
-      - 'research_plan.json'
   workflow_dispatch:
     inputs:
-      npb_start_year:
-        description: "NPB start year"
-        required: false
-        default: "1990"
-      npb_end_year:
-        description: "NPB end year"
-        required: false
-        default: "2026"
-      mlb_start_year:
-        description: "MLB start year"
-        required: false
-        default: "2020"
-      mlb_end_year:
-        description: "MLB end year"
-        required: false
-        default: "2026"
+      npb_start_year: {description: "NPB start year", required: false, default: "1990"}
+      npb_end_year: {description: "NPB end year", required: false, default: "2026"}
+      mlb_start_year: {description: "MLB start year", required: false, default: "2020"}
+      mlb_end_year: {description: "MLB end year", required: false, default: "2026"}
   schedule:
     - cron: "17 */6 * * *"
+  push:
+    branches: [main]
+    paths-ignore: ["data/**", "results/**", "research_state.json", "research_history.json", "research_plan.json"]
 
 permissions:
   contents: write
   actions: write
 
 concurrency:
-  group: baseball-production-v4
-  cancel-in-progress: false
+  group: baseball-production-v5
+  cancel-in-progress: true
 
 env:
   PYTHONUNBUFFERED: "1"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
 
 jobs:
-  npb:
-    name: NPB collect + OOS backtest
-    runs-on: [self-hosted, macOS, X64]
-    timeout-minutes: 70
-    env:
-      NPB_START_YEAR: ${{ inputs.npb_start_year || '1990' }}
-      NPB_END_YEAR: ${{ inputs.npb_end_year || '2026' }}
-      NPB_DOWNLOAD_WORKERS: "6"
-      NPB_MIN_STARTER_LINE_COVERAGE: "70"
-      NPB_MIN_STARTER_COVERAGE: "70"
-      NPB_COLLECTION_BUDGET_SEC: "3600"
-      NPB_COLLECTION_SAFETY_SEC: "300"
-      BASEBALL_TIME_BUDGET_SEC: "3600"
-      NPB_RECENCY_HALF_LIFE_GAMES: "1800"
-      PYTHONUNBUFFERED: "1"
+  production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with: {fetch-depth: 1}
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
           cache: pip
           cache-dependency-path: requirements.txt
-      - name: Setup persistent Python environment
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+      - name: Source and syntax preflight
         run: |
           set -euo pipefail
-          VENV="$HOME/.baseball-production-venv"
-          REQ_HASH="$(python -c 'import hashlib; print(hashlib.sha256(open("requirements.txt","rb").read()).hexdigest())')"
-          if [ ! -x "$VENV/bin/python" ] || [ ! -f "$VENV/.requirements.sha256" ] || [ "$(cat "$VENV/.requirements.sha256")" != "$REQ_HASH" ]; then
-            rm -rf "$VENV"
-            python -m venv "$VENV"
-            "$VENV/bin/python" -m pip install --upgrade pip
-            "$VENV/bin/python" -m pip install -r requirements.txt
-            printf '%s\n' "$REQ_HASH" > "$VENV/.requirements.sha256"
-          fi
-          echo "$VENV/bin" >> "$GITHUB_PATH"
-          "$VENV/bin/python" - <<'PY'
-          import numpy, pandas, requests, sklearn, lightgbm, xgboost, catboost
-          print('[PYTHON] dependencies OK')
-          PY
-      - name: Validate source policy
-        run: python source_quality_gate.py
-      - name: Repair known NPB collector syntax defect
-        run: python repair_npb_syntax.py
-      - name: Apply collector hardening
-        run: python npb_runtime_patch.py
-      - name: Apply official NPB schedule validation
-        run: python npb_official_schedule_patch.py
-      - name: Apply NPB quality hardening
-        run: python npb_quality_runtime_patch.py
-      - name: Apply backtest hardening
-        run: python baseball_backtest_runtime_patch.py
-      - name: Apply production hardening
-        run: python baseball_production_runtime_patch.py
-      - name: Preflight compile
-        run: python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
-      - name: Static audit report (non-blocking)
-        continue-on-error: true
-        run: python backtest_audit.py
-      - name: Collect/resume NPB
+          python source_quality_gate.py
+          python repair_npb_syntax.py
+          python npb_runtime_patch.py
+          python npb_official_schedule_patch.py
+          python npb_quality_runtime_patch.py
+          python baseball_backtest_runtime_patch.py
+          python baseball_production_runtime_patch.py
+          python baseball_mlb_score_hilo_patch.py
+          python baseball_quality_runtime_patch.py
+          python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
+          python backtest_audit.py || true
+      - name: Collect and backtest NPB
+        env:
+          NPB_START_YEAR: ${{ inputs.npb_start_year || '1990' }}
+          NPB_END_YEAR: ${{ inputs.npb_end_year || '2026' }}
+          NPB_DOWNLOAD_WORKERS: "4"
+          NPB_MIN_STARTER_LINE_COVERAGE: "70"
+          NPB_MIN_STARTER_COVERAGE: "70"
+          NPB_COLLECTION_BUDGET_SEC: "5400"
+          NPB_COLLECTION_SAFETY_SEC: "300"
+          BASEBALL_TIME_BUDGET_SEC: "5400"
         run: |
           set -euo pipefail
           mkdir -p data results
           python npb_multi_source.py
-      - name: Run NPB OOS backtest when collection is complete
-        run: |
-          set -euo pipefail
           python - <<'PY'
           import json
           from pathlib import Path
           p=Path('data/checkpoints/npb_collection_status.json')
           if not p.exists(): raise SystemExit('NPB collection status missing')
-          s=json.loads(p.read_text(encoding='utf-8'))
-          print('[NPB STATUS]', s.get('complete'), s.get('aggregate_games'))
-          if not s.get('complete', False):
-              print('[NPB WAIT] collection incomplete; checkpoint retained')
+          s=json.loads(p.read_text())
+          print('[NPB]', s.get('complete'), s.get('aggregate_games'))
+          if s.get('complete'):
               raise SystemExit(0)
+          print('[NPB] checkpoint retained; collection incomplete on this pass')
+          raise SystemExit(2)
           PY
-          python baseball_backtest.py --npb-only --data-dir data
-      - name: Build NPB artifact payload
+        continue-on-error: true
+      - name: Run NPB OOS when complete
         if: always()
-        run: |
-          set +e
-          rm -rf artifact_payload
-          mkdir -p artifact_payload/results/npb artifact_payload/data
-          cp -a data/checkpoints artifact_payload/data/ 2>/dev/null || true
-          cp -a data/npb_games artifact_payload/data/ 2>/dev/null || true
-          cp -a data/weather artifact_payload/data/ 2>/dev/null || true
-          for f in data/npb_multi_source_games_all.csv data/npb_player_game_features_all.csv data/source_coverage.csv data/source_failures.csv data/source_official_npb_audit.csv; do [ -f "$f" ] && cp "$f" artifact_payload/data/; done
-          [ -f npb_multi_source.py ] && cp npb_multi_source.py artifact_payload/npb_multi_source.py
-          cp -a results/. artifact_payload/results/npb/ 2>/dev/null || true
-      - name: Upload NPB state
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: baseball-npb-production
-          path: artifact_payload/
-          if-no-files-found: warn
-          retention-days: 30
-
-  mlb:
-    name: MLB starter-enriched OOS backtest
-    runs-on: [self-hosted, macOS, X64]
-    timeout-minutes: 70
-    env:
-      BASEBALL_TIME_BUDGET_SEC: "3600"
-      MLB_ENRICH_STARTERS: "1"
-      MLB_MIN_STARTER_COVERAGE: "90"
-      PYTHONUNBUFFERED: "1"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: pip
-          cache-dependency-path: requirements.txt
-      - name: Setup persistent Python environment
         run: |
           set -euo pipefail
-          VENV="$HOME/.baseball-production-venv"
-          REQ_HASH="$(python -c 'import hashlib; print(hashlib.sha256(open("requirements.txt","rb").read()).hexdigest())')"
-          if [ ! -x "$VENV/bin/python" ] || [ ! -f "$VENV/.requirements.sha256" ] || [ "$(cat "$VENV/.requirements.sha256")" != "$REQ_HASH" ]; then
-            rm -rf "$VENV"
-            python -m venv "$VENV"
-            "$VENV/bin/python" -m pip install --upgrade pip
-            "$VENV/bin/python" -m pip install -r requirements.txt
-            printf '%s\n' "$REQ_HASH" > "$VENV/.requirements.sha256"
-          fi
-          echo "$VENV/bin" >> "$GITHUB_PATH"
-          "$VENV/bin/python" - <<'PY'
-          import numpy, pandas, requests, sklearn, lightgbm, xgboost, catboost
-          print('[PYTHON] dependencies OK')
+          if [ -f data/checkpoints/npb_collection_status.json ] && python - <<'PY'
+          import json
+          from pathlib import Path
+          print(bool(json.loads(Path('data/checkpoints/npb_collection_status.json').read_text()).get('complete')))
           PY
-      - name: Validate source policy
-        run: python source_quality_gate.py
-      - name: Apply MLB score and Low-High hardening
-        run: python baseball_mlb_score_hilo_patch.py
-      - name: Apply quality hardening
-        run: python baseball_quality_runtime_patch.py
-      - name: Apply backtest hardening
-        run: python baseball_backtest_runtime_patch.py
-      - name: Apply production hardening
-        run: python baseball_production_runtime_patch.py
-      - name: Preflight compile
-        run: python -m py_compile baseball_backtest.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py backtest_audit.py source_quality_gate.py repair_npb_syntax.py npb_backtest_normalization_patch.py
-      - name: Static audit report (non-blocking)
-        continue-on-error: true
-        run: python backtest_audit.py
+          then python baseball_backtest.py --npb-only --data-dir data; fi
       - name: Run MLB starter-enriched OOS backtest
+        env:
+          BASEBALL_TIME_BUDGET_SEC: "5400"
+          MLB_ENRICH_STARTERS: "1"
+          MLB_MIN_STARTER_COVERAGE: "90"
         run: |
           set -euo pipefail
           mkdir -p data results
           python baseball_backtest.py --mlb-only --data-dir data --mlb-start "${{ inputs.mlb_start_year || '2020' }}" --mlb-end "${{ inputs.mlb_end_year || '2026' }}"
-      - name: Build MLB artifact payload
+      - name: Validate outputs
+        run: |
+          set -euo pipefail
+          find results -maxdepth 2 -type f -print | head -100
+          test -d results
+      - name: Persist results
         if: always()
         run: |
           set +e
-          rm -rf artifact_payload
-          mkdir -p artifact_payload/results/mlb artifact_payload/data
-          [ -f data/mlb_games.csv ] && cp data/mlb_games.csv artifact_payload/data/
-          cp -a results/. artifact_payload/results/mlb/ 2>/dev/null || true
-      - name: Upload MLB state
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: baseball-mlb-production
-          path: artifact_payload/
-          if-no-files-found: warn
-          retention-days: 30
-
-  persist:
-    name: Persist combined production state
-    needs: [npb, mlb]
-    if: always()
-    runs-on: [self-hosted, macOS, X64]
-    timeout-minutes: 15
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          clean: true
-      - name: Download NPB artifact
-        if: always() && needs.npb.result != 'cancelled'
-        continue-on-error: true
-        uses: actions/download-artifact@v4
-        with:
-          name: baseball-npb-production
-          path: _artifacts/npb
-      - name: Download MLB artifact
-        if: always() && needs.mlb.result != 'cancelled'
-        continue-on-error: true
-        uses: actions/download-artifact@v4
-        with:
-          name: baseball-mlb-production
-          path: _artifacts/mlb
-      - name: Merge and persist state
-        run: |
-          set -euo pipefail
-          if [ -d _artifacts/npb/data ]; then cp -a _artifacts/npb/data/. data/ 2>/dev/null || true; fi
-          if [ -d _artifacts/npb/results/npb ]; then mkdir -p results/npb; cp -a _artifacts/npb/results/npb/. results/npb/; fi
-          if [ -f _artifacts/npb/npb_multi_source.py ]; then cp _artifacts/npb/npb_multi_source.py npb_multi_source.py; fi
-          if [ -d _artifacts/mlb/data ]; then cp -a _artifacts/mlb/data/. data/ 2>/dev/null || true; fi
-          if [ -d _artifacts/mlb/results/mlb ]; then mkdir -p results/mlb; cp -a _artifacts/mlb/results/mlb/. results/mlb/; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/ results/npb/ results/mlb/ npb_multi_source.py 2>/dev/null || true
-          if git diff --cached --quiet; then echo '[COMMIT] no changes.'; else git commit -m 'Persist combined baseball production state'; git push; fi
-      - name: Start Mac research only after both production jobs succeed
-        if: needs.npb.result == 'success' && needs.mlb.result == 'success'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          for attempt in 1 2 3; do
-            if gh workflow run 'Baseball Mac Compute Research' --ref main --repo "${GITHUB_REPOSITORY}"; then
-              echo '[PIPELINE] Mac research dispatched'
-              exit 0
-            fi
-            sleep 10
-          done
-          echo '[PIPELINE] failed to dispatch Mac research'
-          exit 1
+          git add data/ results/ npb_multi_source.py
+          if git diff --cached --quiet; then echo '[COMMIT] no generated changes'; else git commit -m 'Persist Baseball production state'; git push origin HEAD:main; fi
