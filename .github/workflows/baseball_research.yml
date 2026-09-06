@@ -54,7 +54,7 @@ jobs:
         run: |
           set -euo pipefail
           . .venv/bin/activate
-          python -m py_compile research/research_loop.py backtest_audit.py source_quality_gate.py
+          python -m py_compile research/research_loop.py research/openai_research_advisor.py backtest_audit.py source_quality_gate.py
           python backtest_audit.py
       - name: Run autonomous research controller with bounded retries
         run: |
@@ -67,18 +67,25 @@ jobs:
           done
           echo "[RESEARCH] all controller retries failed"
           exit 1
+      - name: Generate OpenAI research advisory
+        run: |
+          set -euo pipefail
+          . .venv/bin/activate
+          python research/openai_research_advisor.py
+          python -m json.tool research_ai_advice.json >/dev/null
       - name: Validate research artifacts
         run: |
           set -euo pipefail
           python -m json.tool research_state.json >/dev/null
           python -m json.tool research_history.json >/dev/null
           python -m json.tool research_plan.json >/dev/null
+          python -m json.tool research_ai_advice.json >/dev/null
       - name: Persist research state
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add research_state.json research_history.json research_plan.json
+          git add research_state.json research_history.json research_plan.json research_ai_advice.json
           if git diff --cached --quiet; then echo "[RESEARCH] state unchanged"; else git commit -m "Update autonomous baseball research state"; git push; fi
       - name: Start next autonomous production cycle
         env:
@@ -103,5 +110,6 @@ jobs:
             research_state.json
             research_history.json
             research_plan.json
+            research_ai_advice.json
           if-no-files-found: warn
           retention-days: 30
