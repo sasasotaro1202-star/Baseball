@@ -16,7 +16,7 @@ concurrency:
 jobs:
   watchdog:
     name: Autonomous pipeline watchdog
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     timeout-minutes: 10
     steps:
       - name: Reconcile and recover the autonomous pipeline
@@ -25,7 +25,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
-          python - <<'PY'
+          python3 - <<'PY'
           import json, os, subprocess
           from datetime import datetime
 
@@ -95,5 +95,3 @@ jobs:
           echo "[RECOVERY] Production -> Mac OOS -> Research -> next Production is enforced as a state machine."
           echo "[RECOVERY] Failed/cancelled stages are dispatched again; active stages are never duplicated."
           echo "[RECOVERY] Research success automatically closes the loop into the next Production cycle."
-
-# HEARTBEAT: force a fresh Actions validation after hardening changes.
