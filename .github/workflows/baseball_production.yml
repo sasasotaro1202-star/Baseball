@@ -35,7 +35,7 @@ permissions:
   actions: write
 
 concurrency:
-  group: baseball-production-v2
+  group: baseball-production-v3
   cancel-in-progress: false
 
 env:
