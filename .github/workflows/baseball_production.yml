@@ -10,7 +10,7 @@ permissions:
   contents: write
   actions: write
 concurrency:
-  group: baseball-production-v4
+  group: baseball-production-v5
   cancel-in-progress: true
 env:
   PYTHONUNBUFFERED: "1"
@@ -36,11 +36,13 @@ jobs:
           python npb_runtime_patch.py
           python npb_official_schedule_patch.py
           python npb_quality_runtime_patch.py
-          python baseball_backtest_runtime_patch.py
+          # V4 score patch was generating an invalid function fragment on the runner.
+          # Skip it here; the base backtest remains the source of truth and later
+          # hardening patches operate on its valid syntax.
           python baseball_production_runtime_patch.py
           python baseball_mlb_score_hilo_patch.py
           python baseball_quality_runtime_patch.py
-          python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
+          python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
       - name: NPB collection and OOS
         env:
           NPB_START_YEAR: "1990"
@@ -82,5 +84,5 @@ jobs:
           set +e
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/ results/ npb_multi_source.py
+          git add -A data results npb_multi_source.py
           if git diff --cached --quiet; then echo '[COMMIT] no changes'; else git commit -m 'Persist Baseball production state'; git push origin HEAD:main; fi
