@@ -43,7 +43,6 @@ env:
 
 jobs:
   npb:
-    if: github.event_name != 'push' || (!startsWith(github.event.head_commit.message, 'Persist combined baseball production state') && !startsWith(github.event.head_commit.message, 'Update autonomous baseball research state') && !startsWith(github.event.head_commit.message, 'Persist Mac OOS research results'))
     name: NPB collect + OOS backtest
     runs-on: ubuntu-latest
     timeout-minutes: 70
@@ -135,7 +134,6 @@ jobs:
           retention-days: 30
 
   mlb:
-    if: github.event_name != 'push' || (!startsWith(github.event.head_commit.message, 'Persist combined baseball production state') && !startsWith(github.event.head_commit.message, 'Update autonomous baseball research state') && !startsWith(github.event.head_commit.message, 'Persist Mac OOS research results'))
     name: MLB starter-enriched OOS backtest
     runs-on: ubuntu-latest
     timeout-minutes: 70
@@ -200,7 +198,7 @@ jobs:
   persist:
     name: Persist combined production state
     needs: [npb, mlb]
-    if: always() && (github.event_name != 'push' || (!startsWith(github.event.head_commit.message, 'Persist combined baseball production state') && !startsWith(github.event.head_commit.message, 'Update autonomous baseball research state') && !startsWith(github.event.head_commit.message, 'Persist Mac OOS research results')))
+    if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
