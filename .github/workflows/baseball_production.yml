@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths-ignore: ["data/**", "results/**", "research_state.json", "research_history.json", "research_plan.json", "npb_multi_source.py"]
+    paths-ignore: ["data/**", "results/**", "research_state.json", "research_history.json", "research_plan.json", "npb_multi_source.py", "exact_parallel/**", ".github/workflows/baseball-exact-parallel-verify.yml"]
   schedule:
     - cron: "17 */6 * * *"
 permissions:
@@ -67,8 +67,6 @@ jobs:
           python -m py_compile npb_multi_source.py baseball_backtest.py baseball_backtest_runtime_patch.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
       - name: NPB collection and OOS
         env:
-          # SPAIA's game-level historical feed used by this collector begins at
-          # 2017. Do not fabricate 1990-2016 rows or mark them complete.
           NPB_START_YEAR: "2017"
           NPB_END_YEAR: "2026"
           NPB_DOWNLOAD_WORKERS: "4"
@@ -116,9 +114,6 @@ jobs:
             exit 0
           fi
           git commit -m 'Persist Baseball production state'
-          # Another workflow may have advanced main after checkout. Rebase the
-          # generated state commit onto the latest main before pushing so a
-          # harmless non-fast-forward race cannot discard a completed run.
           for attempt in 1 2 3; do
             git fetch origin main
             if git rebase origin/main && git push origin HEAD:main; then
