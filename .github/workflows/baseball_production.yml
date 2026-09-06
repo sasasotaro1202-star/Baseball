@@ -44,7 +44,7 @@ env:
 jobs:
   npb:
     name: NPB collect + OOS backtest
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     timeout-minutes: 70
     env:
       NPB_START_YEAR: ${{ inputs.npb_start_year || '1990' }}
@@ -60,46 +60,52 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: pip
-          cache-dependency-path: requirements.txt
-      - name: Install dependencies
+      - name: Verify Mac worker
         run: |
           set -euo pipefail
+          sw_vers
+          uname -m
+          python3 --version
+      - name: Setup isolated Python
+        run: |
+          set -euo pipefail
+          rm -rf .venv
+          python3 -m venv .venv
+          . .venv/bin/activate
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
       - name: Validate source policy
-        run: python source_quality_gate.py
+        run: . .venv/bin/activate && python source_quality_gate.py
       - name: Repair known NPB collector syntax defect
-        run: python repair_npb_syntax.py
+        run: . .venv/bin/activate && python repair_npb_syntax.py
       - name: Apply collector hardening
-        run: python npb_runtime_patch.py
+        run: . .venv/bin/activate && python npb_runtime_patch.py
       - name: Apply official NPB schedule validation
-        run: python npb_official_schedule_patch.py
+        run: . .venv/bin/activate && python npb_official_schedule_patch.py
       - name: Apply NPB quality hardening
-        run: python npb_quality_runtime_patch.py
+        run: . .venv/bin/activate && python npb_quality_runtime_patch.py
       - name: Apply backtest hardening
-        run: python baseball_backtest_runtime_patch.py
+        run: . .venv/bin/activate && python baseball_backtest_runtime_patch.py
       - name: Apply production hardening
-        run: python baseball_production_runtime_patch.py
+        run: . .venv/bin/activate && python baseball_production_runtime_patch.py
       - name: Preflight compile
         run: |
           set -euo pipefail
+          . .venv/bin/activate
           python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
       - name: Static audit report (non-blocking)
         continue-on-error: true
-        run: python backtest_audit.py
+        run: . .venv/bin/activate && python backtest_audit.py
       - name: Collect/resume NPB
         run: |
           set -euo pipefail
+          . .venv/bin/activate
           mkdir -p data results
           python npb_multi_source.py
       - name: Run NPB OOS backtest when collection is complete
         run: |
           set -euo pipefail
+          . .venv/bin/activate
           python - <<'PY'
           import json
           from pathlib import Path
@@ -135,7 +141,7 @@ jobs:
 
   mlb:
     name: MLB starter-enriched OOS backtest
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     timeout-minutes: 70
     env:
       BASEBALL_TIME_BUDGET_SEC: "3600"
@@ -145,37 +151,42 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: pip
-          cache-dependency-path: requirements.txt
-      - name: Install dependencies
+      - name: Verify Mac worker
         run: |
           set -euo pipefail
+          sw_vers
+          uname -m
+          python3 --version
+      - name: Setup isolated Python
+        run: |
+          set -euo pipefail
+          rm -rf .venv
+          python3 -m venv .venv
+          . .venv/bin/activate
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
       - name: Validate source policy
-        run: python source_quality_gate.py
+        run: . .venv/bin/activate && python source_quality_gate.py
       - name: Apply MLB score and Low-High hardening
-        run: python baseball_mlb_score_hilo_patch.py
+        run: . .venv/bin/activate && python baseball_mlb_score_hilo_patch.py
       - name: Apply quality hardening
-        run: python baseball_quality_runtime_patch.py
+        run: . .venv/bin/activate && python baseball_quality_runtime_patch.py
       - name: Apply backtest hardening
-        run: python baseball_backtest_runtime_patch.py
+        run: . .venv/bin/activate && python baseball_backtest_runtime_patch.py
       - name: Apply production hardening
-        run: python baseball_production_runtime_patch.py
+        run: . .venv/bin/activate && python baseball_production_runtime_patch.py
       - name: Preflight compile
         run: |
           set -euo pipefail
+          . .venv/bin/activate
           python -m py_compile baseball_backtest.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py backtest_audit.py source_quality_gate.py repair_npb_syntax.py npb_backtest_normalization_patch.py
       - name: Static audit report (non-blocking)
         continue-on-error: true
-        run: python backtest_audit.py
+        run: . .venv/bin/activate && python backtest_audit.py
       - name: Run MLB starter-enriched OOS backtest
         run: |
           set -euo pipefail
+          . .venv/bin/activate
           mkdir -p data results
           python baseball_backtest.py --mlb-only --data-dir data --mlb-start "${{ inputs.mlb_start_year || '2020' }}" --mlb-end "${{ inputs.mlb_end_year || '2026' }}"
       - name: Build MLB artifact payload
@@ -199,11 +210,13 @@ jobs:
     name: Persist combined production state
     needs: [npb, mlb]
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          clean: true
       - name: Download NPB artifact
         if: always() && needs.npb.result != 'cancelled'
         continue-on-error: true
