@@ -24,6 +24,14 @@ jobs:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       OPENAI_RESEARCH_MODEL: gpt-5.6-luna
     steps:
+      - name: Ensure GitHub CLI is available
+        run: |
+          set -euo pipefail
+          if ! command -v gh >/dev/null 2>&1; then
+            command -v brew >/dev/null 2>&1 || { echo '[RESEARCH] Homebrew is required to install GitHub CLI'; exit 1; }
+            brew install gh
+          fi
+          gh --version
       - name: Checkout latest main state
         uses: actions/checkout@v4
         with:
