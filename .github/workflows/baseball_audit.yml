@@ -20,7 +20,7 @@ concurrency:
 
 jobs:
   audit:
-    runs-on: macos-15-intel
+    runs-on: [self-hosted, macOS, X64]
     timeout-minutes: 10
     steps:
       - name: Checkout
