@@ -21,9 +21,14 @@ s = P.read_text(encoding="utf-8")
 # Make the dependency permanent in the collector so an already-patched or
 # partially restored source cannot raise NameError when pd.read_html receives
 # an in-memory HTML buffer.
-if "import io" not in s.split("def ", 1)[0]:
-    s = s.replace("import os, re, time, json\n", "import os, re, time, json, io\n", 1)
-    s = s.replace("import os, re, time, json, html\n", "import os, re, time, json, html, io\n", 1)
+head = s.split("def ", 1)[0]
+if "import io" not in head:
+    if "import os, re, time, json, html\n" in s:
+        s = s.replace("import os, re, time, json, html\n", "import os, re, time, json, html, io\n", 1)
+    elif "import os, re, time, json\n" in s:
+        s = s.replace("import os, re, time, json\n", "import os, re, time, json, io\n", 1)
+    else:
+        s = s.replace("from pathlib import Path\n", "from pathlib import Path\nimport io\n", 1)
 
 MARKER = "# OFFICIAL_NPB_SCHEDULE_VALIDATION_V1"
 if MARKER in s:
@@ -70,8 +75,7 @@ def _official_schedule_rows(year):
                 if not m:
                     continue
                 mm, dd = int(m.group(1)), int(m.group(2))
-                card = str(rec.get("対戦カード", ""))
-                item = re.sub(r"\s+", " ", card).strip()
+                item = re.sub(r"\s+", " ", str(rec.get("対戦カード", ""))).strip()
                 item = re.sub(r"\([^)]*\)", "", item).strip()
                 if not item or item in ("-", "nan"):
                     continue
@@ -136,12 +140,7 @@ def _official_validate_games(year, games):
 '''
 s = s.replace(anchor, insert + anchor, 1)
 s = s.replace("def fetch_games(year):\n", "def _fetch_games_spaia(year):\n", 1)
-wrapper = r'''
-
-def fetch_games(year):
-    games = _fetch_games_spaia(year)
-    return _official_validate_games(year, games)
-'''
+wrapper = "\ndef fetch_games(year):\n    games = _fetch_games_spaia(year)\n    return _official_validate_games(year, games)\n"
 marker2 = "\ndef load_checkpoint(year):\n"
 if marker2 not in s:
     raise RuntimeError("load_checkpoint anchor not found")
