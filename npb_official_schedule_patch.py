@@ -18,9 +18,17 @@ from pathlib import Path
 
 P = Path("npb_multi_source.py")
 s = P.read_text(encoding="utf-8")
+# Make the dependency permanent in the collector so an already-patched or
+# partially restored source cannot raise NameError when pd.read_html receives
+# an in-memory HTML buffer.
+if "import io" not in s.split("def ", 1)[0]:
+    s = s.replace("import os, re, time, json\n", "import os, re, time, json, io\n", 1)
+    s = s.replace("import os, re, time, json, html\n", "import os, re, time, json, html, io\n", 1)
+
 MARKER = "# OFFICIAL_NPB_SCHEDULE_VALIDATION_V1"
 if MARKER in s:
-    print("[OFFICIAL PATCH] V1 already applied")
+    P.write_text(s, encoding="utf-8")
+    print("[OFFICIAL PATCH] V1 already applied; import io verified")
     raise SystemExit(0)
 
 anchor = "def fetch_games(year):\n"
@@ -67,8 +75,6 @@ def _official_schedule_rows(year):
                 item = re.sub(r"\([^)]*\)", "", item).strip()
                 if not item or item in ("-", "nan"):
                     continue
-                # NPB.jp displays the home team on the left and visitor on the
-                # right: "巨人 4 - 3 DeNA". Future games have no score.
                 score = re.match(r"^(.+?)\s+(\d+)\s*-\s*(\d+)\s+(.+?)$", item)
                 if score:
                     home_raw, home_score, away_score, away_raw = score.groups()
@@ -84,14 +90,7 @@ def _official_schedule_rows(year):
                 away = official_name(away_raw.strip())
                 if not home or not away or home == away:
                     continue
-                rows.append((
-                    f"{year:04d}-{mm:02d}-{dd:02d}",
-                    home,
-                    away,
-                    int(home_score) if score_known else None,
-                    int(away_score) if score_known else None,
-                    score_known,
-                ))
+                rows.append((f"{year:04d}-{mm:02d}-{dd:02d}", home, away, int(home_score) if score_known else None, int(away_score) if score_known else None, score_known))
         if not found_table:
             complete_fetch = False
             print(f"[OFFICIAL SCHEDULE SKIP] year={year} month={month}: expected NPB.jp schedule table missing")
@@ -103,13 +102,11 @@ def _official_schedule_rows(year):
 
 
 def _official_validate_games(year, games):
-    """Validate SPAIA rows against NPB.jp; use the declared SPAIA fallback when archive is absent."""
+    """Validate SPAIA rows against NPB.jp; use SPAIA fallback when archive is absent."""
     if games.empty:
         return games
     official = _official_schedule_rows(year)
     if not official:
-        # DATA_SOURCE_POLICY explicitly permits SPAIA as the schedule/result
-        # fallback. Do not turn an unavailable archive into a false failure.
         print(f"[OFFICIAL SCHEDULE FALLBACK] year={year} NPB.jp monthly archive unavailable; retaining SPAIA rows")
         return games
     index = {(d, home, away): (hs, aas, known) for d, home, away, hs, aas, known in official}
@@ -118,8 +115,7 @@ def _official_validate_games(year, games):
     score_checked = 0
     for r in games.itertuples(index=False):
         d = pd.Timestamp(r.datetime).strftime("%Y-%m-%d")
-        key = (d, str(r.home), str(r.away))
-        got = index.get(key)
+        got = index.get((d, str(r.home), str(r.away)))
         if got is None:
             rejected += 1
             continue
@@ -127,10 +123,7 @@ def _official_validate_games(year, games):
         if score_known:
             score_checked += 1
             if int(round(float(r.home_score))) != official_home_score or int(round(float(r.away_score))) != official_away_score:
-                raise RuntimeError(
-                    f"official NPB result mismatch: {r.game_id} {d} {r.home}-{r.away} "
-                    f"SPAIA={r.home_score}-{r.away_score} NPB={official_home_score}-{official_away_score}"
-                )
+                raise RuntimeError(f"official NPB result mismatch: {r.game_id} {d} {r.home}-{r.away} SPAIA={r.home_score}-{r.away_score} NPB={official_home_score}-{official_away_score}")
         kept.append(r._asdict())
     if rejected:
         print(f"[OFFICIAL SCHEDULE] year={year} rejected_unverified_rows={rejected}")
