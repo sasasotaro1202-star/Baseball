@@ -3,15 +3,15 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths-ignore: ["data/**", "results/**", "research_state.json", "research_history.json", "research_plan.json"]
+    paths-ignore: ["data/**", "results/**", "research_state.json", "research_history.json", "research_plan.json", "npb_multi_source.py"]
   schedule:
     - cron: "17 */6 * * *"
 permissions:
   contents: write
   actions: write
 concurrency:
-  group: baseball-production-v6
-  cancel-in-progress: true
+  group: baseball-production-v7
+  cancel-in-progress: false
 env:
   PYTHONUNBUFFERED: "1"
 jobs:
