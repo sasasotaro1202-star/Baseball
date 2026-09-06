@@ -66,46 +66,62 @@ jobs:
           sw_vers
           uname -m
           python3 --version
-      - name: Setup isolated Python
+      - name: Setup persistent Python environment
         run: |
           set -euo pipefail
-          rm -rf .venv
-          python3 -m venv .venv
-          . .venv/bin/activate
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
+          VENV="$HOME/.baseball-production-venv"
+          REQ_HASH="$(shasum -a 256 requirements.txt | awk '{print $1}')"
+          if [ ! -x "$VENV/bin/python" ] || [ ! -f "$VENV/.requirements.sha256" ] || [ "$(cat "$VENV/.requirements.sha256")" != "$REQ_HASH" ]; then
+            echo "[PYTHON] Creating/updating persistent environment: $VENV"
+            rm -rf "$VENV"
+            python3 -m venv "$VENV"
+            "$VENV/bin/python" -m pip install --upgrade pip
+            "$VENV/bin/python" -m pip install -r requirements.txt
+            printf '%s\n' "$REQ_HASH" > "$VENV/.requirements.sha256"
+          else
+            echo "[PYTHON] Reusing persistent environment: $VENV"
+          fi
+          echo "VENV=$VENV" >> "$GITHUB_ENV"
+          echo "$VENV/bin" >> "$GITHUB_PATH"
+          "$VENV/bin/python" - <<'PY'
+          import numpy, pandas, requests, sklearn, lightgbm, xgboost, catboost
+          print("[PYTHON] dependencies OK")
+          print("numpy", numpy.__version__)
+          print("pandas", pandas.__version__)
+          print("scikit-learn", sklearn.__version__)
+          print("lightgbm", lightgbm.__version__)
+          print("xgboost", xgboost.__version__)
+          print("catboost", catboost.__version__)
+          PY
       - name: Validate source policy
-        run: . .venv/bin/activate && python source_quality_gate.py
+        run: python source_quality_gate.py
       - name: Repair known NPB collector syntax defect
-        run: . .venv/bin/activate && python repair_npb_syntax.py
+        run: python repair_npb_syntax.py
       - name: Apply collector hardening
-        run: . .venv/bin/activate && python npb_runtime_patch.py
+        run: python npb_runtime_patch.py
       - name: Apply official NPB schedule validation
-        run: . .venv/bin/activate && python npb_official_schedule_patch.py
+        run: python npb_official_schedule_patch.py
       - name: Apply NPB quality hardening
-        run: . .venv/bin/activate && python npb_quality_runtime_patch.py
+        run: python npb_quality_runtime_patch.py
       - name: Apply backtest hardening
-        run: . .venv/bin/activate && python baseball_backtest_runtime_patch.py
+        run: python baseball_backtest_runtime_patch.py
       - name: Apply production hardening
-        run: . .venv/bin/activate && python baseball_production_runtime_patch.py
+        run: python baseball_production_runtime_patch.py
       - name: Preflight compile
         run: |
           set -euo pipefail
-          . .venv/bin/activate
           python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
       - name: Static audit report (non-blocking)
         continue-on-error: true
-        run: . .venv/bin/activate && python backtest_audit.py
+        run: python backtest_audit.py
       - name: Collect/resume NPB
         run: |
           set -euo pipefail
-          . .venv/bin/activate
           mkdir -p data results
           python npb_multi_source.py
       - name: Run NPB OOS backtest when collection is complete
         run: |
           set -euo pipefail
-          . .venv/bin/activate
           python - <<'PY'
           import json
           from pathlib import Path
@@ -157,36 +173,53 @@ jobs:
           sw_vers
           uname -m
           python3 --version
-      - name: Setup isolated Python
+      - name: Setup persistent Python environment
         run: |
           set -euo pipefail
-          rm -rf .venv
-          python3 -m venv .venv
-          . .venv/bin/activate
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
+          VENV="$HOME/.baseball-production-venv"
+          REQ_HASH="$(shasum -a 256 requirements.txt | awk '{print $1}')"
+          if [ ! -x "$VENV/bin/python" ] || [ ! -f "$VENV/.requirements.sha256" ] || [ "$(cat "$VENV/.requirements.sha256")" != "$REQ_HASH" ]; then
+            echo "[PYTHON] Creating/updating persistent environment: $VENV"
+            rm -rf "$VENV"
+            python3 -m venv "$VENV"
+            "$VENV/bin/python" -m pip install --upgrade pip
+            "$VENV/bin/python" -m pip install -r requirements.txt
+            printf '%s\n' "$REQ_HASH" > "$VENV/.requirements.sha256"
+          else
+            echo "[PYTHON] Reusing persistent environment: $VENV"
+          fi
+          echo "VENV=$VENV" >> "$GITHUB_ENV"
+          echo "$VENV/bin" >> "$GITHUB_PATH"
+          "$VENV/bin/python" - <<'PY'
+          import numpy, pandas, requests, sklearn, lightgbm, xgboost, catboost
+          print("[PYTHON] dependencies OK")
+          print("numpy", numpy.__version__)
+          print("pandas", pandas.__version__)
+          print("scikit-learn", sklearn.__version__)
+          print("lightgbm", lightgbm.__version__)
+          print("xgboost", xgboost.__version__)
+          print("catboost", catboost.__version__)
+          PY
       - name: Validate source policy
-        run: . .venv/bin/activate && python source_quality_gate.py
+        run: python source_quality_gate.py
       - name: Apply MLB score and Low-High hardening
-        run: . .venv/bin/activate && python baseball_mlb_score_hilo_patch.py
+        run: python baseball_mlb_score_hilo_patch.py
       - name: Apply quality hardening
-        run: . .venv/bin/activate && python baseball_quality_runtime_patch.py
+        run: python baseball_quality_runtime_patch.py
       - name: Apply backtest hardening
-        run: . .venv/bin/activate && python baseball_backtest_runtime_patch.py
+        run: python baseball_backtest_runtime_patch.py
       - name: Apply production hardening
-        run: . .venv/bin/activate && python baseball_production_runtime_patch.py
+        run: python baseball_production_runtime_patch.py
       - name: Preflight compile
         run: |
           set -euo pipefail
-          . .venv/bin/activate
           python -m py_compile baseball_backtest.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py backtest_audit.py source_quality_gate.py repair_npb_syntax.py npb_backtest_normalization_patch.py
       - name: Static audit report (non-blocking)
         continue-on-error: true
-        run: . .venv/bin/activate && python backtest_audit.py
+        run: python backtest_audit.py
       - name: Run MLB starter-enriched OOS backtest
         run: |
           set -euo pipefail
-          . .venv/bin/activate
           mkdir -p data results
           python baseball_backtest.py --mlb-only --data-dir data --mlb-start "${{ inputs.mlb_start_year || '2020' }}" --mlb-end "${{ inputs.mlb_end_year || '2026' }}"
       - name: Build MLB artifact payload
