@@ -10,7 +10,7 @@ permissions:
   contents: write
   actions: write
 concurrency:
-  group: baseball-production-v5
+  group: baseball-production-v6
   cancel-in-progress: true
 env:
   PYTHONUNBUFFERED: "1"
@@ -33,15 +33,23 @@ jobs:
           set -euo pipefail
           python source_quality_gate.py
           python repair_npb_syntax.py
-          python npb_runtime_patch.py
-          python npb_official_schedule_patch.py
-          python npb_quality_runtime_patch.py
-          # V4 score patch was generating an invalid function fragment on the runner.
-          # Skip it here; the base backtest remains the source of truth and later
-          # hardening patches operate on its valid syntax.
-          python baseball_production_runtime_patch.py
-          python baseball_mlb_score_hilo_patch.py
-          python baseball_quality_runtime_patch.py
+          python -m py_compile npb_multi_source.py baseball_backtest.py repair_npb_syntax.py source_quality_gate.py backtest_audit.py
+          apply_patch_safely() {
+            local patch="$1"
+            cp baseball_backtest.py /tmp/baseball_backtest_pre_patch.py
+            if python "$patch" && python -m py_compile baseball_backtest.py; then
+              echo "[PATCH] $patch accepted"
+            else
+              echo "[PATCH] $patch rejected; restoring valid source"
+              cp /tmp/baseball_backtest_pre_patch.py baseball_backtest.py
+            fi
+          }
+          apply_patch_safely npb_runtime_patch.py
+          apply_patch_safely npb_official_schedule_patch.py
+          apply_patch_safely npb_quality_runtime_patch.py
+          apply_patch_safely baseball_production_runtime_patch.py
+          apply_patch_safely baseball_mlb_score_hilo_patch.py
+          apply_patch_safely baseball_quality_runtime_patch.py
           python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
       - name: NPB collection and OOS
         env:
@@ -84,5 +92,6 @@ jobs:
           set +e
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          mkdir -p data results
           git add -A data results npb_multi_source.py
           if git diff --cached --quiet; then echo '[COMMIT] no changes'; else git commit -m 'Persist Baseball production state'; git push origin HEAD:main; fi
