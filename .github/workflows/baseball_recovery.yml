@@ -16,10 +16,10 @@ concurrency:
 jobs:
   watchdog:
     name: Autonomous pipeline watchdog
-    runs-on: [self-hosted, macOS, X64]
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Reconcile and recover the autonomous pipeline
+      - name: Reconcile, cancel stuck runs and recover the autonomous pipeline
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -32,6 +32,7 @@ jobs:
 
           repo=os.environ['GITHUB_REPOSITORY']; token=os.environ['GH_TOKEN']; api=os.environ.get('GITHUB_API_URL','https://api.github.com')
           workflows={'production':'baseball_production.yml','mac':'baseball_mac_compute.yml','research':'baseball_research.yml'}
+          STALE_MINUTES={'production':155,'mac':180,'research':180}
 
           def request(method,path,payload=None):
               body=None if payload is None else json.dumps(payload).encode('utf-8')
@@ -48,17 +49,38 @@ jobs:
               return request('GET',f'/repos/{repo}/actions/workflows/{filename}/runs?per_page=20').get('workflow_runs',[])
 
           data={k:runs(v) for k,v in workflows.items()}
-          for k,rows in data.items(): print(f'[WATCHDOG] {k}: {rows[:3]}')
+          now=datetime.now(timezone.utc)
 
-          def active(row): return bool(row) and row.get('status') in {'queued','in_progress','waiting','pending'}
+          def active(row): return bool(row) and row.get('status') in {'queued','in_progress','waiting','pending','requested'}
           def success(row): return bool(row) and row.get('conclusion')=='success'
           def ts(row):
-              if not row or not row.get('updated_at'): return datetime.min.replace(tzinfo=timezone.utc)
-              return datetime.fromisoformat(row['updated_at'].replace('Z','+00:00'))
+              value=(row or {}).get('created_at') or (row or {}).get('updated_at')
+              if not value: return datetime.min.replace(tzinfo=timezone.utc)
+              return datetime.fromisoformat(value.replace('Z','+00:00'))
+          def age_minutes(row): return (now-ts(row)).total_seconds()/60.0 if row else 0.0
+
+          def cancel_stuck(label,row):
+              if not active(row): return False
+              age=age_minutes(row); limit=STALE_MINUTES[label]
+              if age <= limit: return False
+              run_id=row['id']
+              print(f'[WATCHDOG] STUCK {label} run={run_id} status={row.get("status")} age_min={age:.1f} limit={limit}; cancelling')
+              request('POST',f'/repos/{repo}/actions/runs/{run_id}/cancel')
+              return True
+
+          for label,rows in data.items():
+              if rows: print(f'[WATCHDOG] {label} latest={rows[0].get("id")} status={rows[0].get("status")} conclusion={rows[0].get("conclusion")} age_min={age_minutes(rows[0]):.1f}')
 
           prod=data['production'][0] if data['production'] else None
           mac=data['mac'][0] if data['mac'] else None
           research=data['research'][0] if data['research'] else None
+
+          stuck=False
+          for label,row in (('production',prod),('mac',mac),('research',research)):
+              stuck = cancel_stuck(label,row) or stuck
+          if stuck:
+              print('[WATCHDOG] stuck stage cancelled; next reconciliation will dispatch the required replacement safely')
+              raise SystemExit(0)
 
           def dispatch(label,workflow):
               print(f'[WATCHDOG] dispatch {label}: {workflow}')
@@ -82,7 +104,7 @@ jobs:
       - name: Recovery policy summary
         if: always()
         run: |
-          echo '[RECOVERY] 15-minute autonomous state reconciliation is enabled.'
+          echo '[RECOVERY] Hosted watchdog runs independently of the Mac self-hosted runner.'
           echo '[RECOVERY] Production -> Mac OOS -> Research -> next Production is enforced as a state machine.'
-          echo '[RECOVERY] Failed/cancelled stages are dispatched again; active stages are never duplicated.'
-          echo '[RECOVERY] Research success automatically closes the loop into the next Production cycle.'
+          echo '[RECOVERY] Failed/cancelled/stuck stages are recovered without duplicating active work.'
+          echo '[RECOVERY] Stuck thresholds are deliberately above normal workflow timeouts.'
