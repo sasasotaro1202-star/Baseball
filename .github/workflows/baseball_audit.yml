@@ -20,7 +20,10 @@ concurrency:
 
 jobs:
   audit:
-    runs-on: ubuntu-latest
+    # Keep CI off the user's single self-hosted Mac. This audit previously used
+    # ubuntu-latest, where the job failed before steps were created. macos-15
+    # also matches the production runtime family without sharing a machine.
+    runs-on: macos-15
     timeout-minutes: 10
     steps:
       - name: Checkout
