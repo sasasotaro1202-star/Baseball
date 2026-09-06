@@ -35,7 +35,7 @@ permissions:
   actions: write
 
 concurrency:
-  group: baseball-production-v3
+  group: baseball-production-v4
   cancel-in-progress: false
 
 env:
@@ -44,7 +44,7 @@ env:
 jobs:
   npb:
     name: NPB collect + OOS backtest
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, X64]
     timeout-minutes: 70
     env:
       NPB_START_YEAR: ${{ inputs.npb_start_year || '1990' }}
@@ -70,7 +70,7 @@ jobs:
         run: |
           set -euo pipefail
           VENV="$HOME/.baseball-production-venv"
-          REQ_HASH="$(sha256sum requirements.txt | awk '{print $1}')"
+          REQ_HASH="$(python -c 'import hashlib; print(hashlib.sha256(open("requirements.txt","rb").read()).hexdigest())')"
           if [ ! -x "$VENV/bin/python" ] || [ ! -f "$VENV/.requirements.sha256" ] || [ "$(cat "$VENV/.requirements.sha256")" != "$REQ_HASH" ]; then
             rm -rf "$VENV"
             python -m venv "$VENV"
@@ -145,7 +145,7 @@ jobs:
 
   mlb:
     name: MLB starter-enriched OOS backtest
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, X64]
     timeout-minutes: 70
     env:
       BASEBALL_TIME_BUDGET_SEC: "3600"
@@ -165,7 +165,7 @@ jobs:
         run: |
           set -euo pipefail
           VENV="$HOME/.baseball-production-venv"
-          REQ_HASH="$(sha256sum requirements.txt | awk '{print $1}')"
+          REQ_HASH="$(python -c 'import hashlib; print(hashlib.sha256(open("requirements.txt","rb").read()).hexdigest())')"
           if [ ! -x "$VENV/bin/python" ] || [ ! -f "$VENV/.requirements.sha256" ] || [ "$(cat "$VENV/.requirements.sha256")" != "$REQ_HASH" ]; then
             rm -rf "$VENV"
             python -m venv "$VENV"
@@ -219,7 +219,7 @@ jobs:
     name: Persist combined production state
     needs: [npb, mlb]
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, X64]
     timeout-minutes: 15
     steps:
       - name: Checkout
