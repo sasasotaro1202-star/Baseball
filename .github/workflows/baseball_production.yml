@@ -44,7 +44,7 @@ env:
 jobs:
   npb:
     name: NPB collect + OOS backtest
-    runs-on: [self-hosted, macOS]
+    runs-on: self-hosted
     timeout-minutes: 70
     env:
       NPB_START_YEAR: ${{ inputs.npb_start_year || '1990' }}
@@ -157,7 +157,7 @@ jobs:
 
   mlb:
     name: MLB starter-enriched OOS backtest
-    runs-on: [self-hosted, macOS]
+    runs-on: self-hosted
     timeout-minutes: 70
     env:
       BASEBALL_TIME_BUDGET_SEC: "3600"
@@ -193,12 +193,6 @@ jobs:
           "$VENV/bin/python" - <<'PY'
           import numpy, pandas, requests, sklearn, lightgbm, xgboost, catboost
           print("[PYTHON] dependencies OK")
-          print("numpy", numpy.__version__)
-          print("pandas", pandas.__version__)
-          print("scikit-learn", sklearn.__version__)
-          print("lightgbm", lightgbm.__version__)
-          print("xgboost", xgboost.__version__)
-          print("catboost", catboost.__version__)
           PY
       - name: Validate source policy
         run: python source_quality_gate.py
@@ -243,7 +237,7 @@ jobs:
     name: Persist combined production state
     needs: [npb, mlb]
     if: always()
-    runs-on: [self-hosted, macOS]
+    runs-on: self-hosted
     timeout-minutes: 15
     steps:
       - name: Checkout
