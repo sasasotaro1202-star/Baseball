@@ -21,6 +21,14 @@ jobs:
     runs-on: [self-hosted, macOS]
     timeout-minutes: 70
     steps:
+      - name: Ensure GitHub CLI is available
+        run: |
+          set -euo pipefail
+          if ! command -v gh >/dev/null 2>&1; then
+            command -v brew >/dev/null 2>&1 || { echo '[PIPELINE] Homebrew is required to install GitHub CLI'; exit 1; }
+            brew install gh
+          fi
+          gh --version
       - name: Checkout latest main state
         uses: actions/checkout@v4
         with:
