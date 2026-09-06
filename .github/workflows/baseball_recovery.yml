@@ -21,62 +21,53 @@ jobs:
     runs-on: [self-hosted, macOS]
     timeout-minutes: 10
     steps:
+      - name: Ensure GitHub CLI is available
+        run: |
+          set -euo pipefail
+          if ! command -v gh >/dev/null 2>&1; then
+            command -v brew >/dev/null 2>&1 || { echo '[WATCHDOG] Homebrew is required to install GitHub CLI'; exit 1; }
+            brew install gh
+          fi
+          gh --version
+
       - name: Reconcile and recover the autonomous pipeline
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_API_URL: ${{ github.api_url }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import json, os, urllib.error, urllib.request
-          from datetime import datetime, timezone
+          import json, os, subprocess
+          from datetime import datetime
 
           repo = os.environ["GITHUB_REPOSITORY"]
-          token = os.environ["GH_TOKEN"]
-          api = os.environ.get("GITHUB_API_URL", "https://api.github.com")
           workflows = {
-              "production": "baseball_production.yml",
-              "mac": "baseball_mac_compute.yml",
-              "research": "baseball_research.yml",
+              "production": "Baseball Production Backtest",
+              "mac": "Baseball Mac Compute Research",
+              "research": "Baseball Autonomous Research",
           }
 
-          def request(method, path, payload=None):
-              url = api.rstrip("/") + path
-              body = None if payload is None else json.dumps(payload).encode("utf-8")
-              req = urllib.request.Request(url, data=body, method=method, headers={
-                  "Authorization": f"Bearer {token}",
-                  "Accept": "application/vnd.github+json",
-                  "X-GitHub-Api-Version": "2022-11-28",
-                  "User-Agent": "Baseball-Autonomous-Recovery",
-                  "Content-Type": "application/json",
-              })
-              try:
-                  with urllib.request.urlopen(req, timeout=30) as resp:
-                      raw = resp.read()
-                      return json.loads(raw.decode("utf-8")) if raw else {}
-              except urllib.error.HTTPError as exc:
-                  detail = exc.read().decode("utf-8", errors="replace")
-                  raise RuntimeError(f"GitHub API {method} {path} failed: HTTP {exc.code}: {detail}") from exc
-
-          def runs(filename):
-              data = request("GET", f"/repos/{repo}/actions/workflows/{filename}/runs?per_page=20")
-              return data.get("workflow_runs", [])
+          def runs(name):
+              raw = subprocess.check_output([
+                  "gh", "run", "list", "--repo", repo, "--workflow", name,
+                  "--limit", "20", "--json", "databaseId,status,conclusion,createdAt,updatedAt,headSha"
+              ], text=True)
+              return json.loads(raw)
 
           data = {k: runs(v) for k, v in workflows.items()}
           for k, rows in data.items():
               print(f"[WATCHDOG] {k}: {rows[:3]}")
 
           def active(row):
-              return bool(row) and row.get("status") in {"queued", "in_progress", "waiting", "pending"}
+              return row and row["status"] in {"queued", "in_progress", "waiting", "pending"}
 
           def success(row):
-              return bool(row) and row.get("conclusion") == "success"
+              return row and row["conclusion"] == "success"
 
           def ts(row):
-              if not row or not row.get("updated_at"):
-                  return datetime.min.replace(tzinfo=timezone.utc)
-              return datetime.fromisoformat(row["updated_at"].replace("Z", "+00:00"))
+              if not row:
+                  return datetime.min
+              return datetime.fromisoformat(row["updatedAt"].replace("Z", "+00:00")).replace(tzinfo=None)
 
           prod = data["production"][0] if data["production"] else None
           mac = data["mac"][0] if data["mac"] else None
@@ -84,8 +75,7 @@ jobs:
 
           def dispatch(label, workflow):
               print(f"[WATCHDOG] dispatch {label}: {workflow}")
-              request("POST", f"/repos/{repo}/actions/workflows/{workflow}/dispatches", {"ref": "main"})
-              print(f"[WATCHDOG] dispatched {workflow}")
+              subprocess.run(["gh", "workflow", "run", workflow, "--repo", repo, "--ref", "main"], check=True)
 
           if not active(prod) and not success(prod):
               dispatch("production recovery", workflows["production"])
