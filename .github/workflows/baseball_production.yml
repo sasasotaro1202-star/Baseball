@@ -1,9 +1,8 @@
 name: Baseball Production Backtest
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths-ignore: ["data/**", "results/**", "research_state.json", "research_history.json", "research_plan.json", "npb_multi_source.py", "exact_parallel/**", ".github/workflows/baseball-exact-parallel-verify.yml"]
+  # Production is schedule-driven so state/diagnostic commits cannot accidentally
+  # launch a second production run while another run is active.
   schedule:
     - cron: "17 */6 * * *"
 permissions:
