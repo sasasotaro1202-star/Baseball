@@ -44,7 +44,7 @@ env:
 jobs:
   npb:
     name: NPB collect + OOS backtest
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 70
     env:
       NPB_START_YEAR: ${{ inputs.npb_start_year || '1990' }}
@@ -60,38 +60,28 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Verify Mac worker
-        run: |
-          set -euo pipefail
-          sw_vers
-          uname -m
-          python3 --version
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements.txt
       - name: Setup persistent Python environment
         run: |
           set -euo pipefail
           VENV="$HOME/.baseball-production-venv"
-          REQ_HASH="$(shasum -a 256 requirements.txt | awk '{print $1}')"
+          REQ_HASH="$(sha256sum requirements.txt | awk '{print $1}')"
           if [ ! -x "$VENV/bin/python" ] || [ ! -f "$VENV/.requirements.sha256" ] || [ "$(cat "$VENV/.requirements.sha256")" != "$REQ_HASH" ]; then
-            echo "[PYTHON] Creating/updating persistent environment: $VENV"
             rm -rf "$VENV"
-            python3 -m venv "$VENV"
+            python -m venv "$VENV"
             "$VENV/bin/python" -m pip install --upgrade pip
             "$VENV/bin/python" -m pip install -r requirements.txt
             printf '%s\n' "$REQ_HASH" > "$VENV/.requirements.sha256"
-          else
-            echo "[PYTHON] Reusing persistent environment: $VENV"
           fi
-          echo "VENV=$VENV" >> "$GITHUB_ENV"
           echo "$VENV/bin" >> "$GITHUB_PATH"
           "$VENV/bin/python" - <<'PY'
           import numpy, pandas, requests, sklearn, lightgbm, xgboost, catboost
-          print("[PYTHON] dependencies OK")
-          print("numpy", numpy.__version__)
-          print("pandas", pandas.__version__)
-          print("scikit-learn", sklearn.__version__)
-          print("lightgbm", lightgbm.__version__)
-          print("xgboost", xgboost.__version__)
-          print("catboost", catboost.__version__)
+          print('[PYTHON] dependencies OK')
           PY
       - name: Validate source policy
         run: python source_quality_gate.py
@@ -108,9 +98,7 @@ jobs:
       - name: Apply production hardening
         run: python baseball_production_runtime_patch.py
       - name: Preflight compile
-        run: |
-          set -euo pipefail
-          python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
+        run: python -m py_compile npb_multi_source.py baseball_backtest.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
       - name: Static audit report (non-blocking)
         continue-on-error: true
         run: python backtest_audit.py
@@ -125,12 +113,12 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-          p=Path("data/checkpoints/npb_collection_status.json")
-          if not p.exists(): raise SystemExit("NPB collection status missing")
-          s=json.loads(p.read_text(encoding="utf-8"))
-          print("[NPB STATUS]", s.get("complete"), s.get("aggregate_games"))
-          if not s.get("complete", False):
-              print("[NPB WAIT] collection incomplete; checkpoint retained")
+          p=Path('data/checkpoints/npb_collection_status.json')
+          if not p.exists(): raise SystemExit('NPB collection status missing')
+          s=json.loads(p.read_text(encoding='utf-8'))
+          print('[NPB STATUS]', s.get('complete'), s.get('aggregate_games'))
+          if not s.get('complete', False):
+              print('[NPB WAIT] collection incomplete; checkpoint retained')
               raise SystemExit(0)
           PY
           python baseball_backtest.py --npb-only --data-dir data
@@ -157,7 +145,7 @@ jobs:
 
   mlb:
     name: MLB starter-enriched OOS backtest
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 70
     env:
       BASEBALL_TIME_BUDGET_SEC: "3600"
@@ -167,32 +155,28 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Verify Mac worker
-        run: |
-          set -euo pipefail
-          sw_vers
-          uname -m
-          python3 --version
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements.txt
       - name: Setup persistent Python environment
         run: |
           set -euo pipefail
           VENV="$HOME/.baseball-production-venv"
-          REQ_HASH="$(shasum -a 256 requirements.txt | awk '{print $1}')"
+          REQ_HASH="$(sha256sum requirements.txt | awk '{print $1}')"
           if [ ! -x "$VENV/bin/python" ] || [ ! -f "$VENV/.requirements.sha256" ] || [ "$(cat "$VENV/.requirements.sha256")" != "$REQ_HASH" ]; then
-            echo "[PYTHON] Creating/updating persistent environment: $VENV"
             rm -rf "$VENV"
-            python3 -m venv "$VENV"
+            python -m venv "$VENV"
             "$VENV/bin/python" -m pip install --upgrade pip
             "$VENV/bin/python" -m pip install -r requirements.txt
             printf '%s\n' "$REQ_HASH" > "$VENV/.requirements.sha256"
-          else
-            echo "[PYTHON] Reusing persistent environment: $VENV"
           fi
-          echo "VENV=$VENV" >> "$GITHUB_ENV"
           echo "$VENV/bin" >> "$GITHUB_PATH"
           "$VENV/bin/python" - <<'PY'
           import numpy, pandas, requests, sklearn, lightgbm, xgboost, catboost
-          print("[PYTHON] dependencies OK")
+          print('[PYTHON] dependencies OK')
           PY
       - name: Validate source policy
         run: python source_quality_gate.py
@@ -205,9 +189,7 @@ jobs:
       - name: Apply production hardening
         run: python baseball_production_runtime_patch.py
       - name: Preflight compile
-        run: |
-          set -euo pipefail
-          python -m py_compile baseball_backtest.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py backtest_audit.py source_quality_gate.py repair_npb_syntax.py npb_backtest_normalization_patch.py
+        run: python -m py_compile baseball_backtest.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py backtest_audit.py source_quality_gate.py repair_npb_syntax.py npb_backtest_normalization_patch.py
       - name: Static audit report (non-blocking)
         continue-on-error: true
         run: python backtest_audit.py
@@ -237,7 +219,7 @@ jobs:
     name: Persist combined production state
     needs: [npb, mlb]
     if: always()
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - name: Checkout
@@ -266,10 +248,10 @@ jobs:
           if [ -f _artifacts/npb/npb_multi_source.py ]; then cp _artifacts/npb/npb_multi_source.py npb_multi_source.py; fi
           if [ -d _artifacts/mlb/data ]; then cp -a _artifacts/mlb/data/. data/ 2>/dev/null || true; fi
           if [ -d _artifacts/mlb/results/mlb ]; then mkdir -p results/mlb; cp -a _artifacts/mlb/results/mlb/. results/mlb/; fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data/ results/npb/ results/mlb/ npb_multi_source.py 2>/dev/null || true
-          if git diff --cached --quiet; then echo "[COMMIT] no changes."; else git commit -m "Persist combined baseball production state"; git push; fi
+          if git diff --cached --quiet; then echo '[COMMIT] no changes.'; else git commit -m 'Persist combined baseball production state'; git push; fi
       - name: Start Mac research only after both production jobs succeed
         if: needs.npb.result == 'success' && needs.mlb.result == 'success'
         env:
@@ -277,11 +259,11 @@ jobs:
         run: |
           set -euo pipefail
           for attempt in 1 2 3; do
-            if gh workflow run "Baseball Mac Compute Research" --ref main --repo "${GITHUB_REPOSITORY}"; then
-              echo "[PIPELINE] Mac research dispatched"
+            if gh workflow run 'Baseball Mac Compute Research' --ref main --repo "${GITHUB_REPOSITORY}"; then
+              echo '[PIPELINE] Mac research dispatched'
               exit 0
             fi
             sleep 10
           done
-          echo "[PIPELINE] failed to dispatch Mac research"
+          echo '[PIPELINE] failed to dispatch Mac research'
           exit 1
