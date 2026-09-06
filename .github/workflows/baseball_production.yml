@@ -40,7 +40,7 @@ jobs:
           print('[DEPS] core imports OK')
           PY
           echo "$VENV/bin" >> "$GITHUB_PATH"
-      - name: Preflight
+      - name: Preflight and integrity gate
         run: |
           set -euo pipefail
           python source_quality_gate.py
@@ -65,7 +65,7 @@ jobs:
           apply_patch_safely baseball_mlb_score_hilo_patch.py
           apply_patch_safely baseball_quality_runtime_patch.py
           python -m py_compile npb_multi_source.py baseball_backtest.py baseball_backtest_runtime_patch.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
-      - name: NPB collection and OOS
+      - name: NPB data acquisition, quality gate and chronological OOS
         env:
           NPB_START_YEAR: "2017"
           NPB_END_YEAR: "2026"
@@ -87,22 +87,58 @@ jobs:
           s=json.loads(p.read_text())
           print('[NPB STATUS]',s.get('complete'),s.get('aggregate_games'))
           if not s.get('complete',False): raise SystemExit(2)
+          if not s.get('aggregate_games'): raise SystemExit('NPB quality gate: zero aggregate games')
           PY
           python baseball_backtest.py --npb-only --data-dir data
-      - name: MLB starter-enriched OOS
+      - name: MLB data acquisition, starter quality gate and chronological OOS
         env:
           BASEBALL_TIME_BUDGET_SEC: "3600"
           MLB_ENRICH_STARTERS: "1"
           MLB_MIN_STARTER_COVERAGE: "90"
         run: python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
-      - name: Validate
+      - name: Validate OOS predictions before any state write
         run: |
           set -euo pipefail
           find results -maxdepth 2 -type f -print | head -100
           test -d results
           test -n "$(find results -type f -print -quit)"
-      - name: Persist
-        if: always()
+          python - <<'PY'
+          from pathlib import Path
+          import csv
+          files=[p for p in Path('results').rglob('*') if p.is_file() and p.stat().st_size>0]
+          if not files: raise SystemExit('no non-empty result artifacts')
+          csvs=[p for p in files if p.suffix.lower()=='.csv']
+          if not csvs: raise SystemExit('no CSV prediction/backtest result produced')
+          for p in csvs:
+              with p.open('r',encoding='utf-8',errors='replace',newline='') as f:
+                  rows=sum(1 for _ in csv.reader(f))
+              if rows < 2: raise SystemExit(f'result CSV has no data rows: {p}')
+          print(f'[OOS VALIDATION] PASS nonempty_files={len(files)} csv_files={len(csvs)}')
+          PY
+      - name: Upload verified state artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseball-production-state-${{ github.run_id }}
+          path: |
+            data/
+            results/
+            npb_multi_source.py
+          if-no-files-found: error
+          retention-days: 90
+      - name: Upload failure diagnostics without touching production state
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseball-production-failure-${{ github.run_id }}
+          path: |
+            data/
+            results/
+            npb_multi_source.py
+          if-no-files-found: ignore
+          retention-days: 30
+      - name: Persist verified state atomically
+        if: success()
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
@@ -110,18 +146,18 @@ jobs:
           mkdir -p data results
           git add -A data results npb_multi_source.py
           if git diff --cached --quiet; then
-            echo '[COMMIT] no changes'
+            echo '[COMMIT] no verified state changes'
             exit 0
           fi
-          git commit -m 'Persist Baseball production state'
+          git commit -m 'Persist verified Baseball production state'
           for attempt in 1 2 3; do
             git fetch origin main
             if git rebase origin/main && git push origin HEAD:main; then
-              echo "[PERSIST] push succeeded on attempt $attempt"
+              echo "[PERSIST] verified state push succeeded on attempt $attempt"
               exit 0
             fi
             git rebase --abort 2>/dev/null || true
             sleep 3
           done
-          echo '[PERSIST] failed after 3 rebase/push attempts'
+          echo '[PERSIST] verified state push failed after 3 attempts'
           exit 1
