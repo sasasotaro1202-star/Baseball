@@ -18,7 +18,7 @@ env:
 jobs:
   research:
     name: Analyze OOS results and update research state
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     timeout-minutes: 70
     steps:
       - name: Checkout latest main state
@@ -26,27 +26,32 @@ jobs:
         with:
           ref: main
           clean: true
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: pip
-          cache-dependency-path: requirements.txt
-      - name: Install dependencies
+      - name: Verify Mac worker
         run: |
           set -euo pipefail
+          sw_vers
+          uname -m
+          python3 --version
+      - name: Prepare isolated Python
+        run: |
+          set -euo pipefail
+          rm -rf .venv
+          python3 -m venv .venv
+          . .venv/bin/activate
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
       - name: Validate source policy
-        run: python source_quality_gate.py
+        run: . .venv/bin/activate && python source_quality_gate.py
       - name: Preflight
         run: |
           set -euo pipefail
+          . .venv/bin/activate
           python -m py_compile research/research_loop.py backtest_audit.py source_quality_gate.py
           python backtest_audit.py
       - name: Run autonomous research controller with bounded retries
         run: |
           set -euo pipefail
+          . .venv/bin/activate
           for attempt in 1 2 3; do
             echo "[RESEARCH] controller attempt ${attempt}/3"
             if python research/research_loop.py; then exit 0; fi
