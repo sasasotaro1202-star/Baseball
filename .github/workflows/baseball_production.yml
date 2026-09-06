@@ -10,31 +10,28 @@ permissions:
   contents: write
   actions: write
 concurrency:
-  group: baseball-production
+  group: baseball-production-v2
   cancel-in-progress: false
 env:
   PYTHONUNBUFFERED: "1"
 jobs:
   production:
-    runs-on: [self-hosted, macOS, X64]
+    # Dedicated GitHub-hosted macOS runner: every run gets its own machine,
+    # so Baseball cannot contend with Soccer or another Baseball run for the
+    # user's single self-hosted Mac. Prediction/OOS/state logic is unchanged.
+    runs-on: macos-15
     timeout-minutes: 140
     steps:
       - uses: actions/checkout@v4
-      - name: Setup persistent Python
+      - name: Setup Python
         run: |
           set -euo pipefail
-          VENV="$HOME/.baseball-production-venv"
-          python3 -m venv "$VENV" 2>/dev/null || true
+          VENV="$RUNNER_TEMP/baseball-production-venv"
+          python3 -m venv "$VENV"
           REQ_HASH="$(shasum -a 256 requirements.txt | awk '{print $1}')"
-          MARKER="$VENV/.requirements-$REQ_HASH"
-          if [ ! -f "$MARKER" ]; then
-            "$VENV/bin/python" -m pip install --upgrade pip
-            "$VENV/bin/python" -m pip install -r requirements.txt
-            find "$VENV" -maxdepth 1 -name '.requirements-*' -type f -delete
-            touch "$MARKER"
-          else
-            echo "[DEPS] requirements unchanged; reusing persistent environment"
-          fi
+          echo "[DEPS] requirements_sha256=$REQ_HASH"
+          "$VENV/bin/python" -m pip install --upgrade pip
+          "$VENV/bin/python" -m pip install -r requirements.txt
           "$VENV/bin/python" - <<'PY'
           import numpy,pandas,sklearn,requests
           print('[DEPS] core imports OK')
