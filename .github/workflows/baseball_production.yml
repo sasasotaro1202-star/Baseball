@@ -16,10 +16,10 @@ env:
   PYTHONUNBUFFERED: "1"
 jobs:
   production:
-    # Dedicated GitHub-hosted macOS runner: every run gets its own machine,
-    # so Baseball cannot contend with Soccer or another Baseball run for the
-    # user's single self-hosted Mac. Prediction/OOS/state logic is unchanged.
-    runs-on: macos-15
+    # Dedicated hosted Intel macOS runner: isolated from Soccer and from the
+    # user's self-hosted Mac, while preserving the x64 runtime family used by
+    # the existing Baseball environment. Prediction/OOS/state logic unchanged.
+    runs-on: macos-15-intel
     timeout-minutes: 140
     steps:
       - uses: actions/checkout@v4
