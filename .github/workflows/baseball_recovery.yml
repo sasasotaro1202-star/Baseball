@@ -33,6 +33,7 @@ jobs:
           repo=os.environ['GITHUB_REPOSITORY']; token=os.environ['GH_TOKEN']; api=os.environ.get('GITHUB_API_URL','https://api.github.com')
           workflows={'production':'baseball_production.yml','mac':'baseball_mac_compute.yml','research':'baseball_research.yml'}
           STALE_MINUTES={'production':155,'mac':180,'research':180}
+          QUEUED_STALE_MINUTES=20
 
           def request(method,path,payload=None):
               body=None if payload is None else json.dumps(payload).encode('utf-8')
@@ -61,7 +62,8 @@ jobs:
 
           def cancel_stuck(label,row):
               if not active(row): return False
-              age=age_minutes(row); limit=STALE_MINUTES[label]
+              age=age_minutes(row)
+              limit=QUEUED_STALE_MINUTES if row.get('status') in {'queued','waiting','requested'} else STALE_MINUTES[label]
               if age <= limit: return False
               run_id=row['id']
               print(f'[WATCHDOG] STUCK {label} run={run_id} status={row.get("status")} age_min={age:.1f} limit={limit}; cancelling')
@@ -79,7 +81,7 @@ jobs:
           for label,row in (('production',prod),('mac',mac),('research',research)):
               stuck = cancel_stuck(label,row) or stuck
           if stuck:
-              print('[WATCHDOG] stuck stage cancelled; next reconciliation will dispatch the required replacement safely')
+              print('[WATCHDOG] stuck/runner-blocked stage cancelled; next reconciliation will dispatch the required replacement safely')
               raise SystemExit(0)
 
           def dispatch(label,workflow):
@@ -107,4 +109,4 @@ jobs:
           echo '[RECOVERY] Hosted watchdog runs independently of the Mac self-hosted runner.'
           echo '[RECOVERY] Production -> Mac OOS -> Research -> next Production is enforced as a state machine.'
           echo '[RECOVERY] Failed/cancelled/stuck stages are recovered without duplicating active work.'
-          echo '[RECOVERY] Stuck thresholds are deliberately above normal workflow timeouts.'
+          echo '[RECOVERY] Queued/runner-blocked runs are treated as stuck after 20 minutes; active computation gets a generous timeout margin.'
