@@ -2,6 +2,9 @@ name: Baseball Exact Parallel Verification
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["exact_parallel/**", ".github/workflows/baseball-exact-parallel-verify.yml"]
 
 permissions:
   contents: read
@@ -121,7 +124,7 @@ jobs:
         with:
           name: baseball-exact-input-${{ github.run_id }}
           path: .
-      - name: Exact replay and shard
+      - name: Exact chronological block shard
         env:
           WORKER_ID: ${{ matrix.worker }}
           WORKER_COUNT: "4"
