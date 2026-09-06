@@ -19,7 +19,8 @@ if MARK in s or LEGACY_MARK in s:
     raise SystemExit(0)
 
 # Exact score candidates: 4 real scorelines, never a pseudo-score tail bucket.
-pat = re.compile(r"def score_candidates\(.*?\n\ndef low_high_probs", re.S)
+# Consume the complete old low/high function, not only its function name.
+pat = re.compile(r"def score_candidates\(.*?\n\ndef low_high_probs\(.*?\):.*?(?=\n\ndef result_from_score)", re.S)
 new_scores = '''def _quality_flag(v) -> bool:
     if isinstance(v, bool): return v
     if v is None: return False
@@ -60,7 +61,7 @@ def low_high_probs(lam_h: float, lam_a: float, dispersion_h: float | None = None
 
 '''
 if not pat.search(s):
-    raise SystemExit("score function block not found")
+    raise SystemExit("score/low-high function block not found")
 s = pat.sub(new_scores, s, count=1)
 
 # Remove the old pseudo-tail padding; 4 exact candidates are always available.
@@ -77,7 +78,9 @@ if old not in s:
 s = s.replace(old, new, 1)
 
 # Confirmed-starter flags must be parsed safely when CSVs contain strings.
-s = s.replace('confirmed = games["confirmed_starters"].fillna(False).astype(bool)', 'confirmed = games["confirmed_starters"].map(_quality_flag)', 1)
+confirmed = 'confirmed = games["confirmed_starters"].fillna(False).astype(bool)'
+if confirmed in s:
+    s = s.replace(confirmed, 'confirmed = games["confirmed_starters"].map(_quality_flag)', 1)
 
 # Replace evaluation with granular, denominator-safe metrics.
 pat = re.compile(r'    def evaluate\(self, df: pd\.DataFrame, league: str\) -> Dict\[str, Any\]:.*?\n    def save_reports', re.S)
