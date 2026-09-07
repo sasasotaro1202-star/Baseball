@@ -34,6 +34,7 @@ jobs:
           workflows={'production':'baseball_production.yml','mac':'baseball_mac_compute.yml','research':'baseball_research.yml'}
           STALE_MINUTES={'production':155,'mac':180,'research':180}
           QUEUED_STALE_MINUTES=20
+          ACTIVE_STATES={'queued','in_progress','waiting','pending','requested'}
 
           def request(method,path,payload=None):
               body=None if payload is None else json.dumps(payload).encode('utf-8')
@@ -47,12 +48,12 @@ jobs:
                   raise RuntimeError(f'GitHub API {method} {path} failed: HTTP {exc.code}: {detail}') from exc
 
           def runs(filename):
-              return request('GET',f'/repos/{repo}/actions/workflows/{filename}/runs?per_page=20').get('workflow_runs',[])
+              return request('GET',f'/repos/{repo}/actions/workflows/{filename}/runs?per_page=100').get('workflow_runs',[])
 
           data={k:runs(v) for k,v in workflows.items()}
           now=datetime.now(timezone.utc)
 
-          def active(row): return bool(row) and row.get('status') in {'queued','in_progress','waiting','pending','requested'}
+          def active(row): return bool(row) and row.get('status') in ACTIVE_STATES
           def success(row): return bool(row) and row.get('conclusion')=='success'
           def ts(row):
               value=(row or {}).get('created_at') or (row or {}).get('updated_at')
@@ -70,16 +71,17 @@ jobs:
               request('POST',f'/repos/{repo}/actions/runs/{run_id}/cancel')
               return True
 
+          latest={k:(rows[0] if rows else None) for k,rows in data.items()}
           for label,rows in data.items():
               if rows: print(f'[WATCHDOG] {label} latest={rows[0].get("id")} status={rows[0].get("status")} conclusion={rows[0].get("conclusion")} age_min={age_minutes(rows[0]):.1f}')
 
-          prod=data['production'][0] if data['production'] else None
-          mac=data['mac'][0] if data['mac'] else None
-          research=data['research'][0] if data['research'] else None
-
+          # Do not rely only on the newest run: a manual/retry run can create a
+          # newer completed record while an older run is still active.
+          active_runs={k:[r for r in rows if active(r)] for k,rows in data.items()}
           stuck=False
-          for label,row in (('production',prod),('mac',mac),('research',research)):
-              stuck = cancel_stuck(label,row) or stuck
+          for label,rows in active_runs.items():
+              for row in rows:
+                  stuck = cancel_stuck(label,row) or stuck
           if stuck:
               print('[WATCHDOG] stuck/runner-blocked stage cancelled; next reconciliation will dispatch the required replacement safely')
               raise SystemExit(0)
@@ -89,17 +91,20 @@ jobs:
               request('POST',f'/repos/{repo}/actions/workflows/{workflow}/dispatches',{'ref':'main'})
               print(f'[WATCHDOG] dispatched {workflow}')
 
-          if not active(prod) and not success(prod):
+          # A stage is considered active if ANY run is active, not merely the latest record.
+          if active_runs['production'] or active_runs['mac'] or active_runs['research']:
+              print('[WATCHDOG] one or more stages are active; no duplicate dispatch')
+              raise SystemExit(0)
+
+          prod=latest['production']; mac=latest['mac']; research=latest['research']
+          if not success(prod):
               dispatch('production recovery',workflows['production']); raise SystemExit(0)
           if success(prod) and (not success(mac) or ts(mac)<ts(prod)):
-              if not active(mac): dispatch('Mac OOS',workflows['mac'])
-              raise SystemExit(0)
+              dispatch('Mac OOS',workflows['mac']); raise SystemExit(0)
           if success(mac) and (not success(research) or ts(research)<ts(mac)):
-              if not active(research): dispatch('autonomous research',workflows['research'])
-              raise SystemExit(0)
+              dispatch('autonomous research',workflows['research']); raise SystemExit(0)
           if success(research) and ts(research)>ts(prod):
-              if not active(prod): dispatch('next production cycle',workflows['production'])
-              raise SystemExit(0)
+              dispatch('next production cycle',workflows['production']); raise SystemExit(0)
           print('[WATCHDOG] pipeline healthy or already active; no action required')
           PY
 
@@ -109,4 +114,5 @@ jobs:
           echo '[RECOVERY] Hosted watchdog runs independently of the Mac self-hosted runner.'
           echo '[RECOVERY] Production -> Mac OOS -> Research -> next Production is enforced as a state machine.'
           echo '[RECOVERY] Failed/cancelled/stuck stages are recovered without duplicating active work.'
+          echo '[RECOVERY] Active-run detection scans the full recent run window, not only the newest run.'
           echo '[RECOVERY] Queued/runner-blocked runs are treated as stuck after 20 minutes; active computation gets a generous timeout margin.'
