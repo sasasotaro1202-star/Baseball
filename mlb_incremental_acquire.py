@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Incremental MLB source acquisition.
+"""Full-scope, incremental MLB source acquisition.
 
-Keeps data/mlb_games.csv as the durable cache and only queries the MLB Stats API
-for the uncached portion of the current season plus a small correction window.
-Starter enrichment is performed only for games whose starter fields are missing.
+The dataset scope is NOT reduced: the first bootstrap acquires the full
+historical window, then subsequent runs refresh only the delta while retaining
+all historical rows locally.
 """
 from __future__ import annotations
 
@@ -20,17 +20,28 @@ DATA = Path(os.getenv("BASEBALL_DATA_DIR", "data"))
 CACHE = DATA / "mlb_games.csv"
 TIMEOUT = int(os.getenv("MLB_INCREMENTAL_TIMEOUT", "20"))
 CORRECTION_DAYS = int(os.getenv("MLB_CORRECTION_DAYS", "7"))
+BOOTSTRAP_START_YEAR = int(os.getenv("MLB_BOOTSTRAP_START_YEAR", "2020"))
 TODAY = datetime.now(timezone.utc).date()
 SEASON = TODAY.year
 
 S = requests.Session()
-S.headers.update({"User-Agent": "BaseballIncrementalAcquisition/1.0", "Accept": "application/json"})
+S.headers.update({"User-Agent": "BaseballIncrementalAcquisition/1.1", "Accept": "application/json"})
 
 
 def get_json(url, params=None):
-    r = S.get(url, params=params, timeout=TIMEOUT)
-    r.raise_for_status()
-    return r.json()
+    last = None
+    for attempt in range(5):
+        try:
+            r = S.get(url, params=params, timeout=TIMEOUT)
+            r.raise_for_status()
+            return r.json()
+        except Exception as exc:
+            last = exc
+            if attempt == 4:
+                raise
+            import time
+            time.sleep(min(1.5 * (attempt + 1), 8))
+    raise RuntimeError(last)
 
 
 def norm(df):
@@ -106,7 +117,7 @@ def enrich_missing_starters(df):
                 df.at[i, "away_starter"] = a2; changed += 1
             df.at[i, "confirmed_starters"] = bool(df.at[i, "home_starter"] and df.at[i, "away_starter"])
         except Exception as e:
-            print(f"[MLB INCR] starter skip game={gid}: {e}")
+            print(f"[MLB] starter skip game={gid}: {e}")
     return changed
 
 
@@ -120,27 +131,28 @@ def main():
     else:
         existing = pd.DataFrame()
 
+    # IMPORTANT: no historical data is discarded. An empty cache triggers a
+    # complete bootstrap from the configured historical start through today.
     if existing.empty:
-        start = datetime(SEASON, 3, 1, tzinfo=timezone.utc).date()
+        start = datetime(BOOTSTRAP_START_YEAR, 3, 1, tzinfo=timezone.utc).date()
+        bootstrap = True
     else:
         current = existing[existing["datetime"].dt.year == SEASON]
         if current.empty:
             start = datetime(SEASON, 3, 1, tzinfo=timezone.utc).date()
         else:
-            start = max(datetime(SEASON, 3, 1, tzinfo=timezone.utc).date(), (current["datetime"].max().date() - timedelta(days=CORRECTION_DAYS)))
+            start = max(datetime(SEASON, 3, 1, tzinfo=timezone.utc).date(), current["datetime"].max().date() - timedelta(days=CORRECTION_DAYS))
+        bootstrap = False
 
-    # Never query beyond today; the correction window only re-reads recent completed games.
     end = TODAY
     if start > end:
         start = end
 
-    print(f"[MLB INCR] cache={len(existing)} rows; querying {start}..{end}")
-    fresh = fetch_schedule(start, end)
-    fresh = norm(fresh)
+    mode = "FULL HISTORICAL BOOTSTRAP" if bootstrap else "INCREMENTAL DELTA"
+    print(f"[MLB] mode={mode} cache={len(existing)} rows; querying {start}..{end}")
+    fresh = norm(fetch_schedule(start, end))
     combined = norm(pd.concat([existing, fresh], ignore_index=True, sort=False)) if not existing.empty else fresh
-    combined = combined.sort_values(["datetime", "game_id"]).drop_duplicates("game_id", keep="last").reset_index(drop=True)
 
-    # Only repair missing starters. This replaces the previous O(all-history) feed sweep.
     missing = ((combined["home_starter"].fillna("").astype(str).str.strip() == "") |
                (combined["away_starter"].fillna("").astype(str).str.strip() == ""))
     current_or_recent = combined["datetime"] >= pd.Timestamp(datetime.now(timezone.utc) - timedelta(days=CORRECTION_DAYS))
@@ -151,12 +163,13 @@ def main():
         for _, r in target.iterrows():
             gid = str(r["game_id"])
             for c in ["home_starter", "away_starter", "confirmed_starters"]:
-                if c in r:
-                    combined.at[gid, c] = r[c]
+                combined.at[gid, c] = r[c]
         combined = combined.reset_index()
 
     combined.to_csv(CACHE, index=False)
-    print(f"[MLB INCR] fresh={len(fresh)} starter_repairs={changed} total={len(combined)}")
+    print(f"[MLB] fresh={len(fresh)} starter_repairs={changed} total={len(combined)}")
+    if len(combined) < 100:
+        raise RuntimeError("MLB cache unexpectedly small; full-scope acquisition was not completed")
 
 
 if __name__ == "__main__":
