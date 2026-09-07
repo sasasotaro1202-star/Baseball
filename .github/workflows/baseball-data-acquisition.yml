@@ -15,7 +15,7 @@ env:
 jobs:
   acquire:
     runs-on: [self-hosted, macOS, X64, baseball]
-    timeout-minutes: 110
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Setup Python acquisition environment
@@ -43,21 +43,14 @@ jobs:
         run: |
           set -u
           check_url() {
-            local name="$1"
-            local url="$2"
-            local ok=0
+            local name="$1"; local url="$2"; local ok=0
             for attempt in 1 2 3 4 5; do
               if curl --fail --silent --show-error --location --max-time 20 "$url" >/dev/null; then
-                echo "[ACQ] ${name} connectivity PASS (attempt ${attempt})"
-                ok=1
-                break
+                echo "[ACQ] ${name} connectivity PASS (attempt ${attempt})"; ok=1; break
               fi
-              echo "[ACQ] ${name} connectivity retry ${attempt}/5"
-              sleep $((attempt * 3))
+              echo "[ACQ] ${name} connectivity retry ${attempt}/5"; sleep $((attempt * 3))
             done
-            if [ "$ok" -eq 0 ]; then
-              echo "[ACQ] WARNING: ${name} connectivity unavailable; acquisition step will decide whether the source can proceed"
-            fi
+            if [ "$ok" -eq 0 ]; then echo "[ACQ] WARNING: ${name} connectivity unavailable; acquisition step will decide whether the source can proceed"; fi
             return 0
           }
           check_url 'MLB Stats API' 'https://statsapi.mlb.com/api/v1/sports/1'
@@ -67,41 +60,45 @@ jobs:
         env:
           NPB_START_YEAR: "2017"
           NPB_END_YEAR: "2026"
-          NPB_DOWNLOAD_WORKERS: "8"
+          NPB_DOWNLOAD_WORKERS: "12"
           NPB_MIN_STARTER_LINE_COVERAGE: "70"
           NPB_MIN_STARTER_COVERAGE: "70"
-          NPB_COLLECTION_BUDGET_SEC: "5400"
+          NPB_COLLECTION_BUDGET_SEC: "7200"
           NPB_COLLECTION_SAFETY_SEC: "300"
-          BASEBALL_TIME_BUDGET_SEC: "5400"
+          BASEBALL_TIME_BUDGET_SEC: "7200"
         run: caffeinate -dimsu python npb_multi_source.py
-      - name: NPB nonzero-data gate
+      - name: NPB checkpoint gate
+        id: npb_gate
         run: |
           set -euo pipefail
-          python - <<'PY'
+          python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
           from pathlib import Path
           p=Path('data/checkpoints/npb_collection_status.json')
           if not p.exists(): raise SystemExit('NPB status file missing')
           s=json.loads(p.read_text())
-          print('[NPB]',s.get('complete'),s.get('aggregate_games'))
-          if not s.get('complete'): raise SystemExit('NPB collection incomplete')
-          if int(s.get('aggregate_games') or 0)<=0: raise SystemExit('NPB collected zero games')
+          complete=bool(s.get('complete'))
+          games=int(s.get('aggregate_games') or 0)
+          print('[NPB]',complete,games)
+          if games <= 0: raise SystemExit('NPB collected zero games')
+          print(f'complete={str(complete).lower()}')
           PY
       - name: MLB full-scope acquisition with incremental refresh
+        if: steps.npb_gate.outputs.complete == 'true'
         env:
           MLB_INCREMENTAL_TIMEOUT: "20"
           MLB_CORRECTION_DAYS: "7"
           MLB_BOOTSTRAP_START_YEAR: "2020"
         run: caffeinate -dimsu python mlb_incremental_acquire.py
       - name: Acquisition data quality gate
+        if: steps.npb_gate.outputs.complete == 'true'
         run: |
           set -euo pipefail
           test -s data/mlb_games.csv
           python - <<'PY'
           import pandas as pd
           from pathlib import Path
-          p=Path('data/mlb_games.csv')
-          d=pd.read_csv(p, low_memory=False)
+          p=Path('data/mlb_games.csv'); d=pd.read_csv(p, low_memory=False)
           if len(d) <= 100: raise SystemExit('MLB cache unexpectedly small')
           print(f'[MLB ACQ] rows={len(d)} min={d.datetime.min()} max={d.datetime.max()}')
           print(f'[MLB ACQ] starter_coverage={(d.home_starter.fillna("").astype(str).str.strip().ne("") & d.away_starter.fillna("").astype(str).str.strip().ne("")).mean():.1%}')
@@ -115,7 +112,11 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data results npb_multi_source.py mlb_incremental_acquire.py production_run_manifest.json
           if git diff --cached --quiet; then echo '[ACQ] no changes'; exit 0; fi
-          git commit -m 'Full-scope Baseball source acquisition'
+          if [ "${{ steps.npb_gate.outputs.complete }}" != "true" ]; then
+            git commit -m 'Checkpoint resumable NPB source acquisition'
+          else
+            git commit -m 'Full-scope Baseball source acquisition'
+          fi
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             if git rebase origin/main && git push origin HEAD:main; then exit 0; fi
