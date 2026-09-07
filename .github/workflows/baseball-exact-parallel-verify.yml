@@ -2,9 +2,6 @@ name: Baseball Exact Parallel Verification
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths: ["exact_parallel/**", ".github/workflows/baseball-exact-parallel-verify.yml"]
 
 permissions:
   contents: read
@@ -22,7 +19,7 @@ jobs:
     runs-on: [self-hosted, macOS, X64]
     timeout-minutes: 140
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 1
           ref: ${{ github.sha }}
@@ -82,7 +79,7 @@ jobs:
           cp results/npb_backtest_results.csv exact_parallel/baseline/
           cp results/mlb_backtest_results.csv exact_parallel/baseline/
       - name: Upload frozen data and baseline
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: baseball-exact-input-${{ github.run_id }}
           path: |
@@ -101,7 +98,7 @@ jobs:
     runs-on: [self-hosted, macOS, X64]
     timeout-minutes: 140
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 1
           ref: ${{ github.sha }}
@@ -120,7 +117,7 @@ jobs:
           fi
           echo "$VENV/bin" >> "$GITHUB_PATH"
       - name: Restore frozen input
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: baseball-exact-input-${{ github.run_id }}
           path: .
@@ -131,7 +128,7 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
         run: python exact_parallel/worker.py
       - name: Upload worker result
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: baseball-exact-worker-${{ matrix.worker }}-${{ github.run_id }}
           path: exact_parallel/out/
@@ -143,17 +140,17 @@ jobs:
     runs-on: [self-hosted, macOS, X64]
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 1
           ref: ${{ github.sha }}
       - name: Restore baseline
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: baseball-exact-input-${{ github.run_id }}
           path: .
       - name: Restore workers
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           pattern: baseball-exact-worker-*-${{ github.run_id }}
           path: exact_parallel/out
@@ -164,7 +161,7 @@ jobs:
           python exact_parallel/aggregate.py
           cat exact_parallel/equality_gate.json
       - name: Upload verification report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: baseball-exact-parallel-report-${{ github.run_id }}
           path: |
