@@ -16,6 +16,27 @@ jobs:
     timeout-minutes: 110
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Setup Python acquisition environment
+        run: |
+          set -euo pipefail
+          VENV="$RUNNER_TEMP/baseball-acquisition-venv"
+          python3 -m venv "$VENV"
+          "$VENV/bin/python" -m pip install --upgrade pip
+          "$VENV/bin/python" -m pip install -r requirements.txt
+          "$VENV/bin/python" - <<'PY'
+          import numpy, pandas, requests
+          print('[DEPS] baseball acquisition imports OK')
+          PY
+          echo "$VENV/bin" >> "$GITHUB_PATH"
+      - name: Acquisition preflight
+        run: |
+          set -euo pipefail
+          python3 --version
+          python -m py_compile npb_multi_source.py mlb_incremental_acquire.py production_data_quality_gate.py production_integrity_gate.py
+          python - <<'PY'
+          import numpy, pandas, requests
+          print('[PREFLIGHT] core Python dependencies OK')
+          PY
       - name: Runtime and source connectivity gate
         run: |
           set -u
