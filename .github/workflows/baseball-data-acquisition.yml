@@ -18,11 +18,28 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Runtime and source connectivity gate
         run: |
-          set -euo pipefail
-          curl --fail --silent --show-error --location --max-time 20 https://statsapi.mlb.com/api/v1/sports/1 >/dev/null
-          curl --fail --silent --show-error --location --max-time 20 https://npb.jp/ >/dev/null
-          curl --fail --silent --show-error --location --max-time 20 'https://spaia.jp/baseball/npb/api/weekly_schedule' >/dev/null
-          echo '[ACQ] MLB Stats API / NPB / SPAIA connectivity PASS'
+          set -u
+          check_url() {
+            local name="$1"
+            local url="$2"
+            local ok=0
+            for attempt in 1 2 3 4 5; do
+              if curl --fail --silent --show-error --location --max-time 20 "$url" >/dev/null; then
+                echo "[ACQ] ${name} connectivity PASS (attempt ${attempt})"
+                ok=1
+                break
+              fi
+              echo "[ACQ] ${name} connectivity retry ${attempt}/5"
+              sleep $((attempt * 3))
+            done
+            if [ "$ok" -eq 0 ]; then
+              echo "[ACQ] WARNING: ${name} connectivity unavailable; acquisition step will decide whether the source can proceed"
+            fi
+            return 0
+          }
+          check_url 'MLB Stats API' 'https://statsapi.mlb.com/api/v1/sports/1'
+          check_url 'NPB' 'https://npb.jp/'
+          check_url 'SPAIA' 'https://spaia.jp/baseball/npb/api/weekly_schedule'
       - name: NPB full-scope resumable acquisition
         env:
           NPB_START_YEAR: "2017"
