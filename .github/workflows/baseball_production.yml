@@ -1,13 +1,10 @@
 name: Baseball Production Backtest
 on:
   workflow_dispatch:
-  # Production is schedule-driven so state/diagnostic commits cannot accidentally
-  # launch a second production run while another run is active.
   schedule:
     - cron: "17 */6 * * *"
 permissions:
   contents: write
-  actions: write
 concurrency:
   group: baseball-production
   cancel-in-progress: false
@@ -28,17 +25,12 @@ jobs:
           echo '[HEALTH] Runner listener processes:'; pgrep -af 'Runner.Listener' || true
           echo '[HEALTH] Disk:'; df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
           free_kb="$(df -Pk "$GITHUB_WORKSPACE" | awk 'NR==2 {print $4}')"
-          if [ "${free_kb:-0}" -lt 10485760 ]; then
-            echo '[HEALTH] FAIL: less than 10 GiB free on workspace filesystem'
-            exit 20
-          fi
+          if [ "${free_kb:-0}" -lt 10485760 ]; then echo '[HEALTH] FAIL: less than 10 GiB free on workspace filesystem'; exit 20; fi
           echo '[HEALTH] Memory summary:'; vm_stat | head -20 || true
           echo '[HEALTH] CPU/load:'; uptime
           echo '[HEALTH] File descriptor limit:'; ulimit -n
-          echo '[HEALTH] GitHub connectivity:'
           curl --fail --silent --show-error --location --max-time 20 https://api.github.com/rate_limit >/dev/null
           echo '[HEALTH] GitHub HTTPS PASS'
-          echo '[HEALTH] Stats API connectivity:'
           curl --fail --silent --show-error --location --max-time 20 https://statsapi.mlb.com/api/v1/sports/1 >/dev/null
           echo '[HEALTH] MLB Stats API HTTPS PASS'
       - name: Setup Python
@@ -61,11 +53,7 @@ jobs:
           python source_quality_gate.py
           python repair_npb_syntax.py
           python -m py_compile npb_multi_source.py baseball_backtest.py baseball_backtest_runtime_patch.py repair_npb_syntax.py source_quality_gate.py backtest_audit.py
-          apply_patch_safely() {
-            local patch="$1"
-            cp baseball_backtest.py /tmp/baseball_backtest_pre_patch.py
-            if python "$patch" && python -m py_compile baseball_backtest.py; then echo "[PATCH] $patch accepted"; else cp /tmp/baseball_backtest_pre_patch.py baseball_backtest.py; return 1; fi
-          }
+          apply_patch_safely() { local patch="$1"; cp baseball_backtest.py /tmp/baseball_backtest_pre_patch.py; if python "$patch" && python -m py_compile baseball_backtest.py; then echo "[PATCH] $patch accepted"; else cp /tmp/baseball_backtest_pre_patch.py baseball_backtest.py; return 1; fi; }
           apply_patch_safely npb_runtime_patch.py
           apply_patch_safely npb_official_schedule_patch.py
           apply_patch_safely npb_quality_runtime_patch.py
@@ -118,8 +106,7 @@ jobs:
           csvs=[p for p in files if p.suffix.lower()=='.csv']
           if not csvs: raise SystemExit('no CSV prediction/backtest result produced')
           for p in csvs:
-              with p.open('r',encoding='utf-8',errors='replace',newline='') as f:
-                  rows=sum(1 for _ in csv.reader(f))
+              with p.open('r',encoding='utf-8',errors='replace',newline='') as f: rows=sum(1 for _ in csv.reader(f))
               if rows < 2: raise SystemExit(f'result CSV has no data rows: {p}')
           print(f'[OOS VALIDATION] PASS nonempty_files={len(files)} csv_files={len(csvs)}')
           PY
