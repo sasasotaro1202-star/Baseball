@@ -120,6 +120,7 @@ jobs:
             data/
             results/
             npb_multi_source.py
+            production_run_manifest.json
           if-no-files-found: error
           retention-days: 90
       - name: Upload failure diagnostics without touching production state
