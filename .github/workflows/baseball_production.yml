@@ -52,7 +52,7 @@ jobs:
           set -euo pipefail
           python source_quality_gate.py
           python repair_npb_syntax.py
-          python -m py_compile npb_multi_source.py baseball_backtest.py baseball_backtest_runtime_patch.py repair_npb_syntax.py source_quality_gate.py backtest_audit.py
+          python -m py_compile npb_multi_source.py baseball_backtest.py baseball_backtest_runtime_patch.py repair_npb_syntax.py source_quality_gate.py backtest_audit.py production_integrity_gate.py
           apply_patch_safely() { local patch="$1"; cp baseball_backtest.py /tmp/baseball_backtest_pre_patch.py; if python "$patch" && python -m py_compile baseball_backtest.py; then echo "[PATCH] $patch accepted"; else cp /tmp/baseball_backtest_pre_patch.py baseball_backtest.py; return 1; fi; }
           apply_patch_safely npb_runtime_patch.py
           apply_patch_safely npb_official_schedule_patch.py
@@ -61,7 +61,7 @@ jobs:
           apply_patch_safely baseball_production_runtime_patch.py
           apply_patch_safely baseball_mlb_score_hilo_patch.py
           apply_patch_safely baseball_quality_runtime_patch.py
-          python -m py_compile npb_multi_source.py baseball_backtest.py baseball_backtest_runtime_patch.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py
+          python -m py_compile npb_multi_source.py baseball_backtest.py baseball_backtest_runtime_patch.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py production_integrity_gate.py
       - name: NPB data acquisition, quality gate and chronological OOS
         env:
           NPB_START_YEAR: "2017"
@@ -110,6 +110,7 @@ jobs:
               if rows < 2: raise SystemExit(f'result CSV has no data rows: {p}')
           print(f'[OOS VALIDATION] PASS nonempty_files={len(files)} csv_files={len(csvs)}')
           PY
+          python production_integrity_gate.py
       - name: Upload verified state artifact
         if: success()
         uses: actions/upload-artifact@v4
@@ -130,6 +131,7 @@ jobs:
             data/
             results/
             npb_multi_source.py
+            production_run_manifest.json
           if-no-files-found: ignore
           retention-days: 30
       - name: Persist verified state atomically
@@ -139,7 +141,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           mkdir -p data results
-          git add -A data results npb_multi_source.py
+          git add -A data results npb_multi_source.py production_run_manifest.json
           if git diff --cached --quiet; then echo '[COMMIT] no verified state changes'; exit 0; fi
           git commit -m 'Persist verified Baseball production state'
           for attempt in 1 2 3 4 5; do
