@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
-"""Fail-closed production output validation and provenance manifest.
-
-Stdlib-only. Intended to run after a production backtest and before any
-verified state is persisted.
-"""
+"""Fail-closed production output validation and provenance manifest."""
 from __future__ import annotations
-import csv, hashlib, json, math, os, platform, socket, subprocess, sys
+import csv, hashlib, json, math, os, platform, socket, subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
 RESULTS = Path("results")
-MANIFEST = RESULTS / "production_run_manifest.json"
+MANIFEST = Path("production_run_manifest.json")
 
 
 def sha256(path: Path) -> str:
@@ -61,26 +57,23 @@ def main() -> None:
             probability_columns.append(f"{path}:{c}")
             for i, row in enumerate(rows, 2):
                 if row.get(c, "") == "" or not finite(row[c]):
-                    checks["probabilities_valid"] = False
                     raise SystemExit(f"INTEGRITY_FAIL: invalid probability {path}:{c} row={i}")
-
-        # Detect exact duplicate records without imposing a domain-specific key.
         seen = set()
         for row in rows:
             key = tuple(row.get(c, "") for c in fields)
             if key in seen:
-                checks["duplicate_rows"] = False
                 raise SystemExit(f"INTEGRITY_FAIL: duplicate result row in {path}")
             seen.add(key)
 
     if total_rows < 2:
         raise SystemExit("INTEGRITY_FAIL: fewer than 2 total result rows")
 
+    now = datetime.now(timezone.utc).isoformat()
     manifest = {
         "schema": "production-integrity-v1",
         "status": "PASS",
-        "created_at_utc": datetime.now(timezone.utc).isoformat(),
-        "prediction_timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "created_at_utc": now,
+        "prediction_timestamp_utc": now,
         "repository": os.environ.get("GITHUB_REPOSITORY", "unknown"),
         "run_id": os.environ.get("GITHUB_RUN_ID", "unknown"),
         "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT", "unknown"),
@@ -93,10 +86,7 @@ def main() -> None:
         "checks": checks,
         "total_result_rows": total_rows,
         "probability_columns": probability_columns,
-        "result_files": [
-            {"path": str(p), "bytes": p.stat().st_size, "sha256": sha256(p)}
-            for p in sorted(files)
-        ],
+        "result_files": [{"path": str(p), "bytes": p.stat().st_size, "sha256": sha256(p)} for p in sorted(files)],
     }
     MANIFEST.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(manifest, ensure_ascii=False, indent=2))
