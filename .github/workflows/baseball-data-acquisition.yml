@@ -13,7 +13,7 @@ env:
 jobs:
   acquire:
     runs-on: [self-hosted, macOS, X64, baseball]
-    timeout-minutes: 55
+    timeout-minutes: 110
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Runtime and source connectivity gate
@@ -23,35 +23,17 @@ jobs:
           curl --fail --silent --show-error --location --max-time 20 https://npb.jp/ >/dev/null
           curl --fail --silent --show-error --location --max-time 20 'https://spaia.jp/baseball/npb/api/weekly_schedule' >/dev/null
           echo '[ACQ] MLB Stats API / NPB / SPAIA connectivity PASS'
-      - name: NPB acquisition (only when checkpoint is incomplete)
+      - name: NPB full-scope resumable acquisition
         env:
           NPB_START_YEAR: "2017"
           NPB_END_YEAR: "2026"
-          NPB_DOWNLOAD_WORKERS: "4"
+          NPB_DOWNLOAD_WORKERS: "8"
           NPB_MIN_STARTER_LINE_COVERAGE: "70"
           NPB_MIN_STARTER_COVERAGE: "70"
-          NPB_COLLECTION_BUDGET_SEC: "2400"
-          NPB_COLLECTION_SAFETY_SEC: "180"
-          BASEBALL_TIME_BUDGET_SEC: "2400"
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          p=Path('data/checkpoints/npb_collection_status.json')
-          if p.exists():
-              try:
-                  s=json.loads(p.read_text())
-                  if s.get('complete') and int(s.get('aggregate_games') or 0) > 0:
-                      print('[NPB ACQ] checkpoint complete; skip full historical collector')
-                      raise SystemExit(0)
-              except SystemExit:
-                  raise
-              except Exception:
-                  pass
-          print('[NPB ACQ] checkpoint incomplete/missing; run resumable collector')
-          PY
-          caffeinate -dimsu python npb_multi_source.py
+          NPB_COLLECTION_BUDGET_SEC: "5400"
+          NPB_COLLECTION_SAFETY_SEC: "300"
+          BASEBALL_TIME_BUDGET_SEC: "5400"
+        run: caffeinate -dimsu python npb_multi_source.py
       - name: NPB nonzero-data gate
         run: |
           set -euo pipefail
@@ -65,10 +47,11 @@ jobs:
           if not s.get('complete'): raise SystemExit('NPB collection incomplete')
           if int(s.get('aggregate_games') or 0)<=0: raise SystemExit('NPB collected zero games')
           PY
-      - name: MLB incremental acquisition
+      - name: MLB full-scope acquisition with incremental refresh
         env:
           MLB_INCREMENTAL_TIMEOUT: "20"
           MLB_CORRECTION_DAYS: "7"
+          MLB_BOOTSTRAP_START_YEAR: "2020"
         run: caffeinate -dimsu python mlb_incremental_acquire.py
       - name: Acquisition data quality gate
         run: |
@@ -92,7 +75,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data results npb_multi_source.py mlb_incremental_acquire.py production_run_manifest.json
           if git diff --cached --quiet; then echo '[ACQ] no changes'; exit 0; fi
-          git commit -m 'Incremental Baseball source acquisition'
+          git commit -m 'Full-scope Baseball source acquisition'
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             if git rebase origin/main && git push origin HEAD:main; then exit 0; fi
