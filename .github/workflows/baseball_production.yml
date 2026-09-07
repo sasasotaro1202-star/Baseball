@@ -19,6 +19,28 @@ jobs:
     timeout-minutes: 140
     steps:
       - uses: actions/checkout@v4
+      - name: Mac runtime health gate
+        run: |
+          set -euo pipefail
+          echo '[HEALTH] runner=$(hostname)'
+          echo '[HEALTH] macOS:'; sw_vers
+          echo '[HEALTH] Python:'; python3 --version
+          echo '[HEALTH] Runner listener processes:'; pgrep -af 'Runner.Listener' || true
+          echo '[HEALTH] Disk:'; df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
+          free_kb="$(df -Pk "$GITHUB_WORKSPACE" | awk 'NR==2 {print $4}')"
+          if [ "${free_kb:-0}" -lt 10485760 ]; then
+            echo '[HEALTH] FAIL: less than 10 GiB free on workspace filesystem'
+            exit 20
+          fi
+          echo '[HEALTH] Memory summary:'; vm_stat | head -20 || true
+          echo '[HEALTH] CPU/load:'; uptime
+          echo '[HEALTH] File descriptor limit:'; ulimit -n
+          echo '[HEALTH] GitHub connectivity:'
+          curl --fail --silent --show-error --location --max-time 20 https://api.github.com/rate_limit >/dev/null
+          echo '[HEALTH] GitHub HTTPS PASS'
+          echo '[HEALTH] Stats API connectivity:'
+          curl --fail --silent --show-error --location --max-time 20 https://statsapi.mlb.com/api/v1/sports/1 >/dev/null
+          echo '[HEALTH] MLB Stats API HTTPS PASS'
       - name: Setup Python
         run: |
           set -euo pipefail
