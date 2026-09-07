@@ -15,7 +15,7 @@ jobs:
     runs-on: [self-hosted, macOS, X64, baseball]
     timeout-minutes: 140
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Mac runtime health gate
         run: |
           set -euo pipefail
@@ -113,7 +113,7 @@ jobs:
           python production_integrity_gate.py
       - name: Upload verified state artifact
         if: success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: baseball-production-state-${{ github.run_id }}
           path: |
@@ -125,7 +125,7 @@ jobs:
           retention-days: 90
       - name: Upload failure diagnostics without touching production state
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: baseball-production-failure-${{ github.run_id }}
           path: |
