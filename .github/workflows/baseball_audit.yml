@@ -1,14 +1,6 @@
 name: Baseball Backtest Audit
 
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - 'data/**'
-      - 'results/**'
-      - 'research_state.json'
-      - 'research_history.json'
-      - 'research_plan.json'
   workflow_dispatch:
 
 permissions:
@@ -20,10 +12,10 @@ concurrency:
 
 jobs:
   audit:
-    runs-on: [self-hosted, macOS, X64]
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Run dependency-free deterministic audit
         run: python backtest_audit.py
