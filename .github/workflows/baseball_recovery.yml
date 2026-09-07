@@ -23,83 +23,94 @@ jobs:
   watchdog:
     name: Autonomous pipeline watchdog
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Reconcile, cancel stuck runs and recover the autonomous pipeline
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_API_URL: ${{ github.api_url }}
+        shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
           mkdir -p recovery_diagnostics
           python3 - <<'PY'
-          import json, os, urllib.error, urllib.request
+          import json, os, time, urllib.error, urllib.request, traceback
           from datetime import datetime, timezone
           from pathlib import Path
 
-          repo=os.environ['GITHUB_REPOSITORY']; token=os.environ['GH_TOKEN']; api=os.environ.get('GITHUB_API_URL','https://api.github.com')
+          repo=os.environ['GITHUB_REPOSITORY']; token=os.environ['GH_TOKEN']; api=os.environ.get('GITHUB_API_URL','https://api.github.com').rstrip('/')
           workflows={'production':'baseball_production.yml','mac':'baseball_mac_compute.yml','research':'baseball_research.yml'}
           STALE_MINUTES={'production':155,'mac':180,'research':180}
           QUEUED_STALE_MINUTES=20
           ACTIVE_STATES={'queued','in_progress','waiting','pending','requested'}
+          RETRYABLE={408,409,425,429,500,502,503,504}
+          errors=[]; stuck=[]; action='none'; data={}; latest={}
 
-          def request(method,path,payload=None):
+          def request(method,path,payload=None,attempts=5):
               body=None if payload is None else json.dumps(payload).encode('utf-8')
-              req=urllib.request.Request(api.rstrip('/')+path,data=body,method=method,headers={
-                  'Authorization':f'Bearer {token}','Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','User-Agent':'Baseball-Autonomous-Recovery','Content-Type':'application/json'})
-              try:
-                  with urllib.request.urlopen(req,timeout=30) as resp:
-                      raw=resp.read(); return json.loads(raw.decode('utf-8')) if raw else {}
-              except urllib.error.HTTPError as exc:
-                  detail=exc.read().decode('utf-8',errors='replace')
-                  raise RuntimeError(f'GitHub API {method} {path} failed: HTTP {exc.code}: {detail}') from exc
+              last=None
+              for attempt in range(1,attempts+1):
+                  req=urllib.request.Request(api+path,data=body,method=method,headers={
+                      'Authorization':f'Bearer {token}','Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','User-Agent':'Baseball-Autonomous-Recovery','Content-Type':'application/json'})
+                  try:
+                      with urllib.request.urlopen(req,timeout=30) as resp:
+                          raw=resp.read(); return json.loads(raw.decode('utf-8')) if raw else {}
+                  except urllib.error.HTTPError as exc:
+                      detail=exc.read().decode('utf-8',errors='replace')
+                      last=RuntimeError(f'GitHub API {method} {path} failed: HTTP {exc.code}: {detail[:1200]}')
+                      if exc.code not in RETRYABLE: raise last
+                  except (urllib.error.URLError, TimeoutError, OSError) as exc:
+                      last=exc
+                  if attempt<attempts: time.sleep(min(20,2**(attempt-1)))
+              raise last
 
-          def runs(filename):
-              return request('GET',f'/repos/{repo}/actions/workflows/{filename}/runs?per_page=100').get('workflow_runs',[])
-
-          data={k:runs(v) for k,v in workflows.items()}
           now=datetime.now(timezone.utc)
+          def runs(filename): return request('GET',f'/repos/{repo}/actions/workflows/{filename}/runs?per_page=100').get('workflow_runs',[])
           def active(row): return bool(row) and row.get('status') in ACTIVE_STATES
           def success(row): return bool(row) and row.get('conclusion')=='success'
           def ts(row):
               value=(row or {}).get('created_at') or (row or {}).get('updated_at')
-              if not value: return datetime.min.replace(tzinfo=timezone.utc)
-              return datetime.fromisoformat(value.replace('Z','+00:00'))
+              return datetime.fromisoformat(value.replace('Z','+00:00')) if value else datetime.min.replace(tzinfo=timezone.utc)
           def age_minutes(row): return (now-ts(row)).total_seconds()/60.0 if row else 0.0
-          def cancel_stuck(label,row):
-              if not active(row): return False
-              age=age_minutes(row)
-              limit=QUEUED_STALE_MINUTES if row.get('status') in {'queued','waiting','requested'} else STALE_MINUTES[label]
-              if age <= limit: return False
-              run_id=row['id']; print(f'[WATCHDOG] STUCK {label} run={run_id} status={row.get("status")} age_min={age:.1f} limit={limit}; cancelling')
-              request('POST',f'/repos/{repo}/actions/runs/{run_id}/cancel'); return True
-          latest={k:(rows[0] if rows else None) for k,rows in data.items()}
-          active_runs={k:[r for r in rows if active(r)] for k,rows in data.items()}
-          stuck=[]
-          for label,rows in active_runs.items():
-              for row in rows:
-                  if cancel_stuck(label,row): stuck.append(row['id'])
-          if stuck:
-              print('[WATCHDOG] stuck/runner-blocked stage cancelled; next reconciliation will dispatch the required replacement safely')
-              action='cancel-stuck'
-          elif any(active_runs.values()):
-              action='active-no-dispatch'
-          else:
-              action='none'
-              prod=latest['production']; mac=latest['mac']; research=latest['research']
-              def dispatch(label,workflow):
-                  global action
-                  print(f'[WATCHDOG] dispatch {label}: {workflow}')
-                  request('POST',f'/repos/{repo}/actions/workflows/{workflow}/dispatches',{'ref':'main'})
-                  action=f'dispatch-{label}'
-              if not success(prod): dispatch('production-recovery',workflows['production'])
-              elif not success(mac) or ts(mac)<ts(prod): dispatch('mac-oos',workflows['mac'])
-              elif not success(research) or ts(research)<ts(mac): dispatch('autonomous-research',workflows['research'])
-              elif success(research) and ts(research)>ts(prod): dispatch('next-production',workflows['production'])
-          diagnostic={'version':'baseball-recovery-v3','time':datetime.now(timezone.utc).isoformat(),'action':action,'active_runs':{k:[r['id'] for r in v] for k,v in active_runs.items()},'cancelled_stuck_runs':stuck,'latest':{k:({'id':r.get('id'),'status':r.get('status'),'conclusion':r.get('conclusion'),'created_at':r.get('created_at')} if r else None) for k,r in latest.items()}}
+
+          try:
+              data={k:runs(v) for k,v in workflows.items()}
+              latest={k:(rows[0] if rows else None) for k,rows in data.items()}
+              active_runs={k:[r for r in rows if active(r)] for k,rows in data.items()}
+              for label,rows in active_runs.items():
+                  for row in rows:
+                      limit=QUEUED_STALE_MINUTES if row.get('status') in {'queued','waiting','requested'} else STALE_MINUTES[label]
+                      if age_minutes(row)>limit:
+                          run_id=row['id']; print(f'[WATCHDOG] STUCK {label} run={run_id} status={row.get("status")} age_min={age_minutes(row):.1f} limit={limit}; cancelling')
+                          try:
+                              request('POST',f'/repos/{repo}/actions/runs/{run_id}/cancel'); stuck.append(run_id)
+                          except Exception as exc:
+                              errors.append(f'cancel {run_id}: {exc}'); print(f'[WATCHDOG] cancel failed for {run_id}: {exc}')
+              if stuck: action='cancel-stuck'
+              elif any(active_runs.values()): action='active-no-dispatch'
+              else:
+                  prod=latest['production']; mac=latest['mac']; research=latest['research']
+                  def dispatch(label,workflow):
+                      global action
+                      try:
+                          print(f'[WATCHDOG] dispatch {label}: {workflow}')
+                          request('POST',f'/repos/{repo}/actions/workflows/{workflow}/dispatches',{'ref':'main'}); action=f'dispatch-{label}'
+                      except Exception as exc:
+                          errors.append(f'dispatch {workflow}: {exc}'); print(f'[WATCHDOG] dispatch failed for {workflow}: {exc}')
+                  if not success(prod): dispatch('production-recovery',workflows['production'])
+                  elif not success(mac) or ts(mac)<ts(prod): dispatch('mac-oos',workflows['mac'])
+                  elif not success(research) or ts(research)<ts(mac): dispatch('autonomous-research',workflows['research'])
+                  elif success(research) and ts(research)>ts(prod): dispatch('next-production',workflows['production'])
+          except Exception as exc:
+              errors.append(f'watchdog fatal: {exc}')
+              print('[WATCHDOG] degraded:',exc); traceback.print_exc()
+
+          diagnostic={'version':'baseball-recovery-v4','time':datetime.now(timezone.utc).isoformat(),'status':'degraded' if errors else 'ok','action':action,'errors':errors,'active_runs':{k:[r['id'] for r in v] for k,v in active_runs.items()} if 'active_runs' in locals() else {},'cancelled_stuck_runs':stuck,'latest':{k:({'id':r.get('id'),'status':r.get('status'),'conclusion':r.get('conclusion'),'created_at':r.get('created_at')} if r else None) for k,r in latest.items()}}
           Path('recovery_diagnostics/latest.json').write_text(json.dumps(diagnostic,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           Path('recovery_diagnostics/recent_runs.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(diagnostic,ensure_ascii=False,indent=2))
+          if errors: raise SystemExit(1)
           PY
       - name: Publish recovery diagnostics without repository commits
         if: always()
