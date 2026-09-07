@@ -18,7 +18,7 @@ env:
 jobs:
   research:
     name: Analyze OOS results and update research state
-    runs-on: [self-hosted, macOS, baseball]
+    runs-on: [self-hosted, macOS, X64, baseball]
     timeout-minutes: 70
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -29,12 +29,25 @@ jobs:
         with:
           ref: main
           clean: true
+      - name: Mac runtime health gate
+        run: |
+          set -euo pipefail
+          test "$(uname -s)" = "Darwin"
+          test "$(uname -m)" = "x86_64"
+          echo '[HEALTH] Disk:'; df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
+          free_kb="$(df -Pk "$GITHUB_WORKSPACE" | awk 'NR==2 {print $4}')"
+          if [ "${free_kb:-0}" -lt 10485760 ]; then echo '[HEALTH] FAIL: less than 10 GiB free'; exit 20; fi
+          echo '[HEALTH] Memory:'; vm_stat | head -20 || true
+          echo '[HEALTH] Load:'; uptime
+          curl --fail --silent --show-error --location --max-time 20 https://api.github.com/rate_limit >/dev/null
+          echo '[HEALTH] GitHub HTTPS PASS'
       - name: Verify Mac worker
         run: |
           set -euo pipefail
           sw_vers
           uname -m
           python3 --version
+          pgrep -af 'Runner.Listener' || true
       - name: Verify OpenAI secret is available
         run: |
           set -euo pipefail
@@ -80,6 +93,13 @@ jobs:
           python -m json.tool research_history.json >/dev/null
           python -m json.tool research_plan.json >/dev/null
           python -m json.tool research_ai_advice.json >/dev/null
+          python - <<'PY'
+          import json
+          a=json.load(open('research_ai_advice.json',encoding='utf-8'))
+          assert a.get('advisory_only') is True
+          assert a.get('source_policy') == 'prior_rows_only'
+          print('[RESEARCH] advisory-only promotion safety gate: PASS')
+          PY
       - name: Persist research state with conflict recovery
         run: |
           set -euo pipefail
