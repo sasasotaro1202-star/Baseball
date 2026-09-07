@@ -1,6 +1,12 @@
 name: Baseball Autonomous Recovery
 
 on:
+  workflow_run:
+    workflows:
+      - Baseball Production Backtest
+      - Baseball Mac OOS Compute
+      - Baseball Autonomous Research
+    types: [completed]
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
@@ -91,7 +97,7 @@ jobs:
               elif not success(mac) or ts(mac)<ts(prod): dispatch('mac-oos',workflows['mac'])
               elif not success(research) or ts(research)<ts(mac): dispatch('autonomous-research',workflows['research'])
               elif success(research) and ts(research)>ts(prod): dispatch('next-production',workflows['production'])
-          diagnostic={'version':'baseball-recovery-v2','time':datetime.now(timezone.utc).isoformat(),'action':action,'active_runs':{k:[r['id'] for r in v] for k,v in active_runs.items()},'cancelled_stuck_runs':stuck,'latest':{k:({'id':r.get('id'),'status':r.get('status'),'conclusion':r.get('conclusion'),'created_at':r.get('created_at')} if r else None) for k,r in latest.items()}}
+          diagnostic={'version':'baseball-recovery-v3','time':datetime.now(timezone.utc).isoformat(),'action':action,'active_runs':{k:[r['id'] for r in v] for k,v in active_runs.items()},'cancelled_stuck_runs':stuck,'latest':{k:({'id':r.get('id'),'status':r.get('status'),'conclusion':r.get('conclusion'),'created_at':r.get('created_at')} if r else None) for k,r in latest.items()}}
           Path('recovery_diagnostics/latest.json').write_text(json.dumps(diagnostic,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           Path('recovery_diagnostics/recent_runs.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           PY
@@ -111,5 +117,6 @@ jobs:
           echo '[RECOVERY] Production -> Mac OOS -> Research -> next Production is enforced as a state machine.'
           echo '[RECOVERY] Failed/cancelled/stuck stages are recovered without duplicating active work.'
           echo '[RECOVERY] Active-run detection scans the full recent run window, not only the newest run.'
+          echo '[RECOVERY] Recovery reacts to completed workflow events and also reconciles every 15 minutes.'
           echo '[RECOVERY] Recovery diagnostics are published as 30-day artifacts, not repository commits.'
           echo '[RECOVERY] Queued/runner-blocked runs are treated as stuck after 20 minutes; active computation gets a generous timeout margin.'
