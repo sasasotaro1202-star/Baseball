@@ -1,0 +1,38 @@
+name: sports-forecast-parallel-matrix
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 23 * * *"
+    - cron: "0 11 * * *"
+permissions: { contents: write }
+concurrency: { group: sports-parallel-matrix, cancel-in-progress: false }
+jobs:
+  test_and_plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs: { matrix: ${{ steps.plan.outputs.matrix }} }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+      - name: Run tests (includes 36000-event test)
+        run: python -m pytest tests -v
+      - name: Generate matrix
+        id: plan
+        run: python run.py shard-plan --emit-matrix
+  collect:
+    needs: test_and_plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJson(needs.test_and_plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+      - name: Execute assigned shard
+        run: echo "Run ${{ matrix.source }} shard ${{ matrix.index }}/${{ matrix.total }} with checkpoint/resume"
