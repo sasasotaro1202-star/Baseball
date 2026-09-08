@@ -5,7 +5,7 @@ on:
     paths:
       - 'control/baseball-acquisition-trigger.txt'
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '14 11 * * *'
 permissions:
   contents: write
 concurrency:
