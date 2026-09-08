@@ -1,0 +1,53 @@
+name: sports-forecast-pipeline
+
+on:
+  schedule:
+    - cron: "0 23 * * *"   # 毎日 8:00 JST
+    - cron: "0 11 * * *"   # 毎日 20:00 JST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline-run
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install pandas numpy requests scikit-learn pyarrow pytest
+
+      - name: Run full pipeline
+        run: |
+          python run.py collect-baseball --statcast-windows 4 || true
+          python run.py collect-soccer --sofascore-budget 20 || true
+          python run.py features || true
+          python run.py research || true
+          python run.py predict || true
+          python run.py verify || true
+          python run.py inventory || true
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f data/predictions data/results data/inventory_latest.json state 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "chore: auto-run [skip ci]"
+          git pull --rebase --autostash || true
+          git push || true
