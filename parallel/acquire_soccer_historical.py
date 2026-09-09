@@ -10,6 +10,10 @@ data) and 2 (market odds) from prediction_model_specification.md. It does
 NOT provide Understat xG (category 3) or SofaScore player data (category
 8-11) -- those require separate acquisition and are not yet automated.
 
+Fix (2026-09-09): football-data.co.uk rejects requests with the default
+python-requests User-Agent (returns non-200 / empty body). A browser-like
+User-Agent header is now sent with every request.
+
 Usage (inside CI):
     python -m parallel.acquire_soccer_historical --years 15
 """
@@ -22,9 +26,6 @@ import time
 import pandas as pd
 import requests
 
-# football-data.co.uk division codes for leagues covered by this free source.
-# Note: J-League, UCL/UEL, DFB-Pokal, and Club Friendlies are NOT available
-# from this source and require separate acquisition (see docs/PARALLELIZATION.md).
 LEAGUE_CODES = {
     "premier_league": "E0",
     "bundesliga": "D1",
@@ -36,6 +37,13 @@ LEAGUE_CODES = {
 
 BASE_URL = "https://www.football-data.co.uk/mmz4281/{season}/{code}.csv"
 
+HEADERS = {
+    "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/124.0.0.0 Safari/537.36"),
+    "Accept": "text/csv,application/csv,text/plain,*/*",
+}
+
 RENAME_MAP = {
     "Date": "date", "HomeTeam": "home_team", "AwayTeam": "away_team",
     "FTHG": "home_score", "FTAG": "away_score", "FTR": "FTR",
@@ -46,16 +54,16 @@ KEEP_COLS = list(RENAME_MAP.keys())
 
 
 def season_code(end_year: int) -> str:
-    """end_year=2026 -> '2526' (2025/26 season)."""
     start_year = end_year - 1
     return f"{start_year % 100:02d}{end_year % 100:02d}"
 
 
-def fetch_season_csv(league_code: str, season: str, timeout: int = 15):
+def fetch_season_csv(league_code: str, season: str, timeout: int = 20):
     url = BASE_URL.format(season=season, code=league_code)
     try:
-        resp = requests.get(url, timeout=timeout)
+        resp = requests.get(url, headers=HEADERS, timeout=timeout)
         if resp.status_code != 200 or len(resp.content) < 100:
+            print(f"[warn] {url} -> HTTP {resp.status_code}, {len(resp.content)} bytes")
             return None
         df = pd.read_csv(io.StringIO(resp.content.decode("utf-8", errors="ignore")))
     except Exception as e:
@@ -63,6 +71,7 @@ def fetch_season_csv(league_code: str, season: str, timeout: int = 15):
         return None
     cols = [c for c in KEEP_COLS if c in df.columns]
     if "Date" not in cols or "HomeTeam" not in cols:
+        print(f"[warn] {url} -> unexpected columns: {df.columns.tolist()}")
         return None
     df = df[cols].rename(columns=RENAME_MAP)
     try:
@@ -72,7 +81,7 @@ def fetch_season_csv(league_code: str, season: str, timeout: int = 15):
     return df
 
 
-def acquire(years: int, out_dir: str = "data/soccer/historical", sleep_sec: float = 1.0) -> dict:
+def acquire(years: int, out_dir: str = "data/soccer/historical", sleep_sec: float = 1.5) -> dict:
     os.makedirs(out_dir, exist_ok=True)
     current_end_year = 2026
     report = {}
