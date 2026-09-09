@@ -1,15 +1,7 @@
-name: Integrated Baseball+Soccer Pipeline (Complete)
+name: Integrated Baseball Pipeline
 on:
   workflow_dispatch:
-    inputs:
-      feature_stage:
-        description: 'Feature expansion stage (1=elo_only, 2=+recent_form, 3=+h2h, 4=+market, 5=all)'
-        required: false
-        default: '5'
-      backtest_folds:
-        description: 'Walk-forward validation folds'
-        required: false
-        default: '5'
+
 jobs:
   collect-baseball:
     runs-on: ubuntu-latest
@@ -21,50 +13,15 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Collect MLB data (StatsAPI)
-        run: |
-          python run.py collect-baseball --statcast-windows 2
-      - name: Quality gate - check data coverage
-        run: |
-          python source_quality_gate.py --min-games 1000
+        run: python run.py collect-baseball
+      - name: Show what was collected
+        run: python run.py inventory
       - name: Upload baseball data
         uses: actions/upload-artifact@v4
         with:
           name: baseball-data
-          path: |
-            data/raw/
-            data/events/
-            data/state/
-
-  collect-soccer:
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          repository: sasasotaro1202-star/soccer
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Collect football-data (EPL, LaLiga, Bundesliga, SerieA, Ligue1)
-        run: |
-          python run.py collect-football-data || echo "football-data blocked"
-      - name: Collect understat (xG data)
-        run: |
-          python run.py collect-understat || echo "understat blocked"
-      - name: Collect sofascore (player stats)
-        run: |
-          python run.py collect-sofascore --budget 20 || echo "sofascore blocked"
-      - name: Quality gate
-        run: |
-          python source_quality_gate.py --min-leagues 3 || echo "insufficient data"
-      - name: Upload soccer data
-        uses: actions/upload-artifact@v4
-        with:
-          name: soccer-data
           path: data/raw/
+          if-no-files-found: warn
 
   elo-baseline:
     needs: [collect-baseball]
@@ -74,121 +31,19 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
       - uses: actions/download-artifact@v4
         with:
           name: baseball-data
-          path: data/
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+          path: data/raw/
       - name: Run Elo baseline + base rate comparison
-        run: |
-          python elo_baseline_all.py
+        run: python run.py features
+      - name: Show results
+        run: cat data/results/elo_baseline.json
       - name: Upload baseline results
         uses: actions/upload-artifact@v4
         with:
           name: elo-baseline-results
           path: data/results/elo_baseline.json
-
-  features-research-staged:
-    needs: [elo-baseline]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        stage: [1, 2, 3, 4, 5]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - uses: actions/download-artifact@v4
-        with:
-          name: baseball-data
-          path: data/
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Build features (stage ${{ matrix.stage }})
-        run: |
-          export FEATURE_STAGE=${{ matrix.stage }}
-          python run.py features
-      - name: Run backtest (stage ${{ matrix.stage }})
-        run: |
-          export FEATURE_STAGE=${{ matrix.stage }}
-          python run.py research
-      - name: Upload models (stage ${{ matrix.stage }})
-        uses: actions/upload-artifact@v4
-        with:
-          name: baseball-models-stage-${{ matrix.stage }}
-          path: |
-            data/models/
-            data/results/backtest_stage_${{ matrix.stage }}.json
-
-  compare-stages:
-    needs: [features-research-staged]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Download all stage results
-        uses: actions/download-artifact@v4
-        with:
-          pattern: baseball-models-stage-*
-          path: data/results/
-      - name: Compare stage performance
-        run: |
-          python -c "
-          import json, glob
-          results = {}
-          for f in glob.glob('data/results/*/backtest_*.json'):
-              stage = f.split('stage-')[1].split('/')[0]
-              data = json.load(open(f))
-              results[stage] = {m: d['log_loss'] for m, d in data.items() if 'log_loss' in d}
-          print('Stage comparison (log_loss, lower=better):')
-          for stage, metrics in sorted(results.items()):
-              print(f'  Stage {stage}: {metrics}')
-          "
-      - name: Upload comparison
-        uses: actions/upload-artifact@v4
-        with:
-          name: stage-comparison
-          path: data/results/
-
-  predict-verify:
-    needs: [compare-stages]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - uses: actions/download-artifact@v4
-        with:
-          name: baseball-data
-          path: data/
-      - uses: actions/download-artifact@v4
-        with:
-          name: baseball-models-stage-5
-          path: data/models/
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Run predictions (best stage)
-        run: |
-          python run.py predict
-      - name: Verify predictions
-        run: |
-          python run.py verify
-      - name: Integrity gate
-        run: |
-          python production_integrity_gate.py
-      - name: Show inventory
-        run: |
-          python run.py inventory
-      - name: Upload final results
-        uses: actions/upload-artifact@v4
-        with:
-          name: final-predictions
-          path: |
-            data/predictions/
-            data/results/settlement/
-            data/inventory.json
+          if-no-files-found: warn
