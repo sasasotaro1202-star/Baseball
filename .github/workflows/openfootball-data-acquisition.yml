@@ -1,0 +1,28 @@
+name: OpenFootball Data Acquisition (J-League, DFB-Pokal, UCL/UEL)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements-parallel.txt
+      - name: Acquire J-League, DFB-Pokal, UCL/UEL (openfootball)
+        run: |
+          python -m parallel.acquire_openfootball
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openfootball-acquisition-report
+          path: artifacts/openfootball_acquisition_report.json
+      - name: Commit acquired data back to repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/soccer/openfootball
+          git diff --staged --quiet || git commit -m "Auto-update: openfootball data acquisition"
+          git push
