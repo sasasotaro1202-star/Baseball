@@ -6,8 +6,7 @@ Source repos:
   - openfootball/world (J-League, Asia)
 
 Format: football.txt (structured text, NOT CSV). This script clones the repo
-locally inside GitHub Actions, then uses the sportdb CLI (or a simple
-regex-based fallback) to convert to CSV.
+locally inside GitHub Actions, then writes a minimal CSV wrapper.
 
 Honesty note: exact file paths (season folders, etc.) were not verified
 before writing this script (raw.githubusercontent.com could not be previewed).
@@ -43,19 +42,15 @@ def discover_txt_files(base_path: str, pattern: str = "*.txt") -> list:
 
 
 def convert_txt_to_csv(txt_path: str, out_csv: str) -> bool:
-    """Stub: sportdb CLI is not installed. This function is a placeholder.
-    In a real implementation, you would call:
-        sportdb parse <txt_path> --format csv --out <out_csv>
-    For now, we write a minimal CSV header + raw text to avoid silent data loss.
-    """
+    """Writes raw text lines as a single-column CSV (no escaping bugs)."""
     with open(txt_path, "r", encoding="utf-8") as f:
-        raw = f.read()
-    # Minimal stub: write raw text as a single column CSV
+        lines = f.readlines()
     with open(out_csv, "w", encoding="utf-8") as f:
-        f.write("raw_line\\n")
-        for line in raw.splitlines():
-            if line.strip():
-                f.write(f'"{line.replace(chr(34), chr(34)+chr(34))}"\\n')
+        f.write("raw_line\n")
+        for line in lines:
+            clean = line.rstrip("\n\r")
+            if clean:
+                f.write('"' + clean.replace('"', '""') + '"\n')
     return True
 
 
