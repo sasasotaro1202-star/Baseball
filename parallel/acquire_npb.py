@@ -12,6 +12,10 @@ Verified column mapping (confirmed against real 2024 data on 2026-09-09):
   homescore              -> home_score
   awayscore              -> away_score
 
+NOTE (2026-09-09): source CSV headers may use mixed/PascalCase (e.g. 'GameDate').
+All column names are lowercased immediately after fetch so matching is
+case-insensitive regardless of how the upstream repo formats headers.
+
 Rows with gamestate != 2 (not "finished") or missing scores are dropped,
 since those represent postponed/incomplete games and would corrupt the
 Elo/form calculations if treated as 0-0 results.
@@ -39,11 +43,15 @@ def fetch_season(year: int, timeout: int = 20):
 
 
 def normalize(df: pd.DataFrame, year: int):
+    df = df.copy()
+    original_columns = df.columns.tolist()
+    df.columns = [str(c).strip().lower() for c in df.columns]
+
     required = ["gamedate", "homescore", "awayscore"]
     missing = [c for c in required if c not in df.columns]
     if missing:
         print(f"[warn] {year}: expected columns missing {missing}. "
-              f"Actual columns: {df.columns.tolist()}. Saving RAW instead.")
+              f"Actual columns (original case): {original_columns}. Saving RAW instead.")
         return df, False
 
     out = pd.DataFrame()
