@@ -72,7 +72,7 @@ def fetch_season_csv(league_code: str, season: str, timeout: int = 15):
     return df
 
 
-def acquire(years: int, out_dir: str = "data/soccer/historical", sleep_sec: float = 0.5) -> dict:
+def acquire(years: int, out_dir: str = "data/soccer/historical", sleep_sec: float = 1.0) -> dict:
     os.makedirs(out_dir, exist_ok=True)
     current_end_year = 2026
     report = {}
