@@ -8,18 +8,26 @@ on:
         required: false
         default: "15"
 
+permissions:
+  contents: write
+
+concurrency:
+  group: data-acquisition
+  cancel-in-progress: false
+
 jobs:
   acquire:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - run: pip install -r requirements-parallel.txt
-      - name: Acquire historical soccer data (football-data.co.uk)
-        run: |
-          python -m parallel.acquire_soccer_historical --years ${{ github.event.inputs.years || 15 }}
+      - name: Acquire historical soccer data
+        run: python -m parallel.acquire_soccer_historical --years "${{ github.event.inputs.years || 15 }}"
       - uses: actions/upload-artifact@v4
         with:
           name: soccer-acquisition-report
@@ -29,5 +37,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/soccer/historical
-          git diff --staged --quiet || git commit -m "Auto-update: historical soccer data acquisition"
-          git push
+          if git diff --staged --quiet; then
+            echo "No new soccer data"
+            exit 0
+          fi
+          git commit -m "Auto-update: historical soccer data acquisition"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
