@@ -1,0 +1,21 @@
+date,home_team,away_team,home_score,away_score,FTR,shots_home,shots_away,sot_home,sot_away,corners_home,corners_away
+2025-08-15,Girona,Vallecano,1,3,A,7,16,2,5,2,4
+2025-08-15,Villarreal,Oviedo,2,0,H,25,5,10,4,10,1
+2025-08-16,Mallorca,Barcelona,0,3,A,4,24,1,8,3,6
+2025-08-16,Alaves,Levante,2,1,H,15,7,4,3,10,1
+2025-08-16,Valencia,Sociedad,1,1,D,18,13,2,3,8,7
+2025-08-17,Celta,Getafe,0,2,A,11,10,3,3,9,3
+2025-08-17,Ath Bilbao,Sevilla,3,2,H,14,12,3,6,10,1
+2025-08-17,Espanol,Ath Madrid,2,1,H,10,15,5,4,1,3
+2025-08-18,Elche,Betis,1,1,D,6,12,2,4,1,3
+2025-08-19,Real Madrid,Osasuna,1,0,H,18,2,5,0,7,0
+2025-08-22,Betis,Alaves,1,0,H,16,11,5,5,5,2
+2025-08-23,Mallorca,Celta,1,1,D,12,8,4,2,3,4
+2025-08-23,Ath Madrid,Elche,1,1,D,13,6,6,2,10,2
+2025-08-23,Levante,Barcelona,2,3,A,8,26,5,10,0,11
+2025-08-24,Osasuna,Valencia,1,0,H,16,4,4,1,3,4
+2025-08-24,Sociedad,Espanol,2,2,D,15,14,7,3,5,2
+2025-08-24,Villarreal,Girona,5,0,H,19,5,7,2,8,1
+2025-08-24,Oviedo,Real Madrid,0,3,A,6,26,3,10,1,9
+2025-08-25,Ath Bilbao,Vallecano,1,0,H,11,6,4,1,3,6
+2025-08-25,Sevilla,Getafe,1,2,A,12,9,3,6,5,3

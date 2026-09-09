@@ -1,0 +1,21 @@
+date,home_team,away_team,home_score,away_score,FTR,shots_home,shots_away,sot_home,sot_away,corners_home,corners_away
+2025-08-15,Rennes,Marseille,1,0,H,12,24,5,2,1,12
+2025-08-16,Lens,Lyon,0,1,A,18,11,5,3,13,8
+2025-08-16,Monaco,Le Havre,3,1,H,13,9,3,4,5,4
+2025-08-16,Nice,Toulouse,0,1,A,13,10,2,2,9,4
+2025-08-17,Brest,Lille,3,3,D,18,10,5,6,2,2
+2025-08-17,Angers,Paris FC,1,0,H,8,17,2,7,3,7
+2025-08-17,Auxerre,Lorient,1,0,H,7,14,3,3,4,5
+2025-08-17,Metz,Strasbourg,0,1,A,2,9,0,4,3,3
+2025-08-17,Nantes,Paris SG,0,1,A,6,18,0,4,2,7
+2025-08-22,Paris SG,Angers,1,0,H,21,3,4,0,12,0
+2025-08-23,Marseille,Paris FC,5,2,H,12,8,7,4,5,2
+2025-08-23,Nice,Auxerre,3,1,H,16,12,6,8,5,4
+2025-08-23,Lyon,Metz,3,0,H,13,11,8,2,4,3
+2025-08-24,Lorient,Rennes,4,0,H,22,5,7,1,3,2
+2025-08-24,Le Havre,Lens,1,2,A,18,6,6,3,7,0
+2025-08-24,Strasbourg,Nantes,1,0,H,15,9,4,2,7,6
+2025-08-24,Toulouse,Brest,2,0,H,6,16,3,2,3,9
+2025-08-24,Lille,Monaco,1,0,H,18,6,1,1,8,3
+2025-08-29,Lens,Brest,3,1,H,30,9,10,2,15,1
+2025-08-30,Lorient,Lille,1,7,A,6,20,2,11,3,8
