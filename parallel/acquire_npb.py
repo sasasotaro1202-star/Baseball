@@ -3,15 +3,18 @@
 Source: armstjc/Nippon-Baseball-Data-Repository (MIT licensed, public GitHub repo)
 https://github.com/armstjc/Nippon-Baseball-Data-Repository
 
-Coverage: 2018-2025 NPB schedules (8 seasons). This is NOT 15 years, but is
-the best free structured source found for NPB to date. If a longer-history
-NPB source is found later, extend SEASONS below.
+Coverage: 2018-2025 NPB schedules (8 seasons).
 
-Honesty note: column names in the source CSVs were not verified before
-writing this script (raw.githubusercontent.com could not be previewed from
-the assistant's tools). This script auto-detects likely column names for
-date/home/away/score and logs a warning + saves the raw file untouched if
-detection fails, so no data is silently mislabeled.
+Verified column mapping (confirmed against real 2024 data on 2026-09-09):
+  gamedate               -> date (first 10 chars: 'YYYY-MM-DD')
+  hometeamnameen (or hometeamshortname if blank) -> home_team
+  awayteamnameen (or awayteamshortname if blank) -> away_team
+  homescore              -> home_score
+  awayscore              -> away_score
+
+Rows with gamestate != 2 (not "finished") or missing scores are dropped,
+since those represent postponed/incomplete games and would corrupt the
+Elo/form calculations if treated as 0-0 results.
 """
 import argparse
 import io
@@ -23,19 +26,6 @@ import requests
 
 REPO_RAW_BASE = "https://raw.githubusercontent.com/armstjc/Nippon-Baseball-Data-Repository/main/schedules"
 SEASONS = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
-
-DATE_CANDIDATES = ["date", "Date", "game_date", "GameDate"]
-HOME_CANDIDATES = ["home_team", "HomeTeam", "home", "Home", "home_team_name"]
-AWAY_CANDIDATES = ["away_team", "AwayTeam", "away", "Away", "away_team_name"]
-HOME_SCORE_CANDIDATES = ["home_score", "HomeScore", "home_runs", "HomeRuns"]
-AWAY_SCORE_CANDIDATES = ["away_score", "AwayScore", "away_runs", "AwayRuns"]
-
-
-def _find_col(df_columns, candidates):
-    for c in candidates:
-        if c in df_columns:
-            return c
-    return None
 
 
 def fetch_season(year: int, timeout: int = 20):
@@ -49,25 +39,44 @@ def fetch_season(year: int, timeout: int = 20):
 
 
 def normalize(df: pd.DataFrame, year: int):
-    cols = df.columns.tolist()
-    date_col = _find_col(cols, DATE_CANDIDATES)
-    home_col = _find_col(cols, HOME_CANDIDATES)
-    away_col = _find_col(cols, AWAY_CANDIDATES)
-    hs_col = _find_col(cols, HOME_SCORE_CANDIDATES)
-    as_col = _find_col(cols, AWAY_SCORE_CANDIDATES)
-
-    detected = {"date": date_col, "home_team": home_col, "away_team": away_col,
-                "home_score": hs_col, "away_score": as_col}
-    missing = [k for k, v in detected.items() if v is None]
+    required = ["gamedate", "homescore", "awayscore"]
+    missing = [c for c in required if c not in df.columns]
     if missing:
-        print(f"[warn] {year}: could not auto-detect columns {missing}. "
-              f"Raw columns were: {cols}. Saving RAW (unnormalized) file instead.")
+        print(f"[warn] {year}: expected columns missing {missing}. "
+              f"Actual columns: {df.columns.tolist()}. Saving RAW instead.")
         return df, False
 
-    out = df.rename(columns={date_col: "date", home_col: "home_team", away_col: "away_team",
-                              hs_col: "home_score", as_col: "away_score"})
+    out = pd.DataFrame()
+    out["date"] = df["gamedate"].astype(str).str[:10]
     out["date"] = pd.to_datetime(out["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+
+    if "hometeamnameen" in df.columns and "hometeamshortname" in df.columns:
+        out["home_team"] = df["hometeamnameen"].fillna(df["hometeamshortname"])
+    elif "hometeamnameen" in df.columns:
+        out["home_team"] = df["hometeamnameen"]
+    else:
+        out["home_team"] = df.get("hometeamshortname")
+
+    if "awayteamnameen" in df.columns and "awayteamshortname" in df.columns:
+        out["away_team"] = df["awayteamnameen"].fillna(df["awayteamshortname"])
+    elif "awayteamnameen" in df.columns:
+        out["away_team"] = df["awayteamnameen"]
+    else:
+        out["away_team"] = df.get("awayteamshortname")
+
+    out["home_score"] = pd.to_numeric(df["homescore"], errors="coerce")
+    out["away_score"] = pd.to_numeric(df["awayscore"], errors="coerce")
     out["league"] = "NPB"
+
+    if "gamestate" in df.columns:
+        out = out[df["gamestate"] == 2]
+
+    before = len(out)
+    out = out.dropna(subset=["date", "home_team", "away_team", "home_score", "away_score"])
+    dropped = before - len(out)
+    if dropped:
+        print(f"[{year}] dropped {dropped} incomplete/postponed rows")
+
     return out, True
 
 
