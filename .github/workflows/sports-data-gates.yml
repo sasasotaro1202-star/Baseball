@@ -29,8 +29,18 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install --upgrade pip pytest pandas
 
+      - name: Environment diagnostic
+        run: |
+          set -euxo pipefail
+          python --version
+          python -m pip --version
+          python -c "import pandas, pytest; print('dependencies OK')"
+          python -m compileall -q core sports_data_pipeline_v2.py
+
       - name: Run gate unit tests
-        run: pytest -q tests/test_sports_data_gates.py
+        run: python -m pytest -vv -s tests/test_sports_data_gates.py
 
       - name: Compile gate engine
-        run: python -m py_compile core/acquisition_engine.py core/schema_gate.py core/id_registry.py core/cutoff_gate.py sports_data_pipeline_v2.py
+        run: |
+          set -euxo pipefail
+          python -m py_compile core/acquisition_engine.py core/schema_gate.py core/id_registry.py core/cutoff_gate.py sports_data_pipeline_v2.py
