@@ -92,6 +92,12 @@ jobs:
           MLB_ENRICH_STARTERS: "1"
           MLB_MIN_STARTER_COVERAGE: "90"
         run: caffeinate -dimsu python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
+      - name: Research probability calibration candidate on OOS only
+        run: |
+          set -euo pipefail
+          python model_calibration_research.py
+          test -s results/calibration_research_report.json
+          test -s results/calibrated_oos_predictions.csv
       - name: Validate OOS predictions before any state write
         run: |
           set -euo pipefail
