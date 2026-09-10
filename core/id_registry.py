@@ -32,6 +32,14 @@ def integrate_game_ids(df: pd.DataFrame) -> pd.DataFrame:
              row.get('home_team'), row.get('away_team'), row.get('venue')],
         )
         out.at[idx, 'game_id_source'] = 'derived_stable_identity'
+    if 'home_team' in out.columns:
+        out['home_team_id'] = out['home_team'].map(
+            lambda x: stable_id('team', [x]) if pd.notna(x) else pd.NA
+        )
+    if 'away_team' in out.columns:
+        out['away_team_id'] = out['away_team'].map(
+            lambda x: stable_id('team', [x]) if pd.notna(x) else pd.NA
+        )
     return out
 
 
