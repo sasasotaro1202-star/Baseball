@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "purpose": "MLB・NPB・サッカーの実データを分割テーブルとして受け入れ、正規化・結合・リーク検査・Walk-forward評価を行うための完全スキーマ",
+  "tables": {
+    "games": ["sport","league","season","game_id","date","prediction_cutoff_at","venue","home_team","away_team","home_score","away_score","regulation_home_score","regulation_away_score","source_file","source_timestamp"],
+    "pitching": ["sport","league","game_id","date","team","pitcher","role","innings","era","fip","k_rate","bb_rate","whip","hand","source_timestamp"],
+    "lineups": ["sport","league","game_id","date","team","player","batting_order","position","available","confirmed","source_timestamp"],
+    "bullpen_usage": ["sport","league","game_id","date","team","pitcher","pitches_last_1d","pitches_last_3d","pitches_last_7d","innings_last_3d","era_last_30d","fatigue_score","source_timestamp"],
+    "statcast": ["sport","league","game_id","date","team","player","event_type","xwoba","xba","xslg","hard_hit_rate","barrel_rate","exit_velocity","launch_angle","velocity","spin_rate","source_timestamp"],
+    "team_stats": ["sport","league","date","season","team","matches","wins","draws","losses","runs_for","runs_against","goals_for","goals_against","shots","shots_on_target","corners","xg","xga","source_timestamp"],
+    "player_stats": ["sport","league","date","season","team","player","position","minutes","pa","ab","h","hr","bb","so","obp","slg","ops","goals","assists","xa","key_passes","rating","source_timestamp"],
+    "events": ["sport","league","game_id","date","team","player","event_type","minute","period","value","source_timestamp"],
+    "weather_venue": ["sport","league","game_id","date","venue","temperature","humidity","wind_speed","wind_direction","roof_status","park_factor","run_environment","source_timestamp"],
+    "odds": ["sport","league","game_id","date","home_team","away_team","bookmaker","market","home_odds","draw_odds","away_odds","home_moneyline","away_moneyline","closing_timestamp","source_timestamp"]
+  },
+  "outputs": ["coverage_report.csv","data_quality_report.csv","missingness_report.csv","duplicate_report.csv","leakage_check_report.csv","feature_provenance.csv","normalized_games.csv","pre_match_features.csv","walk_forward_metrics.csv","oos_predictions.csv","score_predictions.csv","low_high_predictions.csv"],
+  "rules": {"mlb_npb_low": "home_score + away_score <= 6", "mlb_npb_high": "home_score + away_score >= 7", "soccer_result": "regulation time only", "no_fabrication": true, "chronological_oos": true}
+}
