@@ -33,4 +33,4 @@ jobs:
         run: pytest -q tests/test_sports_data_gates.py
 
       - name: Compile gate engine
-        run: python -m py_compile core/schema_gate.py core/id_registry.py core/cutoff_gate.py sports_data_pipeline_v2.py
+        run: python -m py_compile core/acquisition_engine.py core/schema_gate.py core/id_registry.py core/cutoff_gate.py sports_data_pipeline_v2.py
