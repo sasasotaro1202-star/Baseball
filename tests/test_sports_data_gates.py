@@ -4,10 +4,9 @@ import json
 from pathlib import Path
 
 import pandas as pd
-import pytest
 
 from core.cutoff_gate import evaluate
-from core.id_registry import integrate_game_ids, integrate_entity_ids
+from core.id_registry import integrate_game_ids
 from core.schema_gate import gate
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,7 +40,26 @@ def test_cutoff_gate_rejects_future_source_timestamp():
     assert int(checked['_cutoff_violation'].sum()) == 1
 
 
-def test_cutoff_gate_rejects_missing_timestamps():
+def test_cutoff_gate_fails_closed_on_missing_timestamps():
     df = pd.DataFrame([{'prediction_cutoff_at': None, 'source_timestamp': None}])
+    checked, report = evaluate(df, 'games')
+    assert report['status'] == 'FAIL'
+    assert report['unverifiable_rows'] == 1
+    assert bool(checked.loc[0, '_cutoff_unverifiable']) is True
+
+
+def test_cutoff_gate_fails_closed_when_any_row_is_unverifiable():
+    df = pd.DataFrame([
+        {
+            'prediction_cutoff_at': '2026-09-10T12:00:00Z',
+            'source_timestamp': '2026-09-10T11:59:00Z',
+        },
+        {
+            'prediction_cutoff_at': '2026-09-10T12:00:00Z',
+            'source_timestamp': None,
+        },
+    ])
     _, report = evaluate(df, 'games')
-    assert report['status'].startswith('UNVERIFIABLE')
+    assert report['status'] == 'FAIL'
+    assert report['unverifiable_rows'] == 1
+    assert report['failed_rows'] == 1
