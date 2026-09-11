@@ -2,6 +2,8 @@
 
 Selection and final confirmation are deliberately separated:
 Development OOS -> Candidate Lock -> Locked Holdout -> Adoption.
+Win probability is not allowed to be the sole promotion criterion; score and
+Low/High targets can be required independently.
 """
 from __future__ import annotations
 
@@ -16,6 +18,12 @@ class GatePolicy:
     max_logloss_regression: float = 0.005
     max_brier_regression: float = 0.005
     max_accuracy_regression: float = 0.005
+    max_score_mae_regression: float = 0.0
+    max_hilo_logloss_regression: float = 0.005
+    max_hilo_brier_regression: float = 0.005
+    max_hilo_accuracy_regression: float = 0.005
+    require_score_check: bool = True
+    require_hilo_check: bool = True
     require_two_validation_windows: bool = True
     require_calibration_check: bool = True
     require_no_future_target_data: bool = True
@@ -32,7 +40,14 @@ def candidate_lock(*, development_metrics: Mapping[str, float], candidate_id: st
         "stage": "candidate_locked",
         "development_rows": rows,
         "development_metrics": dict(development_metrics),
+        "holdout_evaluated": False,
     }
+
+
+def _improvement(baseline: Mapping[str, float], candidate: Mapping[str, float], key: str, higher_is_better: bool) -> float:
+    b = float(baseline.get(key, 0.0 if higher_is_better else float("inf")))
+    c = float(candidate.get(key, 0.0 if higher_is_better else float("inf")))
+    return c - b if higher_is_better else b - c
 
 
 def evaluate_locked_holdout(
@@ -44,8 +59,17 @@ def evaluate_locked_holdout(
     calibration_ok: bool = False,
     no_future_target_data: bool = False,
     reproducible: bool = False,
+    baseline_score: Mapping[str, float] | None = None,
+    candidate_score: Mapping[str, float] | None = None,
+    baseline_hilo: Mapping[str, float] | None = None,
+    candidate_hilo: Mapping[str, float] | None = None,
 ) -> dict:
-    """Compare baseline and locked candidate on unseen holdout data only."""
+    """Compare a locked candidate against baseline on unseen holdout data only.
+
+    Legacy callers may omit score/Low-High metrics. New research runs should
+    supply all three target groups so promotion cannot be driven by win
+    probability alone.
+    """
     rows = int(candidate.get("rows", 0))
     reasons: list[str] = []
     if rows < policy.min_oos_rows:
@@ -59,38 +83,56 @@ def evaluate_locked_holdout(
     if policy.require_reproducible_candidate and not reproducible:
         reasons.append("candidate_not_reproducible")
 
-    # Lower is better for LogLoss/Brier; higher is better for Accuracy.
+    ll_improvement = _improvement(baseline, candidate, "LogLoss", False)
+    br_improvement = _improvement(baseline, candidate, "Brier", False)
+    acc_improvement = _improvement(baseline, candidate, "Accuracy", True)
     ll_base = float(baseline.get("LogLoss", float("inf")))
     ll_cand = float(candidate.get("LogLoss", float("inf")))
-    br_base = float(baseline.get("Brier", float("inf")))
-    br_cand = float(candidate.get("Brier", float("inf")))
-    acc_base = float(baseline.get("Accuracy", 0.0))
-    acc_cand = float(candidate.get("Accuracy", 0.0))
-
-    ll_improvement = ll_base - ll_cand
-    br_improvement = br_base - br_cand
-    acc_improvement = acc_cand - acc_base
     relative_ll = ll_improvement / max(abs(ll_base), 1e-12)
 
     if relative_ll < policy.min_relative_improvement:
         reasons.append("logloss_improvement_below_gate")
     if ll_cand - ll_base > policy.max_logloss_regression:
         reasons.append("logloss_regression")
-    if br_cand - br_base > policy.max_brier_regression:
+    if float(candidate.get("Brier", float("inf"))) - float(baseline.get("Brier", float("inf"))) > policy.max_brier_regression:
         reasons.append("brier_regression")
-    if acc_base - acc_cand > policy.max_accuracy_regression:
+    if float(baseline.get("Accuracy", 0.0)) - float(candidate.get("Accuracy", 0.0)) > policy.max_accuracy_regression:
         reasons.append("accuracy_regression")
+
+    target_results: dict[str, dict] = {}
+    if policy.require_score_check:
+        if baseline_score is None or candidate_score is None:
+            reasons.append("score_target_not_evaluated")
+        else:
+            base_mae = float(baseline_score.get("ScoreMAE", float("inf")))
+            cand_mae = float(candidate_score.get("ScoreMAE", float("inf")))
+            score_improvement = base_mae - cand_mae
+            if cand_mae - base_mae > policy.max_score_mae_regression:
+                reasons.append("score_mae_regression")
+            target_results["score"] = {"baseline": dict(baseline_score), "candidate": dict(candidate_score), "ScoreMAE_improvement": score_improvement}
+
+    if policy.require_hilo_check:
+        if baseline_hilo is None or candidate_hilo is None:
+            reasons.append("hilo_target_not_evaluated")
+        else:
+            hll_imp = _improvement(baseline_hilo, candidate_hilo, "LogLoss", False)
+            hb_imp = _improvement(baseline_hilo, candidate_hilo, "Brier", False)
+            ha_imp = _improvement(baseline_hilo, candidate_hilo, "Accuracy", True)
+            if float(candidate_hilo.get("LogLoss", float("inf"))) - float(baseline_hilo.get("LogLoss", float("inf"))) > policy.max_hilo_logloss_regression:
+                reasons.append("hilo_logloss_regression")
+            if float(candidate_hilo.get("Brier", float("inf"))) - float(baseline_hilo.get("Brier", float("inf"))) > policy.max_hilo_brier_regression:
+                reasons.append("hilo_brier_regression")
+            if float(baseline_hilo.get("Accuracy", 0.0)) - float(candidate_hilo.get("Accuracy", 0.0)) > policy.max_hilo_accuracy_regression:
+                reasons.append("hilo_accuracy_regression")
+            target_results["low_high"] = {"baseline": dict(baseline_hilo), "candidate": dict(candidate_hilo), "LogLoss_improvement": hll_imp, "Brier_improvement": hb_imp, "Accuracy_improvement": ha_imp}
 
     return {
         "stage": "locked_holdout_evaluated",
         "adopt": not reasons,
+        "decision": "ADOPT" if not reasons else "REJECT",
         "reasons": reasons,
         "baseline": dict(baseline),
         "candidate": dict(candidate),
-        "improvement": {
-            "LogLoss": ll_improvement,
-            "Brier": br_improvement,
-            "Accuracy": acc_improvement,
-            "relative_LogLoss": relative_ll,
-        },
+        "targets": target_results,
+        "improvement": {"LogLoss": ll_improvement, "Brier": br_improvement, "Accuracy": acc_improvement, "relative_LogLoss": relative_ll},
     }
