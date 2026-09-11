@@ -1,0 +1,35 @@
+name: Baseball v4.4 Bridge Compatibility
+
+on:
+  push:
+    branches:
+      - v4.4-baseball-integration
+  pull_request:
+    branches:
+      - main
+      - v4.4-baseball-integration
+
+jobs:
+  compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install scikit-learn pytest
+
+      - name: Run bridge compatibility test
+        env:
+          BASEBALL_TIME_BUDGET_SEC: '120'
+        run: python -m pytest -q tests/test_bridge_compatibility.py
