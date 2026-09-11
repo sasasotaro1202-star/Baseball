@@ -15,17 +15,18 @@ independent holdout cannot be used during candidate selection.
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import json
 import os
 import subprocess
-import time
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from baseball_backtest import BaseballBacktest
+from evaluation.npb_outcome import NPB_OUTCOME_LABELS, validate_npb_probabilities
 
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "results"
@@ -76,6 +77,51 @@ def _research_state() -> dict[str, Any]:
     return build_state()
 
 
+def _verify_npb_outcome_contract() -> dict[str, Any]:
+    """Fail closed if an NPB OOS artifact has collapsed Draw into binary form."""
+    path = RESULTS / "npb_backtest_results.csv"
+    if not path.exists():
+        raise RuntimeError("NPB results artifact is missing; cannot verify Draw output")
+
+    rows = 0
+    draw_actual = 0
+    draw_predicted = 0
+    with path.open("r", encoding="utf-8", newline="") as fh:
+        reader = csv.DictReader(fh)
+        required = {"pred_home", "pred_draw", "pred_away", "actual_home_score", "actual_away_score"}
+        missing = required - set(reader.fieldnames or [])
+        if missing:
+            raise RuntimeError(
+                "NPB results artifact is missing explicit three-way fields: "
+                + ", ".join(sorted(missing))
+            )
+        for row in reader:
+            p = validate_npb_probabilities([
+                float(row["pred_home"]),
+                float(row["pred_draw"]),
+                float(row["pred_away"]),
+            ])
+            rows += 1
+            h = float(row["actual_home_score"])
+            a = float(row["actual_away_score"])
+            if h == a:
+                draw_actual += 1
+            if int(max(range(3), key=lambda i: p[i])) == 1:
+                draw_predicted += 1
+
+    contract = {
+        "labels": list(NPB_OUTCOME_LABELS),
+        "rows_verified": rows,
+        "actual_draw_rows": draw_actual,
+        "predicted_draw_rows": draw_predicted,
+        "draw_field_required": True,
+        "probability_order": ["pred_home", "pred_draw", "pred_away"],
+        "status": "PASS",
+    }
+    _write_json(ROOT / "results" / "npb_outcome_contract.json", contract)
+    return contract
+
+
 class BaseballResearchEngine:
     """Production orchestrator around the existing NPB/MLB backtest core."""
 
@@ -92,6 +138,9 @@ class BaseballResearchEngine:
         self.stages.append("chronological_oos_backtest")
         bt = BaseballBacktest(self.data_dir)
         bt.run(npb=npb, mlb=mlb, mlb_start=mlb_start, mlb_end=mlb_end)
+        if npb:
+            self.stages.append("npb_home_draw_away_contract_check")
+            _verify_npb_outcome_contract()
 
     def _research_state(self) -> dict[str, Any]:
         self.stages.append("weakness_discovery")
