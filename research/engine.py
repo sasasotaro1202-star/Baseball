@@ -1,133 +1,163 @@
-"""Baseball Research Engine entry point for the v4.4 bridge.
+"""Production Baseball research engine.
 
-This first integration stage is intentionally compatibility-only. It routes
-research calls through ``V44BaseballBacktest`` while keeping the legacy
-``BaseballBacktest`` available as the reference implementation. No candidate
-is promoted here; Development OOS / Candidate Lock is a later stage.
+This module is the single research entry point for NPB + MLB. The existing
+BaseballBacktest remains the numerical prediction core; this engine owns the
+research lifecycle around it:
+
+1. execute chronological OOS backtests;
+2. persist auditable research state and weakness discovery;
+3. keep Development OOS / Candidate Lock / Locked Holdout separate;
+4. never promote a candidate from this baseline run alone.
+
+Candidate promotion is delegated to ``research.validation_pipeline`` so the
+independent holdout cannot be used during candidate selection.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, Callable
-
-import numpy as np
-import pandas as pd
+import argparse
+import hashlib
+import json
+import os
+import subprocess
+import time
+from dataclasses import dataclass, asdict
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
 
 from baseball_backtest import BaseballBacktest
-from research.v44_bridge import V44BaseballBacktest
+
+ROOT = Path(__file__).resolve().parents[1]
+RESULTS = ROOT / "results"
 
 
 @dataclass(frozen=True)
-class CompatibilityResult:
-    """Result of a baseline-vs-bridge compatibility check."""
+class ResearchCycle:
+    """Auditable record for one production research execution."""
 
-    passed: bool
-    method: str
-    details: dict[str, Any]
+    cycle_id: str
+    git_commit: str
+    started_at: str
+    finished_at: str | None
+    leagues: tuple[str, ...]
+    stages: tuple[str, ...]
+    promotion_decision: str
+
+
+def _git_commit() -> str:
+    value = os.getenv("GITHUB_SHA", "").strip()
+    if value:
+        return value
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+        ).strip()
+    except Exception:
+        return "unknown"
+
+
+def _cycle_id(started_at: str, commit: str) -> str:
+    raw = f"{started_at}|{commit}".encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()[:16]
+
+
+def _write_json(path: Path, payload: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
+
+
+def _research_state() -> dict[str, Any]:
+    """Build weakness/research state from the verified OOS artifacts."""
+    from research.research_loop import build_state
+
+    return build_state()
 
 
 class BaseballResearchEngine:
-    """Research entry point that opts into the v4.4 Baseball bridge.
+    """Production orchestrator around the existing NPB/MLB backtest core."""
 
-    The engine deliberately does not replace the legacy implementation. It
-    creates a baseline instance and a bridge instance and compares their
-    outputs on the same inputs before research promotion is allowed.
-    """
+    ENGINE_VERSION = "baseball-research-engine-v1"
 
-    def __init__(
+    def __init__(self, data_dir: str | Path = "data") -> None:
+        self.data_dir = Path(data_dir)
+        self.started_at = datetime.now(timezone.utc).isoformat()
+        self.git_commit = _git_commit()
+        self.cycle_id = _cycle_id(self.started_at, self.git_commit)
+        self.stages: list[str] = []
+
+    def _backtest(self, *, npb: bool, mlb: bool, mlb_start: int, mlb_end: int) -> None:
+        self.stages.append("chronological_oos_backtest")
+        bt = BaseballBacktest(self.data_dir)
+        bt.run(npb=npb, mlb=mlb, mlb_start=mlb_start, mlb_end=mlb_end)
+
+    def _research_state(self) -> dict[str, Any]:
+        self.stages.append("weakness_discovery")
+        state = _research_state()
+        state["engine_version"] = self.ENGINE_VERSION
+        state["cycle_id"] = self.cycle_id
+        state["git_commit"] = self.git_commit
+        state["promotion_policy"] = {
+            "development_oos": "candidate selection only",
+            "candidate_lock": "required before holdout",
+            "locked_holdout": "independent confirmation only",
+            "decision": "ADOPT only when research.validation_pipeline permits it",
+        }
+        _write_json(ROOT / "research_state.json", state)
+        return state
+
+    def run(
         self,
-        data_dir=None,
-        baseline_factory: Callable[..., BaseballBacktest] = BaseballBacktest,
-        bridge_factory: Callable[..., V44BaseballBacktest] = V44BaseballBacktest,
-    ) -> None:
-        kwargs = {} if data_dir is None else {"data_dir": data_dir}
-        self.baseline = baseline_factory(**kwargs)
-        self.bridge = bridge_factory(**kwargs)
+        *,
+        npb: bool = True,
+        mlb: bool = True,
+        mlb_start: int = 2020,
+        mlb_end: int = 2026,
+    ) -> ResearchCycle:
+        RESULTS.mkdir(parents=True, exist_ok=True)
+        self._backtest(npb=npb, mlb=mlb, mlb_start=mlb_start, mlb_end=mlb_end)
+        self._research_state()
+        self.stages.append("candidate_selection_not_implicit")
+        self.stages.append("independent_holdout_required_for_promotion")
 
-    @staticmethod
-    def _scores_equal(a: dict[str, Any], b: dict[str, Any]) -> bool:
-        if list(a.keys()) != list(b.keys()):
-            return False
-        for key in a:
-            av, bv = a[key], b[key]
-            try:
-                if not np.isclose(float(av), float(bv), rtol=0.0, atol=1e-12, equal_nan=True):
-                    return False
-            except (TypeError, ValueError):
-                if av != bv:
-                    return False
-        return True
-
-    def fit_ensemble_compatibility(
-        self, X: pd.DataFrame, y: pd.Series | np.ndarray, league: str
-    ) -> CompatibilityResult:
-        """Run the same fit through baseline and bridge and compare outputs."""
-        base = self.baseline.fit_ensemble(X.copy(deep=True), np.asarray(y).copy(), league)
-        bridged = self.bridge.fit_ensemble(X.copy(deep=True), np.asarray(y).copy(), league)
-
-        base_models, base_scores, base_best = base
-        bridge_models, bridge_scores, bridge_best = bridged
-
-        score_equal = self._scores_equal(base_scores, bridge_scores)
-        best_equal = base_best == bridge_best
-        model_names_equal = list(base_models.keys()) == list(bridge_models.keys())
-        passed = bool(score_equal and best_equal and model_names_equal)
-
-        return CompatibilityResult(
-            passed=passed,
-            method="fit_ensemble",
-            details={
-                "score_equal": score_equal,
-                "best_model_equal": best_equal,
-                "model_names_equal": model_names_equal,
-                "baseline_best_model": base_best,
-                "bridge_best_model": bridge_best,
-                "baseline_validation_scores": base_scores,
-                "bridge_validation_scores": bridge_scores,
-                "bridge_audit_tail": self.bridge.audit[-1:] if self.bridge.audit else [],
-            },
+        finished = datetime.now(timezone.utc).isoformat()
+        cycle = ResearchCycle(
+            cycle_id=self.cycle_id,
+            git_commit=self.git_commit,
+            started_at=self.started_at,
+            finished_at=finished,
+            leagues=tuple(x for x, enabled in (("NPB", npb), ("MLB", mlb)) if enabled),
+            stages=tuple(self.stages),
+            promotion_decision="NO_CHANGE",
         )
+        _write_json(ROOT / "research_cycle_manifest.json", asdict(cycle))
+        return cycle
 
-    def run_walkforward_compatibility(
-        self, games: pd.DataFrame, league: str
-    ) -> CompatibilityResult:
-        """Compare legacy and bridge walk-forward outputs on identical inputs."""
-        base = self.baseline.run_walkforward(games.copy(deep=True), league)
-        bridge = self.bridge.run_walkforward(games.copy(deep=True), league)
 
-        if list(base.columns) != list(bridge.columns) or len(base) != len(bridge):
-            return CompatibilityResult(
-                passed=False,
-                method="run_walkforward",
-                details={
-                    "shape_equal": base.shape == bridge.shape,
-                    "columns_equal": list(base.columns) == list(bridge.columns),
-                    "baseline_shape": base.shape,
-                    "bridge_shape": bridge.shape,
-                },
-            )
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(prog="python -m research.engine")
+    parser.add_argument("--npb-only", action="store_true")
+    parser.add_argument("--mlb-only", action="store_true")
+    parser.add_argument("--data-dir", default="data")
+    parser.add_argument("--mlb-start", type=int, default=2020)
+    parser.add_argument("--mlb-end", type=int, default=2026)
+    args = parser.parse_args(argv)
 
-        try:
-            pd.testing.assert_frame_equal(
-                base.reset_index(drop=True),
-                bridge.reset_index(drop=True),
-                check_dtype=True,
-                check_exact=True,
-            )
-            passed = True
-            diff = None
-        except AssertionError as exc:
-            passed = False
-            diff = str(exc)
+    if args.npb_only and args.mlb_only:
+        parser.error("--npb-only and --mlb-only are mutually exclusive")
 
-        return CompatibilityResult(
-            passed=passed,
-            method="run_walkforward",
-            details={
-                "shape_equal": True,
-                "columns_equal": True,
-                "exact_frame_equal": passed,
-                "difference": diff,
-                "bridge_audit_tail": self.bridge.audit[-1:] if self.bridge.audit else [],
-            },
-        )
+    engine = BaseballResearchEngine(args.data_dir)
+    cycle = engine.run(
+        npb=not args.mlb_only,
+        mlb=not args.npb_only,
+        mlb_start=args.mlb_start,
+        mlb_end=args.mlb_end,
+    )
+    print(json.dumps(asdict(cycle), ensure_ascii=False, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
