@@ -52,7 +52,7 @@ jobs:
           set -euo pipefail
           python source_quality_gate.py
           python repair_npb_syntax.py
-          python -m py_compile npb_multi_source.py baseball_backtest.py baseball_backtest_runtime_patch.py repair_npb_syntax.py source_quality_gate.py backtest_audit.py production_integrity_gate.py production_data_quality_gate.py
+          python -m py_compile npb_multi_source.py baseball_backtest.py baseball_backtest_runtime_patch.py repair_npb_syntax.py source_quality_gate.py backtest_audit.py production_integrity_gate.py production_data_quality_gate.py research/engine.py research/research_loop.py
           apply_patch_safely() { local patch="$1"; cp baseball_backtest.py /tmp/baseball_backtest_pre_patch.py; if python "$patch" && python -m py_compile baseball_backtest.py; then echo "[PATCH] $patch accepted"; else cp /tmp/baseball_backtest_pre_patch.py baseball_backtest.py; return 1; fi; }
           apply_patch_safely npb_runtime_patch.py
           apply_patch_safely npb_official_schedule_patch.py
@@ -61,7 +61,7 @@ jobs:
           apply_patch_safely baseball_production_runtime_patch.py
           apply_patch_safely baseball_mlb_score_hilo_patch.py
           apply_patch_safely baseball_quality_runtime_patch.py
-          python -m py_compile npb_multi_source.py baseball_backtest.py baseball_backtest_runtime_patch.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py production_integrity_gate.py production_data_quality_gate.py
+          python -m py_compile npb_multi_source.py baseball_backtest.py baseball_backtest_runtime_patch.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py repair_npb_syntax.py backtest_audit.py source_quality_gate.py production_integrity_gate.py production_data_quality_gate.py research/engine.py research/research_loop.py
       - name: NPB data acquisition, quality gate and chronological OOS
         env:
           NPB_START_YEAR: "2017"
@@ -85,13 +85,13 @@ jobs:
           if not s.get('complete',False): raise SystemExit(2)
           if not s.get('aggregate_games'): raise SystemExit('NPB quality gate: zero aggregate games')
           PY
-          caffeinate -dimsu python baseball_backtest.py --npb-only --data-dir data
+          caffeinate -dimsu python -m research.engine --npb-only --data-dir data
       - name: MLB data acquisition, starter quality gate and chronological OOS
         env:
           BASEBALL_TIME_BUDGET_SEC: "3600"
           MLB_ENRICH_STARTERS: "1"
           MLB_MIN_STARTER_COVERAGE: "90"
-        run: caffeinate -dimsu python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
+        run: caffeinate -dimsu python -m research.engine --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
       - name: Validate OOS predictions before any state write
         run: |
           set -euo pipefail
@@ -112,6 +112,8 @@ jobs:
           PY
           python production_data_quality_gate.py
           python production_integrity_gate.py
+          python -m json.tool research_state.json >/dev/null
+          python -m json.tool research_cycle_manifest.json >/dev/null
       - name: Upload verified state artifact
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -122,6 +124,8 @@ jobs:
             results/
             npb_multi_source.py
             production_run_manifest.json
+            research_state.json
+            research_cycle_manifest.json
           if-no-files-found: error
           retention-days: 90
       - name: Upload failure diagnostics without touching production state
@@ -134,6 +138,8 @@ jobs:
             results/
             npb_multi_source.py
             production_run_manifest.json
+            research_state.json
+            research_cycle_manifest.json
           if-no-files-found: ignore
           retention-days: 30
       - name: Persist verified state atomically
@@ -143,9 +149,9 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           mkdir -p data results
-          git add -A data results npb_multi_source.py production_run_manifest.json
+          git add -A data results npb_multi_source.py production_run_manifest.json research_state.json research_cycle_manifest.json
           if git diff --cached --quiet; then echo '[COMMIT] no verified state changes'; exit 0; fi
-          git commit -m 'Persist verified Baseball production state'
+          git commit -m 'Persist verified Baseball production research state'
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             if git rebase origin/main && git push origin HEAD:main; then echo "[PERSIST] verified state push succeeded on attempt $attempt"; exit 0; fi
