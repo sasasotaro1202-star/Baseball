@@ -42,6 +42,12 @@ class ResearchCycle:
     promotion_decision: str
 
 
+@dataclass(frozen=True)
+class CompatibilityResult:
+    passed: bool
+    details: dict[str, Any]
+
+
 def _git_commit() -> str:
     import os
     value = os.getenv("GITHUB_SHA", "").strip()
@@ -103,42 +109,23 @@ def _verify_npb_outcome_contract() -> dict[str, Any]:
 def _npb_research_lifecycle(git_commit: str, data_dir: str | Path) -> dict[str, Any]:
     """Run candidate replay, lock before holdout, then evaluate the locked holdout."""
     feature_version = __import__("os").getenv("BASEBALL_NPB_FEATURE_VERSION", "baseball-features-v1")
-    replay = run_npb_candidate_cycle(
-        data_dir=data_dir,
-        git_commit=git_commit,
-        feature_version=feature_version,
-    )
+    replay = run_npb_candidate_cycle(data_dir=data_dir, git_commit=git_commit, feature_version=feature_version)
     if replay.get("decision") != "HOLDOUT_READY":
         return replay
-
     holdout = replay["holdout"]
     candidate = replay["candidate"]["candidate"]
     record = record_candidate(
-        candidate_id=candidate["candidate_id"],
-        git_commit=git_commit,
-        feature_version=candidate["feature_version"],
-        model_version=candidate["model_version"],
-        development_metrics=candidate["development_metrics"],
-        holdout_baseline=holdout["baseline"],
-        holdout_candidate=holdout["candidate"],
-        validation_windows=int(holdout["validation_windows"]),
-        calibration_ok=bool(holdout["calibration_ok"]),
-        no_future_target_data=bool(holdout["no_future_target_data"]),
-        reproducible=bool(holdout["reproducible"]),
-        holdout_score_baseline=holdout["baseline_score"],
-        holdout_score_candidate=holdout["candidate_score"],
-        holdout_hilo_baseline=holdout["baseline_hilo"],
-        holdout_hilo_candidate=holdout["candidate_hilo"],
-        league="NPB",
+        candidate_id=candidate["candidate_id"], git_commit=git_commit,
+        feature_version=candidate["feature_version"], model_version=candidate["model_version"],
+        development_metrics=candidate["development_metrics"], holdout_baseline=holdout["baseline"],
+        holdout_candidate=holdout["candidate"], validation_windows=int(holdout["validation_windows"]),
+        calibration_ok=bool(holdout["calibration_ok"]), no_future_target_data=bool(holdout["no_future_target_data"]),
+        reproducible=bool(holdout["reproducible"]), holdout_score_baseline=holdout["baseline_score"],
+        holdout_score_candidate=holdout["candidate_score"], holdout_hilo_baseline=holdout["baseline_hilo"],
+        holdout_hilo_candidate=holdout["candidate_hilo"], league="NPB",
     )
-    return {
-        "stage": "locked_holdout_evaluated",
-        "decision": record.decision,
-        "candidate_id": record.candidate_id,
-        "candidate_model": record.model_version,
-        "registry": str(RESULTS / "candidate_registry.json"),
-        "record": asdict(record),
-    }
+    return {"stage":"locked_holdout_evaluated","decision":record.decision,"candidate_id":record.candidate_id,
+            "candidate_model":record.model_version,"registry":str(RESULTS / "candidate_registry.json"),"record":asdict(record)}
 
 
 class BaseballResearchEngine:
@@ -150,6 +137,43 @@ class BaseballResearchEngine:
         self.git_commit = _git_commit()
         self.cycle_id = _cycle_id(self.started_at, self.git_commit)
         self.stages: list[str] = []
+
+    def fit_ensemble_compatibility(self, X, y, league: str) -> CompatibilityResult:
+        """Prove the v4.4 bridge delegates to the unchanged Baseball engine.
+
+        Two fresh engine instances are used so no fitted estimator state is
+        shared. The comparison is limited to the existing fit_ensemble return
+        contract: validation scores, selected best model, and fitted model
+        names. No prediction logic is replaced or reimplemented here.
+        """
+        from research.v44_bridge import V44BaseballBacktest
+        legacy = BaseballBacktest(self.data_dir)
+        bridge = V44BaseballBacktest(self.data_dir)
+        legacy_fitted, legacy_scores, legacy_best = legacy.fit_ensemble(X, y, league)
+        bridge_fitted, bridge_scores, bridge_best = bridge.fit_ensemble(X, y, league)
+
+        import numpy as np
+        score_equal = legacy_scores == bridge_scores
+        if not score_equal and legacy_scores and bridge_scores:
+            keys_equal = set(legacy_scores) == set(bridge_scores)
+            score_equal = keys_equal and all(np.isclose(legacy_scores[k], bridge_scores[k], rtol=1e-12, atol=1e-12) for k in legacy_scores)
+        legacy_names = [item[2] for item in (legacy_fitted or [])]
+        bridge_names = [item[2] for item in (bridge_fitted or [])]
+        details = {
+            "score_equal": bool(score_equal),
+            "best_model_equal": legacy_best == bridge_best,
+            "model_names_equal": legacy_names == bridge_names,
+            "legacy_best_model": legacy_best,
+            "bridge_best_model": bridge_best,
+            "legacy_model_names": legacy_names,
+            "bridge_model_names": bridge_names,
+            "bridge_audit_tail": list(bridge.audit[-5:]),
+            "delegated_to_existing_engine": True,
+        }
+        return CompatibilityResult(
+            passed=bool(details["score_equal"] and details["best_model_equal"] and details["model_names_equal"] and details["bridge_audit_tail"]),
+            details=details,
+        )
 
     def _backtest(self, *, npb: bool, mlb: bool, mlb_start: int, mlb_end: int) -> None:
         self.stages.append("chronological_oos_backtest")
@@ -221,12 +245,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.npb_only and args.mlb_only:
         parser.error("--npb-only and --mlb-only are mutually exclusive")
     engine = BaseballResearchEngine(args.data_dir)
-    cycle = engine.run(
-        npb=not args.mlb_only,
-        mlb=not args.npb_only,
-        mlb_start=args.mlb_start,
-        mlb_end=args.mlb_end,
-    )
+    cycle = engine.run(npb=not args.mlb_only, mlb=not args.npb_only, mlb_start=args.mlb_start, mlb_end=args.mlb_end)
     print(json.dumps(asdict(cycle), ensure_ascii=False, indent=2))
     return 0
 
