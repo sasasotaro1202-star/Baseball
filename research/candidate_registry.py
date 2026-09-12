@@ -1,9 +1,4 @@
-"""Candidate lifecycle registry for leakage-safe Baseball research.
-
-The registry never selects a candidate using locked holdout metrics. A
-candidate must be selected on Development OOS, explicitly locked, and only
-then evaluated against the independent holdout.
-"""
+"""Candidate lifecycle registry for leakage-safe Baseball research."""
 from __future__ import annotations
 
 import json
@@ -58,6 +53,7 @@ def record_candidate(
     holdout_score_candidate: Mapping[str, float] | None,
     holdout_hilo_baseline: Mapping[str, float] | None,
     holdout_hilo_candidate: Mapping[str, float] | None,
+    league: str | None = None,
 ) -> CandidateRecord:
     """Lock on development metrics, then evaluate the independent holdout."""
     validation = run_validation_pipeline(
@@ -73,6 +69,7 @@ def record_candidate(
         holdout_score_candidate=holdout_score_candidate,
         holdout_hilo_baseline=holdout_hilo_baseline,
         holdout_hilo_candidate=holdout_hilo_candidate,
+        league=league,
     )
     record = CandidateRecord(
         candidate_id=candidate_id,
