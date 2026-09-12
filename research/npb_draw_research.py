@@ -1,8 +1,8 @@
 """Research metrics for the separate NPB top-draw prediction.
 
-For each Japan-local calendar date, the system selects exactly one game: the
-one with the highest predicted Draw probability. This is evaluated separately
-from the normal Home/Draw/Away winner metric.
+For each Japan-local calendar date, the system selects exactly one eligible NPB
+game: the one with the highest predicted Draw probability. This is evaluated
+separately from the normal Home/Draw/Away winner metric.
 """
 from __future__ import annotations
 
@@ -30,9 +30,14 @@ def evaluate_top_draw_from_backtest(path: str | Path | None = None) -> dict[str,
         return {"status": "UNAVAILABLE", "reason": "no game date column"}
     df = df.copy()
     df["_draw_p"] = pd.to_numeric(df["pred_draw"], errors="coerce")
-    df["_game_date"] = pd.to_datetime(df[date_col], errors="coerce").dt.date
+    raw_dt = pd.to_datetime(df[date_col], errors="coerce", utc=True)
+    # The backtest's datetime is normalized to UTC. Selection must use the
+    # Japan-local calendar date, otherwise games around 00:00 JST can be put
+    # into the wrong daily slate.
+    df["_game_date"] = raw_dt.dt.tz_convert("Asia/Tokyo").dt.date
     df["_actual_draw"] = df["actual_home_score"] == df["actual_away_score"]
     df = df.dropna(subset=["_draw_p", "_game_date"])
+    df = df[df["_draw_p"].between(0.0, 1.0)]
     if df.empty:
         return {"status": "UNAVAILABLE", "reason": "no valid NPB prediction rows"}
 
@@ -46,8 +51,9 @@ def evaluate_top_draw_from_backtest(path: str | Path | None = None) -> dict[str,
         "top_draw_probability_mae": float(selected["draw_probability_error"].mean()),
         "mean_selected_draw_probability": float(selected["_draw_p"].mean()),
         "actual_draw_rate_all_games": float(df["_actual_draw"].mean()),
-        "lift_vs_all_game_draw_rate": float(selected["actual_draw"].mean() - df["_actual_draw"].mean()),
+        "lift_vs_all_game_draw_rate": float(selected["_actual_draw"].mean() - df["_actual_draw"].mean()),
         "selection_rule": "one game per Japan-local calendar date, maximum pred_draw",
+        "timezone": "Asia/Tokyo",
     }
     return result
 
