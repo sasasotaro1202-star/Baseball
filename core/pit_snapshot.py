@@ -46,24 +46,18 @@ class SourceSnapshot:
             raise ValueError(f"invalid snapshot status: {self.status}")
         retrieved = _dt(self.retrieved_at)
         cutoff = _dt(self.prediction_cutoff)
-        if retrieved < cutoff:
-            raise ValueError("retrieved_at cannot precede prediction_cutoff")
+        # Point-in-time direction: data observed after the decision cutoff
+        # cannot be used to make that decision.
+        if retrieved > cutoff:
+            raise ValueError("PIT violation: retrieved_at is after prediction cutoff")
         if self.source_timestamp:
             _dt(self.source_timestamp)
         if self.available_at:
             available = _dt(self.available_at)
-            if available < cutoff:
-                # A source cannot become available before the snapshot's own
-                # declared observation cutoff unless that timestamp is genuine.
-                # We permit it because it is valid historical source metadata.
-                pass
             if available > retrieved:
                 raise ValueError("available_at cannot be after retrieved_at")
-            # A KNOWN snapshot used at this cutoff must actually be available
-            # by the cutoff. Otherwise it is retained as a future observation,
-            # but PIT replay will reject it.
             if self.status == "KNOWN" and available > cutoff:
-                raise ValueError("KNOWN snapshot is not available at prediction cutoff")
+                raise ValueError("PIT violation: availability is after prediction cutoff")
 
 
 def payload_hash(payload: Any) -> str:
