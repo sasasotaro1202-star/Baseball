@@ -1,8 +1,8 @@
 """PIT snapshot/provenance contract for Baseball data.
 
-A snapshot is an immutable record of what was known, when it was retrieved,
-and when the source said it became available. This module does not infer
-historical availability from retrieval time.
+Snapshots are immutable observations. A snapshot may have been retrieved after
+an arbitrary historical cutoff; that is precisely why replay must filter by
+retrieval/availability time instead of refusing to store the observation.
 """
 from __future__ import annotations
 
@@ -44,20 +44,18 @@ class SourceSnapshot:
             raise ValueError("league must be NPB or MLB")
         if self.status not in _ALLOWED:
             raise ValueError(f"invalid snapshot status: {self.status}")
-        retrieved = _dt(self.retrieved_at)
-        cutoff = _dt(self.prediction_cutoff)
-        # Point-in-time direction: data observed after the decision cutoff
-        # cannot be used to make that decision.
-        if retrieved > cutoff:
-            raise ValueError("PIT violation: retrieved_at is after prediction cutoff")
+        _dt(self.retrieved_at)
+        _dt(self.prediction_cutoff)
         if self.source_timestamp:
             _dt(self.source_timestamp)
         if self.available_at:
             available = _dt(self.available_at)
+            retrieved = _dt(self.retrieved_at)
             if available > retrieved:
                 raise ValueError("available_at cannot be after retrieved_at")
-            if self.status == "KNOWN" and available > cutoff:
-                raise ValueError("PIT violation: availability is after prediction cutoff")
+            # Do not reject future observations here. core.pit_replay is the
+            # authoritative PIT gate and excludes observations unavailable at
+            # the requested replay cutoff.
 
 
 def payload_hash(payload: Any) -> str:
