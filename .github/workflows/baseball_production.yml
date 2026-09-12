@@ -142,7 +142,7 @@ jobs:
             research_cycle_manifest.json
           if-no-files-found: ignore
           retention-days: 30
-      - name: Persist verified state atomically
+      - name: Persist verified state atomically on integration branch only
         if: success()
         run: |
           set -euo pipefail
@@ -151,10 +151,15 @@ jobs:
           mkdir -p data results
           git add -A data results npb_multi_source.py production_run_manifest.json research_state.json research_cycle_manifest.json
           if git diff --cached --quiet; then echo '[COMMIT] no verified state changes'; exit 0; fi
+          TARGET_BRANCH="${GITHUB_REF_NAME:-v4.4-baseball-integration}"
+          if [ "$TARGET_BRANCH" = "main" ]; then
+            echo '[PERSIST] REFUSING to write production state to main; integration branch is required'
+            exit 30
+          fi
           git commit -m 'Persist verified Baseball production research state'
           for attempt in 1 2 3 4 5; do
-            git fetch origin main
-            if git rebase origin/main && git push origin HEAD:main; then echo "[PERSIST] verified state push succeeded on attempt $attempt"; exit 0; fi
+            git fetch origin "$TARGET_BRANCH"
+            if git rebase "origin/$TARGET_BRANCH" && git push origin "HEAD:$TARGET_BRANCH"; then echo "[PERSIST] verified state push succeeded on attempt $attempt"; exit 0; fi
             git rebase --abort 2>/dev/null || true
             sleep $((attempt * 5))
           done
