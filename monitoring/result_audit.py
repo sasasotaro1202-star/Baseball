@@ -11,42 +11,68 @@ import pandas as pd
 from evaluation.metrics import classification_metrics, score_metrics
 
 
+def _validate_probability_rows(merged: pd.DataFrame, columns: list[str]) -> np.ndarray:
+    probs = merged[columns].to_numpy(float)
+    if not np.isfinite(probs).all():
+        raise ValueError("audit probabilities must be finite")
+    if (probs < 0).any() or (probs > 1).any():
+        raise ValueError("audit probabilities must be in [0,1]")
+    sums = probs.sum(axis=1)
+    if not np.allclose(sums, 1.0, atol=1e-8):
+        raise ValueError("audit probabilities must sum to 1 per event")
+    return probs
+
+
 def audit_predictions(predictions: pd.DataFrame, results: pd.DataFrame, *, league: str) -> dict[str, Any]:
     """Join predictions to final results by event_id and calculate post-game metrics.
 
-    No row without a matching final result is scored. No unmatched prediction is
-    silently counted as a miss.
+    No row without a matching final result is scored. Duplicate event IDs are
+    rejected instead of creating a many-to-many merge that could silently
+    overweight a game. Unmatched predictions are reported, not scored as misses.
     """
+    if league not in {"NPB", "MLB"}:
+        raise ValueError("league must be NPB or MLB")
     if "event_id" not in predictions or "event_id" not in results:
         raise ValueError("both predictions and results require event_id")
     p = predictions.copy()
     r = results.copy()
-    merged = p.merge(r, on="event_id", how="inner", suffixes=("_prediction", "_result"))
+    if p["event_id"].duplicated().any():
+        raise ValueError("prediction results contain duplicate event_id values")
+    if r["event_id"].duplicated().any():
+        raise ValueError("final results contain duplicate event_id values")
+
+    merged = p.merge(r, on="event_id", how="inner", suffixes=("_prediction", "_result"), validate="one_to_one")
     if merged.empty:
-        return {"league": league, "matched_rows": 0, "unmatched_predictions": int(len(p)), "status": "NO_MATCHED_RESULTS"}
+        return {"league": league, "matched_rows": 0, "unmatched_predictions": int(len(p)), "unmatched_results": int(len(r)), "status": "NO_MATCHED_RESULTS"}
 
     if league == "NPB":
         required = {"home_win_probability", "draw_probability", "away_win_probability", "actual_home_score", "actual_away_score"}
         if not required.issubset(merged.columns):
             raise ValueError("NPB audit requires explicit three-way probabilities and final scores")
-        probs = merged[["home_win_probability", "draw_probability", "away_win_probability"]].to_numpy(float)
+        probs = _validate_probability_rows(merged, ["home_win_probability", "draw_probability", "away_win_probability"])
         y = np.where(merged.actual_home_score == merged.actual_away_score, 1,
-                     np.where(merged.actual_home_score > merged.actual_away_score, 0, 2))
+                     np.where(merged.actual_home_score > merged.away_score if "away_score" in merged.columns else merged.actual_home_score > merged.actual_away_score, 0, 2))
         cls = classification_metrics(y, probs, classes=[0, 1, 2])
         cls["DrawRecall"] = float(((np.argmax(probs, axis=1) == 1) & (y == 1)).sum() / max(1, (y == 1).sum()))
     else:
         required = {"home_win_probability", "away_win_probability", "actual_home_score", "actual_away_score"}
         if not required.issubset(merged.columns):
             raise ValueError("MLB audit requires binary probabilities and final scores")
-        probs = merged[["home_win_probability", "away_win_probability"]].to_numpy(float)
+        probs = _validate_probability_rows(merged, ["home_win_probability", "away_win_probability"])
         y = (merged.actual_home_score > merged.actual_away_score).astype(int).to_numpy()
         cls = classification_metrics(y, probs, classes=[0, 1])
 
-    out: dict[str, Any] = {"league": league, "matched_rows": int(len(merged)), "unmatched_predictions": int(len(p) - len(merged)), "classification": cls}
+    out: dict[str, Any] = {
+        "league": league,
+        "matched_rows": int(len(merged)),
+        "unmatched_predictions": int(len(p) - len(merged)),
+        "unmatched_results": int(len(r) - len(merged)),
+        "classification": cls,
+    }
     if {"pred_home_score", "pred_away_score"}.issubset(merged.columns):
         out["score"] = score_metrics(merged.actual_home_score, merged.actual_away_score, merged.pred_home_score, merged.pred_away_score)
     out["prediction_error_summary"] = {
-        "home_probability_mae": float(np.mean(np.abs(probs[:, 0] - (y == 0).astype(float)))) if league == "NPB" else float(np.mean(np.abs(probs[:, 0] - y))),
+        "home_probability_mae": float(np.mean(np.abs(probs[:, 0] - (y == 0).astype(float)))),
         "draw_probability_mae": float(np.mean(np.abs(probs[:, 1] - (y == 1).astype(float)))) if league == "NPB" else None,
     }
     return out
