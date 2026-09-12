@@ -1,0 +1,70 @@
+name: Baseball Real Data Research Validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      league:
+        description: "League to validate"
+        required: true
+        default: "NPB"
+        type: choice
+        options: [NPB, MLB]
+      mlb_start:
+        description: "MLB start season"
+        required: false
+        default: "2020"
+      mlb_end:
+        description: "MLB end season"
+        required: false
+        default: "2026"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: baseball-real-validation-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout integration branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip && if [ -f requirements.txt ]; then pip install -r requirements.txt; else pip install numpy pandas scikit-learn requests; fi
+
+      - name: Compile research modules
+        run: |
+          python -m py_compile research/real_data_validation.py research/final_gate.py research/npb_candidate_replay.py research/mlb_candidate_replay.py research/validation_pipeline.py research/adoption_gate.py
+
+      - name: Run real-data lifecycle
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python research/real_data_validation.py --league "${{ inputs.league }}" --mlb-start "${{ inputs.mlb_start }}" --mlb-end "${{ inputs.mlb_end }}"
+
+      - name: Run final fail-closed gate
+        env:
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+        run: python research/final_gate.py
+
+      - name: Persist research evidence only to integration branch
+        env:
+          TARGET_BRANCH: ${{ github.ref_name }}
+        run: |
+          if [ "$TARGET_BRANCH" = "main" ]; then echo "Refusing to persist research state on main"; exit 1; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results/ research_state.json research_cycle_manifest.json 2>/dev/null || true
+          if git diff --cached --quiet; then echo "No evidence changes to commit"; exit 0; fi
+          git commit -m "Record real-data research validation"
+          git push origin "HEAD:$TARGET_BRANCH"
