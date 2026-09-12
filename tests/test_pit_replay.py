@@ -15,13 +15,20 @@ def test_replay_excludes_future_and_unverifiable(tmp_path: Path):
     append_snapshot(make_snapshot(
         event_id="MLB:1", league="MLB", entity_type="game", entity_id="1",
         source="TEST", payload={"starter": "B"},
-        prediction_cutoff="2026-09-12T10:00:00+00:00",
+        prediction_cutoff="2026-09-12T11:00:00+00:00",
         available_at="2026-09-12T11:00:00+00:00",
-        retrieved_at="2026-09-12T11:05:00+00:00"),
-        tmp_path / "future.jsonl")
+        retrieved_at="2026-09-12T11:05:00+00:00"), p)
+    append_snapshot(make_snapshot(
+        event_id="MLB:1", league="MLB", entity_type="game", entity_id="1",
+        source="TEST", payload={"starter": "C"},
+        prediction_cutoff="2026-09-12T10:00:00+00:00",
+        available_at=None,
+        retrieved_at="2026-09-12T09:30:00+00:00",
+        status="UNVERIFIABLE"), p)
     rows = replay(p, cutoff="2026-09-12T10:00:00+00:00")
     assert len(rows) == 1
     assert rows[0]["payload_hash"]
+    assert rows[0]["available_at"] == "2026-09-12T09:00:00+00:00"
 
 
 def test_replay_filters_league(tmp_path: Path):
