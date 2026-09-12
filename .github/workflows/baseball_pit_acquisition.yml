@@ -1,0 +1,85 @@
+name: Baseball PIT Data Acquisition
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Frequent snapshots are required for a real PIT ledger. This workflow only
+    # performs lightweight source acquisition; it does not run backtests.
+    - cron: '*/30 * * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: baseball-pit-acquisition
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  PIT_LOOKBACK_DAYS: "1"
+  PIT_LOOKAHEAD_DAYS: "3"
+  PIT_ACQ_TIMEOUT: "30"
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install acquisition dependency
+        run: python -m pip install --disable-pip-version-check requests
+
+      - name: PIT acquisition preflight
+        run: python -m py_compile core/pit_snapshot.py data/pit_acquisition.py
+
+      - name: Acquire NPB + MLB source observations
+        run: python data/pit_acquisition.py
+
+      - name: Validate append-only PIT ledger
+        run: |
+          set -euo pipefail
+          test -s data/pit/source_snapshots.jsonl
+          test -s data/pit/acquisition_runs.jsonl
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('data/pit/source_snapshots.jsonl')
+          rows = [json.loads(x) for x in p.read_text(encoding='utf-8').splitlines() if x.strip()]
+          if not rows:
+              raise SystemExit('PIT ledger is empty')
+          allowed = {'KNOWN','MISSING','UNAVAILABLE','UNVERIFIABLE'}
+          bad = [r for r in rows if r.get('status') not in allowed]
+          if bad:
+              raise SystemExit(f'invalid PIT status rows: {len(bad)}')
+          print(f'[PIT] snapshot_rows={len(rows)} latest_cutoff={rows[-1].get("prediction_cutoff")}')
+          PY
+
+      - name: Persist PIT ledger
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/pit
+          if git diff --cached --quiet; then
+            echo '[PIT] no new ledger rows'
+            exit 0
+          fi
+          git commit -m 'Accumulate NPB MLB PIT source snapshots'
+          git push
+
+      - name: Upload PIT diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseball-pit-acquisition-${{ github.run_id }}
+          path: data/pit/
+          if-no-files-found: ignore
+          retention-days: 14
