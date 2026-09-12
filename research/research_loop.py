@@ -29,6 +29,11 @@ PROMOTION_GATE={
  'require_calibration_check':True,
  'require_no_future_target_data':True,
  'require_reproducible_candidate':True,
+ 'require_npb_three_way_check':True,
+ 'max_draw_recall_regression':0.0,
+ 'max_draw_probability_mae_regression':0.005,
+ 'require_score_check':True,
+ 'require_hilo_check':True,
  'rollback_on_post_promotion_regression':True,
 }
 
@@ -77,11 +82,11 @@ def build_state():
    ]
  weaknesses.sort(key=lambda x:x['priority'],reverse=True); focus=weaknesses[0] if weaknesses else {'league':'NPB','objective':'win','priority':1.0,'reason':'評価データ待ち'}
  return {
-  'schema_version':2,'updated_at':now,'goal':'maximize validated out-of-sample accuracy for every prediction item',
+  'schema_version':3,'updated_at':now,'goal':'maximize validated out-of-sample accuracy for every prediction item',
   'processing_budget_seconds':int(os.getenv('BASEBALL_TIME_BUDGET_SEC','3600')),
   'focus':focus,'weaknesses':weaknesses[:20],'leagues':leagues,
   'promotion_gate':PROMOTION_GATE,
-  'next_research':{'objective':focus['objective'],'league':focus['league'],'reason':focus['reason'],'rule':'candidate must pass the fixed promotion gate and improve OOS without unacceptable regression'},
+  'next_research':{'objective':focus['objective'],'league':focus['league'],'reason':focus['reason'],'rule':'candidate must pass the fixed promotion gate and improve OOS without unacceptable regression; NPB must preserve the Draw class'},
  }
 
 def append_history(state):
@@ -95,6 +100,6 @@ def append_history(state):
 
 def main():
  state=build_state(); STATE.write_text(json.dumps(state,ensure_ascii=False,indent=2),encoding='utf-8'); append_history(state)
- PLAN.write_text(json.dumps({'generated_at':state['updated_at'],'priority':state['focus'],'next':state['next_research'],'promotion_gate':PROMOTION_GATE,'automatic_adoption_policy':{'require_oos':True,'require_no_material_regression':True,'keep_failed_candidates_for_learning':True,'never_use_future_target_data':True,'fixed_gate':True}},ensure_ascii=False,indent=2),encoding='utf-8')
+ PLAN.write_text(json.dumps({'generated_at':state['updated_at'],'priority':state['focus'],'next':state['next_research'],'promotion_gate':PROMOTION_GATE,'automatic_adoption_policy':{'require_oos':True,'require_no_material_regression':True,'keep_failed_candidates_for_learning':True,'never_use_future_target_data':True,'fixed_gate':True,'npb_three_way_required':True}},ensure_ascii=False,indent=2),encoding='utf-8')
  print(json.dumps({'focus':state['focus'],'next':state['next_research'],'promotion_gate':PROMOTION_GATE},ensure_ascii=False))
 if __name__=='__main__': main()
