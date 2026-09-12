@@ -2,8 +2,8 @@
 
 Selection and final confirmation are deliberately separated:
 Development OOS -> Candidate Lock -> Locked Holdout -> Adoption.
-Win probability is not allowed to be the sole promotion criterion; score and
-Low/High targets can be required independently.
+For NPB, Home/Draw/Away is a first-class target and draw behaviour is checked
+separately from aggregate multiclass LogLoss/Brier.
 """
 from __future__ import annotations
 
@@ -22,8 +22,11 @@ class GatePolicy:
     max_hilo_logloss_regression: float = 0.005
     max_hilo_brier_regression: float = 0.005
     max_hilo_accuracy_regression: float = 0.005
+    max_draw_recall_regression: float = 0.0
+    max_draw_probability_mae_regression: float = 0.005
     require_score_check: bool = True
     require_hilo_check: bool = True
+    require_npb_three_way_check: bool = True
     require_two_validation_windows: bool = True
     require_calibration_check: bool = True
     require_no_future_target_data: bool = True
@@ -63,12 +66,13 @@ def evaluate_locked_holdout(
     candidate_score: Mapping[str, float] | None = None,
     baseline_hilo: Mapping[str, float] | None = None,
     candidate_hilo: Mapping[str, float] | None = None,
+    league: str | None = None,
 ) -> dict:
-    """Compare a locked candidate against baseline on unseen holdout data only.
+    """Compare a locked candidate against unseen holdout data only.
 
-    Legacy callers may omit score/Low-High metrics. New research runs should
-    supply all three target groups so promotion cannot be driven by win
-    probability alone.
+    For NPB, ``DrawRecall`` and ``DrawProbabilityMAE`` are mandatory in the
+    locked target metrics. This prevents a candidate from improving aggregate
+    multiclass loss by sacrificing the draw class.
     """
     rows = int(candidate.get("rows", 0))
     reasons: list[str] = []
@@ -125,6 +129,24 @@ def evaluate_locked_holdout(
             if float(baseline_hilo.get("Accuracy", 0.0)) - float(candidate_hilo.get("Accuracy", 0.0)) > policy.max_hilo_accuracy_regression:
                 reasons.append("hilo_accuracy_regression")
             target_results["low_high"] = {"baseline": dict(baseline_hilo), "candidate": dict(candidate_hilo), "LogLoss_improvement": hll_imp, "Brier_improvement": hb_imp, "Accuracy_improvement": ha_imp}
+
+    if policy.require_npb_three_way_check and league == "NPB":
+        required = ("DrawRecall", "DrawProbabilityMAE")
+        if any(key not in baseline or key not in candidate for key in required):
+            reasons.append("npb_three_way_target_not_evaluated")
+        else:
+            draw_recall_imp = _improvement(baseline, candidate, "DrawRecall", True)
+            draw_mae_imp = _improvement(baseline, candidate, "DrawProbabilityMAE", False)
+            if float(baseline["DrawRecall"]) - float(candidate["DrawRecall"]) > policy.max_draw_recall_regression:
+                reasons.append("draw_recall_regression")
+            if float(candidate["DrawProbabilityMAE"]) - float(baseline["DrawProbabilityMAE"]) > policy.max_draw_probability_mae_regression:
+                reasons.append("draw_probability_mae_regression")
+            target_results["npb_three_way"] = {
+                "baseline": {"DrawRecall": float(baseline["DrawRecall"]), "DrawProbabilityMAE": float(baseline["DrawProbabilityMAE"])},
+                "candidate": {"DrawRecall": float(candidate["DrawRecall"]), "DrawProbabilityMAE": float(candidate["DrawProbabilityMAE"])},
+                "DrawRecall_improvement": draw_recall_imp,
+                "DrawProbabilityMAE_improvement": draw_mae_imp,
+            }
 
     return {
         "stage": "locked_holdout_evaluated",
