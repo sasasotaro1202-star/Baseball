@@ -1,16 +1,13 @@
 """Production Baseball research engine.
 
-This module is the single research entry point for NPB + MLB. The existing
-BaseballBacktest remains the numerical prediction core; this engine owns the
-research lifecycle around it:
+The numerical prediction core remains ``BaseballBacktest``.  This module owns
+an auditable research lifecycle around it:
 
-1. execute chronological OOS backtests;
-2. persist auditable research state and weakness discovery;
-3. keep Development OOS / Candidate Lock / Locked Holdout separate;
-4. never promote a candidate from this baseline run alone.
+chronological OOS -> weakness discovery -> Development candidate selection ->
+Candidate Lock -> independent Locked Holdout -> ADOPT/REJECT/HOLD.
 
-Candidate promotion is delegated to ``research.validation_pipeline`` so the
-independent holdout cannot be used during candidate selection.
+The NPB production target is explicitly Home / Draw / Away.  No candidate is
+promoted when the independent holdout artifact is missing or incomplete.
 """
 from __future__ import annotations
 
@@ -27,6 +24,8 @@ from typing import Any
 
 from baseball_backtest import BaseballBacktest
 from evaluation.npb_outcome import NPB_OUTCOME_LABELS, validate_npb_probabilities
+from research.candidates import lock_candidate, select_development_candidate
+from research.candidate_registry import record_candidate
 
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "results"
@@ -34,8 +33,6 @@ RESULTS = ROOT / "results"
 
 @dataclass(frozen=True)
 class ResearchCycle:
-    """Auditable record for one production research execution."""
-
     cycle_id: str
     git_commit: str
     started_at: str
@@ -50,30 +47,22 @@ def _git_commit() -> str:
     if value:
         return value
     try:
-        return subprocess.check_output(
-            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
-        ).strip()
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     except Exception:
         return "unknown"
 
 
 def _cycle_id(started_at: str, commit: str) -> str:
-    raw = f"{started_at}|{commit}".encode("utf-8")
-    return hashlib.sha256(raw).hexdigest()[:16]
+    return hashlib.sha256(f"{started_at}|{commit}".encode("utf-8")).hexdigest()[:16]
 
 
 def _write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True),
-        encoding="utf-8",
-    )
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
 
 
 def _research_state() -> dict[str, Any]:
-    """Build weakness/research state from the verified OOS artifacts."""
     from research.research_loop import build_state
-
     return build_state()
 
 
@@ -82,7 +71,6 @@ def _verify_npb_outcome_contract() -> dict[str, Any]:
     path = RESULTS / "npb_backtest_results.csv"
     if not path.exists():
         raise RuntimeError("NPB results artifact is missing; cannot verify Draw output")
-
     rows = 0
     draw_actual = 0
     draw_predicted = 0
@@ -91,24 +79,13 @@ def _verify_npb_outcome_contract() -> dict[str, Any]:
         required = {"pred_home", "pred_draw", "pred_away", "actual_home_score", "actual_away_score"}
         missing = required - set(reader.fieldnames or [])
         if missing:
-            raise RuntimeError(
-                "NPB results artifact is missing explicit three-way fields: "
-                + ", ".join(sorted(missing))
-            )
+            raise RuntimeError("NPB results artifact is missing explicit three-way fields: " + ", ".join(sorted(missing)))
         for row in reader:
-            p = validate_npb_probabilities([
-                float(row["pred_home"]),
-                float(row["pred_draw"]),
-                float(row["pred_away"]),
-            ])
+            p = validate_npb_probabilities([float(row["pred_home"]), float(row["pred_draw"]), float(row["pred_away"])])
             rows += 1
-            h = float(row["actual_home_score"])
-            a = float(row["actual_away_score"])
-            if h == a:
-                draw_actual += 1
-            if int(max(range(3), key=lambda i: p[i])) == 1:
-                draw_predicted += 1
-
+            h = float(row["actual_home_score"]); a = float(row["actual_away_score"])
+            draw_actual += int(h == a)
+            draw_predicted += int(int(max(range(3), key=lambda i: p[i])) == 1)
     contract = {
         "labels": list(NPB_OUTCOME_LABELS),
         "rows_verified": rows,
@@ -118,14 +95,121 @@ def _verify_npb_outcome_contract() -> dict[str, Any]:
         "probability_order": ["pred_home", "pred_draw", "pred_away"],
         "status": "PASS",
     }
-    _write_json(ROOT / "results" / "npb_outcome_contract.json", contract)
+    _write_json(RESULTS / "npb_outcome_contract.json", contract)
     return contract
 
 
-class BaseballResearchEngine:
-    """Production orchestrator around the existing NPB/MLB backtest core."""
+def _load_baseline_model() -> str | None:
+    """Production baseline must be explicitly declared; never infer it from candidates."""
+    env = os.getenv("BASEBALL_NPB_BASELINE_MODEL", "").strip()
+    if env:
+        return env
+    manifest = RESULTS / "npb_production_manifest.json"
+    if manifest.exists():
+        try:
+            payload = json.loads(manifest.read_text(encoding="utf-8"))
+            value = str(payload.get("model_version", "")).strip()
+            return value or None
+        except Exception:
+            return None
+    return None
 
-    ENGINE_VERSION = "baseball-research-engine-v1"
+
+def _load_locked_holdout(candidate_id: str) -> dict[str, Any] | None:
+    """Read only the already-created independent holdout artifact after Candidate Lock."""
+    path = RESULTS / "npb_locked_holdout.json"
+    if not path.exists():
+        return None
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        raise RuntimeError(f"invalid independent NPB holdout artifact: {exc}") from exc
+    if payload.get("stage") != "locked_holdout_ready":
+        raise RuntimeError("NPB holdout artifact is not marked locked_holdout_ready")
+    if payload.get("candidate_id") != candidate_id:
+        raise RuntimeError("NPB holdout candidate_id does not match Candidate Lock")
+    required = {
+        "baseline", "candidate", "validation_windows", "calibration_ok",
+        "no_future_target_data", "reproducible", "baseline_score",
+        "candidate_score", "baseline_hilo", "candidate_hilo",
+    }
+    missing = required - set(payload)
+    if missing:
+        raise RuntimeError("NPB holdout artifact missing required fields: " + ", ".join(sorted(missing)))
+    return payload
+
+
+def _npb_research_lifecycle(git_commit: str) -> dict[str, Any]:
+    """Run candidate selection/lock/holdout decision without ever fabricating evidence."""
+    baseline_model = _load_baseline_model()
+    state = _research_state()
+    focus = state.get("focus", {})
+    objective = str(focus.get("objective", "win"))
+    feature_version = os.getenv("BASEBALL_NPB_FEATURE_VERSION", "baseball-features-v1")
+
+    if not baseline_model:
+        return {
+            "stage": "baseline_declaration_required",
+            "decision": "HOLD",
+            "reason": "NPB production baseline model is not explicitly declared",
+        }
+
+    spec = select_development_candidate(
+        league="NPB",
+        objective=objective,
+        git_commit=git_commit,
+        feature_version=feature_version,
+        baseline_model=baseline_model,
+    )
+    if spec is None:
+        return {
+            "stage": "candidate_selection",
+            "decision": "NO_CHANGE",
+            "reason": "No reproducible Development OOS candidate was eligible against the declared baseline",
+            "baseline_model": baseline_model,
+        }
+
+    locked = lock_candidate(spec)
+    holdout = _load_locked_holdout(spec.candidate_id)
+    if holdout is None:
+        return {
+            "stage": "candidate_locked",
+            "decision": "HOLD",
+            "reason": "Independent locked holdout artifact is not available",
+            "candidate": locked,
+        }
+
+    record = record_candidate(
+        candidate_id=spec.candidate_id,
+        git_commit=git_commit,
+        feature_version=spec.feature_version,
+        model_version=spec.model_version,
+        development_metrics=spec.development_metrics,
+        holdout_baseline=holdout["baseline"],
+        holdout_candidate=holdout["candidate"],
+        validation_windows=int(holdout["validation_windows"]),
+        calibration_ok=bool(holdout["calibration_ok"]),
+        no_future_target_data=bool(holdout["no_future_target_data"]),
+        reproducible=bool(holdout["reproducible"]),
+        holdout_score_baseline=holdout["baseline_score"],
+        holdout_score_candidate=holdout["candidate_score"],
+        holdout_hilo_baseline=holdout["baseline_hilo"],
+        holdout_hilo_candidate=holdout["candidate_hilo"],
+        league="NPB",
+    )
+    return {
+        "stage": "locked_holdout_evaluated",
+        "decision": record.decision,
+        "candidate_id": record.candidate_id,
+        "candidate_model": record.model_version,
+        "baseline_model": baseline_model,
+        "registry": str(RESULTS / "candidate_registry.json"),
+        "record": asdict(record),
+    }
+
+
+class BaseballResearchEngine:
+    ENGINE_VERSION = "baseball-research-engine-v2-npb-lifecycle"
 
     def __init__(self, data_dir: str | Path = "data") -> None:
         self.data_dir = Path(data_dir)
@@ -152,24 +236,25 @@ class BaseballResearchEngine:
             "development_oos": "candidate selection only",
             "candidate_lock": "required before holdout",
             "locked_holdout": "independent confirmation only",
+            "npb_target": "HOME / DRAW / AWAY plus DrawRecall and DrawProbabilityMAE",
             "decision": "ADOPT only when research.validation_pipeline permits it",
         }
         _write_json(ROOT / "research_state.json", state)
         return state
 
-    def run(
-        self,
-        *,
-        npb: bool = True,
-        mlb: bool = True,
-        mlb_start: int = 2020,
-        mlb_end: int = 2026,
-    ) -> ResearchCycle:
+    def run(self, *, npb: bool = True, mlb: bool = True, mlb_start: int = 2020, mlb_end: int = 2026) -> ResearchCycle:
         RESULTS.mkdir(parents=True, exist_ok=True)
         self._backtest(npb=npb, mlb=mlb, mlb_start=mlb_start, mlb_end=mlb_end)
         self._research_state()
-        self.stages.append("candidate_selection_not_implicit")
-        self.stages.append("independent_holdout_required_for_promotion")
+        promotion_decision = "NO_CHANGE"
+        if npb:
+            self.stages.append("npb_development_candidate_selection")
+            lifecycle = _npb_research_lifecycle(self.git_commit)
+            _write_json(RESULTS / "npb_research_lifecycle.json", lifecycle)
+            self.stages.append(lifecycle["stage"])
+            promotion_decision = lifecycle["decision"]
+        else:
+            self.stages.append("npb_lifecycle_skipped")
 
         finished = datetime.now(timezone.utc).isoformat()
         cycle = ResearchCycle(
@@ -179,7 +264,7 @@ class BaseballResearchEngine:
             finished_at=finished,
             leagues=tuple(x for x, enabled in (("NPB", npb), ("MLB", mlb)) if enabled),
             stages=tuple(self.stages),
-            promotion_decision="NO_CHANGE",
+            promotion_decision=promotion_decision,
         )
         _write_json(ROOT / "research_cycle_manifest.json", asdict(cycle))
         return cycle
@@ -193,10 +278,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--mlb-start", type=int, default=2020)
     parser.add_argument("--mlb-end", type=int, default=2026)
     args = parser.parse_args(argv)
-
     if args.npb_only and args.mlb_only:
         parser.error("--npb-only and --mlb-only are mutually exclusive")
-
     engine = BaseballResearchEngine(args.data_dir)
     cycle = engine.run(
         npb=not args.mlb_only,
