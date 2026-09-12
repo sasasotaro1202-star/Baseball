@@ -1,19 +1,18 @@
-"""PIT-aware starter/lineup announcement records and eligibility gates.
-
-The key invariant is that a starter is not considered PIT-confirmed merely
-because the name is known.  The announcement time must also be known and must
-be at or before the prediction cutoff.  Unknown announcement timing therefore
-fails closed for production prediction.
-"""
+"""PIT-aware starter/lineup announcement records and eligibility gates."""
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Any, Mapping
+
+_ALLOWED_LINEUP_STATUS = {"CONFIRMED", "UNCONFIRMED", "UNAVAILABLE", "UNVERIFIABLE"}
 
 
 def _dt(value: str) -> datetime:
-    return datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    ts = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    if ts.tzinfo is None:
+        raise ValueError("availability timestamps must be timezone-aware")
+    return ts
 
 
 @dataclass(frozen=True)
@@ -37,13 +36,11 @@ class AvailabilityRecord:
             raise ValueError("event_id and league (NPB/MLB) are required")
         if not self.home_team or not self.away_team:
             raise ValueError("home_team and away_team are required")
+        if self.lineup_status.upper() not in _ALLOWED_LINEUP_STATUS:
+            raise ValueError("invalid lineup_status")
 
         cutoff = _dt(self.prediction_cutoff)
         retrieved = _dt(self.retrieved_at)
-        if cutoff.tzinfo is None or retrieved.tzinfo is None:
-            raise ValueError("retrieved_at and prediction_cutoff must be timezone-aware")
-        # A source observation cannot be used at a cutoff earlier than the
-        # retrieval time.  Retrieval at or before cutoff is PIT-safe.
         if retrieved > cutoff:
             raise ValueError("retrieved_at is after prediction cutoff")
 
@@ -55,8 +52,6 @@ class AvailabilityRecord:
                 raise ValueError(f"{side} starter has unknown announcement timestamp")
             if announced_at:
                 ts = _dt(announced_at)
-                if ts.tzinfo is None:
-                    raise ValueError(f"{side} starter announcement timestamp must be timezone-aware")
                 if ts > cutoff:
                     raise ValueError(f"{side} starter was announced after prediction cutoff")
                 if ts > retrieved:
@@ -64,39 +59,29 @@ class AvailabilityRecord:
 
         if self.lineup_announced_at:
             ts = _dt(self.lineup_announced_at)
-            if ts.tzinfo is None:
-                raise ValueError("lineup announcement timestamp must be timezone-aware")
             if ts > cutoff or ts > retrieved:
                 raise ValueError("lineup announcement is not PIT-safe")
+        if self.lineup_status.upper() == "CONFIRMED" and not self.lineup_announced_at:
+            raise ValueError("CONFIRMED lineup requires lineup_announced_at")
 
 
 def from_mapping(row: Mapping[str, Any]) -> AvailabilityRecord:
     record = AvailabilityRecord(
-        event_id=str(row["event_id"]),
-        league=str(row["league"]),
-        home_team=str(row["home_team"]),
-        away_team=str(row["away_team"]),
-        home_starter=row.get("home_starter"),
-        away_starter=row.get("away_starter"),
+        event_id=str(row["event_id"]), league=str(row["league"]),
+        home_team=str(row["home_team"]), away_team=str(row["away_team"]),
+        home_starter=row.get("home_starter"), away_starter=row.get("away_starter"),
         home_starter_announced_at=row.get("home_starter_announced_at"),
         away_starter_announced_at=row.get("away_starter_announced_at"),
         lineup_status=str(row.get("lineup_status", "UNVERIFIABLE")).upper(),
         lineup_announced_at=row.get("lineup_announced_at"),
         source=str(row.get("source", "UNVERIFIABLE")),
-        retrieved_at=str(row["retrieved_at"]),
-        prediction_cutoff=str(row["prediction_cutoff"]),
+        retrieved_at=str(row["retrieved_at"]), prediction_cutoff=str(row["prediction_cutoff"]),
     )
     record.validate()
     return record
 
 
 def prediction_eligible(record: AvailabilityRecord) -> tuple[bool, list[str]]:
-    """Fail closed unless both starters are PIT-confirmed.
-
-    Lineup availability is intentionally not a universal blocker: some valid
-    pregame markets are published before official lineups.  Callers that require
-    lineup data must enforce that separately via ``required_data_ok``.
-    """
     record.validate()
     reasons: list[str] = []
     if not record.home_starter:
