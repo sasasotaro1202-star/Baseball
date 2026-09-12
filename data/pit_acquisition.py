@@ -2,27 +2,16 @@
 # -*- coding: utf-8 -*-
 """Acquire real NPB/MLB source observations into the PIT ledger.
 
-This collector is intentionally conservative:
-- every source response is stored as an immutable, hashed snapshot;
-- retrieval time is never masqueraded as a historical announcement time;
-- starter names observed without an explicit source announcement timestamp are
-  recorded as OBSERVED/UNVERIFIABLE rather than inventing an announcement time;
-- failed/unavailable sources are represented explicitly;
-- the ledger is append-only JSONL so later PIT replay can reproduce what was
-  actually known at each collection cutoff.
-
-Sources:
-- MLB Stats API schedule + game feed.
-- NPB official site / SPAIA schedule endpoint (the latter is already used by
-  the existing NPB multi-source acquisition pipeline).
-
-The collector does not run the expensive historical backtest.
+The collector records what was actually observable at the instant each source
+response was received. It never backdates starter/lineup announcements or
+claims historical availability that was not explicitly published by the source.
+The immutable ledger is later replayed against an arbitrary prediction cutoff.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
-import re
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -50,7 +39,7 @@ LOOKBACK_DAYS = int(os.getenv("PIT_LOOKBACK_DAYS", "1"))
 
 SESSION = requests.Session()
 SESSION.headers.update({
-    "User-Agent": "Baseball-PIT-Acquisition/1.0",
+    "User-Agent": "Baseball-PIT-Acquisition/1.1",
     "Accept": "application/json,text/html;q=0.9,*/*;q=0.8",
 })
 
@@ -93,12 +82,6 @@ def get_text(url: str) -> tuple[str, str]:
     raise RuntimeError(f"request failed: {url}: {last}")
 
 
-def _iso_leq(a: str | None, b: str) -> bool:
-    if not a:
-        return False
-    return datetime.fromisoformat(a.replace("Z", "+00:00")) <= datetime.fromisoformat(b.replace("Z", "+00:00"))
-
-
 def _find_value(obj: Any, names: set[str]) -> Any:
     if isinstance(obj, dict):
         for k, v in obj.items():
@@ -117,7 +100,6 @@ def _find_value(obj: Any, names: set[str]) -> Any:
 
 
 def _candidate_games(obj: Any) -> Iterable[dict[str, Any]]:
-    """Yield dicts that look like baseball game/event records."""
     if isinstance(obj, dict):
         keys = {str(k).lower() for k in obj}
         gameish = (
@@ -175,20 +157,21 @@ def _explicit_announcement(g: dict[str, Any], side: str) -> str | None:
 
 def _record_snapshot(*, event_id: str, league: str, entity_type: str,
                      entity_id: str, source: str, payload: Any,
-                     retrieved_at: str, cutoff: str,
-                     available_at: str | None, status: str = "KNOWN") -> None:
-    # A current observation is available to a prediction whose cutoff is the
-    # collection instant. Historical availability is never reconstructed here.
+                     retrieved_at: str, available_at: str | None,
+                     status: str = "KNOWN") -> None:
+    # The prediction cutoff is the observation instant for a current acquisition.
+    # Historical PIT replay uses the stored available_at/retrieved_at values and
+    # therefore remains independent of this acquisition run's wall-clock time.
     snap = make_snapshot(
         event_id=event_id, league=league, entity_type=entity_type,
         entity_id=entity_id, source=source, payload=payload,
-        prediction_cutoff=cutoff, available_at=available_at,
+        prediction_cutoff=retrieved_at, available_at=available_at,
         source_timestamp=None, retrieved_at=retrieved_at, status=status,
     )
     append_snapshot(snap, SNAPSHOT_LOG)
 
 
-def acquire_mlb(cutoff: str) -> int:
+def acquire_mlb() -> int:
     start = (datetime.now(timezone.utc) - timedelta(days=LOOKBACK_DAYS)).date()
     end = (datetime.now(timezone.utc) + timedelta(days=LOOKAHEAD_DAYS)).date()
     payload, retrieved = get_json(
@@ -198,8 +181,7 @@ def acquire_mlb(cutoff: str) -> int:
     )
     _record_snapshot(event_id="MLB-SCHEDULE", league="MLB", entity_type="schedule",
                      entity_id=f"{start}:{end}", source="MLB_STATS_API",
-                     payload=payload, retrieved_at=retrieved, cutoff=cutoff,
-                     available_at=retrieved)
+                     payload=payload, retrieved_at=retrieved, available_at=retrieved)
     count = 0
     seen: set[str] = set()
     for g in _candidate_games(payload):
@@ -209,14 +191,13 @@ def acquire_mlb(cutoff: str) -> int:
         seen.add(gid)
         home, away = _mlb_teams(g)
         hname, aname = _team_name(home), _team_name(away)
-        hs, ass = _starter_name(home), _starter_name(away)
         row = {
             "event_id": f"MLB:{gid}", "league": "MLB", "game_id": gid,
             "home_team": hname, "away_team": aname,
-            "home_starter": hs, "away_starter": ass,
+            "home_starter": _starter_name(home), "away_starter": _starter_name(away),
             "home_starter_announced_at": _explicit_announcement(g, "home"),
             "away_starter_announced_at": _explicit_announcement(g, "away"),
-            "observed_at": retrieved, "prediction_cutoff": cutoff,
+            "observed_at": retrieved, "prediction_cutoff": retrieved,
             "source": "MLB_STATS_API", "payload_hash": payload_hash(g),
         }
         _append_jsonl(EVENT_LOG, row)
@@ -227,40 +208,36 @@ def acquire_mlb(cutoff: str) -> int:
         })
         _record_snapshot(event_id=f"MLB:{gid}", league="MLB", entity_type="game",
                          entity_id=gid, source="MLB_STATS_API", payload=g,
-                         retrieved_at=retrieved, cutoff=cutoff,
-                         available_at=retrieved)
+                         retrieved_at=retrieved, available_at=retrieved)
         count += 1
     return count
 
 
-def acquire_npb(cutoff: str) -> int:
+def acquire_npb() -> int:
     start = (datetime.now(timezone.utc) - timedelta(days=LOOKBACK_DAYS)).date()
     end = (datetime.now(timezone.utc) + timedelta(days=LOOKAHEAD_DAYS)).date()
     count = 0
-    # Prefer the existing structured SPAIA endpoint. NPB official HTML is kept
-    # as an additional source observation even when it is not machine-readable.
     for url in NPB_URLS:
         try:
             if "spaia.jp" in url:
                 payload, retrieved = get_json(url)
             else:
                 text, retrieved = get_text(url)
-                payload = {"url": url, "html_sha256": __import__("hashlib").sha256(text.encode("utf-8", "ignore")).hexdigest()}
+                payload = {"url": url, "html_sha256": hashlib.sha256(text.encode("utf-8", "ignore")).hexdigest()}
             _record_snapshot(event_id="NPB-SCHEDULE", league="NPB", entity_type="schedule",
                              entity_id=f"{start}:{end}:{url}", source=url,
-                             payload=payload, retrieved_at=retrieved, cutoff=cutoff,
-                             available_at=retrieved)
+                             payload=payload, retrieved_at=retrieved, available_at=retrieved)
+            seen: set[str] = set()
             for idx, g in enumerate(_candidate_games(payload)):
                 gid = _find_value(g, {"gameid", "game_id", "gamepk", "id"})
-                if gid is None:
-                    gid = f"{payload_hash(g)[:16]}-{idx}"
-                gid = str(gid)
+                gid = str(gid) if gid is not None else f"{payload_hash(g)[:16]}-{idx}"
+                if gid in seen:
+                    continue
+                seen.add(gid)
                 home = _find_value(g, {"home", "home_team", "hometeam"})
                 away = _find_value(g, {"away", "away_team", "awayteam"})
-                if isinstance(home, dict):
-                    home = home.get("name") or home.get("team")
-                if isinstance(away, dict):
-                    away = away.get("name") or away.get("team")
+                if isinstance(home, dict): home = home.get("name") or home.get("team")
+                if isinstance(away, dict): away = away.get("name") or away.get("team")
                 if not home or not away:
                     continue
                 row = {
@@ -270,7 +247,7 @@ def acquire_npb(cutoff: str) -> int:
                     "away_starter": _find_value(g, {"awaystarter", "away_starter", "awaypitcher"}),
                     "home_starter_announced_at": _explicit_announcement(g, "home"),
                     "away_starter_announced_at": _explicit_announcement(g, "away"),
-                    "observed_at": retrieved, "prediction_cutoff": cutoff,
+                    "observed_at": retrieved, "prediction_cutoff": retrieved,
                     "source": url, "payload_hash": payload_hash(g),
                 }
                 _append_jsonl(EVENT_LOG, row)
@@ -281,26 +258,25 @@ def acquire_npb(cutoff: str) -> int:
                 })
                 _record_snapshot(event_id=f"NPB:{gid}", league="NPB", entity_type="game",
                                  entity_id=gid, source=url, payload=g,
-                                 retrieved_at=retrieved, cutoff=cutoff,
-                                 available_at=retrieved)
+                                 retrieved_at=retrieved, available_at=retrieved)
                 count += 1
         except Exception as exc:
+            retrieved = now_utc()
             _record_snapshot(event_id="NPB-SCHEDULE", league="NPB", entity_type="schedule",
                              entity_id=f"{start}:{end}:{url}", source=url,
-                             payload={"error": str(exc)}, retrieved_at=now_utc(),
-                             cutoff=cutoff, available_at=None, status="UNAVAILABLE")
+                             payload={"error": str(exc)}, retrieved_at=retrieved,
+                             available_at=None, status="UNAVAILABLE")
             print(f"[PIT][NPB] source unavailable: {url}: {exc}")
     return count
 
 
 def main() -> None:
     PIT_DIR.mkdir(parents=True, exist_ok=True)
-    cutoff = now_utc()
-    started = cutoff
-    results: dict[str, Any] = {"run_started_at": started, "cutoff": cutoff}
+    started = now_utc()
+    results: dict[str, Any] = {"run_started_at": started}
     for league, fn in (("MLB", acquire_mlb), ("NPB", acquire_npb)):
         try:
-            results[f"{league.lower()}_events"] = fn(cutoff)
+            results[f"{league.lower()}_events"] = fn()
             results[f"{league.lower()}_status"] = "OK"
         except Exception as exc:
             results[f"{league.lower()}_events"] = 0
