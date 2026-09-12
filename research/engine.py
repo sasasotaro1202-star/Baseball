@@ -5,7 +5,9 @@ chronological OOS -> weakness discovery -> NPB candidate replay on Development
 OOS -> Candidate Lock -> independent Locked Holdout -> ADOPT/REJECT/HOLD.
 
 No holdout result is allowed to influence candidate selection. NPB remains a
-three-class Home / Draw / Away target throughout the lifecycle.
+three-class Home / Draw / Away target throughout the lifecycle. A separate
+Top-Draw prediction is also researched: one game per Japan-local calendar date,
+chosen by maximum predicted Draw probability.
 """
 from __future__ import annotations
 
@@ -23,6 +25,7 @@ from baseball_backtest import BaseballBacktest
 from evaluation.npb_outcome import NPB_OUTCOME_LABELS, validate_npb_probabilities
 from research.candidate_registry import record_candidate
 from research.npb_candidate_replay import run_npb_candidate_cycle
+from research.npb_draw_research import write_top_draw_research
 
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "results"
@@ -139,7 +142,7 @@ def _npb_research_lifecycle(git_commit: str, data_dir: str | Path) -> dict[str, 
 
 
 class BaseballResearchEngine:
-    ENGINE_VERSION = "baseball-research-engine-v3-npb-replay-lifecycle"
+    ENGINE_VERSION = "baseball-research-engine-v4-npb-three-way-top-draw"
 
     def __init__(self, data_dir: str | Path = "data") -> None:
         self.data_dir = Path(data_dir)
@@ -155,6 +158,8 @@ class BaseballResearchEngine:
         if npb:
             self.stages.append("npb_home_draw_away_contract_check")
             _verify_npb_outcome_contract()
+            self.stages.append("npb_top_draw_research")
+            write_top_draw_research()
 
     def _research_state(self) -> dict[str, Any]:
         self.stages.append("weakness_discovery")
@@ -167,6 +172,8 @@ class BaseballResearchEngine:
             "candidate_lock": "required before holdout",
             "locked_holdout": "independent confirmation only",
             "npb_target": "HOME / DRAW / AWAY plus DrawRecall and DrawProbabilityMAE",
+            "npb_separate_prediction": "one game per Japan-local calendar date with maximum pred_draw",
+            "npb_separate_prediction_metrics": ["top_draw_hit_rate", "top_draw_probability_mae", "lift_vs_all_game_draw_rate"],
             "decision": "ADOPT only when research.validation_pipeline permits it",
         }
         _write_json(ROOT / "research_state.json", state)
