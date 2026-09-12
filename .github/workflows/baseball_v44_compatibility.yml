@@ -8,6 +8,7 @@ on:
     branches:
       - main
       - v4.4-baseball-integration
+  workflow_dispatch:
 
 jobs:
   compatibility:
