@@ -30,6 +30,7 @@ def run_validation_pipeline(
     holdout_score_candidate: Mapping[str, float] | None = None,
     holdout_hilo_baseline: Mapping[str, float] | None = None,
     holdout_hilo_candidate: Mapping[str, float] | None = None,
+    league: str | None = None,
     policy: GatePolicy = GatePolicy(),
 ) -> ValidationRecord:
     """Run the full promotion state machine.
@@ -52,6 +53,7 @@ def run_validation_pipeline(
         candidate_score=holdout_score_candidate,
         baseline_hilo=holdout_hilo_baseline,
         candidate_hilo=holdout_hilo_candidate,
+        league=league,
     )
     return ValidationRecord(
         candidate_id=candidate_id,
