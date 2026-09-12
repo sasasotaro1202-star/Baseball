@@ -2,7 +2,7 @@
 
 A snapshot is an immutable record of what was known, when it was retrieved,
 and when the source said it became available. This module does not infer
-availability from retrieval time.
+historical availability from retrieval time.
 """
 from __future__ import annotations
 
@@ -12,6 +12,15 @@ import hashlib
 import json
 from pathlib import Path
 from typing import Any, Mapping
+
+_ALLOWED = {"KNOWN", "MISSING", "UNAVAILABLE", "UNVERIFIABLE"}
+
+
+def _dt(value: str) -> datetime:
+    ts = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    if ts.tzinfo is None:
+        raise ValueError("PIT timestamps must be timezone-aware")
+    return ts
 
 
 @dataclass(frozen=True)
@@ -31,13 +40,30 @@ class SourceSnapshot:
     def validate(self) -> None:
         if not self.event_id or not self.entity_id or not self.source:
             raise ValueError("event_id, entity_id and source are required")
-        if self.status not in {"KNOWN", "MISSING", "UNAVAILABLE", "UNVERIFIABLE"}:
+        if self.league not in {"NPB", "MLB"}:
+            raise ValueError("league must be NPB or MLB")
+        if self.status not in _ALLOWED:
             raise ValueError(f"invalid snapshot status: {self.status}")
-        if self.available_at and self.prediction_cutoff:
-            a = datetime.fromisoformat(self.available_at.replace("Z", "+00:00"))
-            c = datetime.fromisoformat(self.prediction_cutoff.replace("Z", "+00:00"))
-            if a > c:
-                raise ValueError("PIT violation: availability is after prediction cutoff")
+        retrieved = _dt(self.retrieved_at)
+        cutoff = _dt(self.prediction_cutoff)
+        if retrieved < cutoff:
+            raise ValueError("retrieved_at cannot precede prediction_cutoff")
+        if self.source_timestamp:
+            _dt(self.source_timestamp)
+        if self.available_at:
+            available = _dt(self.available_at)
+            if available < cutoff:
+                # A source cannot become available before the snapshot's own
+                # declared observation cutoff unless that timestamp is genuine.
+                # We permit it because it is valid historical source metadata.
+                pass
+            if available > retrieved:
+                raise ValueError("available_at cannot be after retrieved_at")
+            # A KNOWN snapshot used at this cutoff must actually be available
+            # by the cutoff. Otherwise it is retained as a future observation,
+            # but PIT replay will reject it.
+            if self.status == "KNOWN" and available > cutoff:
+                raise ValueError("KNOWN snapshot is not available at prediction cutoff")
 
 
 def payload_hash(payload: Any) -> str:
@@ -71,9 +97,9 @@ def append_snapshot(snapshot: SourceSnapshot, path: str | Path) -> None:
 
 
 def validate_snapshot_rows(rows: list[Mapping[str, Any]]) -> dict[str, int]:
-    counts = {k: 0 for k in ("KNOWN", "MISSING", "UNAVAILABLE", "UNVERIFIABLE")}
+    counts = {k: 0 for k in _ALLOWED}
     for row in rows:
-        status = str(row.get("status", "KNOWN"))
+        status = str(row.get("status", "KNOWN")).upper()
         if status not in counts:
             raise ValueError(f"invalid snapshot status: {status}")
         counts[status] += 1
