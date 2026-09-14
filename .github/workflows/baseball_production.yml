@@ -1,6 +1,10 @@
 name: Baseball Production Backtest
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - requirements.txt
+      - .github/workflows/baseball_production.yml
   schedule:
     - cron: "17 */6 * * *"
 permissions:
