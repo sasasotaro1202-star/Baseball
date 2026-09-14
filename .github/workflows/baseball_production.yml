@@ -29,19 +29,30 @@ jobs:
           echo '[HEALTH] Memory summary:'; vm_stat | head -20 || true
           echo '[HEALTH] CPU/load:'; uptime
           echo '[HEALTH] File descriptor limit:'; ulimit -n
-          curl --fail --silent --show-error --location --max-time 20 https://api.github.com/rate_limit >/dev/null
+          curl --fail --silent --show-error --location --retry 4 --retry-delay 3 --retry-all-errors --max-time 20 https://api.github.com/rate_limit >/dev/null
           echo '[HEALTH] GitHub HTTPS PASS'
-          curl --fail --silent --show-error --location --max-time 20 https://statsapi.mlb.com/api/v1/sports/1 >/dev/null
+          curl --fail --silent --show-error --location --retry 4 --retry-delay 3 --retry-all-errors --max-time 20 https://statsapi.mlb.com/api/v1/sports/1 >/dev/null
           echo '[HEALTH] MLB Stats API HTTPS PASS'
       - name: Setup Python
         run: |
           set -euo pipefail
           VENV="$RUNNER_TEMP/baseball-production-venv"
+          rm -rf "$VENV"
           python3 -m venv "$VENV"
           REQ_HASH="$(shasum -a 256 requirements.txt | awk '{print $1}')"
           echo "[DEPS] requirements_sha256=$REQ_HASH"
-          "$VENV/bin/python" -m pip install --upgrade pip
-          "$VENV/bin/python" -m pip install -r requirements.txt
+          retry() {
+            local attempts=4 delay=5 n=1
+            while true; do
+              "$@" && return 0
+              if [ "$n" -ge "$attempts" ]; then return 1; fi
+              echo "[RETRY] command failed; retrying in ${delay}s ($n/$attempts)"
+              sleep "$delay"
+              n=$((n+1)); delay=$((delay*2))
+            done
+          }
+          retry "$VENV/bin/python" -m pip install --disable-pip-version-check --upgrade pip
+          retry "$VENV/bin/python" -m pip install --disable-pip-version-check -r requirements.txt
           "$VENV/bin/python" - <<'PY'
           import numpy,pandas,sklearn,requests
           print('[DEPS] core imports OK')
