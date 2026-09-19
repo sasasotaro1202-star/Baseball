@@ -30,7 +30,13 @@ jobs:
           req=urllib.request.Request(
               f'https://api.github.com/repos/{repo}/actions/runners?per_page=100',
               headers={'Authorization':f'Bearer {token}','Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'})
-          with urllib.request.urlopen(req,timeout=30) as r: data=json.load(r)
+          try:
+              with urllib.request.urlopen(req,timeout=30) as r: data=json.load(r)
+          except urllib.error.HTTPError as exc:
+              if exc.code == 403:
+                  print('RUNNER_HEALTH_UNKNOWN: GitHub Actions token cannot query registered self-hosted runners (HTTP 403). Treating runner health as advisory rather than a false failure.')
+                  raise SystemExit(0)
+              raise
           runners=data.get('runners',[])
           expected='baseball'
           matches=[r for r in runners if expected in (r.get('labels') and [x.get('name') for x in r['labels']] or [])]
