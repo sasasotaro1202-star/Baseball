@@ -25,7 +25,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import json, os, urllib.request
+          import json, os, urllib.request, urllib.error
           repo=os.environ['REPO']; token=os.environ['GH_TOKEN']
           req=urllib.request.Request(
               f'https://api.github.com/repos/{repo}/actions/runners?per_page=100',
