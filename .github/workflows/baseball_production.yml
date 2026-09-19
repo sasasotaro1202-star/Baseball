@@ -40,11 +40,9 @@ jobs:
       - name: Setup Python
         run: |
           set -euo pipefail
-          VENV="$RUNNER_TEMP/baseball-production-venv"
-          rm -rf "$VENV"
-          python3 -m venv "$VENV"
+          VENV="$HOME/actions-runner/_toolcache/baseball-production-venv"
+          STAMP="$VENV/.requirements.sha256"
           REQ_HASH="$(shasum -a 256 requirements.txt | awk '{print $1}')"
-          echo "[DEPS] requirements_sha256=$REQ_HASH"
           retry() {
             local attempts=4 delay=5 n=1
             while true; do
@@ -55,8 +53,17 @@ jobs:
               n=$((n+1)); delay=$((delay*2))
             done
           }
-          retry "$VENV/bin/python" -m pip install --disable-pip-version-check --upgrade pip
-          retry "$VENV/bin/python" -m pip install --disable-pip-version-check -r requirements.txt
+          if [ ! -x "$VENV/bin/python" ] || [ ! -f "$STAMP" ] || [ "$(cat "$STAMP" 2>/dev/null || true)" != "$REQ_HASH" ]; then
+            echo "[DEPS] Creating/updating persistent production venv"
+            rm -rf "$VENV"
+            mkdir -p "$(dirname "$VENV")"
+            python3 -m venv "$VENV"
+            retry "$VENV/bin/python" -m pip install --disable-pip-version-check --upgrade pip
+            retry "$VENV/bin/python" -m pip install --disable-pip-version-check -r requirements.txt
+            printf '%s' "$REQ_HASH" > "$STAMP"
+          else
+            echo "[DEPS] Reusing persistent production venv; requirements unchanged"
+          fi
           "$VENV/bin/python" - <<'PY'
           import numpy,pandas,sklearn,requests
           print('[DEPS] core imports OK')
