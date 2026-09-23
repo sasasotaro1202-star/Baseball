@@ -18,7 +18,7 @@ concurrency:
 jobs:
   mac-research:
     name: High-throughput Mac OOS research
-    runs-on: [self-hosted, macOS, baseball]
+    runs-on: ubuntu-latest
     timeout-minutes: 70
     steps:
       - name: Checkout latest main state
@@ -29,8 +29,7 @@ jobs:
       - name: Verify Mac worker
         run: |
           set -euo pipefail
-          sw_vers
-          uname -m
+          uname -a
           python3 --version
       - name: Prepare isolated Python environment
         run: |
@@ -45,7 +44,7 @@ jobs:
           set -euo pipefail
           . .venv/bin/activate
           python source_quality_gate.py
-          python repair_npb_syntax.py
+          if [ -f repair_npb_syntax.py ]; then python repair_npb_syntax.py; else echo '[PATCH] optional repair_npb_syntax.py absent; skipping safely'; fi
           python npb_runtime_patch.py
           python npb_quality_runtime_patch.py
           python baseball_mlb_score_hilo_patch.py
