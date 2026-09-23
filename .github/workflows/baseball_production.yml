@@ -11,7 +11,7 @@ permissions:
   contents: write
 concurrency:
   group: baseball-production
-  cancel-in-progress: false
+  cancel-in-progress: true
 env:
   PYTHONUNBUFFERED: "1"
 jobs:
