@@ -18,4 +18,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Run dependency-free deterministic audit
-        run: python backtest_audit.py
+        run: python backtest_audit_v2.py
