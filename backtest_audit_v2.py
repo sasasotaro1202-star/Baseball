@@ -41,12 +41,14 @@ if base:
     if pred >= 0 and hist >= 0 and hist < pred:
         errors.append("pitcher history update occurs before prediction features")
 
-workflow = need(".github/workflows/baseball_backtest.yml", r"timeout-minutes:\s*30", "30-minute job limit")
+workflow = need(".github/workflows/baseball_production.yml", r"timeout-minutes:\s*140", "production job limit")
 if workflow:
     for token in ("BASEBALL_TIME_BUDGET_SEC", "data/checkpoints/npb_collection_status.json", "contents: write"):
         if token not in workflow:
             errors.append(f"workflow invariant missing: {token}")
-need(".github/workflows/baseball_audit.yml", r"backtest_audit\.py", "audit workflow")
+audit_workflow = need(".github/workflows/baseball_audit.yml", r"backtest_audit_v2\.py", "audit workflow")
+if audit_workflow and "backtest_audit.py" in audit_workflow:
+    errors.append("stale audit workflow still references removed backtest_audit.py")
 
 try:
     import pandas as pd
