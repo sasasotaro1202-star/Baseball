@@ -34,7 +34,7 @@ jobs:
           curl --fail --silent --show-error --location --retry 4 --retry-delay 3 --retry-all-errors --max-time 20 https://api.github.com/rate_limit >/dev/null
           echo '[HEALTH] GitHub HTTPS PASS'
           curl --fail --silent --show-error --location --retry 4 --retry-delay 3 --retry-all-errors --max-time 20 https://statsapi.mlb.com/api/v1/sports/1 >/dev/null
-          echo '[HEALTH] MLB Stats API HTTPS PASS
+          echo '[HEALTH] MLB Stats API HTTPS PASS'
       - name: Setup Python
         run: |
           set -euo pipefail
@@ -134,6 +134,7 @@ jobs:
               if rows < 2: raise SystemExit(f'result CSV has no data rows: {p}')
           print(f'[OOS VALIDATION] PASS nonempty_files={len(files)} csv_files={len(csvs)}')
           PY
+          python backtest_audit_v2.py
           python production_data_quality_gate.py
           python production_integrity_gate.py
       - name: Upload verified state artifact
