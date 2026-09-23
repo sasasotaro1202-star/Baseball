@@ -215,6 +215,8 @@ class TeamState:
     bullpen_er: deque = field(default_factory=lambda: deque(maxlen=20))
     bullpen_runs: deque = field(default_factory=lambda: deque(maxlen=20))
     bullpen_appearances: deque = field(default_factory=lambda: deque(maxlen=20))
+    game_dates: deque = field(default_factory=lambda: deque(maxlen=60))
+    opponents: deque = field(default_factory=lambda: deque(maxlen=20))
 
 
 class BaseballBacktest:
@@ -503,7 +505,7 @@ class BaseballBacktest:
         key = (league, team)
         return self.elo_ratings.get(key, ELO_START)
 
-    def _team_features(self, league: str, team: str, venue: str, dt: pd.Timestamp) -> Dict[str, float]:
+    def _team_features(self, league: str, team: str, venue: str, dt: pd.Timestamp, opponent: str = "") -> Dict[str, float]:
         s = self.state(league, team)
         f: Dict[str, float] = {}
         for w in (3, 5, 10, 20, 30, 45, 60):
@@ -530,6 +532,16 @@ class BaseballBacktest:
         f["elo"] = self.elo(league, team)
         f["rest_days"] = float(max(0.0, (dt - s.last_dt).total_seconds() / 86400.0)) if s.last_dt is not None else 30.0
         f["matches"] = float(s.total_matches)
+        # Schedule-density context uses only completed games strictly before the target.
+        prior_dates = [pd.Timestamp(x) for x in s.game_dates if pd.notna(x) and pd.Timestamp(x) < dt]
+        for days in (3, 7, 14):
+            f[f"games_last_{days}d"] = float(sum((dt - x).total_seconds() <= days * 86400.0 for x in prior_dates))
+        f["short_rest_2d"] = float(f["rest_days"] < 2.0)
+        if opponent:
+            opp = str(opponent)
+            f["same_opponent_last_10"] = float(sum(str(x) == opp for x in list(s.opponents)[-10:]))
+        else:
+            f["same_opponent_last_10"] = 0.0
         # Bullpen workload is updated from completed games only; never from target game.
         f["bp3"] = float(s.bullpen_ip_3)
         f["bp7"] = float(s.bullpen_ip_7)
@@ -639,8 +651,8 @@ class BaseballBacktest:
         league = row["league"]
         dt = pd.Timestamp(row["datetime"])
         h, a = norm_team(row["home"], league), norm_team(row["away"], league)
-        hf = self._team_features(league, h, "home", dt)
-        af = self._team_features(league, a, "away", dt)
+        hf = self._team_features(league, h, "home", dt, opponent=a)
+        af = self._team_features(league, a, "away", dt, opponent=h)
         out: Dict[str, float] = {"home_adv": 1.0}
         for k, v in hf.items(): out[f"h_{k}"] = v
         for k, v in af.items(): out[f"a_{k}"] = v
@@ -682,6 +694,13 @@ class BaseballBacktest:
         out["starter_kbb_gap"] = (out.get("hs_k9",7.5)-out.get("hs_bb9",3.0)) - (out.get("as_k9",7.5)-out.get("as_bb9",3.0))
         out["starter_hr_gap"] = out.get("as_hr9",1.0)-out.get("hs_hr9",1.0)
         out["starter_recent_form_gap"] = out.get("as_recent_era",4.0)-out.get("hs_recent_era",4.0)
+        # Situation interactions: short rest and bullpen workload compound risk.
+        out["home_bullpen_short_rest"] = hf.get("bp_app_10",0.0) * max(0.0, 2.0 - hf.get("rest_days",30.0))
+        out["away_bullpen_short_rest"] = af.get("bp_app_10",0.0) * max(0.0, 2.0 - af.get("rest_days",30.0))
+        out["schedule_density_diff_3d"] = hf.get("games_last_3d",0.0) - af.get("games_last_3d",0.0)
+        out["schedule_density_diff_7d"] = hf.get("games_last_7d",0.0) - af.get("games_last_7d",0.0)
+        out["short_rest_diff"] = hf.get("short_rest_2d",0.0) - af.get("short_rest_2d",0.0)
+        out["series_context_diff"] = hf.get("same_opponent_last_10",0.0) - af.get("same_opponent_last_10",0.0)
         out["offense_power_gap_10"] = hf.get("bat_hr_rate_10",0.0)-af.get("bat_hr_rate_10",0.0)
         out["offense_walk_gap_10"] = hf.get("bat_bb_rate_10",0.0)-af.get("bat_bb_rate_10",0.0)
         out["offense_contact_gap_10"] = (hf.get("bat_avg_10",0.0)-hf.get("bat_so_rate_10",0.0))-(af.get("bat_avg_10",0.0)-af.get("bat_so_rate_10",0.0))
@@ -788,13 +807,13 @@ class BaseballBacktest:
         if hs > ass: hr, ar, hp, ap = 0, 2, 3, 0
         elif hs < ass: hr, ar, hp, ap = 2, 0, 0, 3
         else: hr = ar = 1; hp = ap = 1
-        self._update_team(sh, hr, hs, ass, True, hp, dt, row)
-        self._update_team(sa, ar, ass, hs, False, ap, dt, row)
+        self._update_team(sh, hr, hs, ass, True, hp, dt, row, opponent=a)
+        self._update_team(sa, ar, ass, hs, False, ap, dt, row, opponent=h)
         self._update_elo(league, h, a, hs, ass)
         self._update_pitcher_history(row)
         self._update_player_history(row)
 
-    def _update_team(self, s: TeamState, result: int, gf: float, ga: float, home: bool, pts: float, dt: pd.Timestamp, row: pd.Series):
+    def _update_team(self, s: TeamState, result: int, gf: float, ga: float, home: bool, pts: float, dt: pd.Timestamp, row: pd.Series, opponent: str = ""):
         s.results.append(result); s.gf.append(gf); s.ga.append(ga)
         s.total_matches += 1; s.points += pts; s.total_gf += gf; s.total_ga += ga
         if home:
@@ -829,6 +848,9 @@ class BaseballBacktest:
         s.bullpen_ip_3 = max(0.0, s.bullpen_ip_3 * 0.65 + bp * 0.45)
         s.bullpen_ip_7 = max(0.0, s.bullpen_ip_7 * 0.88 + bp * 0.20)
         s.last_dt = dt
+        if opponent:
+            s.opponents.append(str(opponent))
+        s.game_dates.append(dt)
 
     def _update_elo(self, league: str, home: str, away: str, hs: float, aas: float):
         eh = self.elo(league, home); ea = self.elo(league, away)
