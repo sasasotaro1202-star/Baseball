@@ -48,6 +48,7 @@ jobs:
           QUEUED_STALE_MINUTES=20
           ACTIVE_STATES={'queued','in_progress','waiting','pending','requested'}
           QUEUED_STATES={'queued','waiting','pending','requested'}
+          RECENT_DISPATCH_GUARD_MINUTES=5
           RETRYABLE={408,409,425,429,500,502,503,504}
           errors=[]; stuck=[]; action='none'; data={}; latest={}
 
@@ -77,6 +78,8 @@ jobs:
               value=(row or {}).get('created_at') or (row or {}).get('updated_at')
               return datetime.fromisoformat(value.replace('Z','+00:00')) if value else datetime.min.replace(tzinfo=timezone.utc)
           def age_minutes(row): return (now-ts(row)).total_seconds()/60.0 if row else 0.0
+          def recently_created(rows, minutes=RECENT_DISPATCH_GUARD_MINUTES):
+              return any(0.0 <= age_minutes(r) < minutes for r in rows)
 
           try:
               data={k:runs(v) for k,v in workflows.items()}
@@ -102,10 +105,14 @@ jobs:
                           request('POST',f'/repos/{repo}/actions/workflows/{workflow}/dispatches',{'ref':'main'}); action=f'dispatch-{label}'
                       except Exception as exc:
                           errors.append(f'dispatch {workflow}: {exc}'); print(f'[WATCHDOG] dispatch failed for {workflow}: {exc}')
-                  if not success(prod): dispatch('production-recovery',workflows['production'])
-                  elif not success(mac) or ts(mac)<ts(prod): dispatch('mac-oos',workflows['mac'])
-                  elif not success(research) or ts(research)<ts(mac): dispatch('autonomous-research',workflows['research'])
-                  elif success(research) and ts(research)>ts(prod): dispatch('next-production',workflows['production'])
+                  if not success(prod) and not recently_created(data.get('production',[])):
+                      dispatch('production-recovery',workflows['production'])
+                  elif (not success(mac) or ts(mac)<ts(prod)) and not recently_created(data.get('mac',[])):
+                      dispatch('mac-oos',workflows['mac'])
+                  elif (not success(research) or ts(research)<ts(mac)) and not recently_created(data.get('research',[])):
+                      dispatch('autonomous-research',workflows['research'])
+                  elif success(research) and ts(research)>ts(prod) and not recently_created(data.get('production',[])):
+                      dispatch('next-production',workflows['production'])
           except Exception as exc:
               errors.append(f'watchdog fatal: {exc}')
               print('[WATCHDOG] degraded:',exc); traceback.print_exc()
