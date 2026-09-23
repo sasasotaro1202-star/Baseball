@@ -1,14 +1,10 @@
 name: Baseball Production Backtest
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - requirements.txt
-      - baseball_backtest.py
-      - npb_multi_source.py
-      - npb_*.py
-      - production_*.py
-      - .github/workflows/baseball_production.yml
+  workflow_run:
+    workflows:
+      - Validate Code Syntax
+    types: [completed]
   schedule:
     - cron: "17 */6 * * *"
 permissions:
@@ -20,6 +16,7 @@ env:
   PYTHONUNBUFFERED: "1"
 jobs:
   production:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 140
     steps:
