@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - '**.py'
+      - '.github/workflows/validate-code.yml'
   workflow_dispatch:
 
 jobs:
