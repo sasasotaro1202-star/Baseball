@@ -55,8 +55,8 @@ jobs:
         run: |
           set -euo pipefail
           . .venv/bin/activate
-          python -m py_compile baseball_backtest.py npb_multi_source.py npb_runtime_patch.py npb_quality_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py backtest_audit.py source_quality_gate.py repair_npb_syntax.py research/research_loop.py
-          python backtest_audit.py
+          python -m py_compile baseball_backtest.py npb_multi_source.py npb_runtime_patch.py npb_quality_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py baseball_backtest_runtime_patch.py baseball_production_runtime_patch.py backtest_audit_v2.py source_quality_gate.py research/research_loop.py
+          python backtest_audit_v2.py
       - name: Run NPB deep OOS backtest with checkpoint-safe retries
         run: |
           set -euo pipefail
