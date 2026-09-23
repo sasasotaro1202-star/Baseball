@@ -22,4 +22,38 @@ jobs:
           python -m py_compile pipelines/collect.py
           python -m py_compile source_quality_gate.py
           python -m py_compile production_integrity_gate.py
-          echo "All Python files passed syntax validation"
+          python -m py_compile baseball_backtest.py
+          python -m py_compile npb_multi_source.py
+          python -m py_compile npb_runtime_patch.py
+          python -m py_compile npb_official_schedule_patch.py
+          python -m py_compile npb_quality_runtime_patch.py
+          python -m py_compile baseball_backtest_runtime_patch.py
+          python -m py_compile baseball_production_runtime_patch.py
+          python -m py_compile baseball_quality_runtime_patch.py
+          python -m py_compile baseball_mlb_score_hilo_patch.py
+          python -m py_compile backtest_audit_v2.py
+          python -m py_compile research/research_loop.py
+          python -m py_compile research/openai_research_advisor.py
+          python - <<'PY'
+          import pandas as pd
+          from baseball_backtest import BaseballBacktest
+          b = BaseballBacktest()
+          row = pd.Series({
+              "league":"NPB","datetime":pd.Timestamp("2026-09-24T18:00:00"),
+              "home":"広島東洋カープ","away":"読売ジャイアンツ",
+              "home_starter":"A","away_starter":"B",
+              "home_lineup_json":"[]","away_lineup_json":"[]",
+              "weather_temp_c":25.0,"weather_humidity_pct":60.0,
+              "weather_wind_kmh":8.0,"weather_precip_mm":0.0,
+          })
+          first = b.match_features(row)
+          assert "games_last_3d" in first and "home_bullpen_short_rest" in first
+          sh, sa = b.state("NPB","広島東洋カープ"), b.state("NPB","読売ジャイアンツ")
+          b._update_team(sh, 0, 5, 2, True, 3, pd.Timestamp("2026-09-23T18:00:00"), row, opponent="読売ジャイアンツ")
+          b._update_team(sa, 2, 2, 5, False, 0, pd.Timestamp("2026-09-23T18:00:00"), row, opponent="広島東洋カープ")
+          later = b._team_features("NPB","広島東洋カープ","home",pd.Timestamp("2026-09-24T18:00:00"),opponent="読売ジャイアンツ")
+          assert later["games_last_3d"] == 1.0
+          assert later["same_opponent_last_10"] == 1.0
+          print("Baseball core runtime smoke: PASS")
+          PY
+          echo "All Baseball Python syntax/runtime smoke checks passed"
