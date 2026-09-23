@@ -233,6 +233,7 @@ class BaseballBacktest:
         self.checkpoint_version = "npb-massive-resume-v4-100target"
         self._last_temperature = 1.0
         self.player_game = pd.DataFrame()
+        self.pitcher_history = defaultdict(list)
         self.player_history = defaultdict(list)
         self.player_index = {}
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
