@@ -48,7 +48,7 @@ jobs:
               "weather_wind_kmh":8.0,"weather_precip_mm":0.0,
           })
           first = b.match_features(row)
-          assert "games_last_3d" in first and "home_bullpen_short_rest" in first
+          assert "h_games_last_3d" in first and "home_bullpen_short_rest" in first
           sh, sa = b.state("NPB","広島東洋カープ"), b.state("NPB","読売ジャイアンツ")
           b._update_team(sh, 0, 5, 2, True, 3, pd.Timestamp("2026-09-23T18:00:00"), row, opponent="読売ジャイアンツ")
           b._update_team(sa, 2, 2, 5, False, 0, pd.Timestamp("2026-09-23T18:00:00"), row, opponent="広島東洋カープ")
