@@ -1,6 +1,9 @@
 name: Baseball Autonomous Recovery
 
 on:
+  push:
+    paths:
+      - ".github/workflows/baseball_recovery.yml"
   workflow_run:
     workflows:
       - Baseball Production Backtest
@@ -44,6 +47,7 @@ jobs:
           STALE_MINUTES={'production':155,'mac':180,'research':180}
           QUEUED_STALE_MINUTES=20
           ACTIVE_STATES={'queued','in_progress','waiting','pending','requested'}
+          QUEUED_STATES={'queued','waiting','pending','requested'}
           RETRYABLE={408,409,425,429,500,502,503,504}
           errors=[]; stuck=[]; action='none'; data={}; latest={}
 
@@ -80,7 +84,7 @@ jobs:
               active_runs={k:[r for r in rows if active(r)] for k,rows in data.items()}
               for label,rows in active_runs.items():
                   for row in rows:
-                      limit=QUEUED_STALE_MINUTES if row.get('status') in {'queued','waiting','requested'} else STALE_MINUTES[label]
+                      limit=QUEUED_STALE_MINUTES if row.get('status') in QUEUED_STATES else STALE_MINUTES[label]
                       if age_minutes(row)>limit:
                           run_id=row['id']; print(f'[WATCHDOG] STUCK {label} run={run_id} status={row.get("status")} age_min={age_minutes(row):.1f} limit={limit}; cancelling')
                           try:
