@@ -1,9 +1,6 @@
 name: Baseball Autonomous Recovery
 
 on:
-  push:
-    paths:
-      - ".github/workflows/baseball_recovery.yml"
   workflow_run:
     workflows:
       - Baseball Production Backtest
