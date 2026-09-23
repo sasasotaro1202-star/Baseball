@@ -4,6 +4,10 @@ on:
   push:
     paths:
       - requirements.txt
+      - baseball_backtest.py
+      - npb_multi_source.py
+      - npb_*.py
+      - production_*.py
       - .github/workflows/baseball_production.yml
   schedule:
     - cron: "17 */6 * * *"
