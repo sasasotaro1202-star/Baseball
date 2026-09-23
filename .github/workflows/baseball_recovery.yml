@@ -6,6 +6,7 @@ on:
       - Baseball Production Backtest
       - Baseball Mac OOS Compute
       - Baseball Autonomous Research
+      - Baseball Source Acquisition
     types: [completed]
   schedule:
     - cron: "*/15 * * * *"
@@ -94,7 +95,7 @@ jobs:
               if stuck: action='cancel-stuck'
               elif any(active_runs.values()): action='active-no-dispatch'
               else:
-                  prod=latest['production']; mac=latest['mac']; research=latest['research']
+                  prod=latest['production']; mac=latest['mac']; research=latest['research']; acquisition=latest['acquisition']
                   def dispatch(label,workflow):
                       global action
                       try:
