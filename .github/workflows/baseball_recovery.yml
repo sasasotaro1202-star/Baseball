@@ -43,8 +43,8 @@ jobs:
           from pathlib import Path
 
           repo=os.environ['GITHUB_REPOSITORY']; token=os.environ['GH_TOKEN']; api=os.environ.get('GITHUB_API_URL','https://api.github.com').rstrip('/')
-          workflows={'production':'baseball_production.yml','mac':'baseball_mac_compute.yml','research':'baseball_research.yml'}
-          STALE_MINUTES={'production':155,'mac':180,'research':180}
+          workflows={'production':'baseball_production.yml','acquisition':'baseball-data-acquisition.yml','mac':'baseball_mac_compute.yml','research':'baseball_research.yml'}
+          STALE_MINUTES={'production':155,'acquisition':165,'mac':180,'research':180}
           QUEUED_STALE_MINUTES=20
           ACTIVE_STATES={'queued','in_progress','waiting','pending','requested'}
           QUEUED_STATES={'queued','waiting','pending','requested'}
