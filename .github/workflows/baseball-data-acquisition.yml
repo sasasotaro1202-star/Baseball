@@ -19,6 +19,14 @@ jobs:
     timeout-minutes: 150
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Hosted runner health gate
+        run: |
+          set -euo pipefail
+          uname -a
+          python3 --version
+          df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
+          curl --fail --silent --show-error --location --retry 4 --retry-delay 3 --retry-all-errors --max-time 20 https://api.github.com/rate_limit >/dev/null
+          echo '[HEALTH] GitHub HTTPS PASS'
       - name: Setup persistent Python acquisition environment
         run: |
           set -euo pipefail
