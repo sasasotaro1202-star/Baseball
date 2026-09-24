@@ -46,12 +46,12 @@ REQUIRED = {
         "https://api.open-meteo.com/v1/forecast",
         "matchday_snapshots.jsonl",
     ],
-    "research/matchday_intelligence.py": [
+    "matchday_intelligence.py": [
         "prediction_time",
         "available_at",
         "def is_pit_safe",
     ],
-    "research/drift_uncertainty_routing.py": [
+    "drift_uncertainty_routing.py": [
         "def route_experts",
         "def mmd_drift_score",
         "class ExpertCalibrationBank",
