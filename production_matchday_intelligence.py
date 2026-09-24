@@ -144,33 +144,45 @@ def fetch_spaia_game_ids(year: int, target_date: str):
     return result
 
 
-def fetch_official_starters():
+def fetch_official_starters(target_date: str):
+    """Parse only the NPB official starter block for the requested date.
+
+    NPB's public starter page can roll to the next day's announced starters
+    after the current slate is complete. The target-date heading is therefore
+    a hard safety gate; no heading match means UNKNOWN.
+    """
     r = get(f"{NPB}/announcement/starter/")
     doc = lxml_html.fromstring(r.content)
-    names = []
-    teams = []
-    for img in doc.xpath("//img[@alt]"):
-        alt = str(img.get("alt") or "").strip()
-        if norm_team(alt) in TEAM_NAMES:
-            teams.append((img, norm_team(alt)))
-    links = doc.xpath("//a")
-    ordered = []
-    for a in links:
-        txt = re.sub(r"\s+", " ", "".join(a.itertext())).strip()
-        href = str(a.get("href") or "")
-        if txt and ("/bis/players/" in href or "/player/" in href):
-            ordered.append((a,txt))
+    target_label = f"{int(target_date[5:7])}月{int(target_date[8:10])}日の予告先発投手"
+
+    heading = None
+    for node in doc.xpath("//h1|//h2|//h3|//h4|//strong"):
+        txt = re.sub(r"\s+", " ", "".join(node.itertext())).strip()
+        if target_label in txt:
+            heading = node
+            break
+    if heading is None:
+        return {}
+
     starters = {}
-    # Team-image order and player-link order are adjacent on the NPB page.
-    for img, team in teams:
-        parent = img.getparent()
-        if parent is None:
-            continue
-        for a in parent.xpath("following::a"):
-            txt = re.sub(r"\s+", " ", "".join(a.itertext())).strip()
-            href = str(a.get("href") or "")
+    current_team = None
+    for node in heading.xpath("following::*"):
+        tag = getattr(node, "tag", None)
+        if tag == "img":
+            alt = str(node.get("alt") or "").strip()
+            team = norm_team(alt)
+            if team in TEAM_NAMES:
+                current_team = team
+                continue
+        if tag == "a" and current_team:
+            href = str(node.get("href") or "")
+            txt = re.sub(r"\s+", " ", "".join(node.itertext())).strip()
             if txt and ("/bis/players/" in href or "/player/" in href):
-                starters[team] = txt
+                starters.setdefault(current_team, txt)
+                current_team = None
+        if tag in {"h1","h2","h3","h4"} and node is not heading:
+            txt = re.sub(r"\s+", " ", "".join(node.itertext())).strip()
+            if "予告先発投手" in txt:
                 break
     return starters
 
@@ -184,9 +196,13 @@ def fetch_roster_notice(target_date: str):
     return {"source":"NPB.jp roster","target_date":target_date,"available":bool(pos >= 0),"text":snippet[:5000]}
 
 
-def fetch_lineup(game_id: str, home: str, away: str):
+def fetch_lineup(game_id: str, target_date: str, home: str, away: str):
+    """Fetch a current lineup using the explicit game date and side metadata."""
+    if not game_id:
+        return {"home": [], "away": []}
     attempts = [
-        {"gameId":game_id,"matchDate":home},
+        {"gameId":game_id, "matchDate":target_date},
+        {"GameID":game_id, "MatchDate":target_date},
         {"gameId":game_id},
         {"GameID":game_id},
     ]
@@ -194,34 +210,61 @@ def fetch_lineup(game_id: str, home: str, away: str):
     for params in attempts:
         try:
             raw = get(f"{SPAIA}/starting_members_for_flash", params).json()
-            if raw not in (None,{},[]): break
+            if raw not in (None,{},[]):
+                break
         except Exception:
             raw = None
-    out = {"home":[],"away":[]}
+    out = {"home":[], "away":[]}
     if raw is None:
         return out
+
     def walk(x):
-        if isinstance(x,dict):
+        if isinstance(x, dict):
             yield x
-            for v in x.values(): yield from walk(v)
-        elif isinstance(x,list):
-            for v in x: yield from walk(v)
+            for v in x.values():
+                yield from walk(v)
+        elif isinstance(x, list):
+            for v in x:
+                yield from walk(v)
+
     keys_id=("PlayerCD","PlayerId","playerId","playerCD","BatterCD","player_id")
     keys_name=("PlayerName","playerName","BatterName","Name","name","選手名")
     keys_order=("BattingOrder","battingOrder","Order","order","打順")
+    keys_side=("side","Side","team","Team","teamName","TeamName","HomeAway","homeAway")
+
     for d in walk(raw):
         pid=next((d.get(k) for k in keys_id if d.get(k) not in (None,"","-")),None)
+        if pid is None:
+            continue
         name=next((d.get(k) for k in keys_name if d.get(k) not in (None,"","-")), "")
         order=next((d.get(k) for k in keys_order if d.get(k) not in (None,"","-")), None)
-        blob=" ".join(str(v) for v in d.values()).lower()
-        side="home" if str(home).lower() in blob else "away" if str(away).lower() in blob else None
-        if pid is None or side is None:
+        raw_side=next((d.get(k) for k in keys_side if d.get(k) not in (None,"","-")), "")
+        blob=" ".join(str(v) for v in d.values())
+        side=None
+        token=str(raw_side).lower()
+        if token in {"home","h","1","home_team","home-team","ホーム"}:
+            side="home"
+        elif token in {"away","a","2","away_team","away-team","visitor","ビジター"}:
+            side="away"
+        elif home in blob:
+            side="home"
+        elif away in blob:
+            side="away"
+        if side is None:
             continue
-        row={"player_id":str(pid),"player_name":str(name),"batting_order":float(order) if str(order).replace(".","",1).isdigit() else None}
+        try:
+            batting_order=float(order)
+        except Exception:
+            batting_order=None
+        row={"player_id":str(pid),"player_name":str(name),"batting_order":batting_order}
         if not any(x["player_id"]==row["player_id"] for x in out[side]):
             out[side].append(row)
+
     for side in out:
-        out[side]=sorted(out[side],key=lambda x:(999 if x["batting_order"] is None else x["batting_order"],x["player_id"]))[:12]
+        out[side]=sorted(
+            out[side],
+            key=lambda x:(999 if x["batting_order"] is None else x["batting_order"],x["player_id"])
+        )[:12]
     return out
 
 
@@ -315,7 +358,7 @@ def main() -> int:
         gid_error=""
 
     try:
-        starters=fetch_official_starters()
+        starters=fetch_official_starters(target_date)
         starter_error=""
     except Exception as exc:
         starters={}
@@ -350,6 +393,12 @@ def main() -> int:
         model_error=f"{type(exc).__name__}: {exc}"
 
     predictions=[]
+    games = [
+        g for g in games
+        if pd.Timestamp(
+            f'{g["date"]} {g["hour"]:02d}:{g["minute"]:02d}', tz="Asia/Tokyo"
+        ) > now
+    ]
     for g in games:
         g["game_id"]=gid_map.get((g["home"],g["away"]),"")
         local_dt=pd.Timestamp(f'{g["date"]} {g["hour"]:02d}:{g["minute"]:02d}',tz="Asia/Tokyo")
@@ -361,7 +410,7 @@ def main() -> int:
         g["starter_available_at"]=now.astimezone(timezone.utc).isoformat() if g["starter_state"]=="VERIFIED" else ""
         g["prediction_time_utc"]=now.astimezone(timezone.utc).isoformat()
         try:
-            g["lineup"]=fetch_lineup(g["game_id"],g["home"],g["away"]) if g["game_id"] else {"home":[],"away":[]}
+            g["lineup"]=fetch_lineup(g["game_id"],target_date,g["home"],g["away"]) if g["game_id"] else {"home":[],"away":[]}
         except Exception:
             g["lineup"]={"home":[],"away":[]}
         g["lineup_state"]="VERIFIED" if g["lineup"]["home"] and g["lineup"]["away"] else "UNKNOWN"
