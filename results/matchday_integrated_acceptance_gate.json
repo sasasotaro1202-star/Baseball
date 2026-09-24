@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "status": "DEFERRED",
+  "candidate_eligible": false,
+  "reason": "required gate artifact missing",
+  "missing": [
+    "results/routing_acceptance_gate.json"
+  ],
+  "production_auto_promotion": false
+}

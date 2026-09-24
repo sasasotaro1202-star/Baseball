@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "status": "DEFERRED",
+  "eligible": false,
+  "reason": "No context candidate cleared the later chronological validation segment",
+  "source_artifact": "results/matchday_effects.json",
+  "production_auto_promotion": false
+}

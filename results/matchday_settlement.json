@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "settled_rows": 0,
+  "settled_total": 0,
+  "source": "NPB.jp official schedule/result",
+  "same_day_buffer_hours": 5
+}

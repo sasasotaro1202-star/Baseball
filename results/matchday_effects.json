@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "artifact_type": "OOS_LEARNED_MATCHDAY_EFFECTS",
+  "status": "DEFERRED",
+  "candidate_eligible": false,
+  "effects": [],
+  "fusion_alpha": null,
+  "results": [
+    {
+      "checkpoint": "results/matchday_effect_replay.csv",
+      "status": "DEFERRED",
+      "reason": "checkpoint unreadable or empty: EmptyDataError"
+    }
+  ],
+  "production_auto_promotion": false,
+  "reason": "No context candidate cleared the later chronological validation segment"
+}
