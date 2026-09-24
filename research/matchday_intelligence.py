@@ -168,7 +168,22 @@ def observation_delta_events(
     elif kind == ContextKind.MARKET.value and previous is not None and previous.value != current.value:
         events.append(ContextEvent.MARKET_MOVED.value)
     elif kind == ContextKind.REST_TRAVEL.value:
-        events.append(ContextEvent.REST_ASYMMETRY.value)
+        current_value = current.value if isinstance(current.value, dict) else {}
+        if isinstance(current_value, dict):
+            h = current_value.get("home", {}) if isinstance(current_value.get("home"), dict) else {}
+            a = current_value.get("away", {}) if isinstance(current_value.get("away"), dict) else {}
+            try:
+                if abs(float(h.get("rest_days", 0.0)) - float(a.get("rest_days", 0.0))) > 1e-9:
+                    events.append(ContextEvent.REST_ASYMMETRY.value)
+            except Exception:
+                pass
+    elif kind == ContextKind.AVAILABILITY.value:
+        before = str(previous.value).upper() if previous is not None else ""
+        after = str(current.value).upper()
+        if after == ContextEvent.PLAYER_OUT.value and before != ContextEvent.PLAYER_OUT.value:
+            events.append(ContextEvent.PLAYER_OUT.value)
+        if after == ContextEvent.PLAYER_RETURNED.value and before != ContextEvent.PLAYER_RETURNED.value:
+            events.append(ContextEvent.PLAYER_RETURNED.value)
     elif kind == ContextKind.BULLPEN.value and previous is not None and previous.value != current.value:
         events.append(ContextEvent.BULLPEN_STATE_CHANGED.value)
 
