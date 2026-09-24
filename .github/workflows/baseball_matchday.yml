@@ -130,11 +130,21 @@ jobs:
           fi
           git commit -m 'Update NPB Matchday Intelligence snapshot'
           for attempt in 1 2 3 4 5; do
-            if git fetch origin main && git rebase origin/main && git push origin HEAD:main; then
-              echo "[MATCHDAY] state push succeeded on attempt ${attempt}"
-              exit 0
+            if ! git fetch origin main; then
+              echo "[MATCHDAY] git fetch failed on attempt ${attempt}"
+            elif git rebase origin/main; then
+              if git push origin HEAD:main; then
+                echo "[MATCHDAY] state push succeeded on attempt ${attempt}"
+                exit 0
+              fi
+              echo "[MATCHDAY] git push failed on attempt ${attempt}"
+            else
+              echo "[MATCHDAY] git rebase failed on attempt ${attempt}; attempting explicit rebase abort"
+              if ! git rebase --abort 2>/dev/null; then
+                echo "[MATCHDAY] git rebase --abort failed; refusing to mask repository state"
+                exit 1
+              fi
             fi
-            git rebase --abort 2>/dev/null || true
             sleep $((attempt * 5))
           done
           echo '[MATCHDAY] state push failed after 5 attempts'
