@@ -29,13 +29,13 @@ from lxml import html as lxml_html
 
 from baseball_backtest import BaseballBacktest
 from research.drift_uncertainty_routing import (
-    AdaptiveTemperatureCalibrator,
     ExpertCalibrationBank,
     RoutingConfig,
     feature_drift_score,
     mix_expert_probabilities,
     route_experts,
 )
+from research.conformal_uncertainty import uncertainty_summary
 
 ROOT = Path(__file__).resolve().parent
 RESULTS = ROOT / "results"
@@ -404,6 +404,18 @@ def main() -> int:
                     "incumbent_away":float(incumbent[2]),
                     "incumbent_model":"Ensemble(" + "+".join(x[2] for x in fitted) + ")",
                 })
+                if checkpoints.exists():
+                    try:
+                        ck_u=pd.read_csv(checkpoints).sort_values(["datetime","game_id"]).tail(160)
+                        if {"actual","pred_home","pred_draw","pred_away"}.issubset(ck_u.columns) and len(ck_u)>=45:
+                            hp=ck_u[["pred_home","pred_draw","pred_away"]].to_numpy(dtype=float)
+                            hy=ck_u["actual"].to_numpy(dtype=int)
+                            if np.all(np.isfinite(hp)) and np.all(np.isfinite(hy)):
+                                pred_payload["conformal_uncertainty"]=uncertainty_summary(
+                                    incumbent,hp,hy,alpha=0.10
+                                )
+                    except Exception:
+                        pass
 
                 if checkpoints.exists():
                     ck=pd.read_csv(checkpoints)
