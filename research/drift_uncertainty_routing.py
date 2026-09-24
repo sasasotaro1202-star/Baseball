@@ -39,6 +39,7 @@ class RoutingConfig:
     # less influence on the routing fallback.
     uncertainty_disagreement_mix: float = 0.75
     uncertainty_entropy_mix: float = 0.25
+    uncertainty_anchor_mix: float = 1.0
     drift_temperature: float = 0.30
     temperature_min: float = 0.65
     temperature_max: float = 1.90
@@ -248,13 +249,22 @@ def route_experts(
         config.uncertainty_uniform_mix * uncertainty_for_fallback,
         0.0, 0.80
     ))
-    weights = (1.0 - uniform_mix) * base + uniform_mix * (1.0 / k)
-
     if previous_weights is not None:
         prev = np.asarray(previous_weights, dtype=float).reshape(-1)
         if len(prev) != k or not np.all(np.isfinite(prev)) or np.any(prev < 0):
             raise ValueError("previous_weights is invalid")
         prev = prev / max(float(prev.sum()), _EPS)
+        # Under high epistemic uncertainty, shrink toward the previously
+        # validated routing state rather than an arbitrary uniform prior.
+        # This preserves the stable incumbent while still allowing new experts
+        # to contribute. At startup, uniform remains the neutral anchor.
+        anchor = float(np.clip(config.uncertainty_anchor_mix, 0.0, 1.0)) * prev
+        anchor += (1.0 - float(np.clip(config.uncertainty_anchor_mix, 0.0, 1.0))) * (1.0 / k)
+    else:
+        anchor = np.full(k, 1.0 / k)
+    weights = (1.0 - uniform_mix) * base + uniform_mix * anchor
+
+    if previous_weights is not None:
         inertia = np.clip(config.inertia - config.drift_inertia_relax * d, 0.0, 0.95)
         weights = inertia * prev + (1.0 - inertia) * weights
 
