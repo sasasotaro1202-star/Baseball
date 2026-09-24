@@ -54,7 +54,14 @@ def score_space(mu_h, mu_a, shared, max_run=18):
     return [(s, float(p/total)) for s,p in cells]
 
 def top4_from_space(space):
-    return sorted(space, key=lambda z: (-float(z[1]), 1 if z[0]=="その他" else 0, (999,999) if z[0]=="その他" else tuple(map(int,z[0].split("-",1))))[:4]
+    return sorted(
+        space,
+        key=lambda z: (
+            -float(z[1]),
+            1 if z[0] == "その他" else 0,
+            (999, 999) if z[0] == "その他" else tuple(map(int, z[0].split("-", 1))),
+        ),
+    )[:4]
 
 def low_high_probs_bivariate(mu_h, mu_a, shared):
     max_run = max(18, int(math.ceil(max(float(mu_h), float(mu_a)) * 4.0 + 8.0)))
@@ -117,11 +124,11 @@ def evaluate(path):
         base_top4.append(int(("その他" if target_other else actual) in base_top)); cand_top4.append(int(("その他" if target_other else actual) in cand_top))
         bl,bh=(sum(poisson_pmf(k,mh+ma) for k in range(7)),0.0); bh=1.0-bl
         cl,ch=low_high_probs_bivariate(mh,ma,shared)
-        qll,qbr=binary_metrics(bh,target_other if False else (float(r.home_score)+float(r.away_score)>=7))
-        rll,rbr=binary_metrics(ch,float(r.home_score)+float(r.away_score)>=7)
-        sll,sbr=binary_metrics(1.0-cl,float(r.home_score)+float(r.away_score)>=7)
-        tll,tbr=binary_metrics(1.0-bh,float(r.home_score)+float(r.away_score)>=7)
-        base_lowhigh_ll.append(tll); cand_lowhigh_ll.append(rll); base_lowhigh_br.append(tbr); cand_lowhigh_br.append(rbr)
+        actual_high = (float(r.home_score) + float(r.away_score)) >= 7
+        base_ll, base_br = binary_metrics(bh, actual_high)
+        cand_ll, cand_br = binary_metrics(ch, actual_high)
+        base_lowhigh_ll.append(base_ll); cand_lowhigh_ll.append(cand_ll)
+        base_lowhigh_br.append(base_br); cand_lowhigh_br.append(cand_br)
     base_ll=float(np.mean(base_score_ll)); cand_ll=float(np.mean(cand_score_ll))
     base_t4=float(np.mean(base_top4)); cand_t4=float(np.mean(cand_top4))
     base_hll=float(np.mean(base_lowhigh_ll)); cand_hll=float(np.mean(cand_lowhigh_ll))

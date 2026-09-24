@@ -92,6 +92,8 @@ jobs:
           python -m json.tool results/routing_acceptance_gate.json >/dev/null
           python -m research.calibration_oos
           python -m research.negative_binomial_score_oos
+          python -m research.bivariate_poisson_score_oos
+          python -m json.tool results/bivariate_poisson_score_oos.json >/dev/null
           python -m json.tool results/calibration_oos.json >/dev/null
           python -m pytest -q tests
           echo "All Baseball Python syntax/runtime smoke checks passed"
