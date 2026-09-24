@@ -161,6 +161,7 @@ def reforecast(
     observations: Iterable[Observation],
     previous_weights: Optional[np.ndarray] = None,
     drift_score: float = 0.0,
+    conformal_uncertainty: float = 0.0,
     calibrator: Optional[AdaptiveTemperatureCalibrator] = None,
     config: RoutingConfig = RoutingConfig(),
     effect_path: Path = EFFECTS,
@@ -185,6 +186,7 @@ def reforecast(
         history_logloss=np.asarray(history_logloss, dtype=float),
         drift_score=float(np.clip(drift_score, 0.0, 1.0)),
         previous_weights=previous_weights,
+        conformal_uncertainty=conformal_uncertainty,
         config=config,
     )
     # Context adjustment is an overlay, not a replacement of the expert ensemble.
