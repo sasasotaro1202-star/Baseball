@@ -80,6 +80,7 @@ def main() -> int:
         print(json.dumps({"status":"DEFERRED","rows":0,"reason":"no settled forward predictions"}, ensure_ascii=False))
         return 0
 
+    snapshots = _load_snapshot_map()
     # Use one canonical final-pregame snapshot per game for causal/effect
     # learning; repeated interim snapshots remain available to change-ledger research.
     canonical_snapshot = {}
