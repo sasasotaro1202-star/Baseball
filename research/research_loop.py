@@ -17,6 +17,8 @@ OBJECTIVES=[
  ('bullpen','ブルペン疲労・救援力',['HighAccuracy','MeanAbsoluteScoreError']),
  ('batting','打線・対左右・直近フォーム',['Accuracy','MeanAbsoluteScoreError']),
  ('environment','球場・天候・日程環境',['MeanAbsoluteScoreError','LowHighAccuracy']),
+ ('matchday','Matchday Intelligence（先発・打線・欠場・休養・天候・市場）',['LogLoss','Brier','ECE']),
+ ('routing','Drift/Uncertainty-aware expert routing + 再校正',['LogLoss','Brier','ECE']),
 ]
 PROMOTION_GATE={
  'require_oos':True,
@@ -29,6 +31,8 @@ PROMOTION_GATE={
  'require_calibration_check':True,
  'require_no_future_target_data':True,
  'require_reproducible_candidate':True,
+ 'require_matchday_pit_snapshots':True,
+ 'require_routing_two_late_oos_windows':True,
  'rollback_on_post_promotion_regression':True,
 }
 
