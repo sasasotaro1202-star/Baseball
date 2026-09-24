@@ -47,6 +47,12 @@ jobs:
           done
           exit 1
 
+      - name: Validate source policy
+        run: |
+          set -euo pipefail
+          . .venv/bin/activate
+          python source_quality_gate.py
+
       - name: Compile matchday stack
         run: |
           set -euo pipefail
