@@ -72,6 +72,16 @@ jobs:
           def runs(filename): return request('GET',f'/repos/{repo}/actions/workflows/{filename}/runs?per_page=100').get('workflow_runs',[])
           def active(row): return bool(row) and row.get('status') in ACTIVE_STATES
           def success(row): return bool(row) and row.get('conclusion')=='success'
+          def npb_complete():
+              try:
+                  payload=request('GET',f'/repos/{repo}/contents/data/checkpoints/npb_collection_status.json?ref=main')
+                  import base64
+                  raw=base64.b64decode(payload.get('content','')).decode('utf-8')
+                  state=json.loads(raw)
+                  return bool(state.get('complete',False)), int(state.get('aggregate_games') or 0)
+              except Exception as exc:
+                  print(f'[WATCHDOG] NPB readiness lookup deferred: {exc}')
+                  return False, 0
           def ts(row):
               value=(row or {}).get('created_at') or (row or {}).get('updated_at')
               return datetime.fromisoformat(value.replace('Z','+00:00')) if value else datetime.min.replace(tzinfo=timezone.utc)
@@ -96,6 +106,8 @@ jobs:
               elif any(active_runs.values()): action='active-no-dispatch'
               else:
                   prod=latest['production']; mac=latest['mac']; research=latest['research']; acquisition=latest['acquisition']
+                  npb_ready, npb_games = npb_complete()
+                  print(f'[WATCHDOG] NPB readiness complete={npb_ready} aggregate_games={npb_games}')
                   def dispatch(label,workflow):
                       global action
                       try:
@@ -103,13 +115,15 @@ jobs:
                           request('POST',f'/repos/{repo}/actions/workflows/{workflow}/dispatches',{'ref':'main'}); action=f'dispatch-{label}'
                       except Exception as exc:
                           errors.append(f'dispatch {workflow}: {exc}'); print(f'[WATCHDOG] dispatch failed for {workflow}: {exc}')
-                  if not success(prod) and not recently_created(data.get('production',[])):
+                  if (not npb_ready) and not recently_created(data.get('acquisition',[])):
+                      dispatch('npb-acquisition',workflows['acquisition'])
+                  elif npb_ready and not success(prod) and not recently_created(data.get('production',[])):
                       dispatch('production-recovery',workflows['production'])
-                  elif (not success(mac) or ts(mac)<ts(prod)) and not recently_created(data.get('mac',[])):
+                  elif npb_ready and (not success(mac) or ts(mac)<ts(prod)) and not recently_created(data.get('mac',[])):
                       dispatch('mac-oos',workflows['mac'])
-                  elif (not success(research) or ts(research)<ts(mac)) and not recently_created(data.get('research',[])):
+                  elif npb_ready and (not success(research) or ts(research)<ts(mac)) and not recently_created(data.get('research',[])):
                       dispatch('autonomous-research',workflows['research'])
-                  elif success(research) and ts(research)>ts(prod) and not recently_created(data.get('production',[])):
+                  elif npb_ready and success(research) and ts(research)>ts(prod) and not recently_created(data.get('production',[])):
                       dispatch('next-production',workflows['production'])
           except Exception as exc:
               errors.append(f'watchdog fatal: {exc}')
