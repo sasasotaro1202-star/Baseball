@@ -355,9 +355,9 @@ def add_weather(d,year):
 
     Historical reanalysis/observed weather is deliberately not used as a
     predictive feature. The historical-forecast archive contains operational
-    forecast values rather than post-event observations. We conservatively
-    bound availability to 8 hours before valid time so OOS can use the value
-    without assuming that a postgame observation was known pregame.
+    forecast values rather than post-event observations. For historical replay,
+    availability is conservatively bounded at the T0 game-start cutoff rather
+    than inventing an earlier dissemination timestamp.
     """
     if d.empty or near_deadline():
         return d
@@ -396,7 +396,7 @@ def add_weather(d,year):
             # not a claim that the exact original dissemination timestamp is
             # known for every model/version.
             w['weather_valid_time_utc']=w['datetime'].dt.tz_localize('Asia/Tokyo',ambiguous='NaT',nonexistent='NaT').dt.tz_convert('UTC').astype(str)
-            w['weather_available_at']=(pd.to_datetime(w['weather_valid_time_utc'],errors='coerce',utc=True)-pd.Timedelta(hours=8)).astype(str)
+            w['weather_available_at']=w['weather_valid_time_utc']
             w['weather_state']='PROJECTED'
             w['weather_source']='Open-Meteo Historical Forecast'
             w['weather_pit_quality']='CONSERVATIVE_T0_BOUND'
