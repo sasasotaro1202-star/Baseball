@@ -202,6 +202,7 @@ for workflow_path in (
     ".github/workflows/baseball_mac_compute.yml",
     ".github/workflows/baseball_research.yml",
     ".github/workflows/baseball_recovery.yml",
+    ".github/workflows/baseball_matchday.yml",
 ):
     w = need(workflow_path, r"runs-on:\s+ubuntu-latest", "hosted Linux runner")
     if w and re.search(r"runs-on:\s*self-hosted", w):
