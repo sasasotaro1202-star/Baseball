@@ -195,6 +195,15 @@ if integrated_gate:
         if token not in integrated_gate:
             errors.append(f"missing {label} in research/matchday_integrated_acceptance_gate.py")
 
+nb_score = need("research/negative_binomial_score_oos.py", r"def\s+fit_alpha\b", "Negative Binomial score challenger")
+if nb_score:
+    for token, label in [
+        ("FIT_FRAC", "chronological score challenger split"),
+        ("production_auto_promotion", "score challenger no auto-promotion"),
+    ]:
+        if token not in nb_score:
+            errors.append(f"missing {label} in research/negative_binomial_score_oos.py")
+
 routing_gate = need("research/routing_acceptance_gate.py", r"MIN_LOGLOSS_IMPROVEMENT", "routing acceptance gate")
 if routing_gate:
     for token, label in [

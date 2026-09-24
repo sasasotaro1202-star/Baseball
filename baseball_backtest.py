@@ -79,6 +79,9 @@ ELO_START = 1500.0
 ELO_K = 20.0
 ELO_HOME = 25.0
 ELO_REGRESSION = 0.20
+# Candidate empirical-Bayes shrinkage; chronological OOS validation decides utility.
+WIN_SHRINK_K = float(os.getenv("BASEBALL_WIN_SHRINK_K", "100"))
+WIN_PRIOR = 0.50
 
 # NPB game-type strings seen in common NPB PBP exports.
 NPB_OFFICIAL_KEYWORDS = ("公式戦", "交流戦")
@@ -604,7 +607,14 @@ class BaseballBacktest:
         f["venue_pts"] = float(vp / vm) if vm else 1.0
         f["venue_gf"] = float(np.mean(gf[-10:])) if gf else 0.0
         f["venue_ga"] = float(np.mean(ga[-10:])) if ga else 0.0
+        venue_wins = float(sum(int(x == 0) for x in rr))
+        f["venue_win_rate_raw"] = venue_wins / max(float(vm), 1.0)
+        f["venue_win_rate_shrunk"] = (venue_wins + WIN_SHRINK_K * WIN_PRIOR) / max(float(vm) + WIN_SHRINK_K, 1.0)
         f["elo"] = self.elo(league, team)
+        n_all = float(s.total_matches)
+        wins_all = float(sum(int(x == 0) for x in list(s.results)))
+        f["win_rate_raw_all"] = wins_all / max(n_all, 1.0)
+        f["win_rate_shrunk_all"] = (wins_all + WIN_SHRINK_K * WIN_PRIOR) / max(n_all + WIN_SHRINK_K, 1.0)
         f["rest_days"] = float(max(0.0, (dt - s.last_dt).total_seconds() / 86400.0)) if s.last_dt is not None else 30.0
         f["matches"] = float(s.total_matches)
         # Schedule-density context uses only completed games strictly before the target.

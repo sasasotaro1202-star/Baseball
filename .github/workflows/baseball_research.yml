@@ -66,6 +66,8 @@ jobs:
           python -m json.tool results/routing_acceptance_gate.json >/dev/null
           python -m research.calibration_oos
           python -m json.tool results/calibration_oos.json >/dev/null
+          python -m research.negative_binomial_score_oos
+          python -m json.tool results/negative_binomial_score_oos.json >/dev/null
           python backtest_audit_v2.py
       - name: Run autonomous research controller with bounded retries
         run: |
