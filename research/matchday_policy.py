@@ -103,8 +103,17 @@ def apply_matchday_policy(
 
     coefficients = payload.get("effects") or {}
     fusion_alpha = float(np.clip(payload.get("fusion_alpha", 1.0), 0.0, 1.0))
-    if not isinstance(coefficients, dict):
+    if not isinstance(coefficients, (dict, list)):
         return PolicyDecision(base, {}, "DEFERRED", False, "policy effects are invalid")
+
+    effect_rows = []
+    if isinstance(coefficients, dict):
+        for key, cfg in coefficients.items():
+            item = dict(cfg or {})
+            item["key"] = str(key)
+            effect_rows.append(item)
+    else:
+        effect_rows = [dict(x) for x in coefficients if isinstance(x, Mapping)]
 
     if len(base) == 2:
         home = float(base[0])
@@ -112,17 +121,18 @@ def apply_matchday_policy(
         baseline_logit = _logit_binary(home)
         total_shift = 0.0
         applied: Dict[str, float] = {}
-        for key, cfg in coefficients.items():
+        for cfg in effect_rows:
+            key = str(cfg.get("key", ""))
             obs = context.get(key) or {}
             if not _state_ok(obs):
                 continue
-            coef = float((cfg or {}).get("coef", 0.0))
-            cap = abs(float((cfg or {}).get("cap", 0.0)))
+            coef = float(cfg.get("coef", 0.0))
+            cap = abs(float(cfg.get("cap", 0.0)))
             confidence = float(np.clip(obs.get("confidence", 1.0), 0.0, 1.0))
             shift = float(np.clip(coef * confidence, -cap, cap))
             if abs(shift) > 0:
                 total_shift += shift
-                applied[key] = shift
+                applied[key] = applied.get(key, 0.0) + shift
         total_shift = float(np.clip(total_shift, -0.65, 0.65))
         ph = _sigmoid(baseline_logit + total_shift)
         out = np.array([ph, 1.0 - ph], dtype=float)
@@ -133,23 +143,33 @@ def apply_matchday_policy(
     # then softmax. There is no hard directional override.
     logits = np.log(np.clip(base, EPS, 1.0))
     applied: Dict[str, float] = {}
-    for key, cfg in coefficients.items():
+    for cfg in effect_rows:
+        key = str(cfg.get("key", ""))
         obs = context.get(key) or {}
         if not _state_ok(obs):
             continue
         confidence = float(np.clip(obs.get("confidence", 1.0), 0.0, 1.0))
-        cap = abs(float((cfg or {}).get("cap", 0.0)))
-        target = str((cfg or {}).get("target", "home")).lower()
-        coef = float((cfg or {}).get("coef", 0.0))
+        cap = abs(float(cfg.get("cap", 0.0)))
+        cls = cfg.get("class_index")
+        target = str(cfg.get("target", "home")).lower()
+        coef = float(cfg.get("coef", 0.0))
         shift = float(np.clip(coef * confidence, -cap, cap))
-        if target == "away":
-            logits[2] += shift
-        elif target == "draw":
+        if cls is not None:
+            try:
+                idx = int(cls)
+            except Exception:
+                idx = -1
+            if not (0 <= idx < len(logits)):
+                continue
+            logits[idx] += shift
+        elif target == "away" and len(logits) >= 2:
+            logits[-1] += shift
+        elif target == "draw" and len(logits) >= 3:
             logits[1] += shift
         else:
             logits[0] += shift
         if abs(shift) > 0:
-            applied[key] = shift
+            applied[key] = applied.get(key, 0.0) + shift
     logits -= np.max(logits)
     out = np.exp(np.clip(logits, -30.0, 30.0))
     out /= max(float(out.sum()), EPS)
