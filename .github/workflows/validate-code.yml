@@ -53,6 +53,8 @@ jobs:
           python -m py_compile research/routing_oos_replay.py
           python -m py_compile research/routing_acceptance_gate.py
           python -m py_compile production_matchday_intelligence.py
+          python -m py_compile research/conformal_uncertainty.py
+          python research/conformal_uncertainty.py
           python -m py_compile research/matchday_intelligence.py
           python -m py_compile research/matchday_effect_fit.py
           python -m py_compile research/matchday_reforecast.py
