@@ -797,15 +797,21 @@ def main() -> int:
             g["lineup"]={"home":[],"away":[],"_state":"UNKNOWN"}
         g["lineup_state"]=str(g["lineup"].get("_state","UNKNOWN")).upper()
         g["lineup"].pop("_state",None) if isinstance(g.get("lineup"),dict) else None
-        g["lineup_source"]="SPAIA starting_members_for_flash" if g["lineup_state"]=="VERIFIED" else ""
-        g["lineup_available_at"]=now.astimezone(timezone.utc).isoformat() if g["lineup_state"]=="VERIFIED" else ""
+        # A projected lineup is still legitimate PIT information when it is
+        # observed before prediction time. Keep its timestamp/state for
+        # Matchday Intelligence, but do not force it into the core model.
+        g["lineup_source"]="SPAIA starting_members_for_flash" if g["lineup_state"] in {"VERIFIED","PROJECTED"} else ""
+        g["lineup_available_at"]=(
+            now.astimezone(timezone.utc).isoformat()
+            if g["lineup_state"] in {"VERIFIED","PROJECTED"} else ""
+        )
         try:
             w=fetch_weather(g)
         except Exception as exc:
             w={"state":"UNKNOWN","source":"Open-Meteo","reason":f"{type(exc).__name__}: {exc}"}
         g["weather"]=w
         if w.get("state")=="VERIFIED":
-            g["weather_available_at"]=w.get("available_at","")
+            g["weather_available_at"]=w.get("available_at","") or now.astimezone(timezone.utc).isoformat()
             g["weather_state"]="PROJECTED"
         else:
             g["weather_available_at"]=""; g["weather_state"]="UNKNOWN"
