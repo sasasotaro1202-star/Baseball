@@ -196,6 +196,22 @@ def self_test() -> Dict[str, Any]:
     assert "starter" in d.applied_effects
     assert "lineup" not in d.applied_effects
 
+    multi = apply_matchday_policy(
+        base,
+        {"ctx_STARTER_CHANGED": {"state": "VERIFIED", "confidence": 1.0}},
+        policy={
+            "status": "PASS",
+            "eligible": True,
+            "fusion_alpha": 1.0,
+            "effects": [
+                {"key": "ctx_STARTER_CHANGED", "coef": 0.05, "cap": 0.10, "class_index": 0},
+                {"key": "ctx_STARTER_CHANGED", "coef": -0.03, "cap": 0.10, "class_index": 2},
+            ],
+        },
+    )
+    assert "ctx_STARTER_CHANGED" in multi.applied_effects
+    assert np.isclose(multi.probabilities.sum(), 1.0)
+
     identity = apply_matchday_policy(base, {"starter": {"state": "UNKNOWN"}}, policy={
         "status": "PASS", "eligible": True, "effects": {"starter": {"coef": 0.30, "cap": 0.30}}
     })
