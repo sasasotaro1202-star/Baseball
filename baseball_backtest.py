@@ -1155,6 +1155,18 @@ class BaseballBacktest:
             except Exception as e:
                 print(f"[{league}] block {bstart}: model failure {e}")
                 continue
+            # Preserve each expert's raw OOS probabilities for research-only
+            # dynamic routing. These probabilities are produced before any
+            # realized outcome from the current block is consumed.
+            expert_prob_snapshots = {}
+            for model, _w, model_name in fitted:
+                key = "".join(ch.lower() if ch.isalnum() else "_" for ch in str(model_name)).strip("_")
+                ep = self.align_proba(
+                    model.predict_proba(X.iloc[bstart:bend]),
+                    model.classes_,
+                    league,
+                )
+                expert_prob_snapshots[key] = ep
             block_rows = []
             for j, idx in enumerate(range(bstart, bend)):
                 r = meta.iloc[idx]
@@ -1180,7 +1192,7 @@ class BaseballBacktest:
                 while len(scores) < 4:
                     scores.append(("その他", 0.0))
                 low, high = low_high_probs(lam_h, lam_a)
-                block_rows.append({
+                row_payload = {
                     "league": league, "game_id": r["game_id"], "datetime": r["datetime"],
                     "home": r["home"], "away": r["away"], "home_starter": r.get("home_starter", ""), "away_starter": r.get("away_starter", ""),
                     "pred_home": float(prob[0]), "pred_draw": float(prob[1]) if league == "NPB" else np.nan,
@@ -1193,7 +1205,15 @@ class BaseballBacktest:
                     "score3": scores[2][0], "score3_prob": scores[2][1], "score4": scores[3][0], "score4_prob": scores[3][1],
                     "low": low, "high": high,
                     "actual_home_score": float(r["home_score"]), "actual_away_score": float(r["away_score"]),
-                })
+                }
+                for expert_key, expert_probs in expert_prob_snapshots.items():
+                    row_payload[f"expert_{expert_key}_home"] = float(expert_probs[j, 0])
+                    if league == "NPB":
+                        row_payload[f"expert_{expert_key}_draw"] = float(expert_probs[j, 1])
+                        row_payload[f"expert_{expert_key}_away"] = float(expert_probs[j, 2])
+                    else:
+                        row_payload[f"expert_{expert_key}_away"] = float(expert_probs[j, 1])
+                block_rows.append(row_payload)
             if block_rows:
                 all_rows.extend(block_rows)
                 completed_ids.update(str(x["game_id"]) for x in block_rows)
