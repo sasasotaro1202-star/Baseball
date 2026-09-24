@@ -396,7 +396,12 @@ def main() -> int:
                                 bank=ExpertCalibrationBank(len(current_raw),config=RoutingConfig())
                                 bank.update(raw,ys)
                                 cal_current=bank.predict(np.asarray(current_raw))
-                                loss_hist=np.asarray(hist_losses[-120:],dtype=float)
+                                cal_hist=np.asarray([bank.predict(row) for row in raw],dtype=float)
+                                loss_hist=np.empty((len(cal_hist),len(current_raw)),dtype=float)
+                                for hi, probs_row in enumerate(cal_hist):
+                                    loss_hist[hi,:] = -np.log(
+                                        np.clip(probs_row[:, ys[hi]],1e-12,1.0)
+                                    )
                                 # Incumbent ensemble weights are the stable anchor for
                                 # high-uncertainty routing; only matched experts are used.
                                 fitted_weight_map={name:float(w) for _m,w,name in fitted}
@@ -460,11 +465,26 @@ def main() -> int:
             "roster_notice":roster,
             "games":predictions,
         }
-        stable={k:v for k,v in payload.items() if k!="prediction_time_utc"}
-        payload["state_hash"]=stable_hash(stable)
-        temp=RESULTS/"matchday_intelligence_current.json"
-        temp.write_text(json.dumps(payload,ensure_ascii=False,indent=2,default=str)+"\n",encoding="utf-8")
-        print(json.dumps({"status":"PASS","games":len(predictions),"state_hash":payload["state_hash"]},ensure_ascii=False))
+        # Stable state hash intentionally excludes retrieval timestamps so
+        # identical context/model state does not create a Git commit every run.
+        stable_payload=json.loads(json.dumps(payload,ensure_ascii=False,default=str))
+        stable_payload.pop("prediction_time_utc",None)
+        for gg in stable_payload.get("games",[]):
+            for key in ("prediction_time_utc","starter_available_at","lineup_available_at"):
+                gg.pop(key,None)
+            w=gg.get("weather")
+            if isinstance(w,dict):
+                w.pop("retrieved_at",None);w.pop("available_at",None)
+        stable_hash_value=stable_hash(stable_payload)
+        payload["state_hash"]=stable_hash_value
+        target=RESULTS/"matchday_intelligence_current.json"
+        old_hash=None
+        if target.exists():
+            try: old_hash=json.loads(target.read_text(encoding="utf-8")).get("state_hash")
+            except Exception: old_hash=None
+        if old_hash != stable_hash_value:
+            target.write_text(json.dumps(payload,ensure_ascii=False,indent=2,default=str)+"\n",encoding="utf-8")
+        print(json.dumps({"status":"PASS","games":len(predictions),"state_hash":stable_hash_value,"material_change":old_hash!=stable_hash_value},ensure_ascii=False))
         return 0
     except Exception as exc:
         payload={
