@@ -116,11 +116,19 @@ def main() -> int:
                             if diffs and max(diffs)>1e-6:
                                 events.append("WEATHER_CHANGED")
                     elif kind=="AVAILABILITY":
-                        pv=str(prev.value).upper() if prev is not None else ""
-                        cv=str(cur.value).upper()
-                        if cv=="PLAYER_OUT" and pv!="PLAYER_OUT":
+                        cur_values={
+                            str(o.value).upper()
+                            for _, o in cur_candidates
+                            if o is not None
+                        }
+                        prev_values={
+                            str(o.value).upper()
+                            for _, o in prev_candidates
+                            if o is not None
+                        }
+                        if "PLAYER_OUT" in (cur_values - prev_values):
                             events.append("PLAYER_OUT")
-                        elif cv=="PLAYER_RETURNED" and pv!="PLAYER_RETURNED":
+                        if "PLAYER_RETURNED" in (cur_values - prev_values):
                             events.append("PLAYER_RETURNED")
                     elif kind=="REST_TRAVEL":
                         if prev is not None and prev.value != cur.value:
