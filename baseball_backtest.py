@@ -699,10 +699,14 @@ class BaseballBacktest:
         # target lineup may only have become public shortly before first pitch.
         # Require explicit prediction/availability timestamps; otherwise the
         # historical row is intentionally treated as lineup-unknown.
-        lineup_safe = (
-            self._context_pit_safe(row, dt, "lineup_available_at", "lineup_state")
-            and self._context_pit_safe(row, dt, "lineup_available_at", "lineup_state")
-        )
+        def lineup_side_safe(side: str) -> bool:
+            side_avail = f"{side}_lineup_available_at"
+            side_state = f"{side}_lineup_state"
+            if side_avail in row.index or side_state in row.index:
+                return self._context_pit_safe(row, dt, side_avail, side_state)
+            return self._context_pit_safe(row, dt, "lineup_available_at", "lineup_state")
+
+        lineup_safe = lineup_side_safe("home") and lineup_side_safe("away")
         if lineup_safe:
             hpf=self._lineup_features(row,"home",league)
             apf=self._lineup_features(row,"away",league)
