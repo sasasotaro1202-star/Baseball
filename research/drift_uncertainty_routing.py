@@ -469,6 +469,54 @@ class AdaptiveTemperatureCalibrator:
         return self.temperature
 
 
+class ExpertCalibrationBank:
+    """Maintain one PIT-safe adaptive temperature per expert.
+
+    Raw expert probabilities are supplied to update() only after their current
+    prediction has been scored. During prediction, each expert is calibrated
+    with its own temperature before routing/fusion.
+    """
+
+    def __init__(self, n_experts: int, config: RoutingConfig = RoutingConfig()):
+        if int(n_experts) < 1:
+            raise ValueError("n_experts must be positive")
+        self.calibrators = [
+            AdaptiveTemperatureCalibrator(config=config) for _ in range(int(n_experts))
+        ]
+
+    def temperatures(self) -> np.ndarray:
+        return np.asarray([c.temperature for c in self.calibrators], dtype=float)
+
+    def predict(self, expert_probs: np.ndarray) -> np.ndarray:
+        p = _as_prob_matrix(expert_probs)
+        if len(self.calibrators) != p.shape[0]:
+            raise ValueError("expert calibrator count mismatch")
+        out = np.vstack([
+            c.predict(p[i]) for i, c in enumerate(self.calibrators)
+        ])
+        return np.asarray(out, dtype=float)
+
+    def update(
+        self,
+        past_raw_expert_probs: np.ndarray,
+        past_outcomes: np.ndarray,
+    ) -> None:
+        p = np.asarray(past_raw_expert_probs, dtype=float)
+        y = np.asarray(past_outcomes, dtype=int).reshape(-1)
+        if p.ndim != 3 or p.shape[0] != len(y) or p.shape[1] != len(self.calibrators):
+            raise ValueError("expert calibration history shape mismatch")
+        for j, calibrator in enumerate(self.calibrators):
+            calibrator.update(p[:, j, :], y)
+
+    @property
+    def accepted_updates(self) -> int:
+        return int(sum(c.accepted_updates for c in self.calibrators))
+
+    @property
+    def rejected_updates(self) -> int:
+        return int(sum(c.rejected_updates for c in self.calibrators))
+
+
 def route_and_recalibrate(
     expert_probs: np.ndarray,
     history_logloss: np.ndarray,
@@ -532,6 +580,12 @@ def self_test() -> dict:
     assert np.isfinite(after)
     assert abs(after - before) <= 0.15 + 1e-9
     assert c.accepted_updates + c.rejected_updates <= 1
+
+    bank = ExpertCalibrationBank(2)
+    expert_hist = np.stack([overconf, overconf], axis=1)
+    bank.update(expert_hist, y)
+    assert len(bank.temperatures()) == 2
+    assert np.all(np.isfinite(bank.predict(np.array([[0.8,0.2],[0.2,0.8]]))))
 
     ref = rng.normal(size=(40, 4))
     same = ref[-12:].copy()
