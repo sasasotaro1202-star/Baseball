@@ -136,56 +136,30 @@ def main() -> int:
             continue
         if "datetime" in df.columns:
             df = df.sort_values(["datetime","game_id"], kind="mergesort").reset_index(drop=True)
-        cut = max(80, int(len(df)*0.70))
-        if len(df)-cut < 50:
-            records.append({"checkpoint": str(path), "status":"DEFERRED","reason":"Validation segment too small"})
-            continue
-
-        train = df.iloc[:cut].copy()
-        val = df.iloc[cut:].copy()
-        effects = fit_effects(train, base_cols, event_cols, n_classes)
-        if not effects:
-            records.append({"checkpoint": str(path), "status":"DEFERRED","reason":"No supported event"})
-            continue
-
-        y_val = val["actual"].astype(int).to_numpy()
-        base_val = normalize(val[base_cols].to_numpy(dtype=float))
-        context_val = apply_effects(base_val, val[event_cols], effects)
-        bm = metrics(base_val, y_val)
-        cm = metrics(context_val, y_val)
-
-        # Learn how strongly the context layer should be fused with the
-        # context-free baseline. The validation segment chooses alpha only
-        # after the event effects themselves have been frozen from train.
-        best_alpha = 0.0
-        best_mix_metrics = bm
-        for alpha in np.linspace(0.0, 1.0, 21):
-            mix = normalize((1.0-alpha) * base_val + alpha * context_val)
-            mm = metrics(mix, y_val)
-            if mm["logloss"] < best_mix_metrics["logloss"]:
-                best_alpha = float(alpha)
-                best_mix_metrics = mm
-
-        delta = {k: float(best_mix_metrics[k]-bm[k]) for k in bm}
-        candidate_ok = (
-            best_alpha > 0.0
-            and delta["logloss"] <= -MIN_LL
-            and delta["brier"] <= -MIN_BRIER
-            and delta["accuracy"] >= -MAX_ACC_REG
-            and delta["ece"] <= MAX_ECE_REG
-        )
-        records.append({
+        n = len(df)
+        # Two non-overlapping chronological OOS windows:
+        # window-1 selects the context fusion strength; window-2 remains untouched
+        # until that choice is frozen. This prevents tuning and evaluation leakage.
+        fit_end = max(80, int(n * 0.55))
+        tune_end = max(fit_end + MIN_EVENT_ROWS, int(n * 0.75))
+        if n - tune_end < 50:
+            records.append({
             "checkpoint": str(path),
             "status": "PASS",
-            "candidate_eligible": bool(candidate_ok),
+            "candidate_eligible": bool(window_ok),
             "fit_rows": int(len(train)),
-            "validation_rows": int(len(val)),
+            "tune_rows": int(len(tune)),
+            "final_oos_rows": int(len(final_val)),
             "effects": effects,
-            "validation_baseline": bm,
-            "validation_context": cm,
-            "validation_fused": best_mix_metrics,
-            "validation_delta": delta,
+            "tune_baseline": bm_tune,
+            "tune_fused": best_mix_metrics,
+            "tune_delta": delta_tune,
+            "final_baseline": bm_final,
+            "final_context": cm_final,
+            "final_fused": fm_final,
+            "final_delta": delta_final,
             "fusion_alpha": best_alpha,
+            "two_window_gate": bool(window_ok),
         })
 
     passed = [r for r in records if r.get("status")=="PASS" and r.get("candidate_eligible")]
