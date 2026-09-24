@@ -476,6 +476,47 @@ def rest_travel(historical, game):
     return result
 
 
+def prior_snapshot_events(game_id: str, prediction_time: str) -> list[dict]:
+    """Derive PIT-safe change events from the immediately preceding snapshot."""
+    path = RESULTS / "matchday_snapshots.jsonl"
+    if not path.exists() or not game_id:
+        return []
+    current_pt = pd.to_datetime(prediction_time, errors="coerce", utc=True)
+    if pd.isna(current_pt):
+        return []
+    previous_env = None
+    previous_pt = None
+    try:
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            try:
+                env = json.loads(line)
+                if str(env.get("game_id")) != str(game_id):
+                    continue
+                pt = pd.to_datetime(env.get("prediction_time_utc"), errors="coerce", utc=True)
+                if pd.isna(pt) or pt >= current_pt:
+                    continue
+                if previous_pt is None or pt > previous_pt:
+                    previous_pt, previous_env = pt, env
+            except Exception:
+                continue
+    except Exception:
+        return []
+    if previous_env is None:
+        return []
+
+    prev_obs = []
+    cur_obs = []
+    try:
+        prev_obs = [Observation(**x) for x in previous_env.get("observations", [])]
+    except Exception:
+        prev_obs = []
+    # The current observation list is supplied by the caller via the global
+    # game snapshot builder, so this helper returns only the previous envelope.
+    return prev_obs
+
+
 def build_matchday_observations(game: dict, prediction_time: str) -> list[dict]:
     """Convert current context into a persistent PIT observation ledger."""
     retrieved = prediction_time
@@ -555,6 +596,7 @@ def build_matchday_observations(game: dict, prediction_time: str) -> list[dict]:
 
     w = game.get("weather") or {}
     if w.get("state") not in (None, "", "UNKNOWN"):
+        weather_available = game.get("weather_available_at") or w.get("available_at")
         add(
             ContextKind.WEATHER.value,
             game.get("weather_state", w.get("state", "UNKNOWN")),
@@ -566,8 +608,17 @@ def build_matchday_observations(game: dict, prediction_time: str) -> list[dict]:
                 "wind_kmh": w.get("wind_kmh"),
                 "wind_direction_deg": w.get("wind_direction_deg"),
             },
-            game.get("weather_available_at") or w.get("available_at"),
+            weather_available,
         )
+        if weather_available:
+            add(
+                ContextKind.WEATHER.value,
+                game.get("weather_state", w.get("state", "UNKNOWN")),
+                w.get("source", "Open-Meteo"),
+                "WEATHER_PRESENT",
+                weather_available,
+                confidence=0.8 if game.get("weather_state") == "PROJECTED" else 1.0,
+            )
 
     for ev in (game.get("roster_events") or []):
         event_name = "PLAYER_OUT" if ev.get("status") == "REMOVED" else "PLAYER_RETURNED"
@@ -586,6 +637,14 @@ def build_matchday_observations(game: dict, prediction_time: str) -> list[dict]:
             "VERIFIED",
             "derived from completed historical schedule",
             rest,
+            prediction_time,
+            confidence=0.8,
+        )
+        add(
+            ContextKind.REST_TRAVEL.value,
+            "VERIFIED",
+            "derived from completed historical schedule",
+            "REST_TRAVEL_PRESENT",
             prediction_time,
             confidence=0.8,
         )
@@ -887,12 +946,48 @@ def main() -> int:
                             matchday_result = None
                             effect_artifact = RESULTS / "matchday_effects.json"
                             try:
-                                observations = [
-                                    Observation(**x)
-                                    for x in build_matchday_observations(
-                                        g, g["prediction_time_utc"]
-                                    )
-                                ]
+                                current_obs_dicts = build_matchday_observations(
+                                    g, g["prediction_time_utc"]
+                                )
+                                observations = [Observation(**x) for x in current_obs_dicts]
+
+                                previous_obs = prior_snapshot_events(
+                                    g["game_id"],
+                                    g["prediction_time_utc"],
+                                )
+                                if previous_obs:
+                                    current_by_kind = {}
+                                    for obs in observations:
+                                        current_by_kind.setdefault(str(obs.kind), []).append(obs)
+                                    previous_by_kind = {}
+                                    for obs in previous_obs:
+                                        previous_by_kind.setdefault(str(obs.kind), []).append(obs)
+                                    for kind, current_list in current_by_kind.items():
+                                        prev_list = previous_by_kind.get(kind, [])
+                                        if not prev_list:
+                                            continue
+                                        prev_obs = prev_list[-1]
+                                        for cur_obs in current_list:
+                                            try:
+                                                events = observation_delta_events(prev_obs, cur_obs)
+                                            except Exception:
+                                                events = []
+                                            for event_name in events:
+                                                event_obs = Observation(
+                                                    game_id=g["game_id"],
+                                                    snapshot_id=cur_obs.snapshot_id + ":event:" + event_name,
+                                                    prediction_time=g["prediction_time_utc"],
+                                                    available_at=cur_obs.available_at,
+                                                    source_time=cur_obs.source_time,
+                                                    retrieved_at=cur_obs.retrieved_at,
+                                                    kind=cur_obs.kind,
+                                                    state=cur_obs.state,
+                                                    source="Matchday change ledger",
+                                                    value=event_name,
+                                                    freshness_seconds=cur_obs.freshness_seconds,
+                                                    confidence=cur_obs.confidence,
+                                                )
+                                                observations.append(event_obs)
                                 if effect_artifact.exists():
                                     cal_temp = 1.0
                                     gate_file = RESULTS / "matchday_integrated_acceptance_gate.json"
