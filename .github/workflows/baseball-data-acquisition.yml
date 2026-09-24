@@ -80,6 +80,7 @@ jobs:
           check_url 'NPB' 'https://npb.jp/'
           check_url 'SPAIA' 'https://spaia.jp/baseball/npb/api/weekly_schedule'
       - name: NPB full-scope resumable acquisition
+        id: npb_acquire
         env:
           NPB_START_YEAR: "2017"
           NPB_END_YEAR: "2026"
@@ -92,7 +93,7 @@ jobs:
           BASEBALL_TIME_BUDGET_SEC: "6000"
         run: python npb_multi_source.py
       - name: Persist resumable NPB checkpoint after acquisition failure
-        if: failure()
+        if: steps.npb_acquire.outcome == 'failure'
         run: |
           set -euo pipefail
           status_file="data/checkpoints/npb_collection_status.json"
