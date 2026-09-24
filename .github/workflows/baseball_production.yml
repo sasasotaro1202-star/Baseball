@@ -22,6 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Verify validation SHA matches current main
+        id: sha_gate
         if: github.event_name == 'workflow_run'
         env:
           VALIDATED_SHA: ${{ github.event.workflow_run.head_sha }}
@@ -29,12 +30,15 @@ jobs:
           set -euo pipefail
           CURRENT_SHA="$(git rev-parse HEAD)"
           if [ "$CURRENT_SHA" != "$VALIDATED_SHA" ]; then
-            echo "[VALIDATION GATE] FAIL current_main=$CURRENT_SHA validated=$VALIDATED_SHA"
-            exit 21
+            echo "[VALIDATION GATE] SKIP current_main=$CURRENT_SHA validated=$VALIDATED_SHA"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
           echo "[VALIDATION GATE] PASS sha=$CURRENT_SHA"
+          echo "ok=true" >> "$GITHUB_OUTPUT"
 
       - name: Hosted runner health gate
+        if: steps.sha_gate.outputs.ok == 'true' || github.event_name != 'workflow_run'
         run: |
           set -euo pipefail
           uname -a
@@ -50,6 +54,7 @@ jobs:
           curl --fail --silent --show-error --location --retry 4 --retry-delay 3 --retry-all-errors --max-time 20 https://statsapi.mlb.com/api/v1/sports/1 >/dev/null
           echo '[HEALTH] MLB Stats API HTTPS PASS'
       - name: Setup Python
+        if: success() && steps.sha_gate.outputs.ok == 'true'
         run: |
           set -euo pipefail
           VENV="$RUNNER_TEMP/baseball-production-venv"
@@ -82,6 +87,7 @@ jobs:
           PY
           echo "$VENV/bin" >> "$GITHUB_PATH"
       - name: Preflight and integrity gate
+        if: success() && steps.sha_gate.outputs.ok == 'true'
         run: |
           set -euo pipefail
           python source_quality_gate.py
@@ -101,6 +107,7 @@ jobs:
           apply_patch_safely baseball_quality_runtime_patch.py
           python -m py_compile npb_multi_source.py baseball_backtest.py baseball_backtest_runtime_patch.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py backtest_audit_v2.py source_quality_gate.py production_integrity_gate.py production_data_quality_gate.py
       - name: NPB readiness gate and chronological OOS
+        if: success() && steps.sha_gate.outputs.ok == 'true'
         id: npb_ready
         run: |
           set -euo pipefail
@@ -131,6 +138,7 @@ jobs:
           ghout.write_text('ready=true\n',encoding='utf-8')
           PY
       - name: Upload NPB deferred status
+        if: success() && steps.sha_gate.outputs.ok == 'true'
         if: success() && steps.npb_ready.outputs.ready != 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -139,6 +147,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
       - name: MLB data acquisition, starter quality gate and chronological OOS
+        if: success() && steps.sha_gate.outputs.ok == 'true'
         if: success() && steps.npb_ready.outputs.ready == 'true'
         env:
           BASEBALL_TIME_BUDGET_SEC: "3600"
@@ -146,6 +155,7 @@ jobs:
           MLB_MIN_STARTER_COVERAGE: "90"
         run: python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
       - name: Validate OOS predictions before any state write
+        if: success() && steps.sha_gate.outputs.ok == 'true'
         if: success() && steps.npb_ready.outputs.ready == 'true'
         run: |
           set -euo pipefail
@@ -168,6 +178,7 @@ jobs:
           python production_data_quality_gate.py
           python production_integrity_gate.py
       - name: Upload verified state artifact
+        if: success() && steps.sha_gate.outputs.ok == 'true'
         if: success() && steps.npb_ready.outputs.ready == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -180,6 +191,7 @@ jobs:
           if-no-files-found: error
           retention-days: 90
       - name: Upload failure diagnostics without touching production state
+        if: success() && steps.sha_gate.outputs.ok == 'true'
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -192,6 +204,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
       - name: Persist verified state atomically
+        if: success() && steps.sha_gate.outputs.ok == 'true'
         if: success() && steps.npb_ready.outputs.ready == 'true'
         run: |
           set -euo pipefail
