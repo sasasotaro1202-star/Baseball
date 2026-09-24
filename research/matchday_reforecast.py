@@ -93,6 +93,10 @@ def load_effects(path: Path = EFFECTS) -> Tuple[List[EffectSpec], Dict[str, Any]
                 max_abs_logit=float(cap),
             )
         )
+    alpha = payload.get("fusion_alpha")
+    if alpha is None or not np.isfinite(float(alpha)):
+        raise ValueError("learned fusion alpha is missing")
+    payload["fusion_alpha"] = float(np.clip(float(alpha), 0.0, 1.0))
     if not specs:
         raise ValueError("no learned matchday effects")
     return specs, payload
@@ -131,7 +135,7 @@ def apply_context_effects(
             skipped.append({"snapshot_id": obs.snapshot_id, "reason": f"state={state}"})
             continue
         # effect key = EVENT_NAME by convention, optionally namespaced by kind.
-        candidates = [f"{obs.kind}:{obs.value}", str(obs.value), obs.kind]
+        candidates = [f"ctx_{obs.value}", f"{obs.kind}:{obs.value}", str(obs.value), obs.kind]
         key = next((k for k in candidates if k in specs), None)
         if key is None:
             skipped.append({"snapshot_id": obs.snapshot_id, "reason": "NO_LEARNED_EFFECT"})
@@ -159,7 +163,7 @@ def reforecast(
     effect_path: Path = EFFECTS,
 ) -> ReforecastResult:
     try:
-        effects, _ = load_effects(effect_path)
+        effects, effect_payload = load_effects(effect_path)
     except Exception as exc:
         return ReforecastResult(
             baseline=_normalize(baseline),
@@ -182,7 +186,8 @@ def reforecast(
     )
     # Context adjustment is an overlay, not a replacement of the expert ensemble.
     mixed = mix_expert_probabilities(expert_p, routed.weights)
-    mixed = _normalize(0.50 * mixed + 0.50 * context_adjusted)
+    alpha = float(np.clip(effect_payload["fusion_alpha"], 0.0, 1.0))
+    mixed = _normalize((1.0 - alpha) * mixed + alpha * context_adjusted)
     cal = calibrator or AdaptiveTemperatureCalibrator(config=config)
     final = cal.predict(mixed)
     return ReforecastResult(
