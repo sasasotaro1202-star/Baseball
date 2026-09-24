@@ -17,6 +17,7 @@ import pandas as pd
 
 from research.drift_uncertainty_routing import (
     AdaptiveTemperatureCalibrator,
+    ExpertCalibrationBank,
     RoutingConfig,
     mix_expert_probabilities,
     route_experts,
@@ -151,6 +152,8 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
     outcomes = []
     history_logloss = []
     history_expert_probs = []
+    raw_expert_history = []
+    expert_calibrators = ExpertCalibrationBank(len(expert_cols), config=config)
     feature_cols = _safe_numeric_pregame_columns(df)
     history_pregame_features = []
     previous_weights = None
@@ -158,7 +161,8 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
     routing_rows = []
 
     for i, row in df.iterrows():
-        current = _expert_matrix(row, expert_cols, league)
+        current_raw = _expert_matrix(row, expert_cols, league)
+        current = expert_calibrators.predict(current_raw)
 
         # Critical chronology rule: history arrays contain only already-resolved rows.
         if history_logloss:
@@ -247,9 +251,16 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
             row_losses.append(float(-np.log(max(float(ep[y]), 1e-12))))
         history_logloss.append(row_losses)
         history_expert_probs.append(current)
+        raw_expert_history.append(current_raw)
         if current_features is not None:
             history_pregame_features.append(current_features)
         previous_weights = rr.weights.copy()
+        # Both expert-level and final calibration obey predict-then-update.
+        if len(raw_expert_history) >= 2:
+            expert_calibrators.update(
+                np.asarray(raw_expert_history[-config.long_window:]),
+                np.asarray(outcomes[-config.long_window:]),
+            )
         calibrator.update(np.asarray(mixed_probs[-config.long_window:]), np.asarray(outcomes[-config.long_window:]))
 
     base_arr = np.asarray(base_probs, dtype=float)
@@ -265,6 +276,9 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
         "calibration_updates_rejected": int(calibrator.rejected_updates),
         "temperature_start": 1.0,
         "temperature_end": float(calibrator.temperature),
+        "expert_calibration_updates_accepted": int(expert_calibrators.accepted_updates),
+        "expert_calibration_updates_rejected": int(expert_calibrators.rejected_updates),
+        "expert_temperatures_end": [float(x) for x in expert_calibrators.temperatures()],
     }
     if not diag_df.empty:
         for col in ("drift_score", "uncertainty"):
