@@ -69,7 +69,9 @@ jobs:
           python -m research.negative_binomial_score_oos
           python -m json.tool results/negative_binomial_score_oos.json >/dev/null
           python -m research.bivariate_poisson_score_oos
-          python -m json.tool results/bivariate_poisson_score_oos.json >/dev/null
+          python -m json.tool results/bivariate_poisson_score_oos.json results/upset_uncertainty_oos.json >/dev/null
+          python -m research.upset_uncertainty_oos
+          python -m json.tool results/upset_uncertainty_oos.json >/dev/null
           python backtest_audit_v2.py
       - name: Run autonomous research controller with bounded retries
         run: |
