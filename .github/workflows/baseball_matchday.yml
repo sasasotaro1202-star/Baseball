@@ -77,6 +77,17 @@ jobs:
           echo '[MATCHDAY] runner failed after 3 attempts'
           exit 1
 
+      - name: Settle forward ledger and rebuild Matchday research
+        run: |
+          set -euo pipefail
+          . .venv/bin/activate
+          python research/matchday_change_ledger.py
+          python research/matchday_effect_dataset.py
+          python research/matchday_effect_fit.py
+          python research/matchday_policy_learning.py
+          python -m json.tool results/matchday_effects.json >/dev/null
+          python -m json.tool results/matchday_policy.json >/dev/null
+
       - name: Validate current matchday artifact
         run: |
           set -euo pipefail
@@ -132,6 +143,7 @@ jobs:
             results/matchday_replay.json
             results/matchday_settlement.json
             results/matchday_effect_replay.csv
+            results/matchday_change_ledger.jsonl
             results/matchday_baseline.csv
             results/matchday_snapshots.jsonl
           if-no-files-found: warn
