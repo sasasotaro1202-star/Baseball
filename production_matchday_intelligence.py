@@ -486,14 +486,22 @@ def main() -> int:
                             # Recalibration is allowed only when the research replay
                             # has produced a candidate temperature; otherwise keep 1.0.
                             temp=1.0
-                            if routing_artifact.exists():
-                                ra=json.loads(routing_artifact.read_text(encoding="utf-8"))
-                                eligible_temps=[
-                                    float(x.get("final_temperature",1.0))
-                                    for x in ra.get("results",[])
-                                    if x.get("status")=="PASS"
-                                ]
-                                if eligible_temps: temp=eligible_temps[-1]
+                            gate_file=RESULTS/"routing_acceptance_gate.json"
+                            if routing_artifact.exists() and gate_file.exists():
+                                try:
+                                    gate=json.loads(gate_file.read_text(encoding="utf-8"))
+                                    eligible=any(bool(x.get("candidate_eligible")) for x in gate.get("results",[]))
+                                    if eligible:
+                                        ra=json.loads(routing_artifact.read_text(encoding="utf-8"))
+                                        eligible_temps=[
+                                            float(x.get("final_temperature",1.0))
+                                            for x in ra.get("results",[])
+                                            if x.get("status")=="PASS"
+                                        ]
+                                        if eligible_temps:
+                                            temp=eligible_temps[-1]
+                                except Exception:
+                                    temp=1.0
                             final=mixed.copy()
                             if abs(temp-1.0)>1e-9:
                                 final=np.power(np.clip(final,1e-12,1.0),1.0/temp);final/=final.sum()
