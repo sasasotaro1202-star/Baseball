@@ -1004,6 +1004,7 @@ class BaseballBacktest:
         self._update_team(sh, hr, hs, ass, True, hp, dt, row, opponent=a)
         self._update_team(sa, ar, ass, hs, False, ap, dt, row, opponent=h)
         self._update_elo(league, h, a, hs, ass)
+        self._update_venue(league, row.get("venue", "unknown"), hs, ass)
         self._update_pitcher_history(row)
         self._update_player_history(row)
 
