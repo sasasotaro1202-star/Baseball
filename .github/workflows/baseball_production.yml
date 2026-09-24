@@ -9,6 +9,7 @@ on:
     - cron: "17 */6 * * *"
 permissions:
   contents: write
+  actions: read
 concurrency:
   group: baseball-production
   cancel-in-progress: true
@@ -42,6 +43,40 @@ jobs:
           echo "[VALIDATION GATE] PASS sha=$CURRENT_SHA"
           echo "ok=true" >> "$GITHUB_OUTPUT"
 
+      - name: Require successful validation for current main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_API_URL: ${{ github.api_url }}
+        run: |
+          set -euo pipefail
+          CURRENT_SHA="$(git rev-parse HEAD)"
+          export CURRENT_SHA
+          python - <<'PY'
+          import json, os, urllib.parse, urllib.request, sys
+          repo=os.environ["GITHUB_REPOSITORY"]
+          token=os.environ["GH_TOKEN"]
+          api=os.environ["GITHUB_API_URL"].rstrip("/")
+          sha=os.environ["CURRENT_SHA"]
+          q=urllib.parse.urlencode({"branch":"main","per_page":"50"})
+          req=urllib.request.Request(
+              f"{api}/repos/{repo}/actions/runs?{q}",
+              headers={
+                  "Authorization": f"Bearer {token}",
+                  "Accept": "application/vnd.github+json",
+                  "X-GitHub-Api-Version":"2022-11-28",
+                  "User-Agent":"Baseball-Production-Validation-Gate",
+              },
+          )
+          with urllib.request.urlopen(req, timeout=30) as resp:
+              payload=json.load(resp)
+          for row in payload.get("workflow_runs", []):
+              if row.get("name")=="Validate Code Syntax" and row.get("head_sha")==sha and row.get("conclusion")=="success":
+                  print(f"[VALIDATION GATE] PASS sha={sha} run={row.get('id')}")
+                  break
+          else:
+              print(f"[VALIDATION GATE] FAIL: no successful Validate Code Syntax run for sha={sha}")
+              sys.exit(21)
+          PY
       - name: Hosted runner health gate
         if: steps.sha_gate.outputs.ok == 'true'
         run: |
