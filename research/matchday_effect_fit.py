@@ -107,6 +107,9 @@ def fit_effects(df, base_cols, event_cols, n_classes):
 def main() -> int:
     RESULTS.mkdir(parents=True, exist_ok=True)
     candidates = sorted(CHECKPOINTS.glob("*_walkforward.csv"))
+    forward = RESULTS / "matchday_effect_replay.csv"
+    if forward.exists() and forward.stat().st_size > 0:
+        candidates.append(forward)
     if not candidates:
         OUTPUT.write_text(json.dumps({"status":"DEFERRED","reason":"No walk-forward checkpoints"}, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
         return 0
