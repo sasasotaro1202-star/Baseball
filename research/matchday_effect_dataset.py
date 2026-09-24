@@ -18,6 +18,7 @@ from research.matchday_intelligence import Observation, is_pit_safe, usable_obse
 RESULTS = Path("results")
 BASELINE = RESULTS / "matchday_baseline.csv"
 SNAPSHOTS = RESULTS / "matchday_snapshots.jsonl"
+CHANGES = RESULTS / "matchday_change_ledger.jsonl"
 OUTPUT = RESULTS / "matchday_effect_replay.csv"
 
 
@@ -70,6 +71,20 @@ def main() -> int:
         return 0
 
     snapshots = _load_snapshot_map()
+    changed_events = set()
+    if CHANGES.exists():
+        for line in CHANGES.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            try:
+                ev = json.loads(line)
+                changed_events.add((
+                    str(ev["game_id"]),
+                    str(ev["prediction_time_utc"]),
+                    str(ev["event"]),
+                ))
+            except Exception:
+                continue
     rows = []
     for rec in df.to_dict("records"):
         gid = str(rec.get("game_id") or "")
@@ -100,6 +115,13 @@ def main() -> int:
                 events.add("WEATHER_PRESENT")
             if kind == "REST_TRAVEL" and o.state == "VERIFIED":
                 events.add("REST_TRAVEL_PRESENT")
+
+        for _, _, ev in changed_events:
+            if any(
+                x == (gid, pt, ev)
+                for x in changed_events
+            ):
+                events.add(ev)
 
         out = {
             "game_id": gid,
