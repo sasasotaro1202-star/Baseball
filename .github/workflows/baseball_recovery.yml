@@ -41,8 +41,8 @@ jobs:
           from pathlib import Path
 
           repo=os.environ['GITHUB_REPOSITORY']; token=os.environ['GH_TOKEN']; api=os.environ.get('GITHUB_API_URL','https://api.github.com').rstrip('/')
-          workflows={'production':'baseball_production.yml','acquisition':'baseball-data-acquisition.yml','mac':'baseball_mac_compute.yml','research':'baseball_research.yml'}
-          STALE_MINUTES={'production':155,'acquisition':165,'mac':180,'research':180}
+          workflows={'validation':'validate-code.yml','production':'baseball_production.yml','acquisition':'baseball-data-acquisition.yml','mac':'baseball_mac_compute.yml','research':'baseball_research.yml'}
+          STALE_MINUTES={'validation':25,'production':155,'acquisition':165,'mac':180,'research':180}
           QUEUED_STALE_MINUTES=20
           ACTIVE_STATES={'queued','in_progress','waiting','pending','requested'}
           QUEUED_STATES={'queued','waiting','pending','requested'}
@@ -105,7 +105,7 @@ jobs:
               if stuck: action='cancel-stuck'
               elif any(active_runs.values()): action='active-no-dispatch'
               else:
-                  prod=latest['production']; mac=latest['mac']; research=latest['research']; acquisition=latest['acquisition']
+                  validation=latest['validation']; prod=latest['production']; mac=latest['mac']; research=latest['research']; acquisition=latest['acquisition']
                   npb_ready, npb_games = npb_complete()
                   print(f'[WATCHDOG] NPB readiness complete={npb_ready} aggregate_games={npb_games}')
                   def dispatch(label,workflow):
@@ -115,7 +115,9 @@ jobs:
                           request('POST',f'/repos/{repo}/actions/workflows/{workflow}/dispatches',{'ref':'main'}); action=f'dispatch-{label}'
                       except Exception as exc:
                           errors.append(f'dispatch {workflow}: {exc}'); print(f'[WATCHDOG] dispatch failed for {workflow}: {exc}')
-                  if (not npb_ready) and not recently_created(data.get('acquisition',[])):
+                  if validation is None or (validation.get('conclusion') in {'failure','cancelled'} and age_minutes(validation) > 5):
+                      dispatch('validation',workflows['validation'])
+                  elif (not npb_ready) and not recently_created(data.get('acquisition',[])):
                       dispatch('npb-acquisition',workflows['acquisition'])
                   elif npb_ready and not success(prod) and not recently_created(data.get('production',[])):
                       dispatch('production-recovery',workflows['production'])
