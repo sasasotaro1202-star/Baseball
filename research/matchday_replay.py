@@ -201,16 +201,13 @@ def main() -> int:
         for name in ("pred_shadow_home", "pred_shadow_draw", "pred_shadow_away"):
             if name in row and pd.notna(row[name]):
                 recorded_shadow.append(float(row[name]))
-        if exact_snapshot and len(recorded_shadow) == len(p) and np.all(np.isfinite(recorded_shadow)):
-            # Prefer the exact probability emitted during the original pregame
-            # run. This is the forward track record; no retrospective refit can
-            # overwrite it.
-            final_probability = np.asarray(recorded_shadow, dtype=float)
-            final_probability = np.clip(final_probability, 1e-12, 1.0)
-            final_probability /= final_probability.sum()
-        else:
-            decision = apply_matchday_policy(np.asarray(p), context, policy=policy)
-            final_probability = decision.probabilities
+
+        # Candidate evaluation is always recomputed from the context-free
+        # baseline + PIT-safe snapshot + currently validated policy. This avoids
+        # circular acceptance where yesterday's already-routed shadow output
+        # becomes the evidence for today's candidate.
+        decision = apply_matchday_policy(np.asarray(p), context, policy=policy)
+        final_probability = decision.probabilities
 
         base_probs.append(p)
         final_probs.append(final_probability.tolist())
@@ -240,7 +237,13 @@ def main() -> int:
         "delta": {f"delta_{k}": float(fm[k] - bm[k]) for k in bm},
         "unique_games": int(df["game_id"].astype(str).nunique()),
         "policy_eligible": bool(policy.get("eligible", False)),
-        "note": "This replay scores only observations with explicit availability evidence.",
+        "forward_recorded_shadow_rows": int(sum(
+            1 for row in df.to_dict("records")
+            if any(name in row and pd.notna(row[name]) for name in (
+                "pred_shadow_home","pred_shadow_draw","pred_shadow_away"
+            ))
+        )),
+        "note": "Candidate replay is recomputed from the context-free baseline using only PIT-safe observations; recorded shadow is tracked separately.",
     }
     OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(payload, ensure_ascii=False))
