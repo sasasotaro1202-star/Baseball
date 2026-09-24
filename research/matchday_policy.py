@@ -102,6 +102,7 @@ def apply_matchday_policy(
         return PolicyDecision(base, {}, "DEFERRED", False, payload.get("reason", "no eligible policy"))
 
     coefficients = payload.get("effects") or {}
+    fusion_alpha = float(np.clip(payload.get("fusion_alpha", 1.0), 0.0, 1.0))
     if not isinstance(coefficients, dict):
         return PolicyDecision(base, {}, "DEFERRED", False, "policy effects are invalid")
 
@@ -125,6 +126,7 @@ def apply_matchday_policy(
         total_shift = float(np.clip(total_shift, -0.65, 0.65))
         ph = _sigmoid(baseline_logit + total_shift)
         out = np.array([ph, 1.0 - ph], dtype=float)
+        out = _prob_vector((1.0 - fusion_alpha) * base + fusion_alpha * out)
         return PolicyDecision(out, applied, "PASS", True, "eligible bounded context policy applied")
 
     # NPB 3-way: apply home-vs-away and draw residuals in log-probability space,
@@ -151,6 +153,7 @@ def apply_matchday_policy(
     logits -= np.max(logits)
     out = np.exp(np.clip(logits, -30.0, 30.0))
     out /= max(float(out.sum()), EPS)
+    out = _prob_vector((1.0 - fusion_alpha) * base + fusion_alpha * out)
     return PolicyDecision(out, applied, "PASS", True, "eligible bounded context policy applied")
 
 
