@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "PASS",
-  "prediction_time_utc": "2026-09-24T18:32:58.242299+00:00",
+  "prediction_time_utc": "2026-09-24T19:51:23.628150+00:00",
   "target_date_jst": "2026-09-25",
   "source_policy": {
     "schedule": "NPB.jp",
@@ -38,8 +38,8 @@
       "starter_away": "金丸 夢斗",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-09-24T18:32:58.242299+00:00",
-      "prediction_time_utc": "2026-09-24T18:32:58.242299+00:00",
+      "starter_available_at": "2026-09-24T19:51:23.628150+00:00",
+      "prediction_time_utc": "2026-09-24T19:51:23.628150+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -51,16 +51,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-24T18:33:04.387221+00:00",
+        "retrieved_at": "2026-09-24T19:51:30.191625+00:00",
         "valid_time_local": "2026-09-25T18:00",
         "temperature_c": 24.1,
         "humidity_pct": 72.0,
         "precip_mm": 0.0,
         "wind_kmh": 2.9,
         "wind_direction_deg": 187.0,
-        "available_at": "2026-09-24T18:33:04.387238+00:00"
+        "available_at": "2026-09-24T19:51:30.191645+00:00"
       },
-      "weather_available_at": "2026-09-24T18:33:04.387238+00:00",
+      "weather_available_at": "2026-09-24T19:51:30.191645+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -68,6 +68,9 @@
       },
       "prediction": {
         "incumbent_status": "DEFERRED",
+        "score_status": "DEFERRED",
+        "low_high_status": "DEFERRED",
+        "score_choices": [],
         "shadow_status": "DEFERRED",
         "shadow_not_promoted": true,
         "incumbent_reason": "FileNotFoundError: NPB data not found. Run npb_multi_source_massive_resumable.py first."
@@ -87,8 +90,8 @@
       "starter_away": "村上 頌樹",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-09-24T18:32:58.242299+00:00",
-      "prediction_time_utc": "2026-09-24T18:32:58.242299+00:00",
+      "starter_available_at": "2026-09-24T19:51:23.628150+00:00",
+      "prediction_time_utc": "2026-09-24T19:51:23.628150+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -100,16 +103,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-24T18:33:04.987009+00:00",
+        "retrieved_at": "2026-09-24T19:51:30.714401+00:00",
         "valid_time_local": "2026-09-25T18:00",
         "temperature_c": 24.4,
         "humidity_pct": 70.0,
         "precip_mm": 0.0,
         "wind_kmh": 5.4,
         "wind_direction_deg": 188.0,
-        "available_at": "2026-09-24T18:33:04.987026+00:00"
+        "available_at": "2026-09-24T19:51:30.714421+00:00"
       },
-      "weather_available_at": "2026-09-24T18:33:04.987026+00:00",
+      "weather_available_at": "2026-09-24T19:51:30.714421+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -117,6 +120,9 @@
       },
       "prediction": {
         "incumbent_status": "DEFERRED",
+        "score_status": "DEFERRED",
+        "low_high_status": "DEFERRED",
+        "score_choices": [],
         "shadow_status": "DEFERRED",
         "shadow_not_promoted": true,
         "incumbent_reason": "FileNotFoundError: NPB data not found. Run npb_multi_source_massive_resumable.py first."
@@ -136,8 +142,8 @@
       "starter_away": "井上 温大",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-09-24T18:32:58.242299+00:00",
-      "prediction_time_utc": "2026-09-24T18:32:58.242299+00:00",
+      "starter_available_at": "2026-09-24T19:51:23.628150+00:00",
+      "prediction_time_utc": "2026-09-24T19:51:23.628150+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -149,16 +155,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-24T18:33:05.535129+00:00",
+        "retrieved_at": "2026-09-24T19:51:31.283020+00:00",
         "valid_time_local": "2026-09-25T18:00",
         "temperature_c": 25.2,
         "humidity_pct": 67.0,
         "precip_mm": 0.0,
         "wind_kmh": 2.8,
         "wind_direction_deg": 140.0,
-        "available_at": "2026-09-24T18:33:05.535146+00:00"
+        "available_at": "2026-09-24T19:51:31.283044+00:00"
       },
-      "weather_available_at": "2026-09-24T18:33:05.535146+00:00",
+      "weather_available_at": "2026-09-24T19:51:31.283044+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -166,6 +172,9 @@
       },
       "prediction": {
         "incumbent_status": "DEFERRED",
+        "score_status": "DEFERRED",
+        "low_high_status": "DEFERRED",
+        "score_choices": [],
         "shadow_status": "DEFERRED",
         "shadow_not_promoted": true,
         "incumbent_reason": "FileNotFoundError: NPB data not found. Run npb_multi_source_massive_resumable.py first."
@@ -185,8 +194,8 @@
       "starter_away": "田中 晴也",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-09-24T18:32:58.242299+00:00",
-      "prediction_time_utc": "2026-09-24T18:32:58.242299+00:00",
+      "starter_available_at": "2026-09-24T19:51:23.628150+00:00",
+      "prediction_time_utc": "2026-09-24T19:51:23.628150+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -198,16 +207,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-24T18:33:06.082847+00:00",
+        "retrieved_at": "2026-09-24T19:51:31.784506+00:00",
         "valid_time_local": "2026-09-25T18:00",
         "temperature_c": 23.5,
         "humidity_pct": 77.0,
         "precip_mm": 0.0,
         "wind_kmh": 4.7,
         "wind_direction_deg": 176.0,
-        "available_at": "2026-09-24T18:33:06.082865+00:00"
+        "available_at": "2026-09-24T19:51:31.784524+00:00"
       },
-      "weather_available_at": "2026-09-24T18:33:06.082865+00:00",
+      "weather_available_at": "2026-09-24T19:51:31.784524+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -215,6 +224,9 @@
       },
       "prediction": {
         "incumbent_status": "DEFERRED",
+        "score_status": "DEFERRED",
+        "low_high_status": "DEFERRED",
+        "score_choices": [],
         "shadow_status": "DEFERRED",
         "shadow_not_promoted": true,
         "incumbent_reason": "FileNotFoundError: NPB data not found. Run npb_multi_source_massive_resumable.py first."
@@ -234,8 +246,8 @@
       "starter_away": "松本 晴",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-09-24T18:32:58.242299+00:00",
-      "prediction_time_utc": "2026-09-24T18:32:58.242299+00:00",
+      "starter_available_at": "2026-09-24T19:51:23.628150+00:00",
+      "prediction_time_utc": "2026-09-24T19:51:23.628150+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -247,16 +259,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-24T18:33:06.641066+00:00",
+        "retrieved_at": "2026-09-24T19:51:32.450398+00:00",
         "valid_time_local": "2026-09-25T18:00",
         "temperature_c": 23.8,
         "humidity_pct": 77.0,
         "precip_mm": 0.1,
         "wind_kmh": 2.4,
         "wind_direction_deg": 63.0,
-        "available_at": "2026-09-24T18:33:06.641082+00:00"
+        "available_at": "2026-09-24T19:51:32.450417+00:00"
       },
-      "weather_available_at": "2026-09-24T18:33:06.641082+00:00",
+      "weather_available_at": "2026-09-24T19:51:32.450417+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -264,11 +276,14 @@
       },
       "prediction": {
         "incumbent_status": "DEFERRED",
+        "score_status": "DEFERRED",
+        "low_high_status": "DEFERRED",
+        "score_choices": [],
         "shadow_status": "DEFERRED",
         "shadow_not_promoted": true,
         "incumbent_reason": "FileNotFoundError: NPB data not found. Run npb_multi_source_massive_resumable.py first."
       }
     }
   ],
-  "state_hash": "c19116e2daedf96c419ca812d2befe4e8834d8a2fcb52547e6186021d473fc19"
+  "state_hash": "6c6dd2dc19a3ac31c1426bf24ca766084956529996cbb420efec443026372b85"
 }
