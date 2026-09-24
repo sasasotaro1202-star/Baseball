@@ -27,7 +27,7 @@ import pandas as pd
 import requests
 from lxml import html as lxml_html
 
-from baseball_backtest import BaseballBacktest
+from baseball_backtest import BaseballBacktest, low_high_probs, score_candidates
 from research.drift_uncertainty_routing import (
     ExpertCalibrationBank,
     RoutingConfig,
@@ -685,6 +685,19 @@ def persist_matchday_forward_ledger(predictions: list[dict]) -> None:
                 "pred_shadow_home": pred.get("shadow_home"),
                 "pred_shadow_draw": pred.get("shadow_draw"),
                 "pred_shadow_away": pred.get("shadow_away"),
+                "pred_score1": pred.get("score_choices", [{}])[0].get("score") if len(pred.get("score_choices", [])) > 0 else None,
+                "pred_score2": pred.get("score_choices", [{}])[1].get("score") if len(pred.get("score_choices", [])) > 1 else None,
+                "pred_score3": pred.get("score_choices", [{}])[2].get("score") if len(pred.get("score_choices", [])) > 2 else None,
+                "pred_score4": pred.get("score_choices", [{}])[3].get("score") if len(pred.get("score_choices", [])) > 3 else None,
+                "pred_score1_prob": pred.get("score_choices", [{}])[0].get("probability") if len(pred.get("score_choices", [])) > 0 else None,
+                "pred_score2_prob": pred.get("score_choices", [{}])[1].get("probability") if len(pred.get("score_choices", [])) > 1 else None,
+                "pred_score3_prob": pred.get("score_choices", [{}])[2].get("probability") if len(pred.get("score_choices", [])) > 2 else None,
+                "pred_score4_prob": pred.get("score_choices", [{}])[3].get("probability") if len(pred.get("score_choices", [])) > 3 else None,
+                "pred_low_prob": pred.get("low_prob"),
+                "pred_high_prob": pred.get("high_prob"),
+                "pred_low_high": pred.get("low_high"),
+                "score_status": pred.get("score_status"),
+                "low_high_status": pred.get("low_high_status"),
                 "shadow_status": pred.get("shadow_status"),
                 "actual": np.nan,
             })
@@ -710,6 +723,9 @@ def persist_matchday_forward_ledger(predictions: list[dict]) -> None:
         pd.DataFrame(columns=[
             "game_id","datetime","prediction_time_utc","pred_home","pred_draw",
             "pred_away","pred_shadow_home","pred_shadow_draw","pred_shadow_away",
+            "pred_score1","pred_score2","pred_score3","pred_score4",
+            "pred_score1_prob","pred_score2_prob","pred_score3_prob","pred_score4_prob",
+            "pred_low_prob","pred_high_prob","pred_low_high","score_status","low_high_status",
             "shadow_status","actual"
         ]).to_csv(baseline_path, index=False)
 
@@ -759,6 +775,7 @@ def main() -> int:
     historical=pd.DataFrame()
     X_hist=pd.DataFrame()
     fitted=None
+    score_fitted=None
     model_error=""
     checkpoints=DATA/"checkpoints"/"npb_walkforward.csv"
     routing_artifact=RESULTS/"routing_oos_replay.json"
@@ -772,6 +789,12 @@ def main() -> int:
         X_hist,y_hist,_=bt.build_features(historical.assign(league="NPB"))
         if len(X_hist)>=150:
             fitted,_,_=bt.fit_ensemble(X_hist,y_hist,"NPB")
+            score_fitted=bt.fit_score_ensemble(
+                X_hist,
+                historical["home_score"].astype(float).to_numpy(),
+                historical["away_score"].astype(float).to_numpy(),
+                "NPB",
+            )
         else:
             model_error=f"historical rows below model minimum: {len(X_hist)}"
     except Exception as exc:
@@ -830,7 +853,7 @@ def main() -> int:
         g["roster_events"]=roster_events
         g["rest_travel"]=rest_travel(historical,g)
 
-        pred_payload={"incumbent_status":"DEFERRED","shadow_status":"DEFERRED","shadow_not_promoted":True}
+        pred_payload={"incumbent_status":"DEFERRED","score_status":"DEFERRED","low_high_status":"DEFERRED","score_choices":[],"shadow_status":"DEFERRED","shadow_not_promoted":True}
         if fitted is not None:
             row=pd.Series({
                 "league":"NPB","game_id":g["game_id"],"datetime":g["datetime"],"home":g["home"],"away":g["away"],
@@ -858,6 +881,27 @@ def main() -> int:
                     "incumbent_away":float(incumbent[2]),
                     "incumbent_model":"Ensemble(" + "+".join(x[2] for x in fitted) + ")",
                 })
+                if score_fitted is not None:
+                    lam_h, lam_a = bt.predict_scores(score_fitted, fx, "NPB")
+                    split = float(np.clip(incumbent[0] - incumbent[2], -0.35, 0.35))
+                    lam_h *= (1.0 + 0.08 * split)
+                    lam_a *= (1.0 - 0.08 * split)
+                    score_choices = score_candidates(lam_h, lam_a, 4)
+                    low, high = low_high_probs(lam_h, lam_a)
+                    pred_payload.update({
+                        "score_status":"PASS" if len(score_choices) == 4 else "DEFERRED",
+                        "score_model":"Ensemble(" + "+".join(x[0] for x in score_fitted["models"]) + ")",
+                        "lambda_home":float(lam_h),
+                        "lambda_away":float(lam_a),
+                        "score_choices":[
+                            {"choice":i+1,"score":str(s),"probability":float(pr)}
+                            for i,(s,pr) in enumerate(score_choices)
+                        ],
+                        "low_prob":float(low),
+                        "high_prob":float(high),
+                        "low_high":"Low" if low >= 0.5 else "High",
+                        "low_high_status":"PASS",
+                    })
                 if checkpoints.exists():
                     try:
                         ck_u=pd.read_csv(checkpoints).sort_values(["datetime","game_id"]).tail(160)

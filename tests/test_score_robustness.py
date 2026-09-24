@@ -19,3 +19,18 @@ def test_negative_binomial_challenger_runs_without_oos_artifacts():
     from research import negative_binomial_score_oos as nb
     assert 0.0 < nb.FIT_FRAC < 1.0
     assert nb.MIN_ROWS >= 100
+
+from baseball_backtest import low_high_probs, score_candidates
+
+
+def test_score_candidates_are_exactly_four_choices_with_other_bucket():
+    choices = score_candidates(2.7, 2.1, 4)
+    assert len(choices) == 4
+    assert sum(1 for score, _ in choices if score == "その他") == 1
+    assert sum(1 for score, _ in choices if score != "その他") == 3
+
+
+def test_low_high_maps_seven_plus_to_high():
+    low, high = low_high_probs(7.0, 1.0)
+    assert low < 0.5
+    assert high > 0.5
