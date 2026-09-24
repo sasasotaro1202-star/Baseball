@@ -47,11 +47,15 @@ jobs:
         run: |
           set -euo pipefail
           . .venv/bin/activate
-          python -m py_compile research/research_loop.py research/openai_research_advisor.py research/frozen_holdout_gate.py research/drift_uncertainty_routing.py research/routing_oos_replay.py research/routing_acceptance_gate.py research/matchday_intelligence.py backtest_audit_v2.py source_quality_gate.py
+          python -m py_compile research/research_loop.py research/openai_research_advisor.py research/frozen_holdout_gate.py research/drift_uncertainty_routing.py research/routing_oos_replay.py research/routing_acceptance_gate.py research/matchday_intelligence.py research/matchday_effect_fit.py research/matchday_reforecast.py backtest_audit_v2.py source_quality_gate.py
           python research/drift_uncertainty_routing.py | tee routing_smoke.json
           python -m json.tool routing_smoke.json >/dev/null
           python research/matchday_intelligence.py | tee matchday_intelligence_smoke.json
           python -m json.tool matchday_intelligence_smoke.json >/dev/null
+          python research/matchday_effect_fit.py
+          python -m json.tool results/matchday_effects.json >/dev/null
+          python research/matchday_reforecast.py | tee matchday_reforecast_smoke.json
+          python -m json.tool matchday_reforecast_smoke.json >/dev/null
           python -m research.routing_oos_replay
           python -m json.tool results/routing_oos_replay.json >/dev/null
           python research/routing_acceptance_gate.py
@@ -126,5 +130,7 @@ jobs:
             results/routing_oos_replay.json
             results/routing_acceptance_gate.json
             matchday_intelligence_smoke.json
+            matchday_reforecast_smoke.json
+            results/matchday_effects.json
           if-no-files-found: warn
           retention-days: 30
