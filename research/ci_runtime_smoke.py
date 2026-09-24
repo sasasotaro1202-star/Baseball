@@ -37,12 +37,29 @@ def main() -> int:
     assert first["weather_pit_safe"] == 0.0
     assert first["weather_temp_c"] == 0.0
 
+    # Postgame/actual starter names must never become pregame model features.
+    baseline_starter = (first["hs_era"], first["as_era"], first["starter_x_quality_proxy"], first["starter_kbb_gap"])
+    actual_row = row.copy()
+    actual_row["home_starter"] = "POSTGAME-ACTUAL"
+    actual_row["away_starter"] = "POSTGAME-ACTUAL"
+    actual_starter = b.match_features(actual_row)
+    assert baseline_starter == (
+        actual_starter["hs_era"], actual_starter["as_era"],
+        actual_starter["starter_x_quality_proxy"], actual_starter["starter_kbb_gap"]
+    )
+
     safe_row = row.copy()
     safe_row["prediction_time_utc"] = "2026-09-24T08:00:00Z"
     safe_row["weather_available_at"] = "2026-09-24T07:00:00Z"
     safe_row["weather_state"] = "PROJECTED"
     safe_row["lineup_available_at"] = "2026-09-24T07:00:00Z"
     safe_row["lineup_state"] = "PROJECTED"
+    safe_row["home_lineup_available_at"] = "2026-09-24T07:00:00Z"
+    safe_row["away_lineup_available_at"] = "2026-09-24T07:00:00Z"
+    safe_row["home_lineup_state"] = "PROJECTED"
+    safe_row["away_lineup_state"] = "PROJECTED"
+    safe_row["home_pregame_starter"] = "PREGAME-A"
+    safe_row["away_pregame_starter"] = "PREGAME-B"
     safe = b.match_features(safe_row)
     assert safe["weather_pit_safe"] != 0.0
     assert safe["weather_temp_c"] == 25.0
