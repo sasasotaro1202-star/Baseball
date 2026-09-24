@@ -56,10 +56,16 @@ jobs:
           python -m py_compile research/conformal_uncertainty.py
           python research/conformal_uncertainty.py
           python -m py_compile research/matchday_intelligence.py
+          python -m py_compile research/matchday_policy.py
+          python -m py_compile research/matchday_policy_learning.py
+          python -m py_compile research/matchday_replay.py
           python -m py_compile research/matchday_effect_fit.py
           python -m py_compile research/matchday_reforecast.py
           python -m py_compile research/ci_runtime_smoke.py
           python research/matchday_intelligence.py
+          python research/matchday_policy.py
+          python research/matchday_policy_learning.py
+          python research/matchday_replay.py
           python research/ci_runtime_smoke.py
           python research/matchday_effect_fit.py
           python -m json.tool results/matchday_effects.json >/dev/null
