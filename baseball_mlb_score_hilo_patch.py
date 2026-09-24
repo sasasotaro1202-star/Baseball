@@ -98,7 +98,11 @@ replacement = '''                    "low": low, "high": high,
                     "pred_score4": scores[3][0], "pred_score4_prob": scores[3][1],
                     "actual_home_score": float(r["home_score"]), "actual_away_score": float(r["away_score"]),
                     "actual_low_high": "High" if (float(r["home_score"]) + float(r["away_score"]) >= 7) else "Low",
-                    "score_exact_hit": int(any(f"{int(float(r['home_score']))}-{int(float(r['away_score']))}" == str(z[0]) for z in scores if str(z[0]) != "その他")),
+                    "score_exact_hit": int(
+                        ("その他" in {str(z[0]) for z in scores}
+                         if (float(r["home_score"]) >= 7 or float(r["away_score"]) >= 7)
+                         else f"{int(float(r['home_score']))}-{int(float(r['away_score']))}" in {str(z[0]) for z in scores if str(z[0]) != "その他"})
+                    ),
                     "low_high_hit": int(("High" if (float(r["home_score"]) + float(r["away_score"]) >= 7) else "Low") == ("Low" if low >= 0.5 else "High")),
                 })'''
 if needle in s:
