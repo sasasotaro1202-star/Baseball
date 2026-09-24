@@ -139,11 +139,68 @@ def main() -> int:
         n = len(df)
         # Two non-overlapping chronological OOS windows:
         # window-1 selects the context fusion strength; window-2 remains untouched
-        # until that choice is frozen. This prevents tuning and evaluation leakage.
+        # until that choice is frozen. This prevents tuning/evaluation leakage.
         fit_end = max(80, int(n * 0.55))
         tune_end = max(fit_end + MIN_EVENT_ROWS, int(n * 0.75))
-        if n - tune_end < 50:
+        if tune_end >= n or n - tune_end < 50:
             records.append({
+                "checkpoint": str(path),
+                "status": "DEFERRED",
+                "reason": "second OOS validation window too small",
+            })
+            continue
+
+        train = df.iloc[:fit_end].copy()
+        tune = df.iloc[fit_end:tune_end].copy()
+        final_val = df.iloc[tune_end:].copy()
+
+        effects = fit_effects(train, base_cols, event_cols, n_classes)
+        if not effects:
+            records.append({
+                "checkpoint": str(path),
+                "status": "DEFERRED",
+                "reason": "No supported event",
+            })
+            continue
+
+        def eval_pair(frame):
+            yy = frame["actual"].astype(int).to_numpy()
+            bb = normalize(frame[base_cols].to_numpy(dtype=float))
+            cc = apply_effects(bb, frame[event_cols], effects)
+            return yy, bb, cc, metrics(bb, yy), metrics(cc, yy)
+
+        y_tune, base_tune, ctx_tune, bm_tune, cm_tune = eval_pair(tune)
+
+        # Freeze fusion alpha using only the first later window.
+        best_alpha = 0.0
+        best_mix_metrics = bm_tune
+        for alpha in np.linspace(0.0, 1.0, 21):
+            mix = normalize((1.0-alpha) * base_tune + alpha * ctx_tune)
+            mm = metrics(mix, y_tune)
+            if mm["logloss"] < best_mix_metrics["logloss"]:
+                best_alpha = float(alpha)
+                best_mix_metrics = mm
+
+        y_final, base_final, ctx_final, bm_final, cm_final = eval_pair(final_val)
+        final_mix = normalize((1.0-best_alpha) * base_final + best_alpha * ctx_final)
+        fm_final = metrics(final_mix, y_final)
+
+        delta_tune = {k: float(best_mix_metrics[k] - bm_tune[k]) for k in bm_tune}
+        delta_final = {k: float(fm_final[k] - bm_final[k]) for k in bm_final}
+
+        window_ok = (
+            best_alpha > 0.0
+            and delta_tune["logloss"] <= -MIN_LL
+            and delta_tune["brier"] <= -MIN_BRIER
+            and delta_tune["accuracy"] >= -MAX_ACC_REG
+            and delta_tune["ece"] <= MAX_ECE_REG
+            and delta_final["logloss"] <= -MIN_LL
+            and delta_final["brier"] <= -MIN_BRIER
+            and delta_final["accuracy"] >= -MAX_ACC_REG
+            and delta_final["ece"] <= MAX_ECE_REG
+        )
+
+        records.append({
             "checkpoint": str(path),
             "status": "PASS",
             "candidate_eligible": bool(window_ok),
@@ -152,6 +209,7 @@ def main() -> int:
             "final_oos_rows": int(len(final_val)),
             "effects": effects,
             "tune_baseline": bm_tune,
+            "tune_context": cm_tune,
             "tune_fused": best_mix_metrics,
             "tune_delta": delta_tune,
             "final_baseline": bm_final,
