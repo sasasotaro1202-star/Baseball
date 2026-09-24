@@ -52,7 +52,11 @@ jobs:
         run: |
           set -euo pipefail
           python3 --version
-          python -m py_compile npb_multi_source.py mlb_incremental_acquire.py production_data_quality_gate.py production_integrity_gate.py
+          python -m py_compile npb_multi_source.py npb_runtime_patch.py source_quality_gate.py mlb_incremental_acquire.py production_data_quality_gate.py production_integrity_gate.py
+          python source_quality_gate.py
+          python npb_runtime_patch.py
+          python -m py_compile npb_multi_source.py
+          python source_quality_gate.py
           python - <<'PY'
           import numpy, pandas, requests
           print('[PREFLIGHT] core Python dependencies OK')
