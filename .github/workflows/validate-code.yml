@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - '**.py'
-      - '.github/workflows/validate-code.yml'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 jobs:
@@ -16,6 +16,9 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Validate GitHub Actions workflow YAML
+        run: |
+          ruby -e 'require "yaml"; Dir[".github/workflows/*.yml",".github/workflows/*.yaml"].flatten.sort.each { |p| YAML.load_file(p); puts "[YAML] PASS #{p}" }'
       - name: Validate Python syntax
         run: |
           python -m py_compile run.py
@@ -57,4 +60,5 @@ jobs:
           assert later["same_opponent_last_10"] == 1.0
           print("Baseball core runtime smoke: PASS")
           PY
+          python backtest_audit_v2.py
           echo "All Baseball Python syntax/runtime smoke checks passed"
