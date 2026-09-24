@@ -533,6 +533,27 @@ def self_test() -> dict:
     assert abs(after - before) <= 0.15 + 1e-9
     assert c.accepted_updates + c.rejected_updates <= 1
 
+    ref = rng.normal(size=(40, 4))
+    same = ref[-12:].copy()
+    shifted = same.copy()
+    shifted[:, 0] += 2.0
+    assert mmd_drift_score(ref, same) <= mmd_drift_score(ref, shifted) + 1e-9
+
+    prior = np.array([0.70, 0.20, 0.10])
+    uncertain_probs = np.array([
+        [0.51, 0.29, 0.20],
+        [0.20, 0.51, 0.29],
+        [0.29, 0.20, 0.51],
+    ])
+    route_prior = route_experts(
+        uncertain_probs,
+        hist,
+        drift_score=0.0,
+        previous_weights=prior,
+    )
+    assert np.isclose(route_prior.weights.sum(), 1.0)
+    assert route_prior.weights[0] > route_prior.weights[2]
+
     return {
         "status": "PASS",
         "high_drift_weight_delta_for_recent_specialist": float(high.weights[1] - low.weights[1]),
