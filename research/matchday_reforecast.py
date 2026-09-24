@@ -125,7 +125,10 @@ def apply_context_effects(
     applied: List[str] = []
     skipped: List[Dict[str, str]] = []
 
-    specs = {spec.key: spec for spec in effects}
+    specs = list(effects)
+    by_key: Dict[str, List[EffectSpec]] = {}
+    for spec in specs:
+        by_key.setdefault(spec.key, []).append(spec)
     for obs in observations:
         if not is_pit_safe(obs):
             skipped.append({"snapshot_id": obs.snapshot_id, "reason": "PIT_FAIL"})
@@ -134,21 +137,20 @@ def apply_context_effects(
         if state not in {ContextState.VERIFIED.value, ContextState.PROJECTED.value}:
             skipped.append({"snapshot_id": obs.snapshot_id, "reason": f"state={state}"})
             continue
-        # effect key = EVENT_NAME by convention, optionally namespaced by kind.
         candidates = [f"ctx_{obs.value}", f"{obs.kind}:{obs.value}", str(obs.value), obs.kind]
-        key = next((k for k in candidates if k in specs), None)
+        key = next((k for k in candidates if k in by_key), None)
         if key is None:
             skipped.append({"snapshot_id": obs.snapshot_id, "reason": "NO_LEARNED_EFFECT"})
             continue
-        spec = specs[key]
-        magnitude = float(np.clip(_event_value(spec.key, obs), -3.0, 3.0))
-        delta = float(np.clip(spec.coefficient * magnitude, -spec.max_abs_logit, spec.max_abs_logit))
-        idx = int(spec.class_index)
-        if not (0 <= idx < len(logp)):
-            skipped.append({"snapshot_id": obs.snapshot_id, "reason": "CLASS_INDEX_OUT_OF_RANGE"})
-            continue
-        logp[idx] += delta
-        applied.append(key)
+        magnitude = 1.0 if isinstance(obs.value, str) else float(np.clip(_event_value(key, obs), -3.0, 3.0))
+        for spec in by_key[key]:
+            delta = float(np.clip(spec.coefficient * magnitude, -spec.max_abs_logit, spec.max_abs_logit))
+            idx = int(spec.class_index)
+            if not (0 <= idx < len(logp)):
+                skipped.append({"snapshot_id": obs.snapshot_id, "reason": "CLASS_INDEX_OUT_OF_RANGE"})
+                continue
+            logp[idx] += delta
+            applied.append(f"{key}:class_{idx}")
     return _softmax(logp), applied, skipped
 
 
