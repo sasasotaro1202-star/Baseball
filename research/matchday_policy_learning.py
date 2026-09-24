@@ -45,7 +45,10 @@ def main() -> int:
         return 0
 
     eligible = bool(src.get("candidate_eligible")) and src.get("status") == "PASS"
-    converted = {}
+    # Preserve one record per (event, class) effect. A single event can
+    # legitimately move multiple NPB outcome classes; collapsing to a dict by
+    # event silently discarded all but the last class.
+    converted = []
     for effect in src.get("effects", []):
         try:
             key = str(effect["key"])
@@ -56,14 +59,14 @@ def main() -> int:
                 continue
             if abs(coef) < 1e-9 or cap <= 0:
                 continue
-            # Keep the event key and let the Matchday engine require a matching
-            # PIT-safe observation. The OOS learner already bounded the effect.
-            converted[key] = {
+            converted.append({
+                "key": key,
+                "class_index": cls,
                 "coef": max(-cap, min(cap, coef)),
                 "cap": cap,
                 "target": CLASS_NAMES[cls],
                 "support_rows": int(effect.get("support_rows", 0) or 0),
-            }
+            })
         except Exception:
             continue
 
