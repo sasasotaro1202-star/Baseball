@@ -27,7 +27,7 @@ jobs:
     # Successful workflow_run events do not require a second recovery job.
     # Failures/cancellations stay event-driven; the 15-minute schedule remains
     # the round-the-clock reconciliation heartbeat.
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion != 'success' }}
+    if: ${{ github.event_name != 'workflow_run' || contains(fromJson('["failure","cancelled","timed_out","action_required"]'), github.event.workflow_run.conclusion) }}
     name: Autonomous pipeline watchdog
     runs-on: ubuntu-latest
     timeout-minutes: 15
