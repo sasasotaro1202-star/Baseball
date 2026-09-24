@@ -87,6 +87,26 @@ if matchday:
         if token not in matchday:
             errors.append(f"missing {label} in research/matchday_intelligence.py")
 
+effect_fit = need("research/matchday_effect_fit.py", r"def\\s+fit_effects\\b", "Matchday effect learner")
+if effect_fit:
+    for token, label in [
+        ("baseline_context_free", "context-free baseline guard"),
+        ("validation_delta", "Matchday OOS validation"),
+        ("artifact_type", "Matchday effect artifact schema"),
+    ]:
+        if token not in effect_fit:
+            errors.append(f"missing {label} in research/matchday_effect_fit.py")
+
+reforecast = need("research/matchday_reforecast.py", r"def\\s+reforecast\\b", "Matchday reforecast controller")
+if reforecast:
+    for token, label in [
+        ("FileNotFoundError", "fail-closed effect loading"),
+        ("fusion_alpha", "learned Matchday fusion weight"),
+        ("NO_LEARNED_EFFECT", "unknown effect skip"),
+    ]:
+        if token not in reforecast:
+            errors.append(f"missing {label} in research/matchday_reforecast.py")
+
 routing_gate = need("research/routing_acceptance_gate.py", r"MIN_LOGLOSS_IMPROVEMENT", "routing acceptance gate")
 if routing_gate:
     for token, label in [
