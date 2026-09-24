@@ -32,7 +32,8 @@
     "lineups": {
       "primary": "https://spaia.jp/baseball/npb/api/starting_members_for_flash",
       "fallback": null,
-      "critical": false
+      "critical": false,
+      "rule": "Pregame lineup features require an explicit prediction_time_utc and lineup_available_at timestamp; missing timing evidence is treated as UNKNOWN and excluded."
     },
     "play_by_play": {
       "primary": "https://spaia.jp/baseball/npb/api/game_text_pbp",
@@ -45,9 +46,10 @@
       "critical": false
     },
     "weather": {
-      "primary": "https://archive-api.open-meteo.com/v1/archive",
+      "primary": "https://historical-forecast-api.open-meteo.com/v1/forecast",
       "fallback": null,
-      "critical": false
+      "critical": false,
+      "rule": "Use forecast-era values, not postgame observed/reanalysis weather, for predictive features. Historical rows require explicit availability metadata; conservative 8-hour bound is used by the collector."
     }
   },
   "MLB": {
@@ -80,10 +82,10 @@
       "rule": "Historical reference metrics must respect the prediction cutoff; no season-final values may leak into earlier games."
     },
     "weather": {
-      "primary": "Open-Meteo historical archive / forecast snapshot when available",
+      "primary": "Open-Meteo historical forecast / forecast snapshot when available",
       "fallback": null,
       "critical": false,
-      "rule": "Never synthesize missing weather. Historical backtests may only consume archived observations available for the target date."
+      "rule": "Never synthesize missing weather. Historical backtests may only consume forecast-era values with pregame availability evidence; postgame observed/reanalysis values are not valid predictive inputs."
     }
   }
 }
