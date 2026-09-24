@@ -21,6 +21,19 @@ jobs:
     timeout-minutes: 140
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Verify validation SHA matches current main
+        if: github.event_name == 'workflow_run'
+        env:
+          VALIDATED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          CURRENT_SHA="$(git rev-parse HEAD)"
+          if [ "$CURRENT_SHA" != "$VALIDATED_SHA" ]; then
+            echo "[VALIDATION GATE] FAIL current_main=$CURRENT_SHA validated=$VALIDATED_SHA"
+            exit 21
+          fi
+          echo "[VALIDATION GATE] PASS sha=$CURRENT_SHA"
+
       - name: Hosted runner health gate
         run: |
           set -euo pipefail
