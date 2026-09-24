@@ -57,6 +57,16 @@ audit_workflow = need(".github/workflows/baseball_audit.yml", r"backtest_audit_v
 if audit_workflow and "backtest_audit.py" in audit_workflow:
     errors.append("stale audit workflow still references removed backtest_audit.py")
 
+weather_ingest = need("npb_multi_source.py", r"historical-forecast-api\.open-meteo\.com", "PIT-safe historical forecast weather source")
+if weather_ingest:
+    for token, label in [
+        ("weather_available_at", "weather availability timestamp"),
+        ("weather_pit_quality", "weather PIT quality marker"),
+        ("CONSERVATIVE_8H_BOUND", "conservative weather availability bound"),
+    ]:
+        if token not in weather_ingest:
+            errors.append(f"missing {label} in npb_multi_source.py")
+
 routing = need("research/drift_uncertainty_routing.py", r"def\s+route_experts\b", "drift/uncertainty routing")
 if routing:
     for token, label in [
