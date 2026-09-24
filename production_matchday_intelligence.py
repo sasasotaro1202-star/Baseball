@@ -473,6 +473,16 @@ def build_matchday_observations(game: dict, prediction_time: str) -> list[dict]:
     gid = str(game.get("game_id") or "")
     rows: list[dict] = []
 
+    def freshness(available_at):
+        try:
+            delta = (
+                pd.to_datetime(prediction_time, utc=True)
+                - pd.to_datetime(available_at, utc=True)
+            ).total_seconds()
+            return float(max(0.0, delta))
+        except Exception:
+            return None
+
     def add(kind, state, source, value, available_at, source_time=None, confidence=1.0):
         if not available_at:
             return
@@ -492,7 +502,7 @@ def build_matchday_observations(game: dict, prediction_time: str) -> list[dict]:
             "state": str(state),
             "source": str(source),
             "value": value,
-            "freshness_seconds": 0.0,
+            "freshness_seconds": freshness(available_at),
             "confidence": float(np.clip(confidence, 0.0, 1.0)),
         })
 
@@ -679,7 +689,7 @@ def main() -> int:
     X_hist=pd.DataFrame()
     fitted=None
     model_error=""
-    checkpoints=RESULTS/"checkpoints"/"npb_walkforward.csv"
+    checkpoints=DATA/"checkpoints"/"npb_walkforward.csv"
     routing_artifact=RESULTS/"routing_oos_replay.json"
 
     try:
