@@ -1102,6 +1102,33 @@ class BaseballBacktest:
             p=p/p.sum(axis=1,keepdims=True)
         return np.apply_along_axis(clip_prob,1,p)
 
+    def ensemble_proba_with_matchday(
+        self,
+        fitted,
+        X: pd.DataFrame,
+        league: str,
+        contexts: Optional[List[Dict[str, Dict[str, Any]]]] = None,
+        policy_path: str = "results/matchday_policy.json",
+    ) -> np.ndarray:
+        """Apply only an eligible, bounded Matchday Policy after base inference.
+
+        The ordinary ensemble_proba path is unchanged. This explicit method is
+        the only backtest integration point so unvalidated context coefficients
+        cannot silently alter historical predictions.
+        """
+        base = self.ensemble_proba(fitted, X, league)
+        if contexts is None:
+            return base
+        if len(contexts) != len(base):
+            raise ValueError("matchday context row count must match predictions")
+        from research.matchday_policy import apply_matchday_policy, load_policy
+        policy = load_policy(Path(policy_path))
+        out = np.zeros_like(base)
+        for i, probs in enumerate(base):
+            decision = apply_matchday_policy(probs, contexts[i], policy=policy)
+            out[i] = decision.probabilities
+        return out
+
     def align_proba(self, raw: np.ndarray, classes: np.ndarray, league: str) -> np.ndarray:
         k = 3 if league == "NPB" else 2
         out = np.zeros((len(raw), k))
