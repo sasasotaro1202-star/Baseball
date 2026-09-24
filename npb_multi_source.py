@@ -24,7 +24,7 @@ import requests
 
 SPAIA = "https://spaia.jp/baseball/npb/api"
 NPB = "https://npb.jp"
-OPEN_METEO = "https://archive-api.open-meteo.com/v1/archive"
+OPEN_METEO = "https://historical-forecast-api.open-meteo.com/v1/forecast"
 START_YEAR = int(os.getenv("NPB_START_YEAR", os.getenv("NPB_YEAR", "1990")))
 _end_env = os.getenv("NPB_END_YEAR", "")
 END_YEAR = int(_end_env) if _end_env.strip() else pd.Timestamp.utcnow().year
@@ -351,18 +351,78 @@ def official_audit(year):
         except Exception as e:out.append({'url':url,'status':'skip','error':str(e)[:300]})
     atomic_csv(pd.DataFrame(out),DATA/'source_official_npb_audit.csv')
 def add_weather(d,year):
-    if d.empty or near_deadline():return d
-    p=season_paths(year);cache=pd.read_csv(p['weather']) if p['weather'].exists() else pd.DataFrame()
+    """Attach forecast-era weather with conservative PIT metadata.
+
+    Historical reanalysis/observed weather is deliberately not used as a
+    predictive feature. The historical-forecast archive contains operational
+    forecast values rather than post-event observations. We conservatively
+    bound availability to 8 hours before valid time so OOS can use the value
+    without assuming that a postgame observation was known pregame.
+    """
+    if d.empty or near_deadline():
+        return d
+    p=season_paths(year)
+    cache=pd.read_csv(p['weather']) if p['weather'].exists() else pd.DataFrame()
     for v in sorted(set(d.venue.astype(str))):
-        if near_deadline():break
-        if v not in PARKS:continue
-        lat,lon=PARKS[v];existing=cache[cache.get('venue',pd.Series(dtype=str)).astype(str)==v] if not cache.empty and 'venue' in cache else pd.DataFrame()
+        if near_deadline():
+            break
+        if v not in PARKS:
+            continue
+        lat,lon=PARKS[v]
+        existing=cache[cache.get('venue',pd.Series(dtype=str)).astype(str)==v] if not cache.empty and 'venue' in cache else pd.DataFrame()
         try:
-            raw=get_json(OPEN_METEO,{'latitude':lat,'longitude':lon,'start_date':f'{year}-03-01','end_date':f'{year}-12-31','hourly':'temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m','timezone':'Asia/Tokyo'});h=raw.get('hourly',{});w=pd.DataFrame({'datetime':pd.to_datetime(h.get('time',[])),'weather_temp_c':h.get('temperature_2m',[]),'weather_humidity_pct':h.get('relative_humidity_2m',[]),'weather_precip_mm':h.get('precipitation',[]),'weather_wind_kmh':h.get('wind_speed_10m',[])});w['datetime']=w.datetime.dt.floor('h');w['venue']=v;existing=existing[~existing.datetime.isin(w.datetime)] if 'datetime' in existing else existing;cache=pd.concat([cache,existing,w],ignore_index=True).drop_duplicates(['venue','datetime'],keep='last')
-        except Exception as e:print('[WEATHER SKIP]',v,str(e)[:120])
-    if not cache.empty:atomic_csv(cache,p['weather'])
-    if cache.empty:return d
-    c=cache.copy();c['datetime']=pd.to_datetime(c.datetime).dt.floor('h');sub=d[['game_id','venue','datetime']].copy();sub.datetime=pd.to_datetime(sub.datetime).dt.floor('h');sub=sub.merge(c,on=['venue','datetime'],how='left');return d.drop(columns=[x for x in ('weather_temp_c','weather_humidity_pct','weather_precip_mm','weather_wind_kmh') if x in d],errors='ignore').merge(sub[['game_id','weather_temp_c','weather_humidity_pct','weather_precip_mm','weather_wind_kmh']],on='game_id',how='left')
+            raw=get_json(
+                OPEN_METEO,
+                {
+                    'latitude':lat,
+                    'longitude':lon,
+                    'start_date':f'{year}-03-01',
+                    'end_date':f'{year}-12-31',
+                    'hourly':'temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m',
+                    'timezone':'Asia/Tokyo',
+                },
+            )
+            h=raw.get('hourly',{})
+            w=pd.DataFrame({
+                'datetime':pd.to_datetime(h.get('time',[])),
+                'weather_temp_c':h.get('temperature_2m',[]),
+                'weather_humidity_pct':h.get('relative_humidity_2m',[]),
+                'weather_precip_mm':h.get('precipitation',[]),
+                'weather_wind_kmh':h.get('wind_speed_10m',[]),
+            })
+            w['datetime']=w.datetime.dt.floor('h')
+            w['venue']=v
+            # Explicit conservative PIT metadata. This is a forecast archive,
+            # not a claim that the exact original dissemination timestamp is
+            # known for every model/version.
+            w['prediction_time_utc']=w['datetime'].dt.tz_localize('Asia/Tokyo',ambiguous='NaT',nonexistent='NaT').dt.tz_convert('UTC').astype(str)
+            w['weather_available_at']=(pd.to_datetime(w['prediction_time_utc'],errors='coerce',utc=True)-pd.Timedelta(hours=8)).astype(str)
+            w['weather_state']='PROJECTED'
+            w['weather_source']='Open-Meteo Historical Forecast'
+            w['weather_pit_quality']='CONSERVATIVE_8H_BOUND'
+            if not existing.empty:
+                existing=existing[~existing.datetime.isin(w.datetime)]
+            cache=pd.concat([cache,existing,w],ignore_index=True).drop_duplicates(['venue','datetime'],keep='last')
+        except Exception as e:
+            print('[WEATHER FORECAST SKIP]',v,str(e)[:160])
+    if not cache.empty:
+        atomic_csv(cache,p['weather'])
+    if cache.empty:
+        return d
+    c=cache.copy()
+    c['datetime']=pd.to_datetime(c.datetime,errors='coerce').dt.floor('h')
+    sub=d[['game_id','venue','datetime']].copy()
+    sub.datetime=pd.to_datetime(sub.datetime,errors='coerce').dt.floor('h')
+    cols=[
+        'game_id','prediction_time_utc','weather_available_at','weather_state',
+        'weather_source','weather_pit_quality','weather_temp_c','weather_humidity_pct',
+        'weather_precip_mm','weather_wind_kmh'
+    ]
+    sub=sub.merge(c,on=['venue','datetime'],how='left')
+    return d.drop(
+        columns=[x for x in cols[1:] if x in d],
+        errors='ignore'
+    ).merge(sub[cols],on='game_id',how='left')
 
 def main():
     DATA.mkdir(exist_ok=True);CP.mkdir(parents=True,exist_ok=True);SEASON_DIR.mkdir(parents=True,exist_ok=True);WEATHER_DIR.mkdir(parents=True,exist_ok=True);coverage_rows=[];all_parts=[];season_summaries=[]
