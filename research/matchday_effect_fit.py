@@ -116,8 +116,16 @@ def main() -> int:
 
     records = []
     for path in candidates:
-        df = pd.read_csv(path)
-        if len(df) < MIN_ROWS or "actual" not in df.columns:
+        try:
+            if path.stat().st_size <= 0:
+                records.append({"checkpoint": str(path), "status":"DEFERRED","reason":"checkpoint file is empty"})
+                continue
+            df = pd.read_csv(path)
+        except (pd.errors.EmptyDataError, OSError, UnicodeError) as exc:
+            records.append({"checkpoint": str(path), "status":"DEFERRED","reason": f"checkpoint unreadable or empty: {type(exc).__name__}"})
+            continue
+        if df.empty or len(df) < MIN_ROWS or "actual" not in df.columns:
+            records.append({"checkpoint": str(path), "status":"DEFERRED","reason":"checkpoint has insufficient rows or missing actual labels"})
             continue
         if "baseline_context_free" not in df.columns:
             records.append({"checkpoint": str(path), "status":"DEFERRED","reason":"checkpoint is not explicitly marked baseline_context_free"})
