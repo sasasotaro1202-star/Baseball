@@ -63,7 +63,7 @@ if matchday_runner:
         ("fetch_official_starters(target_date)", "target-date starter lookup"),
         ('fetch_lineup(g["game_id"],target_date', "date-aware lineup lookup"),
         ("shadow_not_promoted", "shadow non-promotion marker"),
-        ("matchday_policy_eligible", "Matchday Policy eligibility marker"),
+        ("matchday_reforecast_status", "Matchday reforecast status marker"),
     ]:
         if token not in matchday_runner:
             errors.append(f"missing {label} in production_matchday_intelligence.py")
@@ -144,7 +144,9 @@ effect_fit = need("research/matchday_effect_fit.py", r"def\s+fit_effects\b", "Ma
 if effect_fit:
     for token, label in [
         ("baseline_context_free", "context-free baseline guard"),
-        ("validation_delta", "Matchday OOS validation"),
+        ("tune_delta", "Matchday tune OOS validation"),
+        ("final_delta", "Matchday final OOS validation"),
+        ("two_window_gate", "Matchday two-window OOS gate"),
         ("artifact_type", "Matchday effect artifact schema"),
     ]:
         if token not in effect_fit:
