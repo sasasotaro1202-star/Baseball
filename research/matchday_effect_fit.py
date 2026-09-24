@@ -125,8 +125,19 @@ def main() -> int:
         if not bool(pd.to_numeric(df["baseline_context_free"], errors="coerce").fillna(0).astype(bool).all()):
             records.append({"checkpoint": str(path), "status":"DEFERRED","reason":"baseline is not context-free; refusing potential double count"})
             continue
-        free_cols = [c for c in ("pred_context_free_home", "pred_context_free_draw", "pred_context_free_away") if c in df.columns]
-        base_cols = free_cols if len(free_cols) >= 2 else [c for c in ("pred_home", "pred_draw", "pred_away") if c in df.columns]
+        free_candidates = [c for c in (
+            "pred_context_free_home", "pred_context_free_draw", "pred_context_free_away"
+        ) if c in df.columns]
+        # MLB checkpoints carry a pred_context_free_draw column filled with NaN
+        # for schema compatibility; never interpret that as a real third class.
+        finite_class_cols = []
+        for c in free_candidates:
+            if pd.to_numeric(df[c], errors="coerce").notna().mean() >= 0.95:
+                finite_class_cols.append(c)
+        if "pred_context_free_home" not in finite_class_cols or "pred_context_free_away" not in finite_class_cols:
+            base_cols = []
+        else:
+            base_cols = finite_class_cols
         n_classes = len(base_cols)
         if n_classes < 2:
             continue
@@ -163,6 +174,14 @@ def main() -> int:
                 "checkpoint": str(path),
                 "status": "DEFERRED",
                 "reason": "No supported event",
+            })
+            continue
+
+        if not pd.to_numeric(df["actual"], errors="coerce").astype(int).between(0, n_classes - 1).all():
+            records.append({
+                "checkpoint": str(path),
+                "status": "DEFERRED",
+                "reason": "actual labels do not match inferred class count",
             })
             continue
 
