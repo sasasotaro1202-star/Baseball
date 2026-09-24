@@ -122,9 +122,13 @@ def main() -> int:
         if not bool(pd.to_numeric(df["baseline_context_free"], errors="coerce").fillna(0).astype(bool).all()):
             records.append({"checkpoint": str(path), "status":"DEFERRED","reason":"baseline is not context-free; refusing potential double count"})
             continue
-        base_cols = [c for c in ("pred_home", "pred_draw", "pred_away") if c in df.columns]
+        free_cols = [c for c in ("pred_context_free_home", "pred_context_free_draw", "pred_context_free_away") if c in df.columns]
+        base_cols = free_cols if len(free_cols) >= 2 else [c for c in ("pred_home", "pred_draw", "pred_away") if c in df.columns]
         n_classes = len(base_cols)
         if n_classes < 2:
+            continue
+        if not all(str(c).startswith("pred_context_free_") for c in base_cols):
+            records.append({"checkpoint": str(path), "status":"DEFERRED","reason":"context-free baseline columns missing; refusing double count"})
             continue
         event_cols = sorted(c for c in df.columns if str(c).startswith("ctx_"))
         if not event_cols:
