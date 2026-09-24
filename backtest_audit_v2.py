@@ -57,18 +57,18 @@ audit_workflow = need(".github/workflows/baseball_audit.yml", r"backtest_audit_v
 if audit_workflow and "backtest_audit.py" in audit_workflow:
     errors.append("stale audit workflow still references removed backtest_audit.py")
 
-matchday_runner = need("production_matchday_intelligence.py", r"def\\s+main\\b", "current Matchday Intelligence runner")
+matchday_runner = need("production_matchday_intelligence.py", r"def main", "current Matchday Intelligence runner")
 if matchday_runner:
     for token, label in [
         ("fetch_official_starters(target_date)", "target-date starter lookup"),
-        ("fetch_lineup(g["game_id"],target_date", "date-aware lineup lookup"),
+        ('fetch_lineup(g["game_id"],target_date', "date-aware lineup lookup"),
         ("shadow_not_promoted", "shadow non-promotion marker"),
         ("matchday_policy_eligible", "Matchday Policy eligibility marker"),
     ]:
         if token not in matchday_runner:
             errors.append(f"missing {label} in production_matchday_intelligence.py")
 
-matchday_replay = need("research/matchday_replay.py", r"class|def\\s+main\\b", "Matchday PIT replay")
+matchday_replay = need("research/matchday_replay.py", r"class|def main", "Matchday PIT replay")
 if matchday_replay:
     for token, label in [
         ("usable_observations", "PIT observation filter"),
