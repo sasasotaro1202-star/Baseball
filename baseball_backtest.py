@@ -740,6 +740,7 @@ class BaseballBacktest:
         )
         if weather_safe:
             self.context_pit_counters["weather_used"] += 1
+            out["weather_pit_safe"] = 1.0
             for c in ("weather_temp_c", "weather_humidity_pct", "weather_wind_kmh", "weather_precip_mm"):
                 if c in row:
                     try:
