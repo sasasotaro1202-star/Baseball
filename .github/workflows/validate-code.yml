@@ -55,19 +55,14 @@ jobs:
           python -m py_compile research/matchday_intelligence.py
           python -m py_compile research/matchday_effect_fit.py
           python -m py_compile research/matchday_reforecast.py
+          python -m py_compile research/ci_runtime_smoke.py
           python research/matchday_intelligence.py
           python research/ci_runtime_smoke.py
           python research/matchday_effect_fit.py
           python -m json.tool results/matchday_effects.json >/dev/null
-          python research/matchday_reforecast.py
+          python research/matchday_reforecast.py | tee matchday_reforecast_smoke.json
           python -m json.tool matchday_reforecast_smoke.json >/dev/null
           python backtest_audit_v2.py
-          python research/drift_uncertainty_routing.py
-          python -m research.routing_oos_replay
-          python -m json.tool results/routing_oos_replay.json >/dev/null
-          python research/routing_acceptance_gate.py
-          python -m json.tool results/routing_acceptance_gate.json >/dev/null
-
           python research/drift_uncertainty_routing.py
           python -m research.routing_oos_replay
           python -m json.tool results/routing_oos_replay.json >/dev/null
