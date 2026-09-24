@@ -165,12 +165,27 @@ def main() -> int:
             except Exception:
                 continue
         context: Dict[str, Dict[str, Any]] = {}
+        event_values = {
+            "STARTER_CONFIRMED","STARTER_CHANGED",
+            "LINEUP_CONFIRMED","LINEUP_PROJECTED",
+            "PLAYER_OUT","PLAYER_RETURNED","WEATHER_CHANGED",
+            "REST_ASYMMETRY","TRAVEL_BURDEN","MARKET_MOVED",
+            "BULLPEN_STATE_CHANGED",
+        }
         for o in usable_observations(obs, pt):
-            context.setdefault(str(o.kind).lower(), {
+            record = {
                 "state": o.state,
                 "confidence": o.confidence if o.confidence is not None else 1.0,
                 "snapshot_id": o.snapshot_id,
-            })
+            }
+            # Keep both semantic kind and exact event keys. The policy learner
+            # emits event-specific effects (ctx_EVENT_NAME); without this mapping
+            # the fallback replay would silently apply zero effects.
+            context.setdefault(str(o.kind).lower(), record)
+            value = o.value if isinstance(o.value, str) else None
+            if value in event_values:
+                context.setdefault(f"ctx_{value}", record)
+                context.setdefault(value, record)
         p = [float(row["pred_home"])]
         if "pred_draw" in row:
             p.append(float(row["pred_draw"]))
