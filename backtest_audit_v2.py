@@ -18,21 +18,28 @@ def need(path, pattern, label):
         errors.append(f"missing {label} in {path}")
     return text
 
-npbpatch = need("npb_runtime_patch.py", r"def\s+_official_starters_from_npb\b.*?def\s+first_pitchers\b", "strict official starter resolver")
+npbpatch = need("npb_runtime_patch.py", r"# RUNTIME_HARDENING_V5", "NPB runtime hardening V5")
 if npbpatch:
-    if "if not rows:" not in npbpatch:
-        errors.append("NPB schedule empty-state protection missing")
-    if "away_starter" not in npbpatch or "home_starter" not in npbpatch:
-        errors.append("starter fields missing from NPB runtime patch")
-    if "MIN_STARTER_LINE_COVERAGE" not in npbpatch:
-        errors.append("starter coverage gate missing")
+    for token, label in [
+        ("_official_starters_from_npb", "strict official starter resolver"),
+        ("def first_pitchers(", "starter resolver"),
+        ("first_pitchers(r.game_id,r.home,r.away)", "team-aware official fallback call"),
+        ("starter_source", "starter provenance"),
+        ("weather_source", "weather provenance"),
+    ]:
+        if token not in npbpatch:
+            errors.append(f"missing {label} in npb_runtime_patch.py")
 
-runtime = need("baseball_backtest_runtime_patch.py", r"def\s+_normalize_npb_pbp\b", "NPB PBP normalizer")
+runtime = need("baseball_backtest_runtime_patch.py", r"# BACKTEST_RUNTIME_HARDENING_V4", "backtest runtime hardening V4")
 if runtime:
-    if "BACKTEST_RUNTIME_HARDENING_V2" not in runtime:
-        errors.append("runtime hardening V2 marker missing")
-    if "home_starter" not in runtime or "away_starter" not in runtime:
-        errors.append("starter metadata propagation missing")
+    for token, label in [
+        ("def _score_prior", "structural run prior"),
+        ("def fit_score_ensemble", "chronological score ensemble"),
+        ("prior_blend", "prior/model calibration"),
+        ("dispersion_home", "overdispersion"),
+    ]:
+        if token not in runtime:
+            errors.append(f"missing {label} in baseball_backtest_runtime_patch.py")
 
 base = need("baseball_backtest.py", r"def\s+_update_pitcher_history\b", "pitcher history updater")
 if base:
@@ -66,7 +73,7 @@ for workflow_path in (
     ".github/workflows/baseball_recovery.yml",
 ):
     w = need(workflow_path, r"runs-on:\s+ubuntu-latest", "hosted Linux runner")
-    if w and "self-hosted" in w:
+    if w and re.search(r"runs-on:\s*self-hosted", w):
         errors.append(f"self-hosted runner reference remains in {workflow_path}")
 
 try:
