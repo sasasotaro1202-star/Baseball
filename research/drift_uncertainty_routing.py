@@ -38,7 +38,8 @@ class RoutingConfig:
     # consensus entropy. Entropy is retained as an ambiguity proxy, but with
     # less influence on the routing fallback.
     uncertainty_disagreement_mix: float = 0.75
-    uncertainty_entropy_mix: float = 0.25
+    uncertainty_entropy_mix: float = 0.20
+    uncertainty_conformal_mix: float = 0.15
     uncertainty_anchor_mix: float = 1.0
     drift_temperature: float = 0.30
     temperature_min: float = 0.65
@@ -240,6 +241,7 @@ def route_experts(
     history_logloss: np.ndarray,
     drift_score: float = 0.0,
     previous_weights: Optional[np.ndarray] = None,
+    conformal_uncertainty: float = 0.0,
     config: RoutingConfig = RoutingConfig(),
 ) -> RoutingResult:
     """Softly route experts using recent-vs-long performance and uncertainty.
@@ -280,14 +282,18 @@ def route_experts(
         temp = max(config.temperature_min, 1.0 - config.drift_temperature * d)
         base = _stable_softmax(-blended, temperature=temp)
 
-    disagreement, predictive_entropy, uncertainty = ensemble_uncertainty(p)
+    disagreement, predictive_entropy, _base_uncertainty = ensemble_uncertainty(p)
     disagreement_norm = float(np.clip(disagreement / 0.25, 0.0, 1.0))
     ambiguity_norm = float(np.clip(predictive_entropy, 0.0, 1.0))
+    conformal_signal = float(np.clip(conformal_uncertainty, 0.0, 1.0))
+    # Conformal signal is derived only from already-resolved earlier rows.
     uncertainty_for_fallback = float(np.clip(
         config.uncertainty_disagreement_mix * disagreement_norm
-        + config.uncertainty_entropy_mix * ambiguity_norm,
+        + config.uncertainty_entropy_mix * ambiguity_norm
+        + config.uncertainty_conformal_mix * conformal_signal,
         0.0, 1.0
     ))
+    uncertainty = uncertainty_for_fallback
     uniform_mix = float(np.clip(
         config.uncertainty_uniform_mix * uncertainty_for_fallback,
         0.0, 0.80
@@ -522,6 +528,7 @@ def route_and_recalibrate(
     history_logloss: np.ndarray,
     drift_score: float = 0.0,
     previous_weights: Optional[np.ndarray] = None,
+    conformal_uncertainty: float = 0.0,
     calibrator: Optional[AdaptiveTemperatureCalibrator] = None,
     config: RoutingConfig = RoutingConfig(),
 ) -> Tuple[np.ndarray, RoutingResult, float]:
@@ -536,6 +543,7 @@ def route_and_recalibrate(
         history_logloss=history_logloss,
         drift_score=drift_score,
         previous_weights=previous_weights,
+        conformal_uncertainty=conformal_uncertainty,
         config=config,
     )
     mixed = mix_expert_probabilities(expert_probs, result.weights)
@@ -561,11 +569,13 @@ def self_test() -> dict:
     ])
     low = route_experts(probs, hist, drift_score=0.0)
     high = route_experts(probs, hist, drift_score=0.9)
+    conformal_high = route_experts(probs, hist, drift_score=0.0, conformal_uncertainty=1.0)
 
     assert np.isclose(low.weights.sum(), 1.0)
     assert np.isclose(high.weights.sum(), 1.0)
     assert high.weights[1] >= low.weights[1]
     assert high.uncertainty >= 0.0
+    assert conformal_high.uncertainty >= low.uncertainty
 
     y = np.array([0, 1] * 30)
     overconf = np.tile(np.array([[0.90, 0.10], [0.10, 0.90]]), (30, 1))
