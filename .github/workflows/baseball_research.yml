@@ -60,6 +60,13 @@ jobs:
           done
           echo "[RESEARCH] all controller retries failed"
           exit 1
+      - name: Run frozen holdout gate
+        run: |
+          set -euo pipefail
+          . .venv/bin/activate
+          python research/frozen_holdout_gate.py
+          python -m json.tool results/frozen_holdout_gate.json >/dev/null
+
       - name: Generate OpenAI research advisory
         run: |
           set -euo pipefail
@@ -105,5 +112,6 @@ jobs:
             research_history.json
             research_plan.json
             research_ai_advice.json
+            results/frozen_holdout_gate.json
           if-no-files-found: warn
           retention-days: 30
