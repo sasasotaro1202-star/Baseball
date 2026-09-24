@@ -34,11 +34,19 @@ class RoutingConfig:
     inertia: float = 0.65
     drift_inertia_relax: float = 0.35
     uncertainty_uniform_mix: float = 0.70
+    # Disagreement is a stronger proxy for epistemic/model uncertainty than
+    # consensus entropy. Entropy is retained as an ambiguity proxy, but with
+    # less influence on the routing fallback.
+    uncertainty_disagreement_mix: float = 0.75
+    uncertainty_entropy_mix: float = 0.25
     drift_temperature: float = 0.30
     temperature_min: float = 0.65
     temperature_max: float = 1.90
     calibration_alpha: float = 0.15
     calibration_min_samples: int = 30
+    calibration_validation_fraction: float = 0.30
+    calibration_min_validation: int = 15
+    calibration_min_improvement: float = 0.0005
     calibration_max_step: float = 0.15
 
 
@@ -170,9 +178,16 @@ def ensemble_uncertainty(expert_probs: np.ndarray) -> Tuple[float, float, float]
     entropy = float(-np.sum(mean_p * np.log(np.clip(mean_p, _EPS, 1.0))))
     max_entropy = float(np.log(p.shape[1]))
     normalized_entropy = entropy / max(max_entropy, _EPS)
-    # 0.25 disagreement is already material for a probability forecast.
+    # Treat these as proxies, not a formal identifiability result:
+    # disagreement ≈ epistemic/model uncertainty, consensus entropy ≈
+    # outcome ambiguity (aleatoric-like uncertainty). The routing fallback
+    # therefore reacts primarily to disagreement rather than blindly flattening
+    # every intrinsically difficult game.
     disagreement_norm = float(np.clip(disagreement / 0.25, 0.0, 1.0))
-    uncertainty = float(np.clip(0.5 * disagreement_norm + 0.5 * normalized_entropy, 0.0, 1.0))
+    uncertainty = float(np.clip(
+        0.75 * disagreement_norm + 0.25 * normalized_entropy,
+        0.0, 1.0
+    ))
     return disagreement, normalized_entropy, uncertainty
 
 
@@ -222,7 +237,17 @@ def route_experts(
         base = _stable_softmax(-blended, temperature=temp)
 
     disagreement, predictive_entropy, uncertainty = ensemble_uncertainty(p)
-    uniform_mix = float(np.clip(config.uncertainty_uniform_mix * uncertainty, 0.0, 0.80))
+    disagreement_norm = float(np.clip(disagreement / 0.25, 0.0, 1.0))
+    ambiguity_norm = float(np.clip(predictive_entropy, 0.0, 1.0))
+    uncertainty_for_fallback = float(np.clip(
+        config.uncertainty_disagreement_mix * disagreement_norm
+        + config.uncertainty_entropy_mix * ambiguity_norm,
+        0.0, 1.0
+    ))
+    uniform_mix = float(np.clip(
+        config.uncertainty_uniform_mix * uncertainty_for_fallback,
+        0.0, 0.80
+    ))
     weights = (1.0 - uniform_mix) * base + uniform_mix * (1.0 / k)
 
     if previous_weights is not None:
@@ -325,22 +350,58 @@ class AdaptiveTemperatureCalibrator:
     ):
         self.temperature = float(np.clip(temperature, config.temperature_min, config.temperature_max))
         self.config = config
+        self.accepted_updates = 0
+        self.rejected_updates = 0
 
     def predict(self, probabilities: np.ndarray) -> np.ndarray:
         return apply_temperature(probabilities, self.temperature)
 
     def update(self, past_probabilities: np.ndarray, past_outcomes: np.ndarray) -> float:
+        """Update from raw pre-calibration probabilities, then expose new temperature.
+
+        The input probabilities must be the mixed expert probabilities BEFORE the
+        current temperature is applied. A chronological fit/validation split is
+        used so a candidate temperature only moves when it improves log loss on
+        later resolved rows. This avoids recursively fitting a temperature on
+        probabilities that were already temperature-scaled.
+        """
         p = np.asarray(past_probabilities, dtype=float)
         y = np.asarray(past_outcomes, dtype=int).reshape(-1)
-        if len(y) < self.config.calibration_min_samples:
+        min_total = max(
+            self.config.calibration_min_samples + self.config.calibration_min_validation,
+            self.config.calibration_min_samples * 2,
+        )
+        if len(y) < min_total:
             return self.temperature
+        if p.ndim != 2 or len(p) != len(y) or not np.all(np.isfinite(p)):
+            raise ValueError("calibration probabilities/outcomes are invalid")
+
+        frac = float(np.clip(self.config.calibration_validation_fraction, 0.15, 0.50))
+        val_n = max(self.config.calibration_min_validation, int(round(len(y) * frac)))
+        if val_n >= len(y):
+            return self.temperature
+        fit_n = len(y) - val_n
+        fit_p, fit_y = p[:fit_n], y[:fit_n]
+        val_p, val_y = p[fit_n:], y[fit_n:]
         candidate = fit_temperature(
-            p,
-            y,
+            fit_p,
+            fit_y,
             min_samples=self.config.calibration_min_samples,
             t_min=self.config.temperature_min,
             t_max=self.config.temperature_max,
         )
+        current_loss = _logloss(
+            np.array([apply_temperature(row, self.temperature) for row in val_p]),
+            val_y,
+        )
+        candidate_loss = _logloss(
+            np.array([apply_temperature(row, candidate) for row in val_p]),
+            val_y,
+        )
+        if candidate_loss + self.config.calibration_min_improvement >= current_loss:
+            self.rejected_updates += 1
+            return self.temperature
+
         delta = float(np.clip(
             candidate - self.temperature,
             -self.config.calibration_max_step,
@@ -351,6 +412,7 @@ class AdaptiveTemperatureCalibrator:
             self.config.temperature_min,
             self.config.temperature_max,
         ))
+        self.accepted_updates += 1
         return self.temperature
 
 
@@ -416,6 +478,7 @@ def self_test() -> dict:
     after = c.update(overconf, y)
     assert np.isfinite(after)
     assert abs(after - before) <= 0.15 + 1e-9
+    assert c.accepted_updates + c.rejected_updates <= 1
 
     return {
         "status": "PASS",
