@@ -27,6 +27,8 @@ PROMOTION_GATE={
  'max_logloss_regression':0.005,
  'max_brier_regression':0.005,
  'max_accuracy_regression':0.005,
+ 'max_ece_regression':0.010,
+ 'max_high_state_logloss_regression':0.010,
  'require_two_validation_windows':True,
  'require_calibration_check':True,
  'require_no_future_target_data':True,
