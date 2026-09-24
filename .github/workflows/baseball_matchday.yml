@@ -1,0 +1,116 @@
+name: Baseball Matchday Intelligence
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/30 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: baseball-matchday
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  matchday:
+    name: Current NPB matchday snapshot and shadow routing
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: main
+          clean: true
+
+      - name: Hosted runner health
+        run: |
+          set -euo pipefail
+          uname -a
+          python3 --version
+          curl --fail --silent --show-error --location --retry 4 --retry-delay 2 --retry-all-errors --max-time 20 https://npb.jp/ >/dev/null
+          curl --fail --silent --show-error --location --retry 4 --retry-delay 2 --retry-all-errors --max-time 20 'https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.68&hourly=temperature_2m' >/dev/null
+          echo '[HEALTH] NPB + Open-Meteo HTTPS PASS'
+
+      - name: Prepare isolated Python
+        run: |
+          set -euo pipefail
+          python3 -m venv .venv
+          . .venv/bin/activate
+          for attempt in 1 2 3 4; do
+            if python -m pip install --disable-pip-version-check -r requirements.txt; then exit 0; fi
+            if [ "$attempt" -lt 4 ]; then sleep $((attempt * 5)); fi
+          done
+          exit 1
+
+      - name: Compile matchday stack
+        run: |
+          set -euo pipefail
+          . .venv/bin/activate
+          python -m py_compile production_matchday_intelligence.py baseball_backtest.py research/drift_uncertainty_routing.py research/matchday_intelligence.py research/routing_oos_replay.py research/routing_acceptance_gate.py
+
+      - name: Run matchday intelligence with fail-closed retries
+        run: |
+          set -euo pipefail
+          . .venv/bin/activate
+          for attempt in 1 2 3; do
+            echo "[MATCHDAY] attempt ${attempt}/3"
+            if python production_matchday_intelligence.py; then exit 0; fi
+            if [ "$attempt" -lt 3 ]; then sleep $((attempt * 10)); fi
+          done
+          echo '[MATCHDAY] runner failed after 3 attempts'
+          exit 1
+
+      - name: Validate current matchday artifact
+        run: |
+          set -euo pipefail
+          test -s results/matchday_intelligence_current.json
+          python -m json.tool results/matchday_intelligence_current.json >/dev/null
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('results/matchday_intelligence_current.json')
+          x=json.loads(p.read_text(encoding='utf-8'))
+          assert x.get('status') in {'PASS','DEFERRED'}
+          if x.get('status') == 'PASS':
+              assert 'games' in x
+              assert 'source_policy' in x
+              assert x.get('state_hash')
+          print('[MATCHDAY] artifact schema PASS')
+          PY
+
+      - name: Persist material state only
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add results/matchday_intelligence_current.json
+          if git diff --cached --quiet; then
+            echo '[MATCHDAY] no material state change; no commit'
+            exit 0
+          fi
+          git commit -m 'Update NPB Matchday Intelligence snapshot'
+          for attempt in 1 2 3 4 5; do
+            if git fetch origin main && git rebase origin/main && git push origin HEAD:main; then
+              echo "[MATCHDAY] state push succeeded on attempt ${attempt}"
+              exit 0
+            fi
+            git rebase --abort 2>/dev/null || true
+            sleep $((attempt * 5))
+          done
+          echo '[MATCHDAY] state push failed after 5 attempts'
+          exit 1
+
+      - name: Upload run diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: baseball-matchday-${{ github.run_id }}
+          path: |
+            results/matchday_intelligence_current.json
+          if-no-files-found: warn
+          retention-days: 7
