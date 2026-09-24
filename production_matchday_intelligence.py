@@ -578,6 +578,10 @@ def persist_matchday_forward_ledger(predictions: list[dict]) -> None:
                 "pred_home": pred.get("incumbent_home"),
                 "pred_draw": pred.get("incumbent_draw"),
                 "pred_away": pred.get("incumbent_away"),
+                "pred_shadow_home": pred.get("shadow_home"),
+                "pred_shadow_draw": pred.get("shadow_draw"),
+                "pred_shadow_away": pred.get("shadow_away"),
+                "shadow_status": pred.get("shadow_status"),
                 "actual": np.nan,
             })
 
