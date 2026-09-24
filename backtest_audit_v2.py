@@ -68,6 +68,16 @@ if matchday_runner:
         if token not in matchday_runner:
             errors.append(f"missing {label} in production_matchday_intelligence.py")
 
+settlement = need("research/matchday_settle.py", r"def main", "Matchday official settlement")
+if settlement:
+    for token, label in [
+        ("NPB.jp official schedule/result", "official NPB settlement source"),
+        ("same_day_buffer_hours", "same-day settlement safety buffer"),
+        ("actual", "outcome attachment"),
+    ]:
+        if token not in settlement:
+            errors.append(f"missing {label} in research/matchday_settle.py")
+
 matchday_replay = need("research/matchday_replay.py", r"class|def main", "Matchday PIT replay")
 if matchday_replay:
     for token, label in [
