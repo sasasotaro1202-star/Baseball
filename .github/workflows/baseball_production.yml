@@ -158,8 +158,7 @@ jobs:
           MLB_MIN_STARTER_COVERAGE: "90"
         run: python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
       - name: Validate OOS predictions before any state write
-        if: success() && steps.sha_gate.outputs.ok == 'true'
-        if: success() && steps.npb_ready.outputs.ready == 'true'
+        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.npb_ready.outputs.ready == 'true'
         run: |
           set -euo pipefail
           find results -maxdepth 2 -type f -print | head -100
@@ -194,8 +193,7 @@ jobs:
           if-no-files-found: error
           retention-days: 90
       - name: Upload failure diagnostics without touching production state
-        if: success() && steps.sha_gate.outputs.ok == 'true'
-        if: failure()
+        if: failure() && steps.sha_gate.outputs.ok == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: baseball-production-failure-${{ github.run_id }}
