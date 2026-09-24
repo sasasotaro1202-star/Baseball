@@ -85,4 +85,5 @@ jobs:
           python -m json.tool results/routing_oos_replay.json >/dev/null
           python -m research.routing_acceptance_gate
           python -m json.tool results/routing_acceptance_gate.json >/dev/null
+          pytest -q tests
           echo "All Baseball Python syntax/runtime smoke checks passed"
