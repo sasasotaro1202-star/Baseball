@@ -172,6 +172,16 @@ if reforecast:
         if token not in reforecast:
             errors.append(f"missing {label} in research/matchday_reforecast.py")
 
+integrated_gate = need("research/matchday_integrated_acceptance_gate.py", r"candidate_eligible", "integrated Matchday acceptance gate")
+if integrated_gate:
+    for token, label in [
+        ("requires_frozen_holdout", "integrated frozen-holdout requirement"),
+        ("requires_integrity_gate", "integrated integrity requirement"),
+        ("production_auto_promotion", "no auto-promotion marker"),
+    ]:
+        if token not in integrated_gate:
+            errors.append(f"missing {label} in research/matchday_integrated_acceptance_gate.py")
+
 routing_gate = need("research/routing_acceptance_gate.py", r"MIN_LOGLOSS_IMPROVEMENT", "routing acceptance gate")
 if routing_gate:
     for token, label in [
