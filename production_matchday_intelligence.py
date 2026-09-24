@@ -788,8 +788,13 @@ def main() -> int:
         g["game_id"]=gid_map.get((g["home"],g["away"]),"")
         local_dt=pd.Timestamp(f'{g["date"]} {g["hour"]:02d}:{g["minute"]:02d}',tz="Asia/Tokyo")
         g["datetime"]=local_dt.tz_convert("UTC")
+        generic_starters = {"個人年度別成績", "選手一覧", "球団別インデックス", "選手検索", "-", ""}
         g["starter_home"]=starters.get(g["home"],"")
         g["starter_away"]=starters.get(g["away"],"")
+        if g["starter_home"] in generic_starters:
+            g["starter_home"] = ""
+        if g["starter_away"] in generic_starters:
+            g["starter_away"] = ""
         g["starter_state"]="VERIFIED" if g["starter_home"] and g["starter_away"] else "UNKNOWN"
         g["starter_source"]="NPB.jp official announced starters" if g["starter_state"]=="VERIFIED" else ""
         g["starter_available_at"]=now.astimezone(timezone.utc).isoformat() if g["starter_state"]=="VERIFIED" else ""
