@@ -293,47 +293,91 @@ def main() -> int:
     year=now.year
     RESULTS.mkdir(parents=True,exist_ok=True)
 
+    # Context collection is independent from model availability: a temporary
+    # historical-data failure must not erase the current matchday snapshot.
     try:
         games=fetch_schedule(year,target_date)
-        gid_map=fetch_spaia_game_ids(year,target_date)
-        starters=fetch_official_starters()
-        roster=fetch_roster_notice(target_date)
+    except Exception as exc:
+        games=[]
+        schedule_error=f"{type(exc).__name__}: {exc}"
+    else:
+        schedule_error=""
 
-        bt=BaseballBacktest(DATA)
+    try:
+        gid_map=fetch_spaia_game_ids(year,target_date)
+    except Exception as exc:
+        gid_map={}
+        gid_error=f"{type(exc).__name__}: {exc}"
+    else:
+        gid_error=""
+
+    try:
+        starters=fetch_official_starters()
+        starter_error=""
+    except Exception as exc:
+        starters={}
+        starter_error=f"{type(exc).__name__}: {exc}"
+
+    try:
+        roster=fetch_roster_notice(target_date)
+    except Exception as exc:
+        roster={"source":"NPB.jp roster","target_date":target_date,"available":False,"text":"","error":f"{type(exc).__name__}: {exc}"}
+
+    # Best-effort historical model preparation.
+    bt=BaseballBacktest(DATA)
+    historical=pd.DataFrame()
+    X_hist=pd.DataFrame()
+    fitted=None
+    model_error=""
+    checkpoints=RESULTS/"checkpoints"/"npb_walkforward.csv"
+    routing_artifact=RESULTS/"routing_oos_replay.json"
+
+    try:
         historical_raw=bt.load_npb_pbp()
         historical=bt.aggregate_npb_games(historical_raw)
-        # Only completed games strictly before the current target are valid history.
         historical["datetime"]=pd.to_datetime(historical["datetime"],errors="coerce",utc=True)
         cutoff=pd.Timestamp(now).tz_convert("UTC")
         historical=historical[historical["datetime"]<cutoff].copy()
         X_hist,y_hist,_=bt.build_features(historical.assign(league="NPB"))
+        if len(X_hist)>=150:
+            fitted,_,_=bt.fit_ensemble(X_hist,y_hist,"NPB")
+        else:
+            model_error=f"historical rows below model minimum: {len(X_hist)}"
+    except Exception as exc:
+        model_error=f"{type(exc).__name__}: {exc}"
 
-        fitted,val_scores,best_name=bt.fit_ensemble(X_hist,y_hist,"NPB") if len(X_hist)>=150 else (None,{},None)
-        predictions=[]
-        checkpoints=RESULTS/"checkpoints"/"npb_walkforward.csv"
-        routing_artifact=RESULTS/"routing_oos_replay.json"
-        gate_artifact=RESULTS/"routing_acceptance_gate.json"
-
-        for g in games:
-            g["game_id"]=gid_map.get((g["home"],g["away"]),"")
-            local_dt=pd.Timestamp(f'{g["date"]} {g["hour"]:02d}:{g["minute"]:02d}',tz="Asia/Tokyo")
-            g["datetime"]=local_dt.tz_convert("UTC")
-            g["starter_home"]=starters.get(g["home"],"")
-            g["starter_away"]=starters.get(g["away"],"")
-            g["starter_state"]="VERIFIED" if g["starter_home"] and g["starter_away"] else "UNKNOWN"
-            g["starter_source"]="NPB.jp official announced starters" if g["starter_state"]=="VERIFIED" else ""
-            g["starter_available_at"]=now.astimezone(timezone.utc).isoformat() if g["starter_state"]=="VERIFIED" else ""
-            g["prediction_time_utc"]=now.astimezone(timezone.utc).isoformat()
+    predictions=[]
+    for g in games:
+        g["game_id"]=gid_map.get((g["home"],g["away"]),"")
+        local_dt=pd.Timestamp(f'{g["date"]} {g["hour"]:02d}:{g["minute"]:02d}',tz="Asia/Tokyo")
+        g["datetime"]=local_dt.tz_convert("UTC")
+        g["starter_home"]=starters.get(g["home"],"")
+        g["starter_away"]=starters.get(g["away"],"")
+        g["starter_state"]="VERIFIED" if g["starter_home"] and g["starter_away"] else "UNKNOWN"
+        g["starter_source"]="NPB.jp official announced starters" if g["starter_state"]=="VERIFIED" else ""
+        g["starter_available_at"]=now.astimezone(timezone.utc).isoformat() if g["starter_state"]=="VERIFIED" else ""
+        g["prediction_time_utc"]=now.astimezone(timezone.utc).isoformat()
+        try:
             g["lineup"]=fetch_lineup(g["game_id"],g["home"],g["away"]) if g["game_id"] else {"home":[],"away":[]}
-            g["lineup_state"]="VERIFIED" if g["lineup"]["home"] and g["lineup"]["away"] else "UNKNOWN"
-            g["lineup_source"]="SPAIA starting_members_for_flash" if g["lineup_state"]=="VERIFIED" else ""
-            g["lineup_available_at"]=now.astimezone(timezone.utc).isoformat() if g["lineup_state"]=="VERIFIED" else ""
-            w=fetch_weather(g); g["weather"]=w
-            if w.get("state")=="VERIFIED":
-                g["weather_available_at"]=w["available_at"]; g["weather_state"]="PROJECTED"
-            else:
-                g["weather_available_at"]=""; g["weather_state"]="UNKNOWN"
-            rt=rest_travel(historical,g); g["rest_travel"]=rt
+        except Exception:
+            g["lineup"]={"home":[],"away":[]}
+        g["lineup_state"]="VERIFIED" if g["lineup"]["home"] and g["lineup"]["away"] else "UNKNOWN"
+        g["lineup_source"]="SPAIA starting_members_for_flash" if g["lineup_state"]=="VERIFIED" else ""
+        g["lineup_available_at"]=now.astimezone(timezone.utc).isoformat() if g["lineup_state"]=="VERIFIED" else ""
+        try:
+            w=fetch_weather(g)
+        except Exception as exc:
+            w={"state":"UNKNOWN","source":"Open-Meteo","reason":f"{type(exc).__name__}: {exc}"}
+        g["weather"]=w
+        if w.get("state")=="VERIFIED":
+            g["weather_available_at"]=w.get("available_at","")
+            g["weather_state"]="PROJECTED"
+        else:
+            g["weather_available_at"]=""; g["weather_state"]="UNKNOWN"
+        g["rest_travel"]=rest_travel(historical,g)
+
+        pred_payload={"incumbent_status":"DEFERRED","shadow_status":"DEFERRED","shadow_not_promoted":True}
+        if fitted is not None:
             row=pd.Series({
                 "league":"NPB","game_id":g["game_id"],"datetime":g["datetime"],"home":g["home"],"away":g["away"],
                 "home_starter":g["starter_home"],"away_starter":g["starter_away"],
@@ -347,8 +391,7 @@ def main() -> int:
                 "weather_temp_c":w.get("temperature_c",0.0),"weather_humidity_pct":w.get("humidity_pct",0.0),
                 "weather_wind_kmh":w.get("wind_kmh",0.0),"weather_precip_mm":w.get("precip_mm",0.0),
             })
-            pred_payload={"incumbent_status":"DEFERRED","shadow_status":"DEFERRED"}
-            if fitted is not None:
+            try:
                 fx=pd.DataFrame([bt.match_features(row)])
                 incumbent=bt.ensemble_proba(fitted,fx)[0]
                 pred_payload.update({
@@ -356,144 +399,133 @@ def main() -> int:
                     "incumbent_home":float(incumbent[0]),
                     "incumbent_draw":float(incumbent[1]),
                     "incumbent_away":float(incumbent[2]),
-                    "incumbent_model":str("Ensemble(" + "+".join(x[2] for x in fitted) + ")"),
+                    "incumbent_model":"Ensemble(" + "+".join(x[2] for x in fitted) + ")",
                 })
-                # Research-only dynamic routing shadow.
-                if checkpoints.exists():
-                    try:
-                        ck=pd.read_csv(checkpoints)
-                        keys=sorted({c[len("expert_"):].rsplit("_",1)[0] for c in ck.columns if c.startswith("expert_") and c.endswith("_home")})
-                        current_raw=[]
-                        current_names=[]
-                        for model,_w,name in fitted:
-                            key="".join(ch.lower() if ch.isalnum() else "_" for ch in str(name)).strip("_")
-                            if key not in keys: continue
-                            pp=bt.align_proba(model.predict_proba(fx),model.classes_,"NPB")[0]
-                            current_raw.append(pp);current_names.append(key)
-                        if len(current_raw)>=2:
-                            hist_losses=[]
-                            hist_probs=[]
-                            hist_y=[]
-                            ordered_ck=ck.sort_values(["datetime","game_id"])
-                            for _,rr in ordered_ck.tail(1200).iterrows():
-                                try:
-                                    yy=int(rr["actual"])
-                                    probs=[]
-                                    losses=[]
-                                    for key in current_names:
-                                        names=[f"expert_{key}_home",f"expert_{key}_draw",f"expert_{key}_away"]
-                                        pp=np.asarray([float(rr[n]) for n in names],dtype=float)
-                                        if not np.all(np.isfinite(pp)):
-                                            raise ValueError("non-finite historical expert probability")
-                                        pp=np.clip(pp,1e-12,1.0);pp/=pp.sum()
-                                        probs.append(pp);losses.append(float(-np.log(pp[yy])))
-                                    hist_probs.append(probs);hist_losses.append(losses);hist_y.append(yy)
-                                except Exception:
-                                    continue
-                            if len(hist_losses)>=45:
-                                raw=np.asarray(hist_probs[-120:],dtype=float)
-                                ys=np.asarray(hist_y[-120:],dtype=int)
-                                bank=ExpertCalibrationBank(len(current_raw),config=RoutingConfig())
-                                bank.update(raw,ys)
-                                cal_current=bank.predict(np.asarray(current_raw))
-                                cal_hist=np.asarray([bank.predict(row) for row in raw],dtype=float)
-                                loss_hist=np.empty((len(cal_hist),len(current_raw)),dtype=float)
-                                for hi, probs_row in enumerate(cal_hist):
-                                    loss_hist[hi,:] = -np.log(
-                                        np.clip(probs_row[:, ys[hi]],1e-12,1.0)
-                                    )
-                                # Incumbent ensemble weights are the stable anchor for
-                                # high-uncertainty routing; only matched experts are used.
-                                fitted_weight_map={name:float(w) for _m,w,name in fitted}
-                                prev=np.asarray([fitted_weight_map.get(name,0.0) for name in current_names],dtype=float)
-                                if prev.sum() <= 0:
-                                    prev=None
-                                feature_drift=0.0
-                                try:
-                                    if len(X_hist) >= 24:
-                                        recent_hist=X_hist.tail(12)
-                                        old_hist=X_hist.iloc[max(0,len(X_hist)-96):-12]
-                                        common=[c for c in recent_hist.columns if c in fx.columns]
-                                        if len(common)>=8 and len(old_hist)>=12:
-                                            feature_drift=feature_drift_score(
-                                                old_hist[common].to_numpy(dtype=float),
-                                                recent_hist[common].to_numpy(dtype=float),
-                                            )
-                                except Exception:
-                                    feature_drift=0.0
-                                output_drift=0.0
-                                if len(hist_probs)>=24:
-                                    arr=np.asarray(hist_probs[-96:],dtype=float)
-                                    short=arr[-12:].mean(axis=0)
-                                    old=arr[:-12]
-                                    if len(old)>=12:
-                                        output_drift=float(np.clip(
-                                            1.0-np.exp(-float(np.mean(np.abs(short-old.mean(axis=0))))/0.12),
-                                            0.0,1.0,
-                                        ))
-                                drift=float(np.clip(0.70*output_drift+0.30*feature_drift,0.0,1.0))
-                                rr=route_experts(cal_current,loss_hist,drift_score=drift,previous_weights=prev)
-                                mixed=mix_expert_probabilities(cal_current,rr.weights)
-                                temp=1.0
-                                if routing_artifact.exists():
-                                    ra=json.loads(routing_artifact.read_text(encoding="utf-8"))
-                                    candidates=[x for x in ra.get("results",[]) if x.get("status")=="PASS"]
-                                    if candidates:
-                                        temp=float(candidates[-1].get("final_temperature",1.0))
-                                final=np.asarray(mixed)
-                                if abs(temp-1.0)>1e-9:
-                                    final=np.power(np.clip(final,1e-12,1.0),1.0/temp);final/=final.sum()
-                                pred_payload.update({
-                                    "shadow_status":"PASS",
-                                    "shadow_home":float(final[0]),"shadow_draw":float(final[1]),"shadow_away":float(final[2]),
-                                    "shadow_weights":rr.weights.tolist(),"shadow_temperature":temp,
-                                    "shadow_uncertainty":float(rr.uncertainty),
-                                    "shadow_drift":float(rr.drift_score),
-                                    "shadow_not_promoted":True,
-                                })
-                    except Exception as exc:
-                        pred_payload["shadow_reason"]=f"routing shadow deferred: {type(exc).__name__}: {exc}"
-            g["prediction"]=pred_payload
-            predictions.append(g)
 
-        payload={
-            "schema_version":1,
-            "status":"PASS",
-            "prediction_time_utc":now.astimezone(timezone.utc).isoformat(),
-            "target_date_jst":target_date,
-            "source_policy":{"schedule":"NPB.jp","starter":"NPB.jp announcement","lineup":"SPAIA current snapshot","weather":"Open-Meteo forecast","market":"UNKNOWN/no paid source"},
-            "roster_notice":roster,
-            "games":predictions,
-        }
-        # Stable state hash intentionally excludes retrieval timestamps so
-        # identical context/model state does not create a Git commit every run.
-        stable_payload=json.loads(json.dumps(payload,ensure_ascii=False,default=str))
-        stable_payload.pop("prediction_time_utc",None)
-        for gg in stable_payload.get("games",[]):
-            for key in ("prediction_time_utc","starter_available_at","lineup_available_at"):
-                gg.pop(key,None)
-            w=gg.get("weather")
-            if isinstance(w,dict):
-                w.pop("retrieved_at",None);w.pop("available_at",None)
-        stable_hash_value=stable_hash(stable_payload)
-        payload["state_hash"]=stable_hash_value
-        target=RESULTS/"matchday_intelligence_current.json"
-        old_hash=None
-        if target.exists():
-            try: old_hash=json.loads(target.read_text(encoding="utf-8")).get("state_hash")
-            except Exception: old_hash=None
-        if old_hash != stable_hash_value:
-            target.write_text(json.dumps(payload,ensure_ascii=False,indent=2,default=str)+"\n",encoding="utf-8")
-        print(json.dumps({"status":"PASS","games":len(predictions),"state_hash":stable_hash_value,"material_change":old_hash!=stable_hash_value},ensure_ascii=False))
-        return 0
-    except Exception as exc:
-        payload={
-            "schema_version":1,"status":"DEFERRED","reason":f"{type(exc).__name__}: {exc}",
-            "prediction_time_utc":now.astimezone(timezone.utc).isoformat(),"target_date_jst":target_date,
-        }
-        (RESULTS/"matchday_intelligence_current.json").write_text(json.dumps(payload,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-        print(json.dumps(payload,ensure_ascii=False))
-        return 0
+                if checkpoints.exists():
+                    ck=pd.read_csv(checkpoints)
+                    keys=sorted({c[len("expert_"):].rsplit("_",1)[0] for c in ck.columns if c.startswith("expert_") and c.endswith("_home")})
+                    current_raw=[]; current_names=[]
+                    for model,_w,name in fitted:
+                        key="".join(ch.lower() if ch.isalnum() else "_" for ch in str(name)).strip("_")
+                        if key not in keys: continue
+                        current_raw.append(bt.align_proba(model.predict_proba(fx),model.classes_,"NPB")[0])
+                        current_names.append(key)
+
+                    if len(current_raw)>=2:
+                        hist_losses=[]; hist_probs=[]; hist_y=[]
+                        ordered_ck=ck.sort_values(["datetime","game_id"])
+                        for _,rrw in ordered_ck.tail(1200).iterrows():
+                            try:
+                                yy=int(rrw["actual"]); probs=[]
+                                for key in current_names:
+                                    cols=[f"expert_{key}_home",f"expert_{key}_draw",f"expert_{key}_away"]
+                                    pp=np.asarray([float(rrw[n]) for n in cols],dtype=float)
+                                    if not np.all(np.isfinite(pp)): raise ValueError("non-finite probability")
+                                    pp=np.clip(pp,1e-12,1.0); pp/=pp.sum(); probs.append(pp)
+                                hist_probs.append(probs);hist_y.append(yy)
+                            except Exception:
+                                continue
+
+                        if len(hist_probs)>=45:
+                            raw=np.asarray(hist_probs[-120:],dtype=float); ys=np.asarray(hist_y[-120:],dtype=int)
+                            bank=ExpertCalibrationBank(len(current_raw),config=RoutingConfig())
+                            bank.update(raw,ys)
+                            cal_current=bank.predict(np.asarray(current_raw))
+                            cal_hist=np.asarray([bank.predict(z) for z in raw],dtype=float)
+                            loss_hist=-np.log(np.clip(
+                                np.take_along_axis(cal_hist,ys.reshape(-1,1)[:,None],axis=2).squeeze(-1),
+                                1e-12,1.0,
+                            ))
+                            # The expression above is intentionally replaced below
+                            # with a shape-safe explicit loop for clarity.
+                            loss_hist=np.empty((len(cal_hist),len(current_raw)),dtype=float)
+                            for hi,z in enumerate(cal_hist):
+                                loss_hist[hi,:]=-np.log(np.clip(z[:,ys[hi]],1e-12,1.0))
+
+                            fitted_weight_map={name:float(wt) for _m,wt,name in fitted}
+                            prev=np.asarray([fitted_weight_map.get(name,0.0) for name in current_names],dtype=float)
+                            if prev.sum()<=0: prev=None
+
+                            output_drift=0.0
+                            if len(hist_probs)>=24:
+                                arr=np.asarray(hist_probs[-96:],dtype=float)
+                                short=arr[-12:].mean(axis=0)
+                                old=arr[:-12]
+                                if len(old)>=12:
+                                    output_drift=float(np.clip(1.0-np.exp(-float(np.mean(np.abs(short-old.mean(axis=0))))/0.12),0,1))
+                            feature_drift=0.0
+                            try:
+                                if len(X_hist)>=24:
+                                    recent=X_hist.tail(12)
+                                    old=X_hist.iloc[max(0,len(X_hist)-96):-12]
+                                    common=[c for c in recent.columns if c in fx.columns]
+                                    if len(common)>=8 and len(old)>=12:
+                                        feature_drift=feature_drift_score(old[common].to_numpy(dtype=float),recent[common].to_numpy(dtype=float))
+                            except Exception:
+                                feature_drift=0.0
+                            drift=float(np.clip(0.70*output_drift+0.30*feature_drift,0,1))
+                            rr=route_experts(cal_current,loss_hist,drift_score=drift,previous_weights=prev)
+                            mixed=mix_expert_probabilities(cal_current,rr.weights)
+
+                            # Recalibration is allowed only when the research replay
+                            # has produced a candidate temperature; otherwise keep 1.0.
+                            temp=1.0
+                            if routing_artifact.exists():
+                                ra=json.loads(routing_artifact.read_text(encoding="utf-8"))
+                                eligible_temps=[
+                                    float(x.get("final_temperature",1.0))
+                                    for x in ra.get("results",[])
+                                    if x.get("status")=="PASS"
+                                ]
+                                if eligible_temps: temp=eligible_temps[-1]
+                            final=mixed.copy()
+                            if abs(temp-1.0)>1e-9:
+                                final=np.power(np.clip(final,1e-12,1.0),1.0/temp);final/=final.sum()
+
+                            pred_payload.update({
+                                "shadow_status":"PASS",
+                                "shadow_home":float(final[0]),"shadow_draw":float(final[1]),"shadow_away":float(final[2]),
+                                "shadow_weights":rr.weights.tolist(),"shadow_temperature":temp,
+                                "shadow_uncertainty":float(rr.uncertainty),"shadow_disagreement":float(rr.disagreement),
+                                "shadow_drift":drift,"shadow_feature_drift":feature_drift,"shadow_output_drift":output_drift,
+                            })
+            except Exception as exc:
+                pred_payload["shadow_reason"]=f"{type(exc).__name__}: {exc}"
+        if model_error and pred_payload["incumbent_status"]=="DEFERRED":
+            pred_payload["incumbent_reason"]=model_error
+        g["prediction"]=pred_payload
+        predictions.append(g)
+
+    payload={
+        "schema_version":1,
+        "status":"PASS" if games or not schedule_error else "DEFERRED",
+        "prediction_time_utc":now.astimezone(timezone.utc).isoformat(),
+        "target_date_jst":target_date,
+        "source_policy":{"schedule":"NPB.jp","starter":"NPB.jp announcement","lineup":"SPAIA current snapshot","weather":"Open-Meteo forecast","market":"UNKNOWN/no paid source"},
+        "collection_diagnostics":{"schedule_error":schedule_error,"spaia_schedule_error":gid_error,"starter_error":starter_error,"model_error":model_error},
+        "roster_notice":roster,
+        "games":predictions,
+    }
+    stable_payload=json.loads(json.dumps(payload,ensure_ascii=False,default=str))
+    stable_payload.pop("prediction_time_utc",None)
+    for gg in stable_payload.get("games",[]):
+        for key in ("prediction_time_utc","starter_available_at","lineup_available_at"):
+            gg.pop(key,None)
+        w=gg.get("weather")
+        if isinstance(w,dict):
+            w.pop("retrieved_at",None);w.pop("available_at",None)
+    stable_hash_value=stable_hash(stable_payload)
+    payload["state_hash"]=stable_hash_value
+    target=RESULTS/"matchday_intelligence_current.json"
+    old_hash=None
+    if target.exists():
+        try: old_hash=json.loads(target.read_text(encoding="utf-8")).get("state_hash")
+        except Exception: old_hash=None
+    if old_hash != stable_hash_value:
+        target.write_text(json.dumps(payload,ensure_ascii=False,indent=2,default=str)+"\n",encoding="utf-8")
+    print(json.dumps({"status":payload["status"],"games":len(predictions),"state_hash":stable_hash_value,"material_change":old_hash!=stable_hash_value},ensure_ascii=False))
+    return 0
 
 
 if __name__=="__main__":
