@@ -24,12 +24,14 @@ REQUIRED = {
     "npb_multi_source.py": [
         "https://spaia.jp/baseball/npb/api",
         "https://npb.jp",
-        "https://archive-api.open-meteo.com/v1/archive",
+        "https://historical-forecast-api.open-meteo.com/v1/forecast",
         "flash_atbat_history",
         "both_pitcher_game_stats",
         "both_batter_stats",
         "starting_members_for_flash",
         "game_text_pbp",
+        "weather_pit_quality",
+        "CONSERVATIVE_8H_BOUND",
     ],
     "baseball_backtest.py": [
         "statsapi.mlb.com",
