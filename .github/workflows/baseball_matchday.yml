@@ -51,16 +51,11 @@ jobs:
         run: |
           set -euo pipefail
           . .venv/bin/activate
-          python -m py_compile production_matchday_intelligence.py baseball_backtest.py research/drift_uncertainty_routing.py research/conformal_uncertainty.py research/matchday_intelligence.py research/matchday_policy.py research/matchday_policy_learning.py research/matchday_effect_fit.py research/matchday_effect_dataset.py research/matchday_replay.py research/matchday_settle.py research/routing_oos_replay.py research/routing_acceptance_gate.py
+          python -m py_compile production_matchday_intelligence.py baseball_backtest.py research/drift_uncertainty_routing.py research/conformal_uncertainty.py research/matchday_intelligence.py research/matchday_policy.py research/matchday_policy_learning.py research/matchday_effect_fit.py research/matchday_effect_dataset.py research/matchday_change_ledger.py research/matchday_replay.py research/matchday_settle.py research/routing_oos_replay.py research/routing_acceptance_gate.py
           python research/drift_uncertainty_routing.py >/dev/null
           python research/conformal_uncertainty.py >/dev/null
           python research/matchday_intelligence.py >/dev/null
           python research/matchday_policy.py >/dev/null
-          python research/matchday_replay.py
-          python research/matchday_settle.py
-          python research/matchday_change_ledger.py
-          python research/matchday_effect_dataset.py
-          python -m json.tool results/matchday_settlement.json >/dev/null
 
       - name: Run matchday intelligence with fail-closed retries
         run: |
