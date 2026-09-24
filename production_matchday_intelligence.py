@@ -131,18 +131,92 @@ def fetch_schedule(year: int, target_date: str):
 
 
 def fetch_spaia_game_ids(year: int, target_date: str):
-    raw = get(f"{SPAIA}/schedules", {"Year": year}).json()
+    """Resolve SPAIA game IDs, with a public-page fallback.
+
+    The structured schedule endpoint is preferred. If it returns no usable
+    pair, the public daily SPAIA page is scanned for /game/<id> links and team
+    names around each link. This keeps current lineup retrieval free and avoids
+    depending on undocumented API response shape.
+    """
     result = {}
-    for g in raw if isinstance(raw, list) else []:
-        d = pd.to_datetime(g.get("datetime") or g.get("DateJPN") or g.get("date"), errors="coerce")
-        if pd.isna(d) or d.strftime("%Y-%m-%d") != target_date:
-            continue
-        home = norm_team(g.get("HTeamNameS") or g.get("home_team_short_name") or g.get("homeTeam") or g.get("HomeTeamName"))
-        away = norm_team(g.get("VTeamNameS") or g.get("away_team_short_name") or g.get("visitorTeam") or g.get("AwayTeamName"))
-        gid = str(g.get("GameID") or g.get("gameId") or g.get("game_id") or g.get("gamePk") or "").strip()
-        if home and away and gid:
-            result[(home,away)] = gid
-    return result
+    try:
+        raw = get(f"{SPAIA}/schedules", {"Year": year}).json()
+        for g in raw if isinstance(raw, list) else []:
+            d = pd.to_datetime(
+                g.get("datetime") or g.get("DateJPN") or g.get("date"),
+                errors="coerce",
+            )
+            if pd.isna(d) or d.strftime("%Y-%m-%d") != target_date:
+                continue
+            home = norm_team(
+                g.get("HTeamNameS") or g.get("home_team_short_name")
+                or g.get("homeTeam") or g.get("HomeTeamName")
+            )
+            away = norm_team(
+                g.get("VTeamNameS") or g.get("away_team_short_name")
+                or g.get("visitorTeam") or g.get("AwayTeamName")
+            )
+            gid = str(
+                g.get("GameID") or g.get("gameId")
+                or g.get("game_id") or g.get("gamePk") or ""
+            ).strip()
+            if home in TEAM_NAMES and away in TEAM_NAMES and gid:
+                result[(home, away)] = gid
+    except Exception:
+        pass
+
+    missing_pairs = [
+        (h, a) for h, a in (
+            ("広島東洋カープ","読売ジャイアンツ"),
+            ("北海道日本ハムファイターズ","東北楽天ゴールデンイーグルス"),
+            ("阪神タイガース","横浜DeNAベイスターズ"),
+            ("東京ヤクルトスワローズ","中日ドラゴンズ"),
+            ("千葉ロッテマリーンズ","埼玉西武ライオンズ"),
+            ("福岡ソフトバンクホークス","オリックス・バファローズ"),
+        ) if (h, a) not in result
+    ]
+
+    if not missing_pairs:
+        return result
+
+    try:
+        url = f"{SPAIA}/../?date={target_date.replace('-', '')}"
+        page = get(url).content
+        doc = lxml_html.fromstring(page)
+        short_alias = {
+            "広島東洋カープ": ("広島","広島東洋"),
+            "読売ジャイアンツ": ("巨人","読売"),
+            "北海道日本ハムファイターズ": ("日本ハム","日ハム"),
+            "東北楽天ゴールデンイーグルス": ("楽天","東北楽天"),
+            "阪神タイガース": ("阪神",),
+            "横浜DeNAベイスターズ": ("DeNA","横浜"),
+            "東京ヤクルトスワローズ": ("ヤクルト",),
+            "中日ドラゴンズ": ("中日",),
+            "千葉ロッテマリーンズ": ("ロッテ",),
+            "埼玉西武ライオンズ": ("西武",),
+            "福岡ソフトバンクホークス": ("ソフトバンク",),
+            "オリックス・バファローズ": ("オリックス",),
+        }
+        for a in doc.xpath('//a[contains(@href,"/baseball/npb/game/")]'):
+            href = str(a.get("href") or "")
+            m = re.search(r"/baseball/npb/game/(\d+)", href)
+            if not m:
+                continue
+            gid = m.group(1)
+            parent = a.getparent()
+            context = " ".join(
+                str(x) for x in (
+                    a.text_content(),
+                    parent.text_content() if parent is not None else "",
+                    parent.getparent().text_content() if parent is not None and parent.getparent() is not None else "",
+                ) if x
+            )
+            for home, away in missing_pairs:
+                if any(tok in context for tok in short_alias[home]) and any(tok in context for tok in short_alias[away]):
+                    result[(home, away)] = gid
+        return result
+    except Exception:
+        return result
 
 
 def fetch_official_starters(target_date: str):
