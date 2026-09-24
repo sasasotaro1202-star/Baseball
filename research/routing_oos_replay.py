@@ -181,7 +181,7 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
         history_logloss.append(row_losses)
         history_expert_probs.append(current)
         previous_weights = rr.weights.copy()
-        calibrator.update(np.asarray(routed_probs), np.asarray(outcomes))
+        calibrator.update(np.asarray(routed_probs[-config.long_window:]), np.asarray(outcomes[-config.long_window:]))
 
     baseline_metrics = _metrics(np.asarray(base_probs, dtype=float), np.asarray(outcomes))
     routed_metrics = _metrics(np.asarray(routed_probs, dtype=float), np.asarray(outcomes))
