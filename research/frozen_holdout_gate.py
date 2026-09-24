@@ -10,7 +10,7 @@ import json, math, sys
 from pathlib import Path
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "results"
 OUT = RESULTS / "frozen_holdout_gate.json"
 HOLDOUT_FRAC = 0.15
