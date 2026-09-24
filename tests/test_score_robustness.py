@@ -54,6 +54,6 @@ def test_low_high_is_the_complement_of_total_score_over_six():
 
 
 def test_low_high_is_not_an_individual_team_seven_plus_rule():
-    # Expected total = 6.5: High probability is above 0.5 under total-score definition.
-    low, high = low_high_probs(3.25, 3.25)
+    # Expected total = 7.0: High probability is above 0.5 under total-score definition.
+    low, high = low_high_probs(3.5, 3.5)
     assert high > 0.5
