@@ -141,11 +141,17 @@ def main() -> int:
         gid = str(row["game_id"])
         scheduled = pd.to_datetime(row.get("datetime"), errors="coerce", utc=True)
         choices = snapshot_by_game.get(gid, [])
+        exact = [x for x in choices if str(x.get("prediction_time_utc")) == str(row["prediction_time_utc"])]
+        if exact:
+            selected.append(exact[-1])
+            continue
         eligible = []
         for env in choices:
             pt = pd.to_datetime(env.get("prediction_time_utc"), errors="coerce", utc=True)
             if pd.notna(pt) and (pd.isna(scheduled) or pt <= scheduled):
                 eligible.append((pt, env))
+        # A non-exact fallback can be used only for context replay; it must not
+        # be mixed with an older recorded shadow prediction.
         selected.append(max(eligible, key=lambda x: x[0])[1] if eligible else None)
 
     base_probs = []
@@ -191,10 +197,11 @@ def main() -> int:
             p.append(float(row["pred_draw"]))
         p.append(float(row["pred_away"]))
         recorded_shadow = []
+        exact_snapshot = str(env.get("prediction_time_utc")) == str(row["prediction_time_utc"])
         for name in ("pred_shadow_home", "pred_shadow_draw", "pred_shadow_away"):
             if name in row and pd.notna(row[name]):
                 recorded_shadow.append(float(row[name]))
-        if len(recorded_shadow) == len(p) and np.all(np.isfinite(recorded_shadow)):
+        if exact_snapshot and len(recorded_shadow) == len(p) and np.all(np.isfinite(recorded_shadow)):
             # Prefer the exact probability emitted during the original pregame
             # run. This is the forward track record; no retrospective refit can
             # overwrite it.
