@@ -98,8 +98,15 @@ jobs:
           set -euo pipefail
           status_file="data/checkpoints/npb_collection_status.json"
           if [ ! -s "$status_file" ]; then
-            echo '[ACQ RECOVERY] no checkpoint status to persist'
-            exit 0
+            year_checkpoint="$(find data/checkpoints -type f -name '*_status.json' -size +0c -print -quit 2>/dev/null || :)"
+            if [ -z "$year_checkpoint" ]; then
+              year_checkpoint="$(find data/checkpoints -type f -name '*_game_enrichment.csv' -size +0c -print -quit 2>/dev/null || :)"
+            fi
+            if [ -z "$year_checkpoint" ]; then
+              echo '[ACQ RECOVERY] no resumable checkpoint files found'
+              exit 0
+            fi
+            echo "[ACQ RECOVERY] aggregate status absent; using season checkpoint $year_checkpoint"
           fi
           python - <<'PY'
           import json
@@ -125,7 +132,7 @@ jobs:
               echo "[ACQ RECOVERY] resumable checkpoint persisted on attempt $attempt"
               exit 0
             fi
-            git rebase --abort 2>/dev/null || true
+            git rebase --abort 2>/dev/null || :
             sleep $((attempt * 5))
           done
           echo '[ACQ RECOVERY] failed to persist resumable checkpoint after 5 attempts'

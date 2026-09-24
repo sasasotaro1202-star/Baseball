@@ -381,6 +381,59 @@ def enrich_one(r):
 
 def save_status(year,games,cp,done,failures,complete=False):
     p=season_paths(year);both_starters=int(((cp.get('home_starter','').fillna('').astype(str)!='')&(cp.get('away_starter','').fillna('').astype(str)!='')).sum()) if not cp.empty else 0;both_lines=int((cp.get('home_starter_line_ok',pd.Series(dtype=bool)).fillna(False)&cp.get('away_starter_line_ok',pd.Series(dtype=bool)).fillna(False)).sum()) if not cp.empty else 0;atomic_json({'year':year,'schedule_games':len(games),'checkpoint_games':len(cp),'done':int(done),'failures':len(failures),'both_starters':both_starters,'both_starter_lines':both_lines,'coverage_pct':round(100*both_lines/max(1,both_starters),2),'complete':bool(complete),'updated_at':pd.Timestamp.utcnow().isoformat()},p['status'])
+def persist_global_checkpoint():
+    """Persist a resumable cross-season status after every season boundary.
+
+    Per-season checkpoints are the primary recovery source. The aggregate status
+    is refreshed incrementally so an interrupted multi-season run still exposes
+    completed game counts to downstream recovery and production gates.
+    """
+    statuses = []
+    for year in range(START_YEAR, END_YEAR + 1):
+        st = season_paths(year)['status']
+        if st.exists():
+            try:
+                statuses.append(json.loads(st.read_text(encoding='utf-8')))
+            except Exception:
+                continue
+
+    disk_parts = []
+    for year in range(START_YEAR, END_YEAR + 1):
+        f = season_paths(year)['out']
+        if f.exists() and f.stat().st_size > 0:
+            try:
+                disk_parts.append(pd.read_csv(f, low_memory=False))
+            except Exception:
+                continue
+    aggregate_games = 0
+    if disk_parts:
+        aggregate = pd.concat(disk_parts, ignore_index=True, sort=False)
+        if 'game_id' in aggregate.columns:
+            aggregate = aggregate.drop_duplicates('game_id', keep='last')
+        if {'date','game_id'}.issubset(aggregate.columns):
+            aggregate = aggregate.sort_values(['date','game_id']).reset_index(drop=True)
+        atomic_csv(aggregate, ALL_OUT)
+        aggregate_games = int(len(aggregate))
+
+    complete_all = (
+        len(statuses) >= (END_YEAR - START_YEAR + 1)
+        and all(
+            bool(x.get('complete', False))
+            for x in statuses
+            if START_YEAR <= int(x.get('year', -1)) <= END_YEAR
+        )
+    )
+    atomic_json({
+        'start_year': START_YEAR,
+        'end_year': END_YEAR,
+        'seasons_requested': END_YEAR - START_YEAR + 1,
+        'seasons_status': statuses,
+        'aggregate_games': aggregate_games,
+        'complete': complete_all,
+        'updated_at': pd.Timestamp.utcnow().isoformat(),
+    }, ALL_STATUS)
+
+
 def official_audit(year):
     out=[];DATA.mkdir(exist_ok=True);urls=[f'{NPB}/bis/{year}/stats/std_c.html',f'{NPB}/bis/{year}/stats/std_p.html',f'{NPB}/bis/{year}/stats/tmb_c.html',f'{NPB}/bis/{year}/stats/tmb_p.html',f'{NPB}/bis/{year}/stats/tmp_c.html',f'{NPB}/bis/{year}/stats/tmp_p.html']
     for url in urls:
@@ -474,7 +527,7 @@ def main():
             try:player_rows=pd.read_csv(player_path,low_memory=False).to_dict('records')
             except Exception:player_rows=[]
         if games.empty:
-            atomic_csv(pd.DataFrame(columns=['game_id','datetime','home','away','home_score','away_score','game_type','venue']),paths['cp']);atomic_json({'year':year,'schedule_games':0,'checkpoint_games':0,'done':0,'failures':0,'both_starters':0,'both_starter_lines':0,'coverage_pct':0.0,'complete':True,'unavailable':True,'updated_at':pd.Timestamp.utcnow().isoformat()},paths['status']);coverage_rows.append({'year':year,'games':0,'both_starters':0,'home_starter_lines':0,'away_starter_lines':0,'both_starter_lines':0,'starter_line_coverage_pct':0.0,'checkpoint_complete':True,'remaining_games':0});continue
+            atomic_csv(pd.DataFrame(columns=['game_id','datetime','home','away','home_score','away_score','game_type','venue']),paths['cp']);atomic_json({'year':year,'schedule_games':0,'checkpoint_games':0,'done':0,'failures':0,'both_starters':0,'both_starter_lines':0,'coverage_pct':0.0,'complete':True,'unavailable':True,'updated_at':pd.Timestamp.utcnow().isoformat()},paths['status']);coverage_rows.append({'year':year,'games':0,'both_starters':0,'home_starter_lines':0,'away_starter_lines':0,'both_starter_lines':0,'starter_line_coverage_pct':0.0,'checkpoint_complete':True,'remaining_games':0});persist_global_checkpoint();continue
         if not cp.empty and 'game_id' in cp:cp=cp.drop_duplicates('game_id',keep='last')
         player_done_ids=set(pd.DataFrame(player_rows).get('game_id',pd.Series(dtype=str)).astype(str)) if player_rows else set();missing_ids=(set(games.game_id.astype(str))-set(cp.get('game_id',pd.Series(dtype=str)).astype(str))) if LIGHT_ENRICH else (set(games.game_id.astype(str))-player_done_ids);missing=games[games.game_id.astype(str).isin(missing_ids)].copy();print(f'[CHECKPOINT] year={year} existing={len(cp)} player_enriched={len(player_done_ids)} light_mode={LIGHT_ENRICH} missing={len(missing)}')
         with cf.ThreadPoolExecutor(max_workers=WORKERS) as ex:
@@ -495,10 +548,13 @@ def main():
         if player_rows:atomic_csv(pd.DataFrame(player_rows).drop_duplicates(['game_id','player_id','side','role'],keep='last'),player_path)
         if failures:
             old=pd.read_csv(paths['failures']) if paths['failures'].exists() else pd.DataFrame();atomic_csv(pd.concat([old,pd.DataFrame(failures)],ignore_index=True).drop_duplicates(['game_id','error'],keep='last'),paths['failures'])
-        if len(cp)==0:continue
+        if len(cp)==0:
+            persist_global_checkpoint()
+            continue
         cp=cp.sort_values(['datetime','game_id']).reset_index(drop=True);complete=bool(set(games.game_id.astype(str)).issubset(set(cp.game_id.astype(str))));d=add_weather(cp,year);d['league']='NPB';d['date']=pd.to_datetime(d.datetime);d['inning']=1;d['half']='';d['event']='';d['addedRuns']=0;d['pitcher']='';atomic_csv(d,paths['out']);both_starters=int(((d.home_starter.fillna('').astype(str)!='')&(d.away_starter.fillna('').astype(str)!='')).sum());both_lines=int((d.home_starter_line_ok.fillna(False)&d.away_starter_line_ok.fillna(False)).sum());home_lines=int(d.home_starter_line_ok.fillna(False).sum());away_lines=int(d.away_starter_line_ok.fillna(False).sum());coverage=round(100*both_lines/max(1,both_starters),2);coverage_rows.append({'year':year,'games':len(d),'both_starters':both_starters,'home_starter_lines':home_lines,'away_starter_lines':away_lines,'both_starter_lines':both_lines,'starter_line_coverage_pct':coverage,'checkpoint_complete':complete,'remaining_games':max(0,len(games)-len(cp))});save_status(year,games,cp,completed,failures,complete=complete);season_summaries.append({'year':year,'games':len(d),'complete':complete,'remaining':max(0,len(games)-len(cp))});print(f'[OUTPUT] year={year} {paths["out"]} games={len(d)} starters={both_starters} both_starter_lines={both_lines}');print(f'[COVERAGE] year={year} home_lines={home_lines} away_lines={away_lines} both={both_lines}/{both_starters} ({coverage:.1f}%) remaining={max(0,len(games)-len(cp))}');
         if not near_deadline():official_audit(year)
         all_parts.append(d)
+        persist_global_checkpoint()
     player_parts=[]
     for year in range(START_YEAR,END_YEAR+1):
         pf=season_paths(year)['cp'].with_name(f'{year}_player_game_features.csv')
@@ -517,13 +573,14 @@ def main():
         old=pd.read_csv(COVERAGE) if COVERAGE.exists() else pd.DataFrame();new=pd.DataFrame(coverage_rows)
         if not old.empty and 'year' in old:new=pd.concat([old[~old.year.isin(new.year)],new],ignore_index=True)
         atomic_csv(new.sort_values('year'),COVERAGE)
+    persist_global_checkpoint()
     statuses=[]
-    for year in range(START_YEAR,END_YEAR+1):
-        st=season_paths(year)['status']
-        if st.exists():
-            try:statuses.append(json.loads(st.read_text(encoding='utf-8')))
-            except Exception:pass
-    complete_all=bool(statuses) and all(x.get('complete',False) for x in statuses if START_YEAR<=int(x.get('year',-1))<=END_YEAR) and len(statuses)>=(END_YEAR-START_YEAR+1);atomic_json({'start_year':START_YEAR,'end_year':END_YEAR,'seasons_requested':END_YEAR-START_YEAR+1,'seasons_status':statuses,'aggregate_games':int(len(pd.read_csv(ALL_OUT,low_memory=False))) if ALL_OUT.exists() else 0,'complete':complete_all,'updated_at':pd.Timestamp.utcnow().isoformat()},ALL_STATUS)
+    if ALL_STATUS.exists():
+        try:
+            statuses=json.loads(ALL_STATUS.read_text(encoding='utf-8')).get('seasons_status',[])
+        except Exception:
+            statuses=[]
+    complete_all=bool(statuses) and all(x.get('complete',False) for x in statuses if START_YEAR<=int(x.get('year',-1))<=END_YEAR) and len(statuses)>=(END_YEAR-START_YEAR+1)
     if not complete_all:print('[PARTIAL] massive historical collection is resumable; next run continues from season/game checkpoints');return 0
     cov=pd.read_csv(COVERAGE) if COVERAGE.exists() else pd.DataFrame()
     if not cov.empty:

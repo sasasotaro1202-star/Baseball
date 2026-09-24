@@ -139,6 +139,7 @@ jobs:
             research_plan.json
             research_ai_advice.json
             results/frozen_holdout_gate.json
+            results/calibration_oos.json
             results/routing_oos_replay.json
             results/routing_acceptance_gate.json
             routing_smoke.json
