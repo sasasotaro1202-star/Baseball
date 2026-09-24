@@ -36,7 +36,7 @@ from research.drift_uncertainty_routing import (
     route_experts,
 )
 from research.conformal_uncertainty import uncertainty_summary
-from research.matchday_intelligence import ContextKind, Observation
+from research.matchday_intelligence import ContextKind, Observation, observation_delta_events
 from research.matchday_reforecast import reforecast
 
 ROOT = Path(__file__).resolve().parent
@@ -821,8 +821,11 @@ def main() -> int:
             row=pd.Series({
                 "league":"NPB","game_id":g["game_id"],"datetime":g["datetime"],"home":g["home"],"away":g["away"],
                 "home_starter":g["starter_home"],"away_starter":g["starter_away"],
+                "home_pregame_starter":g["starter_home"],"away_pregame_starter":g["starter_away"],
                 "home_lineup_json":json.dumps(g["lineup"]["home"],ensure_ascii=False),
                 "away_lineup_json":json.dumps(g["lineup"]["away"],ensure_ascii=False),
+                "home_pregame_lineup_json":json.dumps(g["lineup"]["home"],ensure_ascii=False),
+                "away_pregame_lineup_json":json.dumps(g["lineup"]["away"],ensure_ascii=False),
                 "prediction_time_utc":g["prediction_time_utc"],
                 "home_lineup_available_at":g["lineup_available_at"],"away_lineup_available_at":g["lineup_available_at"],
                 "home_lineup_state":g["lineup_state"],"away_lineup_state":g["lineup_state"],
