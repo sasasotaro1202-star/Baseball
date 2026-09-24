@@ -233,6 +233,7 @@ class BaseballBacktest:
         self.checkpoint_version = "npb-massive-resume-v5-matchday-shadow"
         self._last_temperature = 1.0
         self.context_pit_counters = defaultdict(int)
+        self.core_context_training_ready = {"starter": False, "lineup": False}
         self.player_game = pd.DataFrame()
         self.pitcher_history = defaultdict(list)
         self.player_history = defaultdict(list)
@@ -691,8 +692,11 @@ class BaseballBacktest:
         for k, v in af.items(): out[f"a_{k}"] = v
         for k in set(hf) & set(af): out[f"d_{k}"] = hf[k] - af[k]
         # Starter pregame information comes only from historical starter profiles.
-        hs = str(row.get("home_pregame_starter", "") or "")
-        ass = str(row.get("away_pregame_starter", "") or "")
+        if self.core_context_training_ready.get("starter", False):
+            hs = str(row.get("home_pregame_starter", "") or "")
+            ass = str(row.get("away_pregame_starter", "") or "")
+        else:
+            hs = ass = ""
         out.update(self.starter_features(league, hs, dt, prefix="hs_"))
         out.update(self.starter_features(league, ass, dt, prefix="as_"))
         # Player-by-player lineup micro-features are PIT-sensitive because the
@@ -706,7 +710,11 @@ class BaseballBacktest:
                 return self._context_pit_safe(row, dt, side_avail, side_state)
             return self._context_pit_safe(row, dt, "lineup_available_at", "lineup_state")
 
-        lineup_safe = lineup_side_safe("home") and lineup_side_safe("away")
+        lineup_safe = (
+            self.core_context_training_ready.get("lineup", False)
+            and lineup_side_safe("home")
+            and lineup_side_safe("away")
+        )
         if lineup_safe:
             hpf=self._lineup_features(row,"home",league)
             apf=self._lineup_features(row,"away",league)
@@ -836,6 +844,47 @@ class BaseballBacktest:
             for (gid,pid,side),g in self.player_game.groupby(['game_id','player_id','side'],sort=False):
                 self.player_index[(str(gid),str(pid),str(side))] = g.iloc[-1].to_dict()
         Xrows, y, meta = [], [], []
+        # Enable pregame starter/lineup features in the core model only when the
+        # historical training corpus contains >=50% PIT-safe observations. Until
+        # then those signals remain Matchday-layer-only to prevent support mismatch.
+        def _ready(kind: str) -> bool:
+            if len(games) == 0:
+                return False
+            ok_count = 0
+            valid_count = 0
+            for _, rr in games.iterrows():
+                try:
+                    cutoff = pd.to_datetime(rr.get("prediction_time_utc"), errors="coerce", utc=True)
+                    if pd.isna(cutoff):
+                        continue
+                    valid_count += 1
+                    if kind == "starter":
+                        a = str(rr.get("home_pregame_starter", "") or "")
+                        z = str(rr.get("away_pregame_starter", "") or "")
+                        av = pd.to_datetime(rr.get("starter_available_at"), errors="coerce", utc=True)
+                        ok = bool(a and z and pd.notna(av) and av <= cutoff)
+                    else:
+                        h = str(rr.get("home_pregame_lineup_json", "") or "")
+                        a = str(rr.get("away_pregame_lineup_json", "") or "")
+                        hav = pd.to_datetime(rr.get("home_lineup_available_at"), errors="coerce", utc=True)
+                        aav = pd.to_datetime(rr.get("away_lineup_available_at"), errors="coerce", utc=True)
+                        hs = str(rr.get("home_lineup_state", "") or "").upper()
+                        aas = str(rr.get("away_lineup_state", "") or "").upper()
+                        ok = bool(
+                            h and a and pd.notna(hav) and pd.notna(aav)
+                            and hav <= cutoff and aav <= cutoff
+                            and hs in {"VERIFIED", "PROJECTED"}
+                            and aas in {"VERIFIED", "PROJECTED"}
+                        )
+                    ok_count += int(ok)
+                except Exception:
+                    continue
+            return valid_count > 0 and (ok_count / valid_count) >= 0.50
+
+        self.core_context_training_ready["starter"] = _ready("starter")
+        self.core_context_training_ready["lineup"] = _ready("lineup")
+        self.context_pit_counters["core_starter_training_ready"] = int(self.core_context_training_ready["starter"])
+        self.context_pit_counters["core_lineup_training_ready"] = int(self.core_context_training_ready["lineup"])
         # Deterministic chronological order: datetime then game_id. This handles doubleheaders better than date-only logic.
         games = games.sort_values(["datetime", "game_id"]).reset_index(drop=True)
         last_season=None
