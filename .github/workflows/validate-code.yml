@@ -56,39 +56,18 @@ jobs:
           python -m py_compile research/matchday_effect_fit.py
           python -m py_compile research/matchday_reforecast.py
           python research/matchday_intelligence.py
-          python - <<'PY
-          import pandas as pd
-          from baseball_backtest import BaseballBacktest
-          b = BaseballBacktest()
-          row = pd.Series({
-              "league":"NPB","datetime":pd.Timestamp("2026-09-24T18:00:00"),
-              "home":"広島東洋カープ","away":"読売ジャイアンツ",
-              "home_starter":"A","away_starter":"B",
-              "home_lineup_json":"[]","away_lineup_json":"[]",
-              "weather_temp_c":25.0,"weather_humidity_pct":60.0,
-              "weather_wind_kmh":8.0,"weather_precip_mm":0.0,
-          })
-          first = b.match_features(row)
-          assert "h_games_last_3d" in first and "home_bullpen_short_rest" in first
-          assert first["weather_pit_safe"] == 0.0
-          assert first["weather_temp_c"] == 0.0
-          safe_row = row.copy()
-          safe_row["prediction_time_utc"] = "2026-09-24T08:00:00Z"
-          safe_row["weather_available_at"] = "2026-09-24T07:00:00Z"
-          safe_row["weather_state"] = "PROJECTED"
-          safe_row["lineup_available_at"] = "2026-09-24T07:00:00Z"
-          safe_row["lineup_state"] = "PROJECTED"
-          safe = b.match_features(safe_row)
-          assert safe["weather_pit_safe"] != 0.0 and safe["weather_temp_c"] == 25.0
-          sh, sa = b.state("NPB","広島東洋カープ"), b.state("NPB","読売ジャイアンツ")
-          b._update_team(sh, 0, 5, 2, True, 3, pd.Timestamp("2026-09-23T18:00:00"), row, opponent="読売ジャイアンツ")
-          b._update_team(sa, 2, 2, 5, False, 0, pd.Timestamp("2026-09-23T18:00:00"), row, opponent="広島東洋カープ")
-          later = b._team_features("NPB","広島東洋カープ","home",pd.Timestamp("2026-09-24T18:00:00"),opponent="読売ジャイアンツ")
-          assert later["games_last_3d"] == 1.0
-          assert later["same_opponent_last_10"] == 1.0
-          print("Baseball core runtime smoke: PASS")
-          PY
+          python research/ci_runtime_smoke.py
+          python research/matchday_effect_fit.py
+          python -m json.tool results/matchday_effects.json >/dev/null
+          python research/matchday_reforecast.py
+          python -m json.tool matchday_reforecast_smoke.json >/dev/null
           python backtest_audit_v2.py
+          python research/drift_uncertainty_routing.py
+          python -m research.routing_oos_replay
+          python -m json.tool results/routing_oos_replay.json >/dev/null
+          python research/routing_acceptance_gate.py
+          python -m json.tool results/routing_acceptance_gate.json >/dev/null
+
           python research/drift_uncertainty_routing.py
           python -m research.routing_oos_replay
           python -m json.tool results/routing_oos_replay.json >/dev/null
