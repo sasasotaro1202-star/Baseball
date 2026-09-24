@@ -31,7 +31,7 @@ REQUIRED = {
         "starting_members_for_flash",
         "game_text_pbp",
         "weather_pit_quality",
-        "CONSERVATIVE_8H_BOUND",
+        "CONSERVATIVE_T0_BOUND",
     ],
     "baseball_backtest.py": [
         "statsapi.mlb.com",
