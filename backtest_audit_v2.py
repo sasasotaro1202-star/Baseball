@@ -50,6 +50,25 @@ audit_workflow = need(".github/workflows/baseball_audit.yml", r"backtest_audit_v
 if audit_workflow and "backtest_audit.py" in audit_workflow:
     errors.append("stale audit workflow still references removed backtest_audit.py")
 
+validation = need(".github/workflows/validate-code.yml", r"\.github/workflows/\*\*", "workflow-wide validation trigger")
+if validation and "[YAML] PASS" not in validation:
+    errors.append("workflow-wide YAML validation step missing")
+
+production = need(".github/workflows/baseball_production.yml", r"Validate Code Syntax", "production validation dependency")
+if production and ("workflow_run:" not in production or "github.event.workflow_run.conclusion == 'success'" not in production):
+    errors.append("production is not fail-closed on successful validation")
+
+for workflow_path in (
+    ".github/workflows/baseball_production.yml",
+    ".github/workflows/baseball-data-acquisition.yml",
+    ".github/workflows/baseball_mac_compute.yml",
+    ".github/workflows/baseball_research.yml",
+    ".github/workflows/baseball_recovery.yml",
+):
+    w = need(workflow_path, r"runs-on:\s+ubuntu-latest", "hosted Linux runner")
+    if w and "self-hosted" in w:
+        errors.append(f"self-hosted runner reference remains in {workflow_path}")
+
 try:
     import pandas as pd
     candidates = [ROOT / "data" / "npb_multi_source_games_all.csv", ROOT / "data" / "npb_aggregate.csv"]
