@@ -116,6 +116,12 @@ def main() -> int:
         df = pd.read_csv(path)
         if len(df) < MIN_ROWS or "actual" not in df.columns:
             continue
+        if "baseline_context_free" not in df.columns:
+            records.append({"checkpoint": str(path), "status":"DEFERRED","reason":"checkpoint is not explicitly marked baseline_context_free"})
+            continue
+        if not bool(pd.to_numeric(df["baseline_context_free"], errors="coerce").fillna(0).astype(bool).all()):
+            records.append({"checkpoint": str(path), "status":"DEFERRED","reason":"baseline is not context-free; refusing potential double count"})
+            continue
         base_cols = [c for c in ("pred_home", "pred_draw", "pred_away") if c in df.columns]
         n_classes = len(base_cols)
         if n_classes < 2:
@@ -159,8 +165,9 @@ def main() -> int:
             "effects": effects,
             "validation_baseline": bm,
             "validation_context": cm,
+            "validation_fused": best_mix_metrics,
             "validation_delta": delta,
-            "fusion_alpha": None,
+            "fusion_alpha": best_alpha,
         })
 
     passed = [r for r in records if r.get("status")=="PASS" and r.get("candidate_eligible")]
@@ -170,7 +177,7 @@ def main() -> int:
         "status": "PASS" if passed else "DEFERRED",
         "candidate_eligible": bool(passed),
         "effects": passed[0]["effects"] if passed else [],
-        "fusion_alpha": None,
+        "fusion_alpha": passed[0]["fusion_alpha"] if passed else None,
         "results": records,
         "production_auto_promotion": False,
         "reason": None if passed else "No context candidate cleared the later chronological validation segment",
