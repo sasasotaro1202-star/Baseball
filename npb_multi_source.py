@@ -434,10 +434,11 @@ def add_weather(d,year):
             # not a claim that the exact original dissemination timestamp is
             # known for every model/version.
             w['weather_valid_time_utc']=w['datetime'].dt.tz_localize('Asia/Tokyo',ambiguous='NaT',nonexistent='NaT').dt.tz_convert('UTC').astype(str)
-            w['weather_available_at']=w['weather_valid_time_utc']
+            valid = pd.to_datetime(w['weather_valid_time_utc'], errors='coerce', utc=True)
+            w['weather_available_at']=(valid-pd.Timedelta(hours=8)).astype(str)
             w['weather_state']='PROJECTED'
             w['weather_source']='Open-Meteo Historical Forecast'
-            w['weather_pit_quality']='CONSERVATIVE_T0_BOUND'
+            w['weather_pit_quality']='CONSERVATIVE_8H_BOUND'
             if not existing.empty:
                 existing=existing[~existing.datetime.isin(w.datetime)]
             cache=pd.concat([cache,existing,w],ignore_index=True).drop_duplicates(['venue','datetime'],keep='last')
