@@ -35,7 +35,6 @@ class ContextKind(str, Enum):
     WEATHER = "WEATHER"
     MARKET = "MARKET"
     BULLPEN = "BULLPEN"
-    AVAILABILITY = "AVAILABILITY"
 
 
 class ContextEvent(str, Enum):
