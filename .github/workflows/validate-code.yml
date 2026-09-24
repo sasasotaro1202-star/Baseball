@@ -4,6 +4,8 @@ on:
     paths:
       - '**.py'
       - '.github/workflows/**'
+      - 'requirements*.txt'
+      - 'pyproject.toml'
   workflow_dispatch:
 
 concurrency:
