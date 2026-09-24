@@ -6,6 +6,10 @@ on:
       - '.github/workflows/**'
   workflow_dispatch:
 
+concurrency:
+  group: baseball-validate
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -14,8 +18,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - name: Install dependencies with retry
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4; do
+            if pip install --disable-pip-version-check -r requirements.txt; then exit 0; fi
+            if [ "$attempt" -lt 4 ]; then sleep $((attempt * 5)); fi
+          done
+          exit 1
       - name: Validate GitHub Actions workflow YAML
         run: |
           ruby -e 'require "yaml"; Dir[".github/workflows/*.yml",".github/workflows/*.yaml"].flatten.sort.each { |p| YAML.load_file(p); puts "[YAML] PASS #{p}" }'
