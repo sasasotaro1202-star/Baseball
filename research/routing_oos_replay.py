@@ -22,6 +22,7 @@ from research.drift_uncertainty_routing import (
     mix_expert_probabilities,
     route_experts,
 )
+from research.conformal_uncertainty import uncertainty_summary
 
 
 RESULTS = Path("results")
@@ -153,6 +154,7 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
     history_logloss = []
     history_expert_probs = []
     raw_expert_history = []
+    history_final_probs = []
     expert_calibrators = ExpertCalibrationBank(len(expert_cols), config=config)
     feature_cols = _safe_numeric_pregame_columns(df)
     history_pregame_features = []
@@ -197,12 +199,32 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
         else:
             drift = output_drift
 
+        conformal_signal = 0.0
+        if len(history_final_probs) >= 30 and outcomes:
+            try:
+                unc = uncertainty_summary(
+                    np.mean(current, axis=0),
+                    np.asarray(history_final_probs[-120:], dtype=float),
+                    np.asarray(outcomes[-120:], dtype=int),
+                    alpha=0.10,
+                )
+                k_classes = current.shape[1]
+                set_risk = float(np.clip(
+                    (int(unc["prediction_set_size"]) - 1) / max(k_classes - 1, 1),
+                    0.0, 1.0,
+                ))
+                gap_risk = float(np.clip(1.0 - float(unc["top_gap"]) / 0.25, 0.0, 1.0))
+                conformal_signal = float(np.clip(0.6 * set_risk + 0.4 * gap_risk, 0.0, 1.0))
+            except Exception:
+                conformal_signal = 0.0
+
         if len(hist) >= 8:
             rr = route_experts(
                 expert_probs=current,
                 history_logloss=hist,
                 drift_score=drift,
                 previous_weights=previous_weights,
+                conformal_uncertainty=conformal_signal,
                 config=config,
             )
         else:
@@ -240,6 +262,7 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
             "feature_drift_score": feature_drift,
             "feature_mmd_drift_score": feature_mmd_drift,
             "uncertainty": rr.uncertainty,
+            "conformal_uncertainty": conformal_signal,
             "disagreement": rr.disagreement,
             "temperature_before_update": calibrator.temperature,
             "weights": rr.weights.tolist(),
@@ -252,6 +275,7 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
         history_logloss.append(row_losses)
         history_expert_probs.append(current)
         raw_expert_history.append(current_raw)
+        history_final_probs.append(final.copy())
         if current_features is not None:
             history_pregame_features.append(current_features)
         previous_weights = rr.weights.copy()
