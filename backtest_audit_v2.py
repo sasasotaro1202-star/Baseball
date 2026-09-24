@@ -67,6 +67,18 @@ if weather_ingest:
         if token not in weather_ingest:
             errors.append(f"missing {label} in npb_multi_source.py")
 
+matchday_workflow = need(".github/workflows/baseball_matchday.yml", r"baseball-matchday", "Matchday Intelligence workflow")
+if matchday_workflow:
+    for token, label in [
+        ('cron: "*/30 * * * *"', "30-minute matchday schedule"),
+        ("production_matchday_intelligence.py", "live matchday runner"),
+        ("shadow_not_promoted", "non-promotion safety marker"),
+        ("runs-on: ubuntu-latest", "standard hosted runner"),
+        ("contents: write", "matchday state persistence permission"),
+    ]:
+        if token not in matchday_workflow:
+            errors.append(f"missing {label} in baseball_matchday.yml")
+
 routing = need("research/drift_uncertainty_routing.py", r"def\s+route_experts\b", "drift/uncertainty routing")
 if routing:
     for token, label in [
