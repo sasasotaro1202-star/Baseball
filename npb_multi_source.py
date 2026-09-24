@@ -31,6 +31,7 @@ END_YEAR = int(_end_env) if _end_env.strip() else pd.Timestamp.utcnow().year
 if START_YEAR > END_YEAR:
     START_YEAR, END_YEAR = END_YEAR, START_YEAR
 WORKERS = int(os.getenv("NPB_DOWNLOAD_WORKERS", "6"))
+LIGHT_ENRICH = os.getenv("NPB_LIGHT_ENRICH", "0").strip().lower() in {"1","true","yes"}
 BUDGET_SEC = float(os.getenv("NPB_COLLECTION_BUDGET_SEC", "1560"))
 SAFETY_SEC = float(os.getenv("NPB_COLLECTION_SAFETY_SEC", "90"))
 DEADLINE = time.monotonic() + max(60.0, BUDGET_SEC - SAFETY_SEC)
@@ -326,7 +327,12 @@ def atomic_json(obj,path):
     path=Path(path);tmp=path.with_suffix('.tmp');tmp.write_text(json.dumps(obj,ensure_ascii=False,indent=2,default=str),encoding='utf-8');tmp.replace(path)
 
 def enrich_one(r):
-    away,home=first_pitchers(r.game_id);date=pd.Timestamp(r.datetime).strftime('%Y%m%d');hm=pitcher_line(r.game_id,date,home) if home else None;am=pitcher_line(r.game_id,date,away) if away else None;bat=game_batting_metrics(r.game_id,date,r.home,r.away);lineup=extract_starting_lineup(r.game_id,date,r.home,r.away);players=player_game_metrics(r.game_id,date,r.home,r.away,lineup)+player_pitcher_game_metrics(r.game_id,date,r.home,r.away);z=r._asdict();z.update({'home_starter':home,'away_starter':away,'home_lineup_json':json.dumps(lineup.get('home',[]),ensure_ascii=False,separators=(',',':')),'away_lineup_json':json.dumps(lineup.get('away',[]),ensure_ascii=False,separators=(',',':')),'player_rows_count':len(players)})
+    away,home=first_pitchers(r.game_id);date=pd.Timestamp(r.datetime).strftime('%Y%m%d');hm=pitcher_line(r.game_id,date,home) if home else None;am=pitcher_line(r.game_id,date,away) if away else None
+    if LIGHT_ENRICH:
+        bat=None;lineup={'home':[],'away':[]};players=[]
+    else:
+        bat=game_batting_metrics(r.game_id,date,r.home,r.away);lineup=extract_starting_lineup(r.game_id,date,r.home,r.away);players=player_game_metrics(r.game_id,date,r.home,r.away,lineup)+player_pitcher_game_metrics(r.game_id,date,r.home,r.away)
+    z=r._asdict();z.update({'home_starter':home,'away_starter':away,'home_lineup_json':json.dumps(lineup.get('home',[]),ensure_ascii=False,separators=(',',':')),'away_lineup_json':json.dumps(lineup.get('away',[]),ensure_ascii=False,separators=(',',':')),'player_rows_count':len(players),'enrichment_mode':'light' if LIGHT_ENRICH else 'full'})
     for side,m in [('home',hm),('away',am)]:
         for k in ('era','whip','k9','bb9','hr9','fip','ip','er','h','hr','bb','so','pitches','k_rate','bb_rate'):z[f'{side}_starter_{k}']=m.get(k) if m else np.nan
     if bat:
@@ -368,7 +374,7 @@ def main():
         if games.empty:
             atomic_csv(pd.DataFrame(columns=['game_id','datetime','home','away','home_score','away_score','game_type','venue']),paths['cp']);atomic_json({'year':year,'schedule_games':0,'checkpoint_games':0,'done':0,'failures':0,'both_starters':0,'both_starter_lines':0,'coverage_pct':0.0,'complete':True,'unavailable':True,'updated_at':pd.Timestamp.utcnow().isoformat()},paths['status']);coverage_rows.append({'year':year,'games':0,'both_starters':0,'home_starter_lines':0,'away_starter_lines':0,'both_starter_lines':0,'starter_line_coverage_pct':0.0,'checkpoint_complete':True,'remaining_games':0});continue
         if not cp.empty and 'game_id' in cp:cp=cp.drop_duplicates('game_id',keep='last')
-        player_done_ids=set(pd.DataFrame(player_rows).get('game_id',pd.Series(dtype=str)).astype(str)) if player_rows else set();missing_ids=set(games.game_id.astype(str))-player_done_ids;missing=games[games.game_id.astype(str).isin(missing_ids)].copy();print(f'[CHECKPOINT] year={year} existing={len(cp)} player_enriched={len(player_done_ids)} missing_for_full_enrichment={len(missing)}')
+        player_done_ids=set(pd.DataFrame(player_rows).get('game_id',pd.Series(dtype=str)).astype(str)) if player_rows else set();missing_ids=(set(games.game_id.astype(str))-set(cp.get('game_id',pd.Series(dtype=str)).astype(str))) if LIGHT_ENRICH else (set(games.game_id.astype(str))-player_done_ids);missing=games[games.game_id.astype(str).isin(missing_ids)].copy();print(f'[CHECKPOINT] year={year} existing={len(cp)} player_enriched={len(player_done_ids)} light_mode={LIGHT_ENRICH} missing={len(missing)}')
         with cf.ThreadPoolExecutor(max_workers=WORKERS) as ex:
             futures={ex.submit(enrich_one,r):r.game_id for r in missing.itertuples(index=False)};completed=0
             for f in cf.as_completed(futures):
