@@ -42,3 +42,9 @@ def test_generic_starter_label_cannot_become_verified_prediction():
     away = starters.get("中日ドラゴンズ", "")
     assert home in generic
     assert away not in generic
+
+
+def test_short_np_b_venue_labels_resolve_weather_coordinates():
+    import production_matchday_intelligence as pmi
+    assert "神" in pmi.PARKS
+    assert "横" in pmi.PARKS
