@@ -149,9 +149,23 @@ def main() -> int:
         if "pred_draw" in row:
             p.append(float(row["pred_draw"]))
         p.append(float(row["pred_away"]))
-        decision = apply_matchday_policy(np.asarray(p), context, policy=policy)
+        recorded_shadow = []
+        for name in ("pred_shadow_home", "pred_shadow_draw", "pred_shadow_away"):
+            if name in row and pd.notna(row[name]):
+                recorded_shadow.append(float(row[name]))
+        if len(recorded_shadow) == len(p) and np.all(np.isfinite(recorded_shadow)):
+            # Prefer the exact probability emitted during the original pregame
+            # run. This is the forward track record; no retrospective refit can
+            # overwrite it.
+            final_probability = np.asarray(recorded_shadow, dtype=float)
+            final_probability = np.clip(final_probability, 1e-12, 1.0)
+            final_probability /= final_probability.sum()
+        else:
+            decision = apply_matchday_policy(np.asarray(p), context, policy=policy)
+            final_probability = decision.probabilities
+
         base_probs.append(p)
-        final_probs.append(decision.probabilities.tolist())
+        final_probs.append(final_probability.tolist())
         outcomes.append(int(row["actual"]))
         used += 1
 
