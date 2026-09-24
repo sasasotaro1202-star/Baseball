@@ -76,6 +76,9 @@ jobs:
 
           now=datetime.now(timezone.utc)
           def runs(filename): return request('GET',f'/repos/{repo}/actions/workflows/{filename}/runs?per_page=100').get('workflow_runs',[])
+          def main_sha():
+              payload=request('GET',f'/repos/{repo}/git/ref/heads/main')
+              return str(payload.get('object',{}).get('sha') or '')
           def active(row): return bool(row) and row.get('status') in ACTIVE_STATES
           def success(row): return bool(row) and row.get('conclusion')=='success'
           def npb_complete():
@@ -121,7 +124,10 @@ jobs:
                           request('POST',f'/repos/{repo}/actions/workflows/{workflow}/dispatches',{'ref':'main'}); action=f'dispatch-{label}'
                       except Exception as exc:
                           errors.append(f'dispatch {workflow}: {exc}'); print(f'[WATCHDOG] dispatch failed for {workflow}: {exc}')
-                  if validation is None or (validation.get('conclusion') in {'failure','cancelled'} and age_minutes(validation) > 5):
+                  current_main_sha = main_sha()
+              validation_current = bool(validation) and str(validation.get('head_sha') or '') == current_main_sha and success(validation)
+              print(f'[WATCHDOG] current_main_sha={current_main_sha} validation_sha={validation.get("head_sha") if validation else ""} validation_current={validation_current}')
+              if not validation_current and not recently_created(data.get('validation',[])):
                       dispatch('validation',workflows['validation'])
                   elif not recently_created(data.get('matchday',[])) and (
                       matchday is None
