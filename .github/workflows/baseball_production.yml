@@ -23,11 +23,16 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Verify validation SHA matches current main
         id: sha_gate
-        if: github.event_name == 'workflow_run'
         env:
           VALIDATED_SHA: ${{ github.event.workflow_run.head_sha }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           set -euo pipefail
+          if [ "$EVENT_NAME" != "workflow_run" ]; then
+            echo "[VALIDATION GATE] PASS manual/scheduled execution"
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           CURRENT_SHA="$(git rev-parse HEAD)"
           if [ "$CURRENT_SHA" != "$VALIDATED_SHA" ]; then
             echo "[VALIDATION GATE] SKIP current_main=$CURRENT_SHA validated=$VALIDATED_SHA"
@@ -38,7 +43,7 @@ jobs:
           echo "ok=true" >> "$GITHUB_OUTPUT"
 
       - name: Hosted runner health gate
-        if: steps.sha_gate.outputs.ok == 'true' || github.event_name != 'workflow_run'
+        if: steps.sha_gate.outputs.ok == 'true'
         run: |
           set -euo pipefail
           uname -a
