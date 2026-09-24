@@ -75,4 +75,6 @@ jobs:
           PY
           python backtest_audit_v2.py
           python research/drift_uncertainty_routing.py
+          python -m research.routing_oos_replay
+          python -m json.tool results/routing_oos_replay.json >/dev/null
           echo "All Baseball Python syntax/runtime smoke checks passed"
