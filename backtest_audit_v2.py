@@ -79,6 +79,16 @@ if matchday_workflow:
         if token not in matchday_workflow:
             errors.append(f"missing {label} in baseball_matchday.yml")
 
+conformal = need("research/conformal_uncertainty.py", r"def\s+uncertainty_summary\b", "conformal uncertainty")
+if conformal:
+    for token, label in [
+        ("def class_pvalues", "conformal class p-values"),
+        ("def prediction_set", "conformal prediction set"),
+        ("does not alter probabilities", "probability-preserving uncertainty policy"),
+    ]:
+        if token not in conformal:
+            errors.append(f"missing {label} in research/conformal_uncertainty.py")
+
 routing = need("research/drift_uncertainty_routing.py", r"def\s+route_experts\b", "drift/uncertainty routing")
 if routing:
     for token, label in [
