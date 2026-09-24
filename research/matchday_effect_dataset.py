@@ -65,6 +65,16 @@ def main() -> int:
 
     df["actual"] = pd.to_numeric(df.get("actual"), errors="coerce")
     df = df[df["actual"].notna()].copy()
+    # Effect learning must not treat repeated pregame snapshots of the same game
+    # as independent outcomes. Keep only the final pregame forecast per game.
+    if not df.empty:
+        df["_pt_sort"] = pd.to_datetime(df["prediction_time_utc"], errors="coerce", utc=True)
+        df = (
+            df.sort_values(["game_id", "_pt_sort"], kind="mergesort")
+              .drop_duplicates("game_id", keep="last")
+              .drop(columns=["_pt_sort"])
+              .reset_index(drop=True)
+        )
     if df.empty:
         pd.DataFrame().to_csv(OUTPUT, index=False)
         print(json.dumps({"status":"DEFERRED","rows":0,"reason":"no settled forward predictions"}, ensure_ascii=False))
