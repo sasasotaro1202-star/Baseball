@@ -70,7 +70,18 @@ def main() -> int:
         print(json.dumps({"status":"DEFERRED","rows":0,"reason":"no settled forward predictions"}, ensure_ascii=False))
         return 0
 
-    snapshots = _load_snapshot_map()
+    # Use one canonical final-pregame snapshot per game for causal/effect
+    # learning; repeated interim snapshots remain available to change-ledger research.
+    canonical_snapshot = {}
+    for (gid, pt), env in snapshots.items():
+        current_pt = pd.to_datetime(pt, errors="coerce", utc=True)
+        if pd.isna(current_pt):
+            continue
+        previous = canonical_snapshot.get(gid)
+        if previous is None or current_pt > previous[0]:
+            canonical_snapshot[gid] = (current_pt, env)
+    snapshots = {(gid, str(env["prediction_time_utc"])): env for gid, (_pt, env) in canonical_snapshot.items()}
+
     changed_events = {}
     if CHANGES.exists():
         for line in CHANGES.read_text(encoding="utf-8").splitlines():
