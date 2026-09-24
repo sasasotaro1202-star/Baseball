@@ -119,6 +119,8 @@ jobs:
                           errors.append(f'dispatch {workflow}: {exc}'); print(f'[WATCHDOG] dispatch failed for {workflow}: {exc}')
                   if validation is None or (validation.get('conclusion') in {'failure','cancelled'} and age_minutes(validation) > 5):
                       dispatch('validation',workflows['validation'])
+                  elif not recently_created(data.get('matchday',[])) and (matchday is None or matchday.get('conclusion') in {'failure','cancelled'}):
+                      dispatch('matchday',workflows['matchday'])
                   elif (not npb_ready) and not recently_created(data.get('acquisition',[])):
                       dispatch('npb-acquisition',workflows['acquisition'])
                   elif npb_ready and not success(prod) and not recently_created(data.get('production',[])):
@@ -129,8 +131,7 @@ jobs:
                       dispatch('autonomous-research',workflows['research'])
                   elif npb_ready and success(research) and ts(research)>ts(prod) and not recently_created(data.get('production',[])):
                       dispatch('next-production',workflows['production'])
-                  elif npb_ready and (matchday is None or matchday.get('conclusion') in {'failure','cancelled'}) and not recently_created(data.get('matchday',[])):
-                      dispatch('matchday',workflows['matchday'])
+
           except Exception as exc:
               errors.append(f'watchdog fatal: {exc}')
               print('[WATCHDOG] degraded:',exc); traceback.print_exc()
