@@ -110,7 +110,11 @@ jobs:
               n=$((n+1)); delay=$((delay*2))
             done
           }
-          if [ ! -x "$VENV/bin/python" ] || [ ! -f "$STAMP" ] || [ "$(cat "$STAMP" 2>/dev/null || true)" != "$REQ_HASH" ]; then
+          STAMP_CONTENT=""
+          if [ -f "$STAMP" ]; then
+            STAMP_CONTENT="$(cat "$STAMP")"
+          fi
+          if [ ! -x "$VENV/bin/python" ] || [ ! -f "$STAMP" ] || [ "$STAMP_CONTENT" != "$REQ_HASH" ]; then
             echo "[DEPS] Creating/updating persistent production venv"
             rm -rf "$VENV"
             mkdir -p "$(dirname "$VENV")"
