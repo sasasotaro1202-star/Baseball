@@ -83,10 +83,12 @@ def main() -> int:
     # Use one canonical final-pregame snapshot per game for causal/effect
     # learning; repeated interim snapshots remain available to change-ledger research.
     canonical_snapshot = {}
+    all_snapshots_by_game = {}
     for (gid, pt), env in snapshots.items():
         current_pt = pd.to_datetime(pt, errors="coerce", utc=True)
         if pd.isna(current_pt):
             continue
+        all_snapshots_by_game.setdefault(gid, []).append((current_pt, env))
         previous = canonical_snapshot.get(gid)
         if previous is None or current_pt > previous[0]:
             canonical_snapshot[gid] = (current_pt, env)
@@ -103,6 +105,25 @@ def main() -> int:
                 changed_events.setdefault(key, set()).add(str(ev["event"]))
             except Exception:
                 continue
+    cumulative_events_by_game = {}
+    event_values = {
+        "STARTER_CONFIRMED","STARTER_CHANGED",
+        "LINEUP_CONFIRMED","LINEUP_PROJECTED",
+        "PLAYER_OUT","PLAYER_RETURNED","WEATHER_CHANGED",
+        "REST_ASYMMETRY","TRAVEL_BURDEN","MARKET_MOVED",
+        "BULLPEN_STATE_CHANGED",
+    }
+    for gid, seq in all_snapshots_by_game.items():
+        cumulative = set()
+        for _pt, env in sorted(seq, key=lambda x: x[0]):
+            pt = str(env.get("prediction_time_utc"))
+            cumulative |= set(changed_events.get((gid, pt), set()))
+            for item in env.get("observations", []):
+                value = item.get("value")
+                if isinstance(value, str) and value in event_values:
+                    cumulative.add(value)
+        cumulative_events_by_game[gid] = cumulative
+
     rows = []
     for rec in df.to_dict("records"):
         gid = str(rec.get("game_id") or "")
@@ -111,7 +132,7 @@ def main() -> int:
         if env is None:
             continue
         obs = _safe_observations(env, pt)
-        events = set()
+        events = set(cumulative_events_by_game.get(gid, set()))
         for o in obs:
             value = str(o.value) if not isinstance(o.value, (dict, list)) else ""
             if value in {
