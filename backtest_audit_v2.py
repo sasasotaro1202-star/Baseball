@@ -57,6 +57,12 @@ audit_workflow = need(".github/workflows/baseball_audit.yml", r"backtest_audit_v
 if audit_workflow and "backtest_audit.py" in audit_workflow:
     errors.append("stale audit workflow still references removed backtest_audit.py")
 
+frozen = need("research/frozen_holdout_gate.py", r"HOLDOUT_FRAC|MIN_HOLDOUT_ROWS", "frozen holdout gate")
+if frozen:
+    for token in ("datetime", "tuning_rule", "status"):
+        if token not in frozen:
+            errors.append(f"frozen holdout gate missing {token}")
+
 validation = need(".github/workflows/validate-code.yml", r"\.github/workflows/\*\*", "workflow-wide validation trigger")
 if validation and "[YAML] PASS" not in validation:
     errors.append("workflow-wide YAML validation step missing")
