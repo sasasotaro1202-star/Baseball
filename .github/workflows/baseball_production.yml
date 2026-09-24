@@ -92,16 +92,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p data results
-          python - <<'PY' >> "$GITHUB_OUTPUT"
+          python - <<'PY'
           import json
+          import os
           from pathlib import Path
           p=Path('data/checkpoints/npb_collection_status.json')
           out=Path('results/production_deferred.json')
+          ghout=Path(os.environ['GITHUB_OUTPUT'])
           if not p.exists():
               payload={"status":"DEFERRED","reason":"NPB source acquisition has not produced a collection status yet"}
               out.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf-8')
               print('[NPB READY] DEFERRED: collection status is missing')
-              print('ready=false')
+              ghout.write_text('ready=false\n',encoding='utf-8')
               raise SystemExit(0)
           s=json.loads(p.read_text(encoding='utf-8'))
           complete=bool(s.get('complete',False))
@@ -110,10 +112,10 @@ jobs:
               payload={"status":"DEFERRED","reason":"NPB historical acquisition incomplete","complete":complete,"aggregate_games":games}
               out.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf-8')
               print(f'[NPB READY] DEFERRED complete={complete} aggregate_games={games}')
-              print('ready=false')
+              ghout.write_text('ready=false\n',encoding='utf-8')
               raise SystemExit(0)
           print(f'[NPB READY] PASS complete={complete} aggregate_games={games}')
-          print('ready=true')
+          ghout.write_text('ready=true\n',encoding='utf-8')
           PY
       - name: Upload NPB deferred status
         if: success() && steps.npb_ready.outputs.ready != 'true'
