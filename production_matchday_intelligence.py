@@ -104,6 +104,10 @@ def fetch_schedule(year: int, target_date: str):
             card = re.sub(r"\s+", " ", str(rec.get("対戦カード", ""))).strip()
             if not card or "-" not in card or any(x in card for x in ("中止","試合前")):
                 continue
+            # Historical/final rows contain a numeric score around the hyphen;
+            # only unsolved matchups are eligible for current prediction.
+            if re.search(r"\d+\s*-\s*\d+", card):
+                continue
             m = re.match(r"^(.+?)\s+(?:\d+\s+-\s+\d+|-)\s+(.+?)$", card)
             if not m:
                 continue
@@ -159,7 +163,6 @@ def fetch_official_starters():
     starters = {}
     # Team-image order and player-link order are adjacent on the NPB page.
     for img, team in teams:
-        element_index = next((i for i,a in enumerate(doc.iterlinks()) if False), None)
         parent = img.getparent()
         if parent is None:
             continue
