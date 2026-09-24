@@ -113,6 +113,7 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
 
     base_probs = []
     routed_probs = []
+    mixed_probs = []
     outcomes = []
     history_logloss = []
     history_expert_probs = []
@@ -163,6 +164,7 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
             raise ValueError("baseline prediction columns are missing/non-finite")
 
         base_probs.append(base)
+        mixed_probs.append(mixed.tolist())
         routed_probs.append(final.tolist())
         outcomes.append(y)
         routing_rows.append({
@@ -181,11 +183,35 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
         history_logloss.append(row_losses)
         history_expert_probs.append(current)
         previous_weights = rr.weights.copy()
-        calibrator.update(np.asarray(routed_probs[-config.long_window:]), np.asarray(outcomes[-config.long_window:]))
+        calibrator.update(np.asarray(mixed_probs[-config.long_window:]), np.asarray(outcomes[-config.long_window:]))
 
-    baseline_metrics = _metrics(np.asarray(base_probs, dtype=float), np.asarray(outcomes))
-    routed_metrics = _metrics(np.asarray(routed_probs, dtype=float), np.asarray(outcomes))
+    base_arr = np.asarray(base_probs, dtype=float)
+    routed_arr = np.asarray(routed_probs, dtype=float)
+    y_arr = np.asarray(outcomes)
+    baseline_metrics = _metrics(base_arr, y_arr)
+    routed_metrics = _metrics(routed_arr, y_arr)
     delta = {f"delta_{k}": float(routed_metrics[k] - baseline_metrics[k]) for k in baseline_metrics}
+
+    diag_df = pd.DataFrame(routing_rows)
+    diagnostics = {
+        "calibration_updates_accepted": int(calibrator.accepted_updates),
+        "calibration_updates_rejected": int(calibrator.rejected_updates),
+        "temperature_start": 1.0,
+        "temperature_end": float(calibrator.temperature),
+    }
+    if not diag_df.empty:
+        for col in ("drift_score", "uncertainty"):
+            if col in diag_df.columns:
+                q = float(diag_df[col].median())
+                mask = diag_df[col].to_numpy(dtype=float) >= q
+                if int(mask.sum()) >= 20:
+                    sub_base = base_arr[mask]
+                    sub_route = routed_arr[mask]
+                    sub_y = y_arr[mask]
+                    diagnostics[f"high_{col}_rows"] = int(mask.sum())
+                    diagnostics[f"high_{col}_delta_logloss"] = float(
+                        _metrics(sub_route, sub_y)["logloss"] - _metrics(sub_base, sub_y)["logloss"]
+                    )
 
     artifact = {
         "status": "PASS",
@@ -196,6 +222,7 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
         "routed_recalibrated": routed_metrics,
         "delta": delta,
         "final_temperature": float(calibrator.temperature),
+        "diagnostics": diagnostics,
         "routing_rows_tail": routing_rows[-20:],
     }
     return artifact, delta
