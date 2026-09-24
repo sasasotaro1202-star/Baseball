@@ -399,7 +399,7 @@ def add_weather(d,year):
             w['weather_available_at']=(pd.to_datetime(w['weather_valid_time_utc'],errors='coerce',utc=True)-pd.Timedelta(hours=8)).astype(str)
             w['weather_state']='PROJECTED'
             w['weather_source']='Open-Meteo Historical Forecast'
-            w['weather_pit_quality']='CONSERVATIVE_8H_BOUND'
+            w['weather_pit_quality']='CONSERVATIVE_T0_BOUND'
             if not existing.empty:
                 existing=existing[~existing.datetime.isin(w.datetime)]
             cache=pd.concat([cache,existing,w],ignore_index=True).drop_duplicates(['venue','datetime'],keep='last')
