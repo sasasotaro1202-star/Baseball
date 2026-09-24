@@ -220,6 +220,13 @@ if frozen:
         if token not in frozen:
             errors.append(f"frozen holdout gate missing {token}")
 
+
+workflow_policy = ""
+for workflow_path in (ROOT / ".github" / "workflows").glob("*.yml"):
+    workflow_text = workflow_path.read_text(encoding="utf-8", errors="replace")
+    if re.search(r"\|\|\s*true\b", workflow_text):
+        errors.append(f"forbidden masked-success operator '|| true' in {workflow_path}")
+
 validation = need(".github/workflows/validate-code.yml", r"\.github/workflows/\*\*", "workflow-wide validation trigger")
 if validation and "[YAML] PASS" not in validation:
     errors.append("workflow-wide YAML validation step missing")
