@@ -51,7 +51,13 @@ jobs:
         run: |
           set -euo pipefail
           . .venv/bin/activate
-          python -m py_compile production_matchday_intelligence.py baseball_backtest.py research/drift_uncertainty_routing.py research/matchday_intelligence.py research/routing_oos_replay.py research/routing_acceptance_gate.py
+          python -m py_compile production_matchday_intelligence.py baseball_backtest.py research/drift_uncertainty_routing.py research/conformal_uncertainty.py research/matchday_intelligence.py research/matchday_policy.py research/matchday_policy_learning.py research/matchday_replay.py research/routing_oos_replay.py research/routing_acceptance_gate.py
+          python research/drift_uncertainty_routing.py >/dev/null
+          python research/conformal_uncertainty.py >/dev/null
+          python research/matchday_intelligence.py >/dev/null
+          python research/matchday_policy.py >/dev/null
+          python research/matchday_policy_learning.py >/dev/null
+          python -m json.tool results/matchday_policy.json >/dev/null
 
       - name: Run matchday intelligence with fail-closed retries
         run: |
@@ -70,6 +76,8 @@ jobs:
           set -euo pipefail
           test -s results/matchday_intelligence_current.json
           python -m json.tool results/matchday_intelligence_current.json >/dev/null
+          python research/matchday_replay.py
+          python -m json.tool results/matchday_replay.json >/dev/null
           python - <<'PY'
           import json
           from pathlib import Path
@@ -88,7 +96,7 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add results/matchday_intelligence_current.json
+          git add results/matchday_intelligence_current.json results/matchday_policy.json results/matchday_replay.json
           if git diff --cached --quiet; then
             echo '[MATCHDAY] no material state change; no commit'
             exit 0
@@ -112,5 +120,7 @@ jobs:
           name: baseball-matchday-${{ github.run_id }}
           path: |
             results/matchday_intelligence_current.json
+            results/matchday_policy.json
+            results/matchday_replay.json
           if-no-files-found: warn
           retention-days: 7
