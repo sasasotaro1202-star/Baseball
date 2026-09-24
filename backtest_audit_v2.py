@@ -57,6 +57,36 @@ audit_workflow = need(".github/workflows/baseball_audit.yml", r"backtest_audit_v
 if audit_workflow and "backtest_audit.py" in audit_workflow:
     errors.append("stale audit workflow still references removed backtest_audit.py")
 
+routing = need("research/drift_uncertainty_routing.py", r"def\\s+route_experts\\b", "drift/uncertainty routing")
+if routing:
+    for token, label in [
+        ("def mmd_drift_score", "MMD drift signal"),
+        ("class AdaptiveTemperatureCalibrator", "adaptive recalibration"),
+        ("uncertainty_disagreement_mix", "disagreement-aware uncertainty"),
+    ]:
+        if token not in routing:
+            errors.append(f"missing {label} in research/drift_uncertainty_routing.py")
+
+matchday = need("research/matchday_intelligence.py", r"class\\s+ContextState", "Matchday Intelligence PIT layer")
+if matchday:
+    for token, label in [
+        ("def is_pit_safe", "matchday PIT check"),
+        ("def usable_observations", "available-at filter"),
+        ("ContextEvent.STARTER_CHANGED", "context change ledger"),
+    ]:
+        if token not in matchday:
+            errors.append(f"missing {label} in research/matchday_intelligence.py")
+
+routing_gate = need("research/routing_acceptance_gate.py", r"MIN_LOGLOSS_IMPROVEMENT", "routing acceptance gate")
+if routing_gate:
+    for token, label in [
+        ("MIN_BRIER_IMPROVEMENT", "routing Brier gate"),
+        ("MAX_ECE_REGRESSION", "routing ECE gate"),
+        ("requires_two_non_overlapping_late_oos_windows", "two-window OOS gate"),
+    ]:
+        if token not in routing_gate:
+            errors.append(f"missing {label} in research/routing_acceptance_gate.py")
+
 frozen = need("research/frozen_holdout_gate.py", r"HOLDOUT_FRAC|MIN_HOLDOUT_ROWS", "frozen holdout gate")
 if frozen:
     for token in ("datetime", "tuning_rule", "status"):
