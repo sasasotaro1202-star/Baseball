@@ -395,8 +395,8 @@ def add_weather(d,year):
             # Explicit conservative PIT metadata. This is a forecast archive,
             # not a claim that the exact original dissemination timestamp is
             # known for every model/version.
-            w['prediction_time_utc']=w['datetime'].dt.tz_localize('Asia/Tokyo',ambiguous='NaT',nonexistent='NaT').dt.tz_convert('UTC').astype(str)
-            w['weather_available_at']=(pd.to_datetime(w['prediction_time_utc'],errors='coerce',utc=True)-pd.Timedelta(hours=8)).astype(str)
+            w['weather_valid_time_utc']=w['datetime'].dt.tz_localize('Asia/Tokyo',ambiguous='NaT',nonexistent='NaT').dt.tz_convert('UTC').astype(str)
+            w['weather_available_at']=(pd.to_datetime(w['weather_valid_time_utc'],errors='coerce',utc=True)-pd.Timedelta(hours=8)).astype(str)
             w['weather_state']='PROJECTED'
             w['weather_source']='Open-Meteo Historical Forecast'
             w['weather_pit_quality']='CONSERVATIVE_8H_BOUND'
@@ -414,15 +414,17 @@ def add_weather(d,year):
     sub=d[['game_id','venue','datetime']].copy()
     sub.datetime=pd.to_datetime(sub.datetime,errors='coerce').dt.floor('h')
     cols=[
-        'game_id','prediction_time_utc','weather_available_at','weather_state',
+        'game_id','weather_valid_time_utc','weather_available_at','weather_state',
         'weather_source','weather_pit_quality','weather_temp_c','weather_humidity_pct',
         'weather_precip_mm','weather_wind_kmh'
     ]
     sub=sub.merge(c,on=['venue','datetime'],how='left')
-    return d.drop(
-        columns=[x for x in cols[1:] if x in d],
-        errors='ignore'
-    ).merge(sub[cols],on='game_id',how='left')
+    out=d.drop(columns=[x for x in cols[1:] if x in d],errors='ignore').merge(sub[cols],on='game_id',how='left')
+    # T0 replay cutoff is the scheduled game start, not the weather valid time.
+    # This prevents the weather record itself from defining its own prediction
+    # timestamp and accidentally making future information look available.
+    out['prediction_time_utc']=pd.to_datetime(out['datetime'],errors='coerce',utc=True).astype(str)
+    return out
 
 def main():
     DATA.mkdir(exist_ok=True);CP.mkdir(parents=True,exist_ok=True);SEASON_DIR.mkdir(parents=True,exist_ok=True);WEATHER_DIR.mkdir(parents=True,exist_ok=True);coverage_rows=[];all_parts=[];season_summaries=[]
