@@ -97,6 +97,16 @@ def main() -> int:
     # Forward ledger rows are written before outcomes exist. Only settled rows
     # enter scoring; unresolved NaN/blank outcomes are preserved for later runs.
     df = df[pd.to_numeric(df["actual"], errors="coerce").notna()].copy()
+    # One settled evaluation row per game. Interim snapshots remain in the ledger
+    # and are used for change tracking, not counted as independent games.
+    if not df.empty:
+        df["_pt_sort"] = pd.to_datetime(df["prediction_time_utc"], errors="coerce", utc=True)
+        df = (
+            df.sort_values(["game_id", "_pt_sort"], kind="mergesort")
+              .drop_duplicates("game_id", keep="last")
+              .drop(columns=["_pt_sort"])
+              .reset_index(drop=True)
+        )
     if df.empty:
         payload = {
             "status": "DEFERRED",
