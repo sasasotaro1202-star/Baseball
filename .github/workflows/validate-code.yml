@@ -50,6 +50,7 @@ jobs:
           python -m py_compile research/openai_research_advisor.py
           python -m py_compile research/frozen_holdout_gate.py
           python -m py_compile research/drift_uncertainty_routing.py
+          python -m py_compile research/routing_oos_replay.py
           python - <<'PY'
           import pandas as pd
           from baseball_backtest import BaseballBacktest
