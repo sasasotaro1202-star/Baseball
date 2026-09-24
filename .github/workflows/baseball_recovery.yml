@@ -119,7 +119,11 @@ jobs:
                           errors.append(f'dispatch {workflow}: {exc}'); print(f'[WATCHDOG] dispatch failed for {workflow}: {exc}')
                   if validation is None or (validation.get('conclusion') in {'failure','cancelled'} and age_minutes(validation) > 5):
                       dispatch('validation',workflows['validation'])
-                  elif not recently_created(data.get('matchday',[])) and (matchday is None or matchday.get('conclusion') in {'failure','cancelled'}):
+                  elif not recently_created(data.get('matchday',[])) and (
+                      matchday is None
+                      or matchday.get('conclusion') in {'failure','cancelled'}
+                      or age_minutes(matchday) > STALE_MINUTES['matchday']
+                  ):
                       dispatch('matchday',workflows['matchday'])
                   elif (not npb_ready) and not recently_created(data.get('acquisition',[])):
                       dispatch('npb-acquisition',workflows['acquisition'])
