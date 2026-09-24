@@ -35,7 +35,9 @@ def test_venue_effect_is_past_only():
         r["home_score"] = 4 + i
         r["away_score"] = 1
         bt.update_after_game(r)
-    assert bt.match_features(row)["venue_known"] == 1.0
+    target = row.copy()
+    target["datetime"] = pd.Timestamp("2026-09-28T09:00:00Z")
+    assert bt.match_features(target)["venue_known"] == 1.0
 
 def test_common_venue_columns_are_preserved():
     from baseball_backtest import BaseballBacktest
