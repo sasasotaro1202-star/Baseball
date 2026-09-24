@@ -263,12 +263,74 @@ def fetch_official_starters(target_date: str):
 
 
 def fetch_roster_notice(target_date: str):
+    """Read official same-day NPB registration/removal notices.
+
+    Registration/removal is treated strictly as an availability signal. The
+    code does not infer injury diagnosis or severity from a roster move.
+    """
     r = get(f"{NPB}/announcement/roster/")
-    text = re.sub(r"\s+", " ", lxml_html.fromstring(r.content).text_content())
+    doc = lxml_html.fromstring(r.content)
     marker = f"{int(target_date[5:7])}月{int(target_date[8:10])}日の出場選手登録"
+    root = None
+    for node in doc.xpath("//h1|//h2|//h3|//h4"):
+        txt = re.sub(r"\s+", " ", "".join(node.itertext())).strip()
+        if marker in txt:
+            root = node
+            break
+    text = re.sub(r"\s+", " ", doc.text_content())
     pos = text.find(marker)
     snippet = text[pos:pos+8000] if pos >= 0 else text[:8000]
-    return {"source":"NPB.jp roster","target_date":target_date,"available":bool(pos >= 0),"text":snippet[:5000]}
+
+    events = []
+    if root is not None:
+        current_status = None
+        current_league = None
+        for node in root.xpath("following::*"):
+            tag = getattr(node, "tag", None)
+            if tag in {"h3","h4","h5"}:
+                title = re.sub(r"\s+", " ", "".join(node.itertext())).strip()
+                if "セントラル・リーグ" in title:
+                    current_league = "CENTRAL"
+                elif "パシフィック・リーグ" in title:
+                    current_league = "PACIFIC"
+                elif title == "出場選手登録":
+                    current_status = "REGISTERED"
+                elif title in {"出場選手登録抹消","出場選手登録削除"}:
+                    current_status = "REMOVED"
+                elif "出場選手一覧" in title:
+                    current_status = None
+            if tag == "tr" and current_status:
+                cells = [
+                    re.sub(r"\s+", " ", "".join(cell.itertext())).strip()
+                    for cell in node.xpath("./th|./td")
+                ]
+                if len(cells) >= 4 and cells[0] in TEAM_NAMES:
+                    number = cells[2]
+                    name = cells[3]
+                    if name and name not in {"選手名", "-"}:
+                        events.append({
+                            "status": current_status,
+                            "league": current_league,
+                            "team": cells[0],
+                            "position": cells[1],
+                            "number": number,
+                            "player_name": name,
+                            "source": "NPB.jp roster",
+                            "target_date": target_date,
+                        })
+            # Hard stop when we reach the next date block.
+            if tag in {"h2","h3"} and node is not root:
+                title = re.sub(r"\s+", " ", "".join(node.itertext())).strip()
+                if "日の出場選手登録" in title and marker not in title:
+                    break
+
+    return {
+        "source":"NPB.jp roster",
+        "target_date":target_date,
+        "available":bool(root is not None),
+        "text":snippet[:5000],
+        "events":events,
+    }
 
 
 def fetch_lineup(game_id: str, target_date: str, home: str, away: str):
