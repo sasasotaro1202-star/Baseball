@@ -782,6 +782,19 @@ def main() -> int:
                                 pred_payload["conformal_uncertainty"]=uncertainty_summary(
                                     incumbent,hp,hy,alpha=0.10
                                 )
+                                cu=pred_payload["conformal_uncertainty"]
+                                k_classes=len(incumbent)
+                                set_risk=float(np.clip(
+                                    (int(cu.get("prediction_set_size", 1))-1)/max(k_classes-1,1),
+                                    0.0,1.0
+                                ))
+                                gap_risk=float(np.clip(
+                                    1.0-float(cu.get("top_gap",0.0))/0.25,
+                                    0.0,1.0
+                                ))
+                                pred_payload["conformal_signal"]=float(np.clip(
+                                    0.6*set_risk+0.4*gap_risk,0.0,1.0
+                                ))
                     except Exception:
                         pass
 
@@ -848,7 +861,13 @@ def main() -> int:
                             except Exception:
                                 feature_drift=0.0
                             drift=float(np.clip(0.70*output_drift+0.30*feature_drift,0,1))
-                            rr=route_experts(cal_current,loss_hist,drift_score=drift,previous_weights=prev)
+                            rr=route_experts(
+                                cal_current,
+                                loss_hist,
+                                drift_score=drift,
+                                previous_weights=prev,
+                                conformal_uncertainty=float(pred_payload.get("conformal_signal",0.0)),
+                            )
                             mixed=mix_expert_probabilities(cal_current,rr.weights)
 
                             # Canonical Matchday reforecast is invoked only when the
@@ -889,6 +908,7 @@ def main() -> int:
                                         observations=observations,
                                         previous_weights=prev,
                                         drift_score=drift,
+                                        conformal_uncertainty=float(pred_payload.get("conformal_signal",0.0)),
                                         calibrator=final_cal,
                                         config=RoutingConfig(),
                                     )
