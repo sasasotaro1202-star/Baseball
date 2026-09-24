@@ -92,6 +92,12 @@ jobs:
           python -m json.tool results/matchday_integrated_acceptance_gate.json >/dev/null
           python -m json.tool results/matchday_policy.json >/dev/null
 
+      - name: Record explicit shadow-only safety state
+        run: |
+          set -euo pipefail
+          echo "shadow_not_promoted=true"
+          grep -q "shadow_not_promoted=true" .github/workflows/baseball_matchday.yml
+          
       - name: Validate current matchday artifact
         run: |
           set -euo pipefail
