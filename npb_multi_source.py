@@ -373,7 +373,11 @@ def enrich_one(r):
     if bat:
         for side in ('home','away'):
             for k in ('pa','ab','h','hr','bb','so','2b','3b','sb','cs'):z[f'{side}_bat_{k}']=bat[side][k]
-    z['home_starter_line_ok']=bool(hm);z['away_starter_line_ok']=bool(am);z['_player_rows']=players;return z
+    z['home_starter_line_ok']=bool(hm);z['away_starter_line_ok']=bool(am)
+    z['pregame_context_quality']='UNKNOWN'
+    z['pregame_starter_verified']=False
+    z['pregame_lineup_verified']=False
+    z['_player_rows']=players;return z
 
 def save_status(year,games,cp,done,failures,complete=False):
     p=season_paths(year);both_starters=int(((cp.get('home_starter','').fillna('').astype(str)!='')&(cp.get('away_starter','').fillna('').astype(str)!='')).sum()) if not cp.empty else 0;both_lines=int((cp.get('home_starter_line_ok',pd.Series(dtype=bool)).fillna(False)&cp.get('away_starter_line_ok',pd.Series(dtype=bool)).fillna(False)).sum()) if not cp.empty else 0;atomic_json({'year':year,'schedule_games':len(games),'checkpoint_games':len(cp),'done':int(done),'failures':len(failures),'both_starters':both_starters,'both_starter_lines':both_lines,'coverage_pct':round(100*both_lines/max(1,both_starters),2),'complete':bool(complete),'updated_at':pd.Timestamp.utcnow().isoformat()},p['status'])
