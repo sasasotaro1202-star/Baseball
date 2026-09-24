@@ -36,8 +36,8 @@ from research.drift_uncertainty_routing import (
     route_experts,
 )
 from research.conformal_uncertainty import uncertainty_summary
-from research.matchday_policy import apply_matchday_policy, load_policy
 from research.matchday_intelligence import ContextKind, Observation
+from research.matchday_reforecast import reforecast
 
 ROOT = Path(__file__).resolve().parent
 RESULTS = ROOT / "results"
@@ -807,61 +807,72 @@ def main() -> int:
                             rr=route_experts(cal_current,loss_hist,drift_score=drift,previous_weights=prev)
                             mixed=mix_expert_probabilities(cal_current,rr.weights)
 
-                            # Matchday Policy is a final, bounded residual layer.
-                            # If OOS has not produced an eligible policy, this is
-                            # an identity transform.
-                            policy = load_policy(RESULTS / "matchday_policy.json")
-                            context = {}
-                            for key in (policy.get("effects") or {}):
-                                kl=str(key).lower()
-                                if "starter" in kl:
-                                    state=g.get("starter_state","UNKNOWN")
-                                elif "lineup" in kl or "batting" in kl:
-                                    state=g.get("lineup_state","UNKNOWN")
-                                elif "weather" in kl or "wind" in kl or "temperature" in kl:
-                                    state=g.get("weather_state","UNKNOWN")
-                                elif "rest" in kl or "travel" in kl:
-                                    state="VERIFIED" if g.get("rest_travel",{}).get("state")=="VERIFIED" else "UNKNOWN"
-                                elif "market" in kl or "odds" in kl:
-                                    state="UNKNOWN"
-                                else:
-                                    state="UNKNOWN"
-                                context[key]={"state":state,"confidence":1.0 if state=="VERIFIED" else 0.7 if state=="PROJECTED" else 0.0}
-                            policy_decision=apply_matchday_policy(mixed,context,policy=policy)
-                            matchday_final=policy_decision.probabilities
-
-                            # Recalibration is allowed only when the research replay
-                            # has produced a candidate temperature; otherwise keep 1.0.
-                            temp=1.0
-                            gate_file=RESULTS/"routing_acceptance_gate.json"
-                            if routing_artifact.exists() and gate_file.exists():
-                                try:
-                                    gate=json.loads(gate_file.read_text(encoding="utf-8"))
-                                    eligible=any(bool(x.get("candidate_eligible")) for x in gate.get("results",[]))
-                                    if eligible:
-                                        ra=json.loads(routing_artifact.read_text(encoding="utf-8"))
-                                        eligible_temps=[
-                                            float(x.get("final_temperature",1.0))
-                                            for x in ra.get("results",[])
-                                            if x.get("status")=="PASS"
-                                        ]
-                                        if eligible_temps:
-                                            temp=eligible_temps[-1]
-                                except Exception:
-                                    temp=1.0
-                            final=matchday_final.copy()
-                            if abs(temp-1.0)>1e-9:
-                                final=np.power(np.clip(final,1e-12,1.0),1.0/temp);final/=final.sum()
-
+                            # Canonical Matchday reforecast is invoked only when the
+                            # OOS-learned context effect artifact is eligible. Otherwise
+                            # the routed/recalibrated baseline remains unchanged.
+                            final = mixed.copy()
+                            matchday_result = None
+                            effect_artifact = RESULTS / "matchday_effects.json"
+                            try:
+                                observations = [
+                                    Observation(**x)
+                                    for x in build_matchday_observations(
+                                        g, g["prediction_time_utc"]
+                                    )
+                                ]
+                                if effect_artifact.exists():
+                                    cal_temp = 1.0
+                                    gate_file = RESULTS / "routing_acceptance_gate.json"
+                                    if routing_artifact.exists() and gate_file.exists():
+                                        gate = json.loads(gate_file.read_text(encoding="utf-8"))
+                                        if any(bool(x.get("candidate_eligible")) for x in gate.get("results", [])):
+                                            ra = json.loads(routing_artifact.read_text(encoding="utf-8"))
+                                            temps = [
+                                                float(x.get("final_temperature", 1.0))
+                                                for x in ra.get("results", [])
+                                                if x.get("status") == "PASS"
+                                            ]
+                                            if temps:
+                                                cal_temp = temps[-1]
+                                    final_cal = AdaptiveTemperatureCalibrator(
+                                        temperature=cal_temp,
+                                        config=RoutingConfig(),
+                                    )
+                                    matchday_result = reforecast(
+                                        baseline=np.asarray(incumbent, dtype=float),
+                                        expert_probs=np.asarray(cal_current, dtype=float),
+                                        history_logloss=np.asarray(loss_hist, dtype=float),
+                                        observations=observations,
+                                        previous_weights=prev,
+                                        drift_score=drift,
+                                        calibrator=final_cal,
+                                        config=RoutingConfig(),
+                                    )
+                                    if matchday_result.status == "PASS":
+                                        final = matchday_result.final
+                            except Exception as exc:
+                                pred_payload["matchday_reforecast_reason"] = (
+                                    f"{type(exc).__name__}: {exc}"
+                                )
                             pred_payload.update({
                                 "shadow_status":"PASS",
                                 "shadow_home":float(final[0]),"shadow_draw":float(final[1]),"shadow_away":float(final[2]),
                                 "shadow_pre_matchday_home":float(mixed[0]),"shadow_pre_matchday_draw":float(mixed[1]),"shadow_pre_matchday_away":float(mixed[2]),
-                                "matchday_policy_status":policy_decision.state,
-                                "matchday_policy_eligible":bool(policy_decision.eligible),
-                                "matchday_policy_reason":policy_decision.reason,
-                                "matchday_policy_effects":policy_decision.applied_effects,
-                                "shadow_weights":rr.weights.tolist(),"shadow_temperature":temp,
+                                "matchday_reforecast_status":(
+                                    matchday_result.status if matchday_result is not None else "DEFERRED"
+                                ),
+                                "matchday_reforecast_applied_events":(
+                                    matchday_result.applied_events if matchday_result is not None else []
+                                ),
+                                "matchday_reforecast_skipped_events":(
+                                    matchday_result.skipped_events if matchday_result is not None else []
+                                ),
+                                "matchday_reforecast_reason":(
+                                    matchday_result.reason if matchday_result is not None else "no eligible effect artifact"
+                                ),
+                                "shadow_weights":rr.weights.tolist(),"shadow_temperature":(
+                                    getattr(final_cal, "temperature", 1.0) if matchday_result is not None else 1.0
+                                ),
                                 "shadow_uncertainty":float(rr.uncertainty),"shadow_disagreement":float(rr.disagreement),
                                 "shadow_drift":drift,"shadow_feature_drift":feature_drift,"shadow_output_drift":output_drift,
                             })
