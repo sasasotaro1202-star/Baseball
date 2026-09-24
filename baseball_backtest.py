@@ -178,6 +178,14 @@ def result_from_score(h: float, a: float, league: str) -> int:
 
 
 @dataclass
+@dataclass
+class VenueState:
+    games: int = 0
+    total_runs: float = 0.0
+    home_wins: int = 0
+    draws: int = 0
+
+
 class TeamState:
     results: deque = field(default_factory=lambda: deque(maxlen=MAX_FORM))
     gf: deque = field(default_factory=lambda: deque(maxlen=MAX_FORM))
@@ -237,6 +245,7 @@ class BaseballBacktest:
         self.player_game = pd.DataFrame()
         self.pitcher_history = defaultdict(list)
         self.player_history = defaultdict(list)
+        self.venue_states: Dict[Tuple[str, str], VenueState] = {}
         self.player_index = {}
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
@@ -335,17 +344,80 @@ class BaseballBacktest:
                     continue
             hp = self._first_pitcher(g, "home")
             ap = self._first_pitcher(g, "away")
+            venue = self._first_value(
+                g,
+                (
+                    "venue", "venue_name", "stadium", "stadium_name",
+                    "ballpark", "ballpark_name", "球場", "球場名",
+                ),
+            )
             rows.append({
                 "league": "NPB", "game_id": str(gid), "datetime": dt,
                 "home": home, "away": away, "home_score": hscore, "away_score": ascore,
                 "home_starter": hp, "away_starter": ap,
-                "venue": "unknown", "confirmed_starters": bool(hp and ap),
+                "venue": str(venue or "unknown").strip() or "unknown",
+                "confirmed_starters": bool(hp and ap),
             })
         out = pd.DataFrame(rows)
         if out.empty:
             raise RuntimeError("No NPB games could be reconstructed.")
         out["datetime"] = pd.to_datetime(out["datetime"], errors="coerce")
         return out.sort_values(["datetime", "game_id"]).drop_duplicates("game_id").reset_index(drop=True)
+
+    @staticmethod
+    def _first_value(g: pd.DataFrame, names: Sequence[str]) -> Any:
+        """Return the first non-empty value from common source column names."""
+        columns = {str(c).strip().lower(): c for c in g.columns}
+        for name in names:
+            key = str(name).strip().lower()
+            if key in columns:
+                series = g[columns[key]]
+                for value in series.tolist():
+                    if value is None:
+                        continue
+                    text = str(value).strip()
+                    if text and text.lower() not in {"nan", "none", "-"}:
+                        return value
+        return None
+
+    def _venue_features(self, league: str, venue: Any) -> Dict[str, float]:
+        key = str(venue or "").strip()
+        if not key or key.lower() == "unknown":
+            return {
+                "venue_known": 0.0,
+                "venue_games": 0.0,
+                "venue_run_env": 0.0,
+                "venue_home_win_rate": 0.5 if league == "MLB" else 1.0 / 3.0,
+                "venue_draw_rate": 1.0 / 3.0 if league == "NPB" else 0.0,
+            }
+        state = self.venue_states.get((league, key))
+        if state is None or state.games < 3:
+            return {
+                "venue_known": 0.0,
+                "venue_games": float(state.games if state else 0),
+                "venue_run_env": 0.0,
+                "venue_home_win_rate": 0.5 if league == "MLB" else 1.0 / 3.0,
+                "venue_draw_rate": 1.0 / 3.0 if league == "NPB" else 0.0,
+            }
+        return {
+            "venue_known": 1.0,
+            "venue_games": float(state.games),
+            "venue_run_env": float(state.total_runs / state.games),
+            "venue_home_win_rate": float(state.home_wins / state.games),
+            "venue_draw_rate": float(state.draws / state.games) if league == "NPB" else 0.0,
+        }
+
+    def _update_venue(self, league: str, venue: Any, home_score: float, away_score: float) -> None:
+        key = str(venue or "").strip()
+        if not key or key.lower() == "unknown":
+            return
+        state = self.venue_states.setdefault((league, key), VenueState())
+        state.games += 1
+        state.total_runs += float(home_score) + float(away_score)
+        if home_score > away_score:
+            state.home_wins += 1
+        elif home_score == away_score:
+            state.draws += 1
 
     def _first_pitcher(self, g: pd.DataFrame, side: str) -> str:
         col = f"{side}_pitcher"
@@ -688,6 +760,9 @@ class BaseballBacktest:
         hf = self._team_features(league, h, "home", dt, opponent=a)
         af = self._team_features(league, a, "away", dt, opponent=h)
         out: Dict[str, float] = {"home_adv": 1.0}
+        venue_features = self._venue_features(league, row.get("venue", "unknown"))
+        for k, v in venue_features.items():
+            out[k] = float(v)
         for k, v in hf.items(): out[f"h_{k}"] = v
         for k, v in af.items(): out[f"a_{k}"] = v
         for k in set(hf) & set(af): out[f"d_{k}"] = hf[k] - af[k]
