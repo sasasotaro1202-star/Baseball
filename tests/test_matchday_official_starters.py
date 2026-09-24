@@ -33,3 +33,12 @@ def test_official_starter_parser_fails_closed_without_target_heading():
         """
     )
     assert _extract_official_starters(doc, "9月25日の予告先発投手") == {}
+
+
+def test_generic_starter_label_cannot_become_verified_prediction():
+    generic = {"個人年度別成績", "選手一覧", "球団別インデックス", "選手検索", "-", ""}
+    starters = {"東京ヤクルトスワローズ": "個人年度別成績", "中日ドラゴンズ": "金丸 太郎"}
+    home = starters.get("東京ヤクルトスワローズ", "")
+    away = starters.get("中日ドラゴンズ", "")
+    assert home in generic
+    assert away not in generic
