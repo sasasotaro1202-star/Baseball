@@ -86,6 +86,20 @@ def main() -> int:
         print(json.dumps(payload, ensure_ascii=False))
         return 0
 
+    # Forward ledger rows are written before outcomes exist. Only settled rows
+    # enter scoring; unresolved NaN/blank outcomes are preserved for later runs.
+    df = df[pd.to_numeric(df["actual"], errors="coerce").notna()].copy()
+    if df.empty:
+        payload = {
+            "status": "DEFERRED",
+            "eligible": False,
+            "reason": "No settled forward predictions are available yet.",
+            "replayable_rows": 0,
+        }
+        OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        print(json.dumps(payload, ensure_ascii=False))
+        return 0
+
     policy = load_policy()
     snapshot_rows = []
     for line in SNAPSHOTS.read_text(encoding="utf-8").splitlines():
