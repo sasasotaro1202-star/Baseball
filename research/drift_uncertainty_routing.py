@@ -170,6 +170,49 @@ def feature_drift_score(
     return float(np.clip(1.0 - np.exp(-raw / 2.0), 0.0, 1.0))
 
 
+def mmd_drift_score(reference: np.ndarray, current: np.ndarray) -> float:
+    """Bounded RBF-kernel MMD drift score using pre-prediction features only.
+
+    The implementation is intentionally small and dependency-free. A median
+    pairwise-distance bandwidth is used from the reference/current sample pool.
+    The score is a drift signal, not a hypothesis-test p-value.
+    """
+    a = np.asarray(reference, dtype=float)
+    b = np.asarray(current, dtype=float)
+    if a.ndim != 2 or b.ndim != 2 or a.shape[1] != b.shape[1] or a.shape[1] == 0:
+        raise ValueError("reference/current must be 2-D with matching feature count")
+    if len(a) < 2 or len(b) < 1:
+        return 0.0
+    if not np.all(np.isfinite(a)) or not np.all(np.isfinite(b)):
+        raise ValueError("MMD windows contain non-finite values")
+
+    # Standardize with reference location/scale so heterogeneous baseball
+    # features (rest, weather, strength, workloads) contribute comparably.
+    mu = a.mean(axis=0)
+    sd = np.maximum(a.std(axis=0, ddof=1), 1e-6)
+    aa = (a - mu) / sd
+    bb = (b - mu) / sd
+    pooled = np.vstack([aa, bb])
+    if len(pooled) > 1:
+        d2 = np.sum((pooled[:, None, :] - pooled[None, :, :]) ** 2, axis=2)
+        nz = d2[d2 > 0]
+        bandwidth = float(np.sqrt(max(np.median(nz), 1e-6))) if len(nz) else 1.0
+    else:
+        bandwidth = 1.0
+    gamma = 1.0 / max(2.0 * bandwidth * bandwidth, 1e-6)
+
+    def kernel(x, y):
+        d2 = np.sum((x[:, None, :] - y[None, :, :]) ** 2, axis=2)
+        return np.exp(-gamma * np.clip(d2, 0.0, 1e6))
+
+    kaa = kernel(aa, aa)
+    kbb = kernel(bb, bb)
+    kab = kernel(aa, bb)
+    # Biased non-negative estimator; clamp numerical noise only.
+    mmd2 = float(kaa.mean() + kbb.mean() - 2.0 * kab.mean())
+    return float(np.clip(1.0 - np.exp(-max(mmd2, 0.0)), 0.0, 1.0))
+
+
 def ensemble_uncertainty(expert_probs: np.ndarray) -> Tuple[float, float, float]:
     """Return (disagreement, normalized predictive entropy, combined uncertainty)."""
 
