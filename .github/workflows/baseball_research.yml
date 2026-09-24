@@ -47,11 +47,13 @@ jobs:
         run: |
           set -euo pipefail
           . .venv/bin/activate
-          python -m py_compile research/research_loop.py research/openai_research_advisor.py research/frozen_holdout_gate.py research/drift_uncertainty_routing.py research/routing_oos_replay.py backtest_audit_v2.py source_quality_gate.py
+          python -m py_compile research/research_loop.py research/openai_research_advisor.py research/frozen_holdout_gate.py research/drift_uncertainty_routing.py research/routing_oos_replay.py research/routing_acceptance_gate.py backtest_audit_v2.py source_quality_gate.py
           python research/drift_uncertainty_routing.py | tee routing_smoke.json
           python -m json.tool routing_smoke.json >/dev/null
           python -m research.routing_oos_replay
           python -m json.tool results/routing_oos_replay.json >/dev/null
+          python research/routing_acceptance_gate.py
+          python -m json.tool results/routing_acceptance_gate.json >/dev/null
           python backtest_audit_v2.py
       - name: Run autonomous research controller with bounded retries
         run: |
@@ -120,5 +122,6 @@ jobs:
             results/frozen_holdout_gate.json
             routing_smoke.json
             results/routing_oos_replay.json
+            results/routing_acceptance_gate.json
           if-no-files-found: warn
           retention-days: 30
