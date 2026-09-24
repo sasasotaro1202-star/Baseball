@@ -333,7 +333,34 @@ def enrich_one(r):
         bat=None;lineup={'home':[],'away':[]};players=[]
     else:
         bat=game_batting_metrics(r.game_id,date,r.home,r.away);lineup=extract_starting_lineup(r.game_id,date,r.home,r.away);players=player_game_metrics(r.game_id,date,r.home,r.away,lineup)+player_pitcher_game_metrics(r.game_id,date,r.home,r.away)
-    z=r._asdict();z.update({'home_starter':home,'away_starter':away,'home_lineup_json':json.dumps(lineup.get('home',[]),ensure_ascii=False,separators=(',',':')),'away_lineup_json':json.dumps(lineup.get('away',[]),ensure_ascii=False,separators=(',',':')),'player_rows_count':len(players),'enrichment_mode':'light' if LIGHT_ENRICH else 'full'})
+    z=r._asdict()
+    prediction_time_utc = pd.Timestamp(r.datetime)
+    if prediction_time_utc.tzinfo is None:
+        prediction_time_utc = prediction_time_utc.tz_localize('Asia/Tokyo')
+    prediction_time_utc = prediction_time_utc.tz_convert('UTC')
+    home_lineup = lineup.get('home', [])
+    away_lineup = lineup.get('away', [])
+    lineup_verified = bool(home_lineup and away_lineup)
+    starter_verified = bool(home and away)
+    z.update({
+        'home_starter':home,
+        'away_starter':away,
+        'home_lineup_json':json.dumps(home_lineup,ensure_ascii=False,separators=(',',':')),
+        'away_lineup_json':json.dumps(away_lineup,ensure_ascii=False,separators=(',',':')),
+        'player_rows_count':len(players),
+        'enrichment_mode':'light' if LIGHT_ENRICH else 'full',
+        'prediction_time_utc':prediction_time_utc.isoformat(),
+        'starter_available_at':prediction_time_utc.isoformat() if starter_verified else '',
+        'starter_state':'VERIFIED' if starter_verified else 'UNKNOWN',
+        'starter_source':'SPAIA/NPB.jp historical resolver' if starter_verified else '',
+        'home_lineup_available_at':prediction_time_utc.isoformat() if lineup_verified else '',
+        'away_lineup_available_at':prediction_time_utc.isoformat() if lineup_verified else '',
+        'home_lineup_state':'VERIFIED' if lineup_verified else 'UNKNOWN',
+        'away_lineup_state':'VERIFIED' if lineup_verified else 'UNKNOWN',
+        'lineup_available_at':prediction_time_utc.isoformat() if lineup_verified else '',
+        'lineup_state':'VERIFIED' if lineup_verified else 'UNKNOWN',
+        'lineup_source':'SPAIA starting_members_for_flash' if lineup_verified else '',
+    })
     for side,m in [('home',hm),('away',am)]:
         for k in ('era','whip','k9','bb9','hr9','fip','ip','er','h','hr','bb','so','pitches','k_rate','bb_rate'):z[f'{side}_starter_{k}']=m.get(k) if m else np.nan
     if bat:
