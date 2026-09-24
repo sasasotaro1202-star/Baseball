@@ -71,18 +71,15 @@ def main() -> int:
         return 0
 
     snapshots = _load_snapshot_map()
-    changed_events = set()
+    changed_events = {}
     if CHANGES.exists():
         for line in CHANGES.read_text(encoding="utf-8").splitlines():
             if not line.strip():
                 continue
             try:
                 ev = json.loads(line)
-                changed_events.add((
-                    str(ev["game_id"]),
-                    str(ev["prediction_time_utc"]),
-                    str(ev["event"]),
-                ))
+                key = (str(ev["game_id"]), str(ev["prediction_time_utc"]))
+                changed_events.setdefault(key, set()).add(str(ev["event"]))
             except Exception:
                 continue
     rows = []
@@ -116,12 +113,8 @@ def main() -> int:
             if kind == "REST_TRAVEL" and o.state == "VERIFIED":
                 events.add("REST_TRAVEL_PRESENT")
 
-        for _, _, ev in changed_events:
-            if any(
-                x == (gid, pt, ev)
-                for x in changed_events
-            ):
-                events.add(ev)
+        for event in changed_events.get((gid, pt), set()):
+            events.add(event)
 
         out = {
             "game_id": gid,
