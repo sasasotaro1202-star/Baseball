@@ -18,6 +18,9 @@ FILES = [
     ROOT / "baseball_backtest.py",
     ROOT / "npb_runtime_patch.py",
     ROOT / "baseball_backtest_runtime_patch.py",
+    ROOT / "production_matchday_intelligence.py",
+    ROOT / "research" / "matchday_intelligence.py",
+    ROOT / "research" / "drift_uncertainty_routing.py",
 ]
 
 REQUIRED = {
@@ -36,6 +39,22 @@ REQUIRED = {
     "baseball_backtest.py": [
         "statsapi.mlb.com",
         "MLB_API",
+    ],
+    "production_matchday_intelligence.py": [
+        "https://npb.jp",
+        "https://spaia.jp/baseball/npb/api",
+        "https://api.open-meteo.com/v1/forecast",
+        "matchday_snapshots.jsonl",
+    ],
+    "research/matchday_intelligence.py": [
+        "prediction_time",
+        "available_at",
+        "def is_pit_safe",
+    ],
+    "research/drift_uncertainty_routing.py": [
+        "def route_experts",
+        "def mmd_drift_score",
+        "class ExpertCalibrationBank",
     ],
 }
 
