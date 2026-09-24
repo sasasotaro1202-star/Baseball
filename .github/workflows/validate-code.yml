@@ -64,6 +64,8 @@ jobs:
           python -m py_compile research/matchday_effect_dataset.py
           python -m py_compile research/matchday_effect_fit.py
           python -m py_compile research/matchday_reforecast.py
+          python -m py_compile research/matchday_integrated_acceptance_gate.py
+          python -m py_compile production_matchday_intelligence.py
           python -m py_compile research/ci_runtime_smoke.py
           python research/matchday_intelligence.py
           python research/matchday_policy.py
