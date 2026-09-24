@@ -68,6 +68,16 @@ jobs:
           })
           first = b.match_features(row)
           assert "h_games_last_3d" in first and "home_bullpen_short_rest" in first
+          assert first["weather_pit_safe"] == 0.0
+          assert first["weather_temp_c"] == 0.0
+          safe_row = row.copy()
+          safe_row["prediction_time_utc"] = "2026-09-24T08:00:00Z"
+          safe_row["weather_available_at"] = "2026-09-24T07:00:00Z"
+          safe_row["weather_state"] = "PROJECTED"
+          safe_row["lineup_available_at"] = "2026-09-24T07:00:00Z"
+          safe_row["lineup_state"] = "PROJECTED"
+          safe = b.match_features(safe_row)
+          assert safe["weather_pit_safe"] != 0.0 and safe["weather_temp_c"] == 25.0
           sh, sa = b.state("NPB","広島東洋カープ"), b.state("NPB","読売ジャイアンツ")
           b._update_team(sh, 0, 5, 2, True, 3, pd.Timestamp("2026-09-23T18:00:00"), row, opponent="読売ジャイアンツ")
           b._update_team(sa, 2, 2, 5, False, 0, pd.Timestamp("2026-09-23T18:00:00"), row, opponent="広島東洋カープ")
