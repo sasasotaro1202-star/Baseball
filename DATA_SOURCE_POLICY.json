@@ -49,7 +49,7 @@
       "primary": "https://historical-forecast-api.open-meteo.com/v1/forecast",
       "fallback": null,
       "critical": false,
-      "rule": "Use forecast-era values, not postgame observed/reanalysis weather, for predictive features. Historical rows require explicit availability metadata; conservative 8-hour bound is used by the collector."
+      "rule": "Use forecast-era values, not postgame observed/reanalysis weather, for predictive features. Historical rows require explicit availability metadata; T0 game-start availability bound is used by the collector."
     }
   },
   "MLB": {
