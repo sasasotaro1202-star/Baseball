@@ -18,6 +18,8 @@ MIN_WINDOW_ROWS = 50
 MIN_LOGLOSS_IMPROVEMENT = 0.0005
 MIN_BRIER_IMPROVEMENT = 0.00025
 MAX_ACCURACY_REGRESSION = 0.005
+MAX_ECE_REGRESSION = 0.010
+MAX_HIGH_STATE_LOGLOSS_REGRESSION = 0.010
 
 
 def gate_window(window: dict) -> dict:
@@ -27,17 +29,20 @@ def gate_window(window: dict) -> dict:
     dll = float(routed.get("logloss", float("nan")) - base.get("logloss", float("nan")))
     db = float(routed.get("brier", float("nan")) - base.get("brier", float("nan")))
     da = float(routed.get("accuracy", float("nan")) - base.get("accuracy", float("nan")))
+    de = float(routed.get("ece", float("nan")) - base.get("ece", float("nan")))
     passed = (
         rows >= MIN_WINDOW_ROWS
         and dll <= -MIN_LOGLOSS_IMPROVEMENT
         and db <= -MIN_BRIER_IMPROVEMENT
         and da >= -MAX_ACCURACY_REGRESSION
+        and de <= MAX_ECE_REGRESSION
     )
     return {
         "rows": rows,
         "delta_logloss": dll,
         "delta_brier": db,
         "delta_accuracy": da,
+        "delta_ece": de,
         "passed": bool(passed),
     }
 
@@ -67,18 +72,29 @@ def main() -> int:
         windows = artifact.get("late_oos_windows") or {}
         ordered = [windows[k] for k in sorted(windows) if isinstance(windows[k], dict)]
         results = [gate_window(w) for w in ordered[:2]]
-        eligible = len(results) >= 2 and all(r["passed"] for r in results)
+        diag = artifact.get("diagnostics") or {}
+        high_state_values = [
+            float(diag[k])
+            for k in ("high_drift_score_delta_logloss", "high_uncertainty_delta_logloss")
+            if k in diag
+        ]
+        high_state_safe = all(v <= MAX_HIGH_STATE_LOGLOSS_REGRESSION for v in high_state_values)
+        eligible = len(results) >= 2 and all(r["passed"] for r in results) and high_state_safe
         checked.append({
             "checkpoint": artifact.get("checkpoint"),
             "league": artifact.get("league"),
             "status": "PASS" if results else "DEFERRED",
             "candidate_eligible": bool(eligible),
             "windows_checked": results,
+            "high_state_logloss_deltas": high_state_values,
+            "high_state_safe": bool(high_state_safe),
             "policy": {
                 "requires_two_non_overlapping_late_oos_windows": True,
                 "min_logloss_improvement": MIN_LOGLOSS_IMPROVEMENT,
                 "min_brier_improvement": MIN_BRIER_IMPROVEMENT,
                 "max_accuracy_regression": MAX_ACCURACY_REGRESSION,
+                "max_ece_regression": MAX_ECE_REGRESSION,
+                "max_high_state_logloss_regression": MAX_HIGH_STATE_LOGLOSS_REGRESSION,
                 "production_auto_promotion": False,
             },
         })
