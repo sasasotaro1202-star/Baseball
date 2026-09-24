@@ -36,6 +36,7 @@ from research.drift_uncertainty_routing import (
     route_experts,
 )
 from research.conformal_uncertainty import uncertainty_summary
+from research.case_risk_layer import assess_case_risk
 from research.matchday_intelligence import ContextKind, Observation, observation_delta_events
 from research.matchday_reforecast import reforecast
 
@@ -1096,7 +1097,25 @@ def main() -> int:
                                 pred_payload["matchday_reforecast_reason"] = (
                                     f"{type(exc).__name__}: {exc}"
                                 )
+                            case_risk = assess_case_risk(
+                                final,
+                                disagreement=float(getattr(rr, "disagreement", 0.0)),
+                                conformal=float(pred_payload.get("conformal_signal", 0.0)),
+                                drift=float(drift),
+                                feature_drift=float(feature_drift),
+                                output_drift=float(output_drift),
+                                starter_state=g.get("starter_state", "UNKNOWN"),
+                                lineup_state=g.get("lineup_state", "UNKNOWN"),
+                                weather_state=g.get("weather_state", "UNKNOWN"),
+                                roster_events=g.get("roster_events", []),
+                                observation_count=len(locals().get("observations", [])),
+                                usable_observation_count=sum(
+                                    str(getattr(o, "state", "")).upper() in {"VERIFIED", "PROJECTED", "EXPECTED"}
+                                    for o in locals().get("observations", [])
+                                ),
+                            )
                             pred_payload.update({
+                                "case_risk": case_risk,
                                 "shadow_status":"PASS",
                                 "shadow_home":float(final[0]),"shadow_draw":float(final[1]),"shadow_away":float(final[2]),
                                 "shadow_pre_matchday_home":float(mixed[0]),"shadow_pre_matchday_draw":float(mixed[1]),"shadow_pre_matchday_away":float(mixed[2]),
