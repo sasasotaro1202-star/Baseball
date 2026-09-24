@@ -232,6 +232,7 @@ class BaseballBacktest:
         self.checkpoint_dir = RESULTS / "checkpoints"
         self.checkpoint_version = "npb-massive-resume-v4-100target"
         self._last_temperature = 1.0
+        self.context_pit_counters = defaultdict(int)
         self.player_game = pd.DataFrame()
         self.pitcher_history = defaultdict(list)
         self.player_history = defaultdict(list)
@@ -577,6 +578,37 @@ class BaseballBacktest:
             else: f[f"{name}_slope_20"] = 0.0
         return f
 
+    def _prediction_cutoff(self, row: pd.Series, dt: pd.Timestamp) -> Optional[pd.Timestamp]:
+        """Return explicit prediction timestamp; never infer it for PIT-sensitive context."""
+        raw = row.get("prediction_time_utc")
+        if raw in (None, "") or (isinstance(raw, float) and np.isnan(raw)):
+            return None
+        ts = pd.to_datetime(raw, errors="coerce", utc=True)
+        return ts if pd.notna(ts) else None
+
+    def _context_pit_safe(
+        self,
+        row: pd.Series,
+        dt: pd.Timestamp,
+        available_col: str,
+        state_col: Optional[str] = None,
+        allow_states: Sequence[str] = ("VERIFIED", "PROJECTED"),
+    ) -> bool:
+        cutoff = self._prediction_cutoff(row, dt)
+        raw = row.get(available_col)
+        if cutoff is None or raw in (None, "") or (isinstance(raw, float) and np.isnan(raw)):
+            return False
+        available = pd.to_datetime(raw, errors="coerce", utc=True)
+        if pd.isna(available) or available > cutoff:
+            return False
+        if state_col:
+            state = str(row.get(state_col, "") or "").upper().strip()
+            if state and state not in set(allow_states):
+                return False
+            if not state:
+                return False
+        return True
+
     def _lineup_ids(self, row: pd.Series, side: str) -> List[Dict[str, Any]]:
         raw=row.get(f'{side}_lineup_json','')
         if raw in (None,'',float('nan')): return []
@@ -663,24 +695,50 @@ class BaseballBacktest:
         ass = str(row.get("away_starter", "") or "")
         out.update(self.starter_features(league, hs, dt, prefix="hs_"))
         out.update(self.starter_features(league, ass, dt, prefix="as_"))
-        # Player-by-player lineup micro-features. These are built from each
-        # hitter's own prior games and are therefore available before the target.
-        hpf=self._lineup_features(row,"home",league); apf=self._lineup_features(row,"away",league)
-        for k,v in hpf.items(): out[f"h_{k}"]=v
-        for k,v in apf.items(): out[f"a_{k}"]=v
-        for k in set(hpf)&set(apf): out[f"d_{k}"]=hpf[k]-apf[k]
+        # Player-by-player lineup micro-features are PIT-sensitive because the
+        # target lineup may only have become public shortly before first pitch.
+        # Require explicit prediction/availability timestamps; otherwise the
+        # historical row is intentionally treated as lineup-unknown.
+        lineup_safe = (
+            self._context_pit_safe(row, dt, "lineup_available_at", "lineup_state")
+            and self._context_pit_safe(row, dt, "lineup_available_at", "lineup_state")
+        )
+        if lineup_safe:
+            hpf=self._lineup_features(row,"home",league)
+            apf=self._lineup_features(row,"away",league)
+            self.context_pit_counters["lineup_used"] += 1
+            for k,v in hpf.items(): out[f"h_{k}"]=v
+            for k,v in apf.items(): out[f"a_{k}"]=v
+            for k in set(hpf)&set(apf): out[f"d_{k}"]=hpf[k]-apf[k]
+        else:
+            self.context_pit_counters["lineup_rejected_pit"] += 1
+            out["lineup_pit_safe"] = 0.0
+            out["lineup_history_coverage"] = 0.0
+            out["lineup_n"] = 0.0
         # IMPORTANT: never use the target game's own pitching line as a
         # pregame feature. The data-prep layer may carry *_starter_* columns
         # for audit, but those values are consumed only AFTER this feature row
         # is created by _update_pitcher_history().
-        # Weather is a feature only when a historical observation was available.
-        # Missing weather stays neutral rather than being imputed from future data.
-        for c in ("weather_temp_c", "weather_humidity_pct", "weather_wind_kmh", "weather_precip_mm"):
-            if c in row:
-                try:
-                    out[c] = float(row.get(c)) if pd.notna(row.get(c)) else 0.0
-                except Exception:
-                    out[c] = 0.0
+        # Weather is PIT-sensitive. An observed/forecast value without an explicit
+        # availability timestamp is rejected rather than silently treated as
+        # pregame knowledge. Historical replay must use the forecast/observation
+        # actually available by prediction_time_utc.
+        weather_safe = self._context_pit_safe(
+            row, dt, "weather_available_at", "weather_state",
+        )
+        if weather_safe:
+            self.context_pit_counters["weather_used"] += 1
+            for c in ("weather_temp_c", "weather_humidity_pct", "weather_wind_kmh", "weather_precip_mm"):
+                if c in row:
+                    try:
+                        out[c] = float(row.get(c)) if pd.notna(row.get(c)) else 0.0
+                    except Exception:
+                        out[c] = 0.0
+        else:
+            self.context_pit_counters["weather_rejected_pit"] += 1
+            for c in ("weather_temp_c", "weather_humidity_pct", "weather_wind_kmh", "weather_precip_mm"):
+                out[c] = 0.0
+            out["weather_pit_safe"] = 0.0
         # Market-neutral run environment from historical team scoring.
         out["expected_env"] = max(0.5, min(12.0, 0.5 * (hf["gf_10"] + af["gf_10"] + hf["ga_10"] + af["ga_10"])))
         # Nonlinear matchup signals: offense vs opposing starter skill, bullpen
@@ -796,6 +854,12 @@ class BaseballBacktest:
             y.append(target)
             meta.append(row.to_dict())
             self.update_after_game(row)
+        self.audit.append({
+            "type": "matchday_context_pit",
+            "prediction_rows": int(len(Xrows)),
+            "counters": dict(self.context_pit_counters),
+            "policy": "lineup/weather require explicit prediction_time_utc and availability timestamp; unknown fails closed",
+        })
         X = pd.DataFrame(Xrows).replace([np.inf, -np.inf], np.nan).fillna(0.0).astype(float)
         return X, np.asarray(y, dtype=int), pd.DataFrame(meta)
 
