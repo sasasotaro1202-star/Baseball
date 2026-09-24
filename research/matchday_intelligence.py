@@ -30,6 +30,7 @@ class ContextKind(str, Enum):
     STARTER = "STARTER"
     LINEUP = "LINEUP"
     INJURY = "INJURY"
+    AVAILABILITY = "AVAILABILITY"
     REST_TRAVEL = "REST_TRAVEL"
     WEATHER = "WEATHER"
     MARKET = "MARKET"
