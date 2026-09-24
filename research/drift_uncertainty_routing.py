@@ -37,7 +37,7 @@ class RoutingConfig:
     # Disagreement is a stronger proxy for epistemic/model uncertainty than
     # consensus entropy. Entropy is retained as an ambiguity proxy, but with
     # less influence on the routing fallback.
-    uncertainty_disagreement_mix: float = 0.75
+    uncertainty_disagreement_mix: float = 0.65
     uncertainty_entropy_mix: float = 0.20
     uncertainty_conformal_mix: float = 0.15
     uncertainty_anchor_mix: float = 1.0
