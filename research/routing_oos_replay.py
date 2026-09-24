@@ -124,12 +124,12 @@ def _feature_drift(history: List[np.ndarray], current: np.ndarray) -> float:
     if len(ref) < 12:
         return 0.0
     try:
-        from research.drift_uncertainty_routing import feature_drift_score
-        return float(np.clip(
-            0.7 * feature_drift_score(ref, recent)
-            + 0.3 * feature_drift_score(recent, cur),
-            0.0, 1.0
-        ))
+        from research.drift_uncertainty_routing import feature_drift_score, mmd_drift_score
+        loc_scale = feature_drift_score(ref, recent)
+        # MMD can compare different sample sizes, so the current pregame row
+        # is included here without using any target/postgame field.
+        mmd = mmd_drift_score(recent, cur)
+        return float(np.clip(0.50 * loc_scale + 0.50 * mmd, 0.0, 1.0))
     except Exception:
         return 0.0
 
@@ -168,12 +168,30 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
         output_drift = _predictive_drift(history_expert_probs, current)
         current_features = None
         feature_drift = 0.0
+        feature_mmd_drift = 0.0
         if feature_cols:
             values = pd.to_numeric(row[feature_cols], errors="coerce").to_numpy(dtype=float)
             if np.all(np.isfinite(values)):
                 current_features = values
                 feature_drift = _feature_drift(history_pregame_features, current_features)
-        drift = float(np.clip(0.65 * output_drift + 0.35 * feature_drift, 0.0, 1.0))
+                if len(history_pregame_features) >= 24:
+                    try:
+                        from research.drift_uncertainty_routing import mmd_drift_score
+                        arr = np.asarray(history_pregame_features, dtype=float)
+                        ref = arr[max(0, len(arr) - 96):-12]
+                        recent = arr[-12:]
+                        feature_mmd_drift = float(
+                            mmd_drift_score(recent, current_features.reshape(1, -1))
+                        )
+                    except Exception:
+                        feature_mmd_drift = 0.0
+        if feature_cols:
+            drift = float(np.clip(
+                0.55 * output_drift + 0.225 * feature_drift + 0.225 * feature_mmd_drift,
+                0.0, 1.0
+            ))
+        else:
+            drift = output_drift
 
         if len(hist) >= 8:
             rr = route_experts(
@@ -216,6 +234,7 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
             "drift_score": drift,
             "output_drift_score": output_drift,
             "feature_drift_score": feature_drift,
+            "feature_mmd_drift_score": feature_mmd_drift,
             "uncertainty": rr.uncertainty,
             "disagreement": rr.disagreement,
             "temperature_before_update": calibrator.temperature,
