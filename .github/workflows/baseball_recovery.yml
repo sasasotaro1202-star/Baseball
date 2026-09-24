@@ -150,8 +150,8 @@ jobs:
       - name: Recovery policy summary
         if: always()
         run: |
-          echo '[RECOVERY] Hosted watchdog runs independently of the Mac self-hosted runner.'
-          echo '[RECOVERY] Production -> Mac OOS -> Research -> next Production is enforced as a state machine.'
+          echo '[RECOVERY] Hosted watchdog runs independently of the OOS compute worker.'
+          echo '[RECOVERY] Production -> OOS Compute -> Research -> next Production is enforced as a state machine.'
           echo '[RECOVERY] Failed/cancelled/stuck stages are recovered without duplicating active work.'
           echo '[RECOVERY] Active-run detection scans the full recent run window, not only the newest run.'
           echo '[RECOVERY] Recovery reacts to completed workflow events and also reconciles every 15 minutes.'
