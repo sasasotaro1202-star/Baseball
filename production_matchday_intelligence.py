@@ -365,12 +365,20 @@ def fetch_lineup(game_id: str, target_date: str, home: str, away: str):
             for v in x:
                 yield from walk(v)
 
+    # Never equate a successfully fetched lineup with a confirmed lineup.
+    # Only explicit source status fields may upgrade it to VERIFIED.
+    explicit_confirmed = False
+    status_keys = ("status","Status","lineupStatus","LineupStatus","confirmed","Confirmed")
     keys_id=("PlayerCD","PlayerId","playerId","playerCD","BatterCD","player_id")
     keys_name=("PlayerName","playerName","BatterName","Name","name","選手名")
     keys_order=("BattingOrder","battingOrder","Order","order","打順")
     keys_side=("side","Side","team","Team","teamName","TeamName","HomeAway","homeAway")
 
     for d in walk(raw):
+        for sk in status_keys:
+            value = str(d.get(sk, "") or "").strip().lower()
+            if value in {"confirmed","確定","確定済み","official","official_confirmed","1","true"}:
+                explicit_confirmed = True
         pid=next((d.get(k) for k in keys_id if d.get(k) not in (None,"","-")),None)
         if pid is None:
             continue
@@ -403,6 +411,7 @@ def fetch_lineup(game_id: str, target_date: str, home: str, away: str):
             out[side],
             key=lambda x:(999 if x["batting_order"] is None else x["batting_order"],x["player_id"])
         )[:12]
+    out["_state"] = "VERIFIED" if explicit_confirmed else ("PROJECTED" if out["home"] and out["away"] else "UNKNOWN")
     return out
 
 
@@ -724,10 +733,11 @@ def main() -> int:
         g["starter_available_at"]=now.astimezone(timezone.utc).isoformat() if g["starter_state"]=="VERIFIED" else ""
         g["prediction_time_utc"]=now.astimezone(timezone.utc).isoformat()
         try:
-            g["lineup"]=fetch_lineup(g["game_id"],target_date,g["home"],g["away"]) if g["game_id"] else {"home":[],"away":[]}
+            g["lineup"]=fetch_lineup(g["game_id"],target_date,g["home"],g["away"]) if g["game_id"] else {"home":[],"away":[],"_state":"UNKNOWN"}
         except Exception:
-            g["lineup"]={"home":[],"away":[]}
-        g["lineup_state"]="VERIFIED" if g["lineup"]["home"] and g["lineup"]["away"] else "UNKNOWN"
+            g["lineup"]={"home":[],"away":[],"_state":"UNKNOWN"}
+        g["lineup_state"]=str(g["lineup"].get("_state","UNKNOWN")).upper()
+        g["lineup"].pop("_state",None) if isinstance(g.get("lineup"),dict) else None
         g["lineup_source"]="SPAIA starting_members_for_flash" if g["lineup_state"]=="VERIFIED" else ""
         g["lineup_available_at"]=now.astimezone(timezone.utc).isoformat() if g["lineup_state"]=="VERIFIED" else ""
         try:
