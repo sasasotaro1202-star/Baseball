@@ -195,6 +195,16 @@ if integrated_gate:
         if token not in integrated_gate:
             errors.append(f"missing {label} in research/matchday_integrated_acceptance_gate.py")
 
+bivariate_score = need("research/bivariate_poisson_score_oos.py", r"def\s+bivariate_pmf\b", "bivariate Poisson score challenger")
+if bivariate_score:
+    for token, label in [
+        ("def score_space", "score-choice probability space"),
+        ("def low_high_probs_bivariate", "combined-score Low/High evaluator"),
+        ("FIT_FRAC", "chronological challenger split"),
+        ("production_auto_promotion", "no auto-promotion marker"),
+    ]:
+        if token not in bivariate_score:
+            errors.append(f"missing {label} in research/bivariate_poisson_score_oos.py")
 nb_score = need("research/negative_binomial_score_oos.py", r"def\s+fit_alpha\b", "Negative Binomial score challenger")
 if nb_score:
     for token, label in [

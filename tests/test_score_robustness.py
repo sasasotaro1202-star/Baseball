@@ -57,3 +57,15 @@ def test_low_high_is_not_an_individual_team_seven_plus_rule():
     # Expected total = 7.0: High probability is above 0.5 under total-score definition.
     low, high = low_high_probs(3.5, 3.5)
     assert high > 0.5
+
+from research.bivariate_poisson_score_oos import low_high_probs_bivariate, score_space, top4_from_space
+
+
+def test_bivariate_score_distribution_respects_distinct_events():
+    space = score_space(4.0, 2.0, 0.4)
+    assert abs(sum(p for _, p in space) - 1.0) < 1e-9
+    top4 = top4_from_space(space)
+    assert len(top4) == 4
+    assert all(score == "その他" or "-" in score for score, _ in top4)
+    low, high = low_high_probs_bivariate(4.0, 2.0, 0.4)
+    assert abs(low + high - 1.0) < 1e-9

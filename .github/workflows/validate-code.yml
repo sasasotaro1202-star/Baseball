@@ -71,6 +71,7 @@ jobs:
           python -m py_compile research/ci_runtime_smoke.py
           python -m py_compile research/calibration_oos.py
           python -m py_compile research/negative_binomial_score_oos.py
+          python -m py_compile research/bivariate_poisson_score_oos.py
           python -m research.matchday_intelligence
           python -m research.matchday_policy
           python -m research.matchday_policy_learning
