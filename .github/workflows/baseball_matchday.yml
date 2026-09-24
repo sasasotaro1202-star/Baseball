@@ -56,6 +56,7 @@ jobs:
           python research/conformal_uncertainty.py >/dev/null
           python research/matchday_intelligence.py >/dev/null
           python research/matchday_policy.py >/dev/null
+          python research/matchday_effect_fit.py >/dev/null
           python research/matchday_policy_learning.py >/dev/null
 
       - name: Run matchday intelligence with fail-closed retries
