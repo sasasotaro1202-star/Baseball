@@ -40,7 +40,15 @@ def metrics(p: np.ndarray, y: np.ndarray) -> Dict[str, float]:
     ll = float(np.mean(-np.log(p[np.arange(len(y)), y])))
     brier = float(np.mean(np.sum((p - target) ** 2, axis=1)))
     acc = float(np.mean(p.argmax(axis=1) == y))
-    return {"logloss": ll, "brier": brier, "accuracy": acc}
+    conf = p.max(axis=1)
+    pred = p.argmax(axis=1)
+    err = (pred != y).astype(float)
+    ece = 0.0
+    for lo, hi in zip(np.linspace(0.0, 1.0, 11)[:-1], np.linspace(0.0, 1.0, 11)[1:]):
+        m = (conf >= lo) & (conf < hi if hi < 1.0 else conf <= hi)
+        if np.any(m):
+            ece += float(m.mean()) * abs(float(conf[m].mean()) - float(1.0 - err[m].mean()))
+    return {"logloss": ll, "brier": brier, "accuracy": acc, "ece": float(ece)}
 
 
 def load_snapshots() -> Dict[str, List[Observation]]:
@@ -111,16 +119,24 @@ def main() -> int:
         except Exception:
             continue
 
+    # Canonicalize to one final pregame snapshot per game. Repeated 30-minute
+    # observations are retained for change tracking, but they must not be counted
+    # as independent games during effect/accuracy evaluation.
+    snapshot_by_game: Dict[str, List[dict]] = {}
+    for env in snapshot_rows:
+        snapshot_by_game.setdefault(str(env.get("game_id")), []).append(env)
+
     selected = []
     for _, row in df.iterrows():
         gid = str(row["game_id"])
-        cutoff = str(row["prediction_time_utc"])
-        choices = [x for x in snapshot_rows if str(x.get("game_id")) == gid and str(x.get("prediction_time_utc")) == cutoff]
-        if not choices:
-            selected.append(None)
-            continue
-        # Select the latest snapshot at the requested prediction timestamp.
-        selected.append(choices[-1])
+        scheduled = pd.to_datetime(row.get("datetime"), errors="coerce", utc=True)
+        choices = snapshot_by_game.get(gid, [])
+        eligible = []
+        for env in choices:
+            pt = pd.to_datetime(env.get("prediction_time_utc"), errors="coerce", utc=True)
+            if pd.notna(pt) and (pd.isna(scheduled) or pt <= scheduled):
+                eligible.append((pt, env))
+        selected.append(max(eligible, key=lambda x: x[0])[1] if eligible else None)
 
     base_probs = []
     final_probs = []
@@ -190,6 +206,7 @@ def main() -> int:
         "baseline": bm,
         "matchday": fm,
         "delta": {f"delta_{k}": float(fm[k] - bm[k]) for k in bm},
+        "unique_games": int(df["game_id"].astype(str).nunique()),
         "policy_eligible": bool(policy.get("eligible", False)),
         "note": "This replay scores only observations with explicit availability evidence.",
     }
