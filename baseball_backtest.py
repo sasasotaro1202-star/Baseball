@@ -230,7 +230,7 @@ class BaseballBacktest:
         self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 1500.0)  # hard cap: 29:00
         self.audit: List[Dict[str, Any]] = []
         self.checkpoint_dir = RESULTS / "checkpoints"
-        self.checkpoint_version = "npb-massive-resume-v4-100target"
+        self.checkpoint_version = "npb-massive-resume-v5-matchday-shadow"
         self._last_temperature = 1.0
         self.context_pit_counters = defaultdict(int)
         self.player_game = pd.DataFrame()
@@ -1110,6 +1110,24 @@ class BaseballBacktest:
         out = np.apply_along_axis(clip_prob, 1, out)
         return out
 
+    def _context_free_matrix(self, X: pd.DataFrame) -> pd.DataFrame:
+        """Remove direct matchday-context features for an independent shadow baseline."""
+        drop = []
+        for c in X.columns:
+            n = str(c).lower()
+            if (
+                n.startswith("weather_")
+                or "lineup_" in n
+                or n in {"h_lineup_n", "a_lineup_n", "d_lineup_n",
+                         "h_lineup_history_coverage", "a_lineup_history_coverage",
+                         "d_lineup_history_coverage"}
+            ):
+                drop.append(c)
+        out = X.drop(columns=drop, errors="ignore").copy()
+        if out.empty:
+            raise ValueError("context-free feature matrix is empty")
+        return out
+
     # ------------------------------------------------------------------
     # Walk-forward
     # ------------------------------------------------------------------
@@ -1190,6 +1208,15 @@ class BaseballBacktest:
                 )
 
         X, y, meta = self.build_features(games)
+        matchday_shadow = os.getenv("BASEBALL_MATCHDAY_SHADOW", "0").strip().lower() in {"1","true","yes"}
+        X_free = self._context_free_matrix(X) if matchday_shadow else None
+        if matchday_shadow:
+            self.audit.append({
+                "type": "matchday_shadow_baseline",
+                "enabled": True,
+                "dropped_feature_count": int(X.shape[1] - X_free.shape[1]),
+                "rule": "independent context-free baseline; matchday effect learner may use only this baseline",
+            })
         # Resume support: completed OOS predictions are persisted after every
         # retraining block. On a later run, completed game IDs are skipped.
         ck = self.checkpoint_dir / f"{league.lower()}_walkforward.csv"
@@ -1215,6 +1242,18 @@ class BaseballBacktest:
                 print(f"[{league}] time budget reached; stopping walk-forward cleanly")
                 break
             try:
+                free_p = None
+                free_name = ""
+                free_fitted = None
+                if matchday_shadow and X_free is not None:
+                    free_fitted, _free_scores, _free_best = self.fit_ensemble(
+                        X_free.iloc[:bstart], y[:bstart], league
+                    )
+                    if free_fitted:
+                        free_name = "ContextFreeEnsemble(" + "+".join(x[2] for x in free_fitted) + ")"
+                        free_p = self.ensemble_proba(
+                            free_fitted, X_free.iloc[bstart:bend], league
+                        )
                 fitted, val_scores, best_name = self.fit_ensemble(X.iloc[:bstart], y[:bstart], league)
                 if not fitted: raise RuntimeError("ensemble fitting failed")
                 name = "Ensemble(" + "+".join(x[2] for x in fitted) + ")"
@@ -1265,7 +1304,11 @@ class BaseballBacktest:
                     "home": r["home"], "away": r["away"], "home_starter": r.get("home_starter", ""), "away_starter": r.get("away_starter", ""),
                     "pred_home": float(prob[0]), "pred_draw": float(prob[1]) if league == "NPB" else np.nan,
                     "pred_away": float(prob[2]) if league == "NPB" else float(prob[1]),
-                    "prediction": pred, "actual": actual, "correct": int(pred == actual),
+                    "prediction": pred,
+                    "baseline_context_free": int(bool(matchday_shadow and free_p is not None)),
+                    "pred_context_free_home": float(free_p[j,0]) if free_p is not None else np.nan,
+                    "pred_context_free_draw": float(free_p[j,1]) if (free_p is not None and league == "NPB") else np.nan,
+                    "pred_context_free_away": float(free_p[j,2]) if (free_p is not None and league == "NPB") else (float(free_p[j,1]) if free_p is not None else np.nan), "actual": actual, "correct": int(pred == actual),
                     "logloss": ll, "brier": br, "model": name,
                     "validation_logloss": json.dumps(val_scores, ensure_ascii=False),
                     "lambda_home": lam_h, "lambda_away": lam_a,
@@ -1274,6 +1317,16 @@ class BaseballBacktest:
                     "low": low, "high": high,
                     "actual_home_score": float(r["home_score"]), "actual_away_score": float(r["away_score"]),
                 }
+                # Event indicators are emitted only when explicit PIT-safe context
+                # evidence exists on the row. The absence of evidence remains 0/unknown.
+                if float(row_payload.get("baseline_context_free", 0)) == 1:
+                    row_payload["ctx_lineup_present"] = 1.0 if float(X.iloc[idx].get("h_lineup_n", 0.0) + X.iloc[idx].get("a_lineup_n", 0.0)) > 0 else 0.0
+                    row_payload["ctx_weather_present"] = 1.0 if "weather_pit_safe" in X.columns and float(X.iloc[idx].get("weather_pit_safe", 0.0)) > 0 else 0.0
+                    row_payload["ctx_short_rest"] = 1.0 if float(X.iloc[idx].get("short_rest_diff", 0.0)) != 0.0 else 0.0
+                else:
+                    row_payload["ctx_lineup_present"] = 0.0
+                    row_payload["ctx_weather_present"] = 0.0
+                    row_payload["ctx_short_rest"] = 0.0
                 for expert_key, expert_probs in expert_prob_snapshots.items():
                     row_payload[f"expert_{expert_key}_home"] = float(expert_probs[j, 0])
                     if league == "NPB":
