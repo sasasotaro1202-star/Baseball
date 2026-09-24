@@ -52,7 +52,9 @@ jobs:
           python -m py_compile research/drift_uncertainty_routing.py
           python -m py_compile research/routing_oos_replay.py
           python -m py_compile research/routing_acceptance_gate.py
-          python - <<'PY'
+          python -m py_compile research/matchday_intelligence.py
+          python research/matchday_intelligence.py
+          python - <<'PY
           import pandas as pd
           from baseball_backtest import BaseballBacktest
           b = BaseballBacktest()
