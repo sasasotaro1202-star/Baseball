@@ -496,20 +496,43 @@ def build_matchday_observations(game: dict, prediction_time: str) -> list[dict]:
             "confidence": float(np.clip(confidence, 0.0, 1.0)),
         })
 
+    starter_state = game.get("starter_state", "UNKNOWN")
+    starter_available = game.get("starter_available_at")
     add(
         ContextKind.STARTER.value,
-        game.get("starter_state", "UNKNOWN"),
+        starter_state,
         game.get("starter_source", "NPB.jp"),
         {"home": game.get("starter_home", ""), "away": game.get("starter_away", "")},
-        game.get("starter_available_at"),
+        starter_available,
     )
+    if starter_state in {"VERIFIED", "PROJECTED"} and starter_available:
+        add(
+            ContextKind.STARTER.value,
+            starter_state,
+            game.get("starter_source", "NPB.jp"),
+            "STARTER_CONFIRMED",
+            starter_available,
+            confidence=1.0 if starter_state == "VERIFIED" else 0.7,
+        )
+
+    lineup_state = game.get("lineup_state", "UNKNOWN")
+    lineup_available = game.get("lineup_available_at")
     add(
         ContextKind.LINEUP.value,
-        game.get("lineup_state", "UNKNOWN"),
+        lineup_state,
         game.get("lineup_source", "SPAIA"),
         {"home": game.get("lineup", {}).get("home", []), "away": game.get("lineup", {}).get("away", [])},
-        game.get("lineup_available_at"),
+        lineup_available,
     )
+    if lineup_state in {"VERIFIED", "PROJECTED"} and lineup_available:
+        add(
+            ContextKind.LINEUP.value,
+            lineup_state,
+            game.get("lineup_source", "SPAIA"),
+            "LINEUP_CONFIRMED" if lineup_state == "VERIFIED" else "LINEUP_PROJECTED",
+            lineup_available,
+            confidence=1.0 if lineup_state == "VERIFIED" else 0.7,
+        )
 
     w = game.get("weather") or {}
     if w.get("state") not in (None, "", "UNKNOWN"):
