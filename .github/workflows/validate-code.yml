@@ -22,7 +22,7 @@ jobs:
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4; do
-            if pip install --disable-pip-version-check -r requirements.txt; then exit 0; fi
+            if pip install --disable-pip-version-check -r requirements.txt && python -m pip install --disable-pip-version-check 'pytest>=8,<9'; then exit 0; fi
             if [ "$attempt" -lt 4 ]; then sleep $((attempt * 5)); fi
           done
           exit 1
@@ -85,5 +85,5 @@ jobs:
           python -m json.tool results/routing_oos_replay.json >/dev/null
           python -m research.routing_acceptance_gate
           python -m json.tool results/routing_acceptance_gate.json >/dev/null
-          pytest -q tests
+          python -m pytest -q tests
           echo "All Baseball Python syntax/runtime smoke checks passed"
