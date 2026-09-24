@@ -180,7 +180,7 @@ def fetch_spaia_game_ids(year: int, target_date: str):
         return result
 
     try:
-        url = f"{SPAIA}/../?date={target_date.replace('-', '')}"
+        url = f"https://spaia.jp/baseball/npb/?date={target_date.replace('-', '')}"
         page = get(url).content
         doc = lxml_html.fromstring(page)
         short_alias = {
