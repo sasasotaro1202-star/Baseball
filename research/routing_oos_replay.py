@@ -100,6 +100,40 @@ def _predictive_drift(history: List[np.ndarray], current: np.ndarray) -> float:
     return float(np.clip(1.0 - np.exp(-raw / 0.12), 0.0, 1.0))
 
 
+def _safe_numeric_pregame_columns(df: pd.DataFrame) -> List[str]:
+    """Allowlist only explicitly pregame feature columns for drift detection."""
+    allowed = []
+    for c in df.columns:
+        name = str(c).lower()
+        if not (name.startswith("feature_") or name.startswith("pregame_")):
+            continue
+        if name in {"feature_actual", "feature_target", "pregame_actual", "pregame_target"}:
+            continue
+        if pd.api.types.is_numeric_dtype(df[c]):
+            allowed.append(c)
+    return sorted(allowed)
+
+
+def _feature_drift(history: List[np.ndarray], current: np.ndarray) -> float:
+    if len(history) < 24:
+        return 0.0
+    arr = np.asarray(history, dtype=float)
+    ref = arr[max(0, len(arr) - 96):-12]
+    recent = arr[-12:]
+    cur = np.asarray(current, dtype=float).reshape(1, -1)
+    if len(ref) < 12:
+        return 0.0
+    try:
+        from research.drift_uncertainty_routing import feature_drift_score
+        return float(np.clip(
+            0.7 * feature_drift_score(ref, recent)
+            + 0.3 * feature_drift_score(recent, cur),
+            0.0, 1.0
+        ))
+    except Exception:
+        return 0.0
+
+
 def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
     league = str(df["league"].iloc[0])
     expert_cols = sorted({c[len("expert_"):].rsplit("_", 1)[0] for c in df.columns if c.startswith("expert_") and c.endswith("_home")})
@@ -117,6 +151,8 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
     outcomes = []
     history_logloss = []
     history_expert_probs = []
+    feature_cols = _safe_numeric_pregame_columns(df)
+    history_pregame_features = []
     previous_weights = None
     calibrator = AdaptiveTemperatureCalibrator(config=config)
     routing_rows = []
@@ -129,7 +165,15 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
             hist = np.asarray(history_logloss[-max(config.long_window, 120):], dtype=float)
         else:
             hist = np.empty((0, len(expert_cols)), dtype=float)
-        drift = _predictive_drift(history_expert_probs, current)
+        output_drift = _predictive_drift(history_expert_probs, current)
+        current_features = None
+        feature_drift = 0.0
+        if feature_cols:
+            values = pd.to_numeric(row[feature_cols], errors="coerce").to_numpy(dtype=float)
+            if np.all(np.isfinite(values)):
+                current_features = values
+                feature_drift = _feature_drift(history_pregame_features, current_features)
+        drift = float(np.clip(0.65 * output_drift + 0.35 * feature_drift, 0.0, 1.0))
 
         if len(hist) >= 8:
             rr = route_experts(
@@ -170,6 +214,8 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
         routing_rows.append({
             "game_id": str(row["game_id"]),
             "drift_score": drift,
+            "output_drift_score": output_drift,
+            "feature_drift_score": feature_drift,
             "uncertainty": rr.uncertainty,
             "disagreement": rr.disagreement,
             "temperature_before_update": calibrator.temperature,
@@ -182,6 +228,8 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
             row_losses.append(float(-np.log(max(float(ep[y]), 1e-12))))
         history_logloss.append(row_losses)
         history_expert_probs.append(current)
+        if current_features is not None:
+            history_pregame_features.append(current_features)
         previous_weights = rr.weights.copy()
         calibrator.update(np.asarray(mixed_probs[-config.long_window:]), np.asarray(outcomes[-config.long_window:]))
 
@@ -213,14 +261,36 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
                         _metrics(sub_route, sub_y)["logloss"] - _metrics(sub_base, sub_y)["logloss"]
                     )
 
+    windows = {}
+    n_rows = len(y_arr)
+    if n_rows >= 200:
+        half = max(50, n_rows // 4)
+        starts = [max(0, n_rows - 2 * half), max(0, n_rows - half)]
+        for idx, start in enumerate(starts, 1):
+            end = min(n_rows, start + half)
+            if end - start < 50:
+                continue
+            bm = _metrics(base_arr[start:end], y_arr[start:end])
+            rm = _metrics(routed_arr[start:end], y_arr[start:end])
+            windows[f"window_{idx}"] = {
+                "start_index": int(start),
+                "end_index": int(end),
+                "rows": int(end - start),
+                "baseline": bm,
+                "routed_recalibrated": rm,
+                "delta": {f"delta_{k}": float(rm[k] - bm[k]) for k in bm},
+            }
+
     artifact = {
         "status": "PASS",
         "league": league,
         "rows": int(len(df)),
         "experts": expert_cols,
+        "feature_drift_columns": feature_cols,
         "baseline": baseline_metrics,
         "routed_recalibrated": routed_metrics,
         "delta": delta,
+        "late_oos_windows": windows,
         "final_temperature": float(calibrator.temperature),
         "diagnostics": diagnostics,
         "routing_rows_tail": routing_rows[-20:],
