@@ -608,6 +608,7 @@ def persist_matchday_forward_ledger(predictions: list[dict]) -> None:
                 "actual": np.nan,
             })
 
+    snapshot_path.touch(exist_ok=True)
     if snapshot_rows:
         with snapshot_path.open("a", encoding="utf-8") as fh:
             for row in snapshot_rows:
@@ -624,6 +625,12 @@ def persist_matchday_forward_ledger(predictions: list[dict]) -> None:
         bdf.drop_duplicates(["game_id", "prediction_time_utc"], keep="last").to_csv(
             baseline_path, index=False
         )
+    elif not baseline_path.exists():
+        pd.DataFrame(columns=[
+            "game_id","datetime","prediction_time_utc","pred_home","pred_draw",
+            "pred_away","pred_shadow_home","pred_shadow_draw","pred_shadow_away",
+            "shadow_status","actual"
+        ]).to_csv(baseline_path, index=False)
 
 
 def stable_hash(obj):
