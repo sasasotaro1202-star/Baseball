@@ -43,6 +43,19 @@ if runtime:
 
 base = need("baseball_backtest.py", r"def\s+_update_pitcher_history\b", "pitcher history updater")
 if base:
+    for token, label in [
+        ("home_pregame_starter", "pre-game starter field"),
+        ("away_pregame_starter", "pre-game away starter field"),
+        ("pregame_lineup_json", "pre-game lineup field"),
+        ("starter_available_at", "starter availability timestamp"),
+    ]:
+        if token not in base:
+            errors.append(f"missing {label} in baseball_backtest.py")
+    if 'row.get("home_starter", "")' in base:
+        errors.append("baseball_backtest.py still reads historical actual starter as prediction input")
+
+base = need("baseball_backtest.py", r"def\s+_update_pitcher_history\b", "pitcher history updater")
+if base:
     pred = base.find("match_features(row)")
     hist = base.find("_update_pitcher_history(row)")
     if pred >= 0 and hist >= 0 and hist < pred:
