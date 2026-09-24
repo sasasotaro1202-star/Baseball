@@ -610,7 +610,7 @@ class BaseballBacktest:
         return True
 
     def _lineup_ids(self, row: pd.Series, side: str) -> List[Dict[str, Any]]:
-        raw=row.get(f'{side}_lineup_json','')
+        raw=row.get(f'{side}_pregame_lineup_json','')
         if raw in (None,'',float('nan')): return []
         try:
             x=json.loads(raw) if isinstance(raw,str) else raw
@@ -691,8 +691,8 @@ class BaseballBacktest:
         for k, v in af.items(): out[f"a_{k}"] = v
         for k in set(hf) & set(af): out[f"d_{k}"] = hf[k] - af[k]
         # Starter pregame information comes only from historical starter profiles.
-        hs = str(row.get("home_starter", "") or "")
-        ass = str(row.get("away_starter", "") or "")
+        hs = str(row.get("home_pregame_starter", "") or "")
+        ass = str(row.get("away_pregame_starter", "") or "")
         out.update(self.starter_features(league, hs, dt, prefix="hs_"))
         out.update(self.starter_features(league, ass, dt, prefix="as_"))
         # Player-by-player lineup micro-features are PIT-sensitive because the
