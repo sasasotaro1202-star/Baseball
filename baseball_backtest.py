@@ -17,7 +17,7 @@ Design goals:
   - Team form, home/away form, Elo, run environment, starter metrics,
     bullpen workload and park effects when available.
   - Classification: home/draw/away for NPB; home/away for MLB.
-  - Score model: independent Poisson with tail bucket for 7+ internally.
+  - Score model: independent Poisson; user-facing score output is the top 4 exact cells.
   - Low/High internally for both leagues.
   - MLB prediction output requires BOTH starters to be confirmed.
 
@@ -145,25 +145,37 @@ def poisson_grid(lam_h: float, lam_a: float, max_runs: int = 14) -> np.ndarray:
 
 
 def score_candidates(lam_h: float, lam_a: float, n: int = 4) -> List[Tuple[str, float]]:
-    """Top score candidates with every 7+ outcome aggregated as その他."""
+    """Return the n most probable concrete exact-score outcomes.
+
+    The display contract is four score choices. The catch-all その他 is
+    deliberately excluded from this function; Low/High is a separate event.
+    """
     lam_h = max(float(lam_h), 1e-6)
     lam_a = max(float(lam_a), 1e-6)
+    n = max(0, int(n))
+    if n == 0:
+        return []
+
+    # Search a sufficiently wide exact-score grid so 7+ run outcomes can be
+    # selected naturally when they are genuinely among the highest-probability
+    # cells. The upper bound is only a computational guard.
+    max_runs = max(
+        14,
+        min(40, int(math.ceil(max(lam_h, lam_a) * 4.0 + 8.0))),
+    )
     cells = []
-    p_low_h = sum(poisson_pmf(k, lam_h) for k in range(7))
-    p_low_a = sum(poisson_pmf(k, lam_a) for k in range(7))
-    low_mass = p_low_h * p_low_a
-    for h in range(7):
-        for a in range(7):
-            cells.append((f"{h}-{a}", poisson_pmf(h, lam_h) * poisson_pmf(a, lam_a)))
-    cells.sort(key=lambda z: z[1], reverse=True)
-    tail = max(0.0, 1.0 - low_mass)
-    # The display contract requires exactly four candidates. If その他 is
-    # not naturally in the top four, it is still included and the weakest
-    # ordinary candidate is removed.
-    out = cells[:max(0, n-1)]
-    out.append(("その他", tail))
-    out.sort(key=lambda z: z[1], reverse=True)
-    return out[:n]
+    for h in range(max_runs + 1):
+        ph = poisson_pmf(h, lam_h)
+        for a in range(max_runs + 1):
+            cells.append((f"{h}-{a}", ph * poisson_pmf(a, lam_a)))
+    cells.sort(
+        key=lambda z: (
+            -float(z[1]),
+            int(str(z[0]).split("-", 1)[0]),
+            int(str(z[0]).split("-", 1)[1]),
+        )
+    )
+    return cells[:n]
 
 
 def low_high_probs(lam_h: float, lam_a: float) -> Tuple[float, float]:

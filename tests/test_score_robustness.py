@@ -23,11 +23,22 @@ def test_negative_binomial_challenger_runs_without_oos_artifacts():
 from baseball_backtest import low_high_probs, score_candidates
 
 
-def test_score_candidates_are_exactly_four_choices_with_other_bucket():
+def test_score_candidates_are_top_four_concrete_scores():
     choices = score_candidates(2.7, 2.1, 4)
     assert len(choices) == 4
-    assert sum(1 for score, _ in choices if score == "その他") == 1
-    assert sum(1 for score, _ in choices if score != "その他") == 3
+    assert all(score != "その他" for score, _ in choices)
+    assert all("-" in score for score, _ in choices)
+    probs = [prob for _, prob in choices]
+    assert probs == sorted(probs, reverse=True)
+
+
+def test_score_candidates_can_naturally_include_seven_plus():
+    choices = score_candidates(8.0, 8.0, 4)
+    assert len(choices) == 4
+    assert any(
+        int(score.split("-", 1)[0]) >= 7 or int(score.split("-", 1)[1]) >= 7
+        for score, _ in choices
+    )
 
 
 def test_low_high_maps_seven_plus_to_high():
