@@ -866,10 +866,10 @@ def main() -> int:
                                 ]
                                 if effect_artifact.exists():
                                     cal_temp = 1.0
-                                    gate_file = RESULTS / "routing_acceptance_gate.json"
+                                    gate_file = RESULTS / "matchday_integrated_acceptance_gate.json"
                                     if routing_artifact.exists() and gate_file.exists():
                                         gate = json.loads(gate_file.read_text(encoding="utf-8"))
-                                        if any(bool(x.get("candidate_eligible")) for x in gate.get("results", [])):
+                                        if gate.get("candidate_eligible") is True:
                                             ra = json.loads(routing_artifact.read_text(encoding="utf-8"))
                                             temps = [
                                                 float(x.get("final_temperature", 1.0))
@@ -912,7 +912,7 @@ def main() -> int:
                                     matchday_result.skipped_events if matchday_result is not None else []
                                 ),
                                 "matchday_reforecast_reason":(
-                                    matchday_result.reason if matchday_result is not None else "no eligible effect artifact"
+                                    matchday_result.reason if matchday_result is not None else "no integrated acceptance gate"
                                 ),
                                 "shadow_weights":rr.weights.tolist(),"shadow_temperature":(
                                     getattr(final_cal, "temperature", 1.0) if matchday_result is not None else 1.0
