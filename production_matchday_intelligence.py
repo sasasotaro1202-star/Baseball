@@ -373,7 +373,9 @@ def main() -> int:
                         if len(current_raw)>=2:
                             hist_losses=[]
                             hist_probs=[]
-                            for _,rr in ck.sort_values(["datetime","game_id"]).tail(1200).iterrows():
+                            hist_y=[]
+                            ordered_ck=ck.sort_values(["datetime","game_id"])
+                            for _,rr in ordered_ck.tail(1200).iterrows():
                                 try:
                                     yy=int(rr["actual"])
                                     probs=[]
@@ -381,19 +383,51 @@ def main() -> int:
                                     for key in current_names:
                                         names=[f"expert_{key}_home",f"expert_{key}_draw",f"expert_{key}_away"]
                                         pp=np.asarray([float(rr[n]) for n in names],dtype=float)
+                                        if not np.all(np.isfinite(pp)):
+                                            raise ValueError("non-finite historical expert probability")
                                         pp=np.clip(pp,1e-12,1.0);pp/=pp.sum()
                                         probs.append(pp);losses.append(float(-np.log(pp[yy])))
-                                    hist_probs.append(probs);hist_losses.append(losses)
+                                    hist_probs.append(probs);hist_losses.append(losses);hist_y.append(yy)
                                 except Exception:
                                     continue
                             if len(hist_losses)>=45:
                                 raw=np.asarray(hist_probs[-120:],dtype=float)
+                                ys=np.asarray(hist_y[-120:],dtype=int)
                                 bank=ExpertCalibrationBank(len(current_raw),config=RoutingConfig())
-                                bank.update(raw,np.asarray([int(x["actual"]) for x in ck.sort_values(["datetime","game_id"]).tail(len(raw)).to_dict("records")]))
+                                bank.update(raw,ys)
                                 cal_current=bank.predict(np.asarray(current_raw))
-                                loss_hist=np.asarray(hist_losses,dtype=float)
-                                prev=np.asarray([float(dict(fitted)[n]) for n in []]) if False else None
-                                rr=route_experts(cal_current,loss_hist,drift_score=0.0,previous_weights=prev)
+                                loss_hist=np.asarray(hist_losses[-120:],dtype=float)
+                                # Incumbent ensemble weights are the stable anchor for
+                                # high-uncertainty routing; only matched experts are used.
+                                fitted_weight_map={name:float(w) for _m,w,name in fitted}
+                                prev=np.asarray([fitted_weight_map.get(name,0.0) for name in current_names],dtype=float)
+                                if prev.sum() <= 0:
+                                    prev=None
+                                feature_drift=0.0
+                                try:
+                                    if len(X_hist) >= 24:
+                                        recent_hist=X_hist.tail(12)
+                                        old_hist=X_hist.iloc[max(0,len(X_hist)-96):-12]
+                                        common=[c for c in recent_hist.columns if c in fx.columns]
+                                        if len(common)>=8 and len(old_hist)>=12:
+                                            feature_drift=feature_drift_score(
+                                                old_hist[common].to_numpy(dtype=float),
+                                                recent_hist[common].to_numpy(dtype=float),
+                                            )
+                                except Exception:
+                                    feature_drift=0.0
+                                output_drift=0.0
+                                if len(hist_probs)>=24:
+                                    arr=np.asarray(hist_probs[-96:],dtype=float)
+                                    short=arr[-12:].mean(axis=0)
+                                    old=arr[:-12]
+                                    if len(old)>=12:
+                                        output_drift=float(np.clip(
+                                            1.0-np.exp(-float(np.mean(np.abs(short-old.mean(axis=0))))/0.12),
+                                            0.0,1.0,
+                                        ))
+                                drift=float(np.clip(0.70*output_drift+0.30*feature_drift,0.0,1.0))
+                                rr=route_experts(cal_current,loss_hist,drift_score=drift,previous_weights=prev)
                                 mixed=mix_expert_probabilities(cal_current,rr.weights)
                                 temp=1.0
                                 if routing_artifact.exists():
