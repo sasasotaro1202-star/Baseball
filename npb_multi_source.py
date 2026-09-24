@@ -32,6 +32,7 @@ if START_YEAR > END_YEAR:
     START_YEAR, END_YEAR = END_YEAR, START_YEAR
 WORKERS = int(os.getenv("NPB_DOWNLOAD_WORKERS", "6"))
 LIGHT_ENRICH = os.getenv("NPB_LIGHT_ENRICH", "0").strip().lower() in {"1","true","yes"}
+# Fast mode keeps core starter/game history available without blocking on optional player micro-features.
 BUDGET_SEC = float(os.getenv("NPB_COLLECTION_BUDGET_SEC", "1560"))
 SAFETY_SEC = float(os.getenv("NPB_COLLECTION_SAFETY_SEC", "90"))
 DEADLINE = time.monotonic() + max(60.0, BUDGET_SEC - SAFETY_SEC)
