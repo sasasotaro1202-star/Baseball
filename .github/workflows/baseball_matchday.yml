@@ -58,10 +58,10 @@ jobs:
           set -euo pipefail
           . .venv/bin/activate
           python -m py_compile production_matchday_intelligence.py baseball_backtest.py research/drift_uncertainty_routing.py research/conformal_uncertainty.py research/matchday_intelligence.py research/matchday_policy.py research/matchday_policy_learning.py research/matchday_effect_fit.py research/matchday_effect_dataset.py research/matchday_change_ledger.py research/matchday_replay.py research/matchday_settle.py research/matchday_reforecast.py research/matchday_integrated_acceptance_gate.py research/routing_oos_replay.py research/routing_acceptance_gate.py
-          python research/drift_uncertainty_routing.py >/dev/null
-          python research/conformal_uncertainty.py >/dev/null
-          python research/matchday_intelligence.py >/dev/null
-          python research/matchday_policy.py >/dev/null
+          python -m research.drift_uncertainty_routing >/dev/null
+          python -m research.conformal_uncertainty >/dev/null
+          python -m research.matchday_intelligence >/dev/null
+          python -m research.matchday_policy >/dev/null
 
       - name: Run matchday intelligence with fail-closed retries
         run: |
@@ -79,16 +79,16 @@ jobs:
         run: |
           set -euo pipefail
           . .venv/bin/activate
-          python research/matchday_settle.py
-          python research/matchday_change_ledger.py
-          python research/matchday_effect_dataset.py
-          python research/matchday_effect_fit.py
-          python research/matchday_policy_learning.py
-          python research/matchday_replay.py
+          python -m research.matchday_settle
+          python -m research.matchday_change_ledger
+          python -m research.matchday_effect_dataset
+          python -m research.matchday_effect_fit
+          python -m research.matchday_policy_learning
+          python -m research.matchday_replay
           python -m json.tool results/matchday_settlement.json >/dev/null
           python -m json.tool results/matchday_effects.json >/dev/null
           python -m json.tool results/matchday_replay.json >/dev/null
-          python research/matchday_integrated_acceptance_gate.py
+          python -m research.matchday_integrated_acceptance_gate
           python -m json.tool results/matchday_integrated_acceptance_gate.json >/dev/null
           python -m json.tool results/matchday_policy.json >/dev/null
 
