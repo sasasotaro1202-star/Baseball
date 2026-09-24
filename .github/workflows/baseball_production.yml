@@ -180,8 +180,7 @@ jobs:
           python production_data_quality_gate.py
           python production_integrity_gate.py
       - name: Upload verified state artifact
-        if: success() && steps.sha_gate.outputs.ok == 'true'
-        if: success() && steps.npb_ready.outputs.ready == 'true'
+        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.npb_ready.outputs.ready == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: baseball-production-state-${{ github.run_id }}
@@ -205,8 +204,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
       - name: Persist verified state atomically
-        if: success() && steps.sha_gate.outputs.ok == 'true'
-        if: success() && steps.npb_ready.outputs.ready == 'true'
+        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.npb_ready.outputs.ready == 'true'
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
