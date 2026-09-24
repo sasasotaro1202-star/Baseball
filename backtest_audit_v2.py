@@ -78,6 +78,16 @@ if settlement:
         if token not in settlement:
             errors.append(f"missing {label} in research/matchday_settle.py")
 
+effect_dataset = need("research/matchday_effect_dataset.py", r"def main", "Matchday PIT effect dataset")
+if effect_dataset:
+    for token, label in [
+        ("prediction_time_utc", "prediction-time provenance"),
+        ("baseline_context_free", "context-free baseline"),
+        ("ctx_PLAYER_OUT", "availability event mapping"),
+    ]:
+        if token not in effect_dataset:
+            errors.append(f"missing {label} in research/matchday_effect_dataset.py")
+
 matchday_replay = need("research/matchday_replay.py", r"class|def main", "Matchday PIT replay")
 if matchday_replay:
     for token, label in [
