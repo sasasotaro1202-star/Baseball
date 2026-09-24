@@ -47,8 +47,8 @@ jobs:
         run: |
           set -euo pipefail
           . .venv/bin/activate
-          python -m py_compile research/research_loop.py research/openai_research_advisor.py backtest_audit.py source_quality_gate.py
-          python backtest_audit.py
+          python -m py_compile research/research_loop.py research/openai_research_advisor.py backtest_audit_v2.py source_quality_gate.py
+          python backtest_audit_v2.py
       - name: Run autonomous research controller with bounded retries
         run: |
           set -euo pipefail
