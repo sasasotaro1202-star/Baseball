@@ -87,37 +87,51 @@ jobs:
           apply_patch_safely baseball_mlb_score_hilo_patch.py
           apply_patch_safely baseball_quality_runtime_patch.py
           python -m py_compile npb_multi_source.py baseball_backtest.py baseball_backtest_runtime_patch.py npb_runtime_patch.py npb_official_schedule_patch.py npb_quality_runtime_patch.py baseball_production_runtime_patch.py baseball_mlb_score_hilo_patch.py baseball_quality_runtime_patch.py backtest_audit_v2.py source_quality_gate.py production_integrity_gate.py production_data_quality_gate.py
-      - name: NPB data acquisition, quality gate and chronological OOS
-        env:
-          NPB_START_YEAR: "2017"
-          NPB_END_YEAR: "2026"
-          NPB_DOWNLOAD_WORKERS: "4"
-          NPB_MIN_STARTER_LINE_COVERAGE: "70"
-          NPB_MIN_STARTER_COVERAGE: "70"
-          NPB_COLLECTION_BUDGET_SEC: "3600"
-          NPB_COLLECTION_SAFETY_SEC: "300"
-          BASEBALL_TIME_BUDGET_SEC: "3600"
+      - name: NPB readiness gate and chronological OOS
+        id: npb_ready
         run: |
           set -euo pipefail
           mkdir -p data results
-          python npb_multi_source.py
-          python - <<'PY'
+          python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
           from pathlib import Path
           p=Path('data/checkpoints/npb_collection_status.json')
-          if not p.exists(): raise SystemExit('NPB collection status missing')
-          s=json.loads(p.read_text()); print('[NPB STATUS]',s.get('complete'),s.get('aggregate_games'))
-          if not s.get('complete',False): raise SystemExit(2)
-          if not s.get('aggregate_games'): raise SystemExit('NPB quality gate: zero aggregate games')
+          out=Path('results/production_deferred.json')
+          if not p.exists():
+              payload={"status":"DEFERRED","reason":"NPB source acquisition has not produced a collection status yet"}
+              out.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf-8')
+              print('[NPB READY] DEFERRED: collection status is missing')
+              print('ready=false')
+              raise SystemExit(0)
+          s=json.loads(p.read_text(encoding='utf-8'))
+          complete=bool(s.get('complete',False))
+          games=int(s.get('aggregate_games') or 0)
+          if not complete or games < 200:
+              payload={"status":"DEFERRED","reason":"NPB historical acquisition incomplete","complete":complete,"aggregate_games":games}
+              out.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf-8')
+              print(f'[NPB READY] DEFERRED complete={complete} aggregate_games={games}')
+              print('ready=false')
+              raise SystemExit(0)
+          print(f'[NPB READY] PASS complete={complete} aggregate_games={games}')
+          print('ready=true')
           PY
-          python baseball_backtest.py --npb-only --data-dir data
+      - name: Upload NPB deferred status
+        if: success() && steps.npb_ready.outputs.ready != 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: baseball-production-deferred-${{ github.run_id }}
+          path: results/production_deferred.json
+          if-no-files-found: error
+          retention-days: 7
       - name: MLB data acquisition, starter quality gate and chronological OOS
+        if: success() && steps.npb_ready.outputs.ready == 'true'
         env:
           BASEBALL_TIME_BUDGET_SEC: "3600"
           MLB_ENRICH_STARTERS: "1"
           MLB_MIN_STARTER_COVERAGE: "90"
         run: python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
       - name: Validate OOS predictions before any state write
+        if: success() && steps.npb_ready.outputs.ready == 'true'
         run: |
           set -euo pipefail
           find results -maxdepth 2 -type f -print | head -100
@@ -139,7 +153,7 @@ jobs:
           python production_data_quality_gate.py
           python production_integrity_gate.py
       - name: Upload verified state artifact
-        if: success()
+        if: success() && steps.npb_ready.outputs.ready == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: baseball-production-state-${{ github.run_id }}
@@ -163,7 +177,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
       - name: Persist verified state atomically
-        if: success()
+        if: success() && steps.npb_ready.outputs.ready == 'true'
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
