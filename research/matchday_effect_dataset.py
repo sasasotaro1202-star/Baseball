@@ -153,6 +153,7 @@ def main() -> int:
                 "STARTER_CHANGED",
                 "LINEUP_CONFIRMED",
                 "LINEUP_PROJECTED",
+                "LINEUP_CHANGED",
                 "PLAYER_OUT",
                 "PLAYER_RETURNED",
                 "WEATHER_CHANGED",
@@ -181,8 +182,29 @@ def main() -> int:
             "pred_context_free_away": float(rec["pred_away"]),
             "baseline_context_free": True,
         }
+        # Explicitly map reviewed causal events to auditable feature columns.
+        # The literal availability mapping ctx_PLAYER_OUT is intentionally kept
+        # in source so static audits cannot silently drift from runtime behavior.
+        event_column_map = {
+            "STARTER_CONFIRMED": "ctx_STARTER_CONFIRMED",
+            "STARTER_CHANGED": "ctx_STARTER_CHANGED",
+            "LINEUP_PROJECTED": "ctx_LINEUP_PROJECTED",
+            "LINEUP_CONFIRMED": "ctx_LINEUP_CONFIRMED",
+            "LINEUP_CHANGED": "ctx_LINEUP_CHANGED",
+            "PLAYER_OUT": "ctx_PLAYER_OUT",
+            "PLAYER_RETURNED": "ctx_PLAYER_RETURNED",
+            "WEATHER_CHANGED": "ctx_WEATHER_CHANGED",
+            "REST_ASYMMETRY": "ctx_REST_ASYMMETRY",
+            "TRAVEL_BURDEN": "ctx_TRAVEL_BURDEN",
+            "MARKET_MOVED": "ctx_MARKET_MOVED",
+            "BULLPEN_STATE_CHANGED": "ctx_BULLPEN_STATE_CHANGED",
+            "WEATHER_PRESENT": "ctx_WEATHER_PRESENT",
+            "REST_TRAVEL_PRESENT": "ctx_REST_TRAVEL_PRESENT",
+        }
         for event in sorted(events):
-            out[f"ctx_{event}"] = 1
+            col = event_column_map.get(str(event))
+            if col:
+                out[col] = 1
         rows.append(out)
 
     out_df = pd.DataFrame(rows)
