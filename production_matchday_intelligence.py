@@ -242,6 +242,15 @@ def fetch_official_starters(target_date: str):
 
     starters = {}
     current_team = None
+    generic_labels = {
+        "個人年度別成績",
+        "選手一覧",
+        "球団別インデックス",
+        "選手検索",
+    }
+    # The official page includes a generic /bis/players/ navigation link.
+    # Only a numeric player-profile URL is a valid starter identity.
+    player_href_re = re.compile(r"/bis/players/\d+\.html(?:[?#].*)?$")
     for node in heading.xpath("following::*"):
         tag = getattr(node, "tag", None)
         if tag == "img":
@@ -251,16 +260,22 @@ def fetch_official_starters(target_date: str):
                 current_team = team
                 continue
         if tag == "a" and current_team:
-            href = str(node.get("href") or "")
+            href = str(node.get("href") or "").strip()
             txt = re.sub(r"\s+", " ", "".join(node.itertext())).strip()
-            if txt and ("/bis/players/" in href or "/player/" in href):
+            href_path = re.sub(r"^https://npb\.jp", "", href)
+            if (
+                txt
+                and txt not in generic_labels
+                and player_href_re.search(href_path)
+                and not re.fullmatch(r"[-‐ー—]+", txt)
+            ):
                 starters.setdefault(current_team, txt)
                 current_team = None
         if tag in {"h1","h2","h3","h4"} and node is not heading:
             txt = re.sub(r"\s+", " ", "".join(node.itertext())).strip()
             if "予告先発投手" in txt:
                 break
-    return starters
+    return {team: name for team, name in starters.items() if team in TEAM_NAMES and name}
 
 
 def fetch_roster_notice(target_date: str):
