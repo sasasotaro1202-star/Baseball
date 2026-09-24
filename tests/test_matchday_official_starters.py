@@ -18,8 +18,8 @@ def test_official_starter_parser_rejects_generic_players_navigation():
         """
     )
     got = _extract_official_starters(doc, "9月25日の予告先発投手")
-    assert got["東京ヤクルトスワローズ"] == "山野　太一"
-    assert got["中日ドラゴンズ"] == "金丸　夢斗"
+    assert got["東京ヤクルトスワローズ"] == "山野 太一"
+    assert got["中日ドラゴンズ"] == "金丸 夢斗"
 
 
 def test_official_starter_parser_fails_closed_without_target_heading():
