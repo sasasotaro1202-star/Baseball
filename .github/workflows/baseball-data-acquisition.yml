@@ -80,6 +80,7 @@ jobs:
           NPB_START_YEAR: "2017"
           NPB_END_YEAR: "2026"
           NPB_DOWNLOAD_WORKERS: "12"
+          NPB_LIGHT_ENRICH: "1"
           NPB_MIN_STARTER_LINE_COVERAGE: "70"
           NPB_MIN_STARTER_COVERAGE: "70"
           NPB_COLLECTION_BUDGET_SEC: "7200"
