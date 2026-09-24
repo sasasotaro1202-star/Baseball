@@ -41,7 +41,19 @@ def test_other_is_included_only_when_its_aggregate_probability_is_top_four():
     assert all(score != "その他" for score, _ in low_scoring)
 
 
-def test_low_high_maps_seven_plus_to_high():
-    low, high = low_high_probs(7.0, 1.0)
+def test_low_high_uses_combined_team_score_threshold():
+    low, high = low_high_probs(3.5, 3.5)
     assert low < 0.5
+    assert high > 0.5
+
+
+def test_low_high_is_the_complement_of_total_score_over_six():
+    low, high = low_high_probs(3.0, 3.0)
+    assert abs((low + high) - 1.0) < 1e-12
+    assert low > 0.5
+
+
+def test_low_high_is_not_an_individual_team_seven_plus_rule():
+    # Expected total = 6.5: High probability is above 0.5 under total-score definition.
+    low, high = low_high_probs(3.25, 3.25)
     assert high > 0.5

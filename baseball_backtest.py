@@ -181,9 +181,10 @@ def score_candidates(lam_h: float, lam_a: float, n: int = 4) -> List[Tuple[str, 
 
 
 def low_high_probs(lam_h: float, lam_a: float) -> Tuple[float, float]:
-    # Low = both teams 0..6. High = complement.
-    low = (sum(poisson_pmf(k, lam_h) for k in range(7)) *
-           sum(poisson_pmf(k, lam_a) for k in range(7)))
+    # Low = combined score <= 6. High = combined score >= 7.
+    # Under independent Poisson scoring, the total is Poisson(lam_h + lam_a).
+    total_lambda = max(float(lam_h) + float(lam_a), 1e-6)
+    low = sum(poisson_pmf(k, total_lambda) for k in range(7))
     low = float(np.clip(low, 0, 1))
     return low, 1.0 - low
 
@@ -1532,9 +1533,9 @@ class BaseballBacktest:
             "League": league, "Predictions": len(df), "Accuracy": float(df.correct.mean()),
             "LogLoss": float(df.logloss.mean()), "Brier": float(df.brier.mean()),
             "MeanAbsoluteScoreError": float((abs(df.actual_home_score-df.lambda_home)+abs(df.actual_away_score-df.lambda_away)).mean()/2),
-            "HighActualRate": float(((df.actual_home_score >= 7) | (df.actual_away_score >= 7)).mean()),
-            "LowHighAccuracy": float((((df.high >= 0.5).astype(int)) == (((df.actual_home_score >= 7) | (df.actual_away_score >= 7)).astype(int))).mean()),
-            "Top4ScoreHitRate": float(df.apply(lambda r: (("その他" in {str(r.score1),str(r.score2),str(r.score3),str(r.score4)}) if (r.actual_home_score >= 7 or r.actual_away_score >= 7) else (f"{int(r.actual_home_score)}-{int(r.actual_away_score)}" in {str(r.score1),str(r.score2),str(r.score3),str(r.score4)})), axis=1).mean()),
+            "HighActualRate": float(((df.actual_home_score + df.actual_away_score) >= 7).mean()),
+            "LowHighAccuracy": float((((df.high >= 0.5).astype(int)) == ((df.actual_home_score + df.actual_away_score >= 7).astype(int))).mean()),
+            "Top4ScoreHitRate": float(df.apply(lambda r: (("その他" in {str(r.score1),str(r.score2),str(r.score3),str(r.score4)}) if (r.actual_home_score + r.actual_away_score >= 7) else (f"{int(r.actual_home_score)}-{int(r.actual_away_score)}" in {str(r.score1),str(r.score2),str(r.score3),str(r.score4)})), axis=1).mean()),
         }
         if league == "MLB":
             try:
