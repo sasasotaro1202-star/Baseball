@@ -882,6 +882,20 @@ def main() -> int:
                     "incumbent_away":float(incumbent[2]),
                     "incumbent_model":"Ensemble(" + "+".join(x[2] for x in fitted) + ")",
                 })
+                # Always expose a baseline case-risk profile, even when there
+                # is not enough historical evidence to activate shadow routing.
+                pred_payload["case_risk"] = assess_case_risk(
+                    incumbent,
+                    disagreement=0.0,
+                    conformal=0.0,
+                    drift=0.0,
+                    feature_drift=0.0,
+                    output_drift=0.0,
+                    starter_state=g.get("starter_state", "UNKNOWN"),
+                    lineup_state=g.get("lineup_state", "UNKNOWN"),
+                    weather_state=g.get("weather_state", "UNKNOWN"),
+                    roster_events=g.get("roster_events", []),
+                )
                 if score_fitted is not None:
                     lam_h, lam_a = bt.predict_scores(score_fitted, fx, "NPB")
                     split = float(np.clip(incumbent[0] - incumbent[2], -0.35, 0.35))
