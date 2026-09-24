@@ -87,9 +87,9 @@ jobs:
           NPB_LIGHT_ENRICH: "1"
           NPB_MIN_STARTER_LINE_COVERAGE: "70"
           NPB_MIN_STARTER_COVERAGE: "70"
-          NPB_COLLECTION_BUDGET_SEC: "7200"
-          NPB_COLLECTION_SAFETY_SEC: "300"
-          BASEBALL_TIME_BUDGET_SEC: "7200"
+          NPB_COLLECTION_BUDGET_SEC: "6000"
+          NPB_COLLECTION_SAFETY_SEC: "600"
+          BASEBALL_TIME_BUDGET_SEC: "6000"
         run: python npb_multi_source.py
       - name: NPB checkpoint gate
         id: npb_gate
