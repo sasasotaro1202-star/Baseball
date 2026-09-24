@@ -1,4 +1,5 @@
 import re
+import textwrap
 from pathlib import Path
 
 
@@ -8,4 +9,4 @@ def test_recovery_embedded_python_compiles():
     blocks = re.findall(r"python3?\s+-\s*<<['\"]PY['\"]\n(.*?)\n\s*PY", text, re.DOTALL)
     assert blocks, "recovery workflow must contain a testable Python heredoc"
     for block in blocks:
-        compile(block, str(workflow), "exec")
+        compile(textwrap.dedent(block), str(workflow), "exec")
