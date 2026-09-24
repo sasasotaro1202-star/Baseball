@@ -51,7 +51,7 @@ jobs:
         run: |
           set -euo pipefail
           . .venv/bin/activate
-          python -m py_compile production_matchday_intelligence.py baseball_backtest.py research/drift_uncertainty_routing.py research/conformal_uncertainty.py research/matchday_intelligence.py research/matchday_policy.py research/matchday_policy_learning.py research/matchday_effect_fit.py research/matchday_effect_dataset.py research/matchday_change_ledger.py research/matchday_replay.py research/matchday_settle.py research/routing_oos_replay.py research/routing_acceptance_gate.py
+          python -m py_compile production_matchday_intelligence.py baseball_backtest.py research/drift_uncertainty_routing.py research/conformal_uncertainty.py research/matchday_intelligence.py research/matchday_policy.py research/matchday_policy_learning.py research/matchday_effect_fit.py research/matchday_effect_dataset.py research/matchday_change_ledger.py research/matchday_replay.py research/matchday_settle.py research/matchday_reforecast.py research/matchday_integrated_acceptance_gate.py research/routing_oos_replay.py research/routing_acceptance_gate.py
           python research/drift_uncertainty_routing.py >/dev/null
           python research/conformal_uncertainty.py >/dev/null
           python research/matchday_intelligence.py >/dev/null
@@ -80,6 +80,8 @@ jobs:
           python research/matchday_policy_learning.py
           python -m json.tool results/matchday_settlement.json >/dev/null
           python -m json.tool results/matchday_effects.json >/dev/null
+          python research/matchday_integrated_acceptance_gate.py
+          python -m json.tool results/matchday_integrated_acceptance_gate.json >/dev/null
           python -m json.tool results/matchday_policy.json >/dev/null
 
       - name: Validate current matchday artifact
@@ -108,7 +110,7 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add results/matchday_intelligence_current.json results/matchday_policy.json results/matchday_replay.json results/matchday_settlement.json results/matchday_effects.json results/matchday_effect_replay.csv results/matchday_change_ledger.jsonl results/matchday_baseline.csv results/matchday_snapshots.jsonl
+          git add results/matchday_intelligence_current.json results/matchday_policy.json results/matchday_replay.json results/matchday_settlement.json results/matchday_effects.json results/matchday_integrated_acceptance_gate.json results/matchday_effect_replay.csv results/matchday_change_ledger.jsonl results/matchday_baseline.csv results/matchday_snapshots.jsonl
           if git diff --cached --quiet; then
             echo '[MATCHDAY] no material state change; no commit'
             exit 0
@@ -136,6 +138,7 @@ jobs:
             results/matchday_replay.json
             results/matchday_settlement.json
             results/matchday_effects.json
+            results/matchday_integrated_acceptance_gate.json
             results/matchday_effect_replay.csv
             results/matchday_change_ledger.jsonl
             results/matchday_baseline.csv
