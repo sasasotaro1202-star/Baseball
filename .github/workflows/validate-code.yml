@@ -49,6 +49,7 @@ jobs:
           python -m py_compile research/research_loop.py
           python -m py_compile research/openai_research_advisor.py
           python -m py_compile research/frozen_holdout_gate.py
+          python -m py_compile research/drift_uncertainty_routing.py
           python - <<'PY'
           import pandas as pd
           from baseball_backtest import BaseballBacktest
@@ -72,4 +73,5 @@ jobs:
           print("Baseball core runtime smoke: PASS")
           PY
           python backtest_audit_v2.py
+          python research/drift_uncertainty_routing.py
           echo "All Baseball Python syntax/runtime smoke checks passed"
