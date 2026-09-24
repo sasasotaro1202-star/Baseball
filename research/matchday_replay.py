@@ -139,7 +139,7 @@ def main() -> int:
     selected = []
     for _, row in df.iterrows():
         gid = str(row["game_id"])
-        scheduled = pd.to_datetime(row.get("datetime"), errors="coerce", utc=True)
+        prediction_cutoff = pd.to_datetime(row["prediction_time_utc"], errors="coerce", utc=True)
         choices = snapshot_by_game.get(gid, [])
         exact = [x for x in choices if str(x.get("prediction_time_utc")) == str(row["prediction_time_utc"])]
         if exact:
@@ -148,10 +148,10 @@ def main() -> int:
         eligible = []
         for env in choices:
             pt = pd.to_datetime(env.get("prediction_time_utc"), errors="coerce", utc=True)
-            if pd.notna(pt) and (pd.isna(scheduled) or pt <= scheduled):
+            if pd.notna(pt) and pd.notna(prediction_cutoff) and pt <= prediction_cutoff:
                 eligible.append((pt, env))
-        # A non-exact fallback can be used only for context replay; it must not
-        # be mixed with an older recorded shadow prediction.
+        # Fallback context must be available no later than the original prediction
+        # cutoff; using any later snapshot would create look-ahead leakage.
         selected.append(max(eligible, key=lambda x: x[0])[1] if eligible else None)
 
     base_probs = []
