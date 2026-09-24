@@ -37,6 +37,7 @@ from research.drift_uncertainty_routing import (
 )
 from research.conformal_uncertainty import uncertainty_summary
 from research.matchday_policy import apply_matchday_policy, load_policy
+from research.matchday_intelligence import ContextKind, Observation
 
 ROOT = Path(__file__).resolve().parent
 RESULTS = ROOT / "results"
@@ -466,6 +467,138 @@ def rest_travel(historical, game):
     return result
 
 
+def build_matchday_observations(game: dict, prediction_time: str) -> list[dict]:
+    """Convert current context into a persistent PIT observation ledger."""
+    retrieved = prediction_time
+    gid = str(game.get("game_id") or "")
+    rows: list[dict] = []
+
+    def add(kind, state, source, value, available_at, source_time=None, confidence=1.0):
+        if not available_at:
+            return
+        rows.append({
+            "game_id": gid,
+            "snapshot_id": stable_hash({
+                "game_id": gid,
+                "prediction_time": prediction_time,
+                "kind": kind,
+                "value": value,
+            })[:16],
+            "prediction_time": prediction_time,
+            "available_at": str(available_at),
+            "source_time": str(source_time or available_at),
+            "retrieved_at": retrieved,
+            "kind": str(kind),
+            "state": str(state),
+            "source": str(source),
+            "value": value,
+            "freshness_seconds": 0.0,
+            "confidence": float(np.clip(confidence, 0.0, 1.0)),
+        })
+
+    add(
+        ContextKind.STARTER.value,
+        game.get("starter_state", "UNKNOWN"),
+        game.get("starter_source", "NPB.jp"),
+        {"home": game.get("starter_home", ""), "away": game.get("starter_away", "")},
+        game.get("starter_available_at"),
+    )
+    add(
+        ContextKind.LINEUP.value,
+        game.get("lineup_state", "UNKNOWN"),
+        game.get("lineup_source", "SPAIA"),
+        {"home": game.get("lineup", {}).get("home", []), "away": game.get("lineup", {}).get("away", [])},
+        game.get("lineup_available_at"),
+    )
+
+    w = game.get("weather") or {}
+    if w.get("state") not in (None, "", "UNKNOWN"):
+        add(
+            ContextKind.WEATHER.value,
+            game.get("weather_state", w.get("state", "UNKNOWN")),
+            w.get("source", "Open-Meteo"),
+            {
+                "temperature_c": w.get("temperature_c"),
+                "humidity_pct": w.get("humidity_pct"),
+                "precip_mm": w.get("precip_mm"),
+                "wind_kmh": w.get("wind_kmh"),
+                "wind_direction_deg": w.get("wind_direction_deg"),
+            },
+            game.get("weather_available_at") or w.get("available_at"),
+        )
+
+    for ev in (game.get("roster_events") or []):
+        event_name = "PLAYER_OUT" if ev.get("status") == "REMOVED" else "PLAYER_RETURNED"
+        add(
+            ContextKind.AVAILABILITY.value,
+            "VERIFIED",
+            ev.get("source", "NPB.jp roster"),
+            event_name,
+            prediction_time,
+        )
+
+    rest = game.get("rest_travel") or {}
+    if rest.get("state") == "VERIFIED":
+        add(
+            ContextKind.REST_TRAVEL.value,
+            "VERIFIED",
+            "derived from completed historical schedule",
+            rest,
+            prediction_time,
+            confidence=0.8,
+        )
+    return rows
+
+
+def persist_matchday_forward_ledger(predictions: list[dict]) -> None:
+    """Append prediction/context snapshots for future settlement and replay."""
+    snapshot_path = RESULTS / "matchday_snapshots.jsonl"
+    baseline_path = RESULTS / "matchday_baseline.csv"
+    snapshot_rows = []
+    baseline_rows = []
+
+    for game in predictions:
+        pt = str(game.get("prediction_time_utc") or "")
+        gid = str(game.get("game_id") or "")
+        if not gid or not pt:
+            continue
+        obs = build_matchday_observations(game, pt)
+        snapshot_rows.append(json.dumps({
+            "game_id": gid,
+            "prediction_time_utc": pt,
+            "observations": obs,
+        }, ensure_ascii=False, sort_keys=True))
+
+        pred = game.get("prediction") or {}
+        if pred.get("incumbent_status") == "PASS":
+            baseline_rows.append({
+                "game_id": gid,
+                "datetime": game.get("datetime"),
+                "prediction_time_utc": pt,
+                "pred_home": pred.get("incumbent_home"),
+                "pred_draw": pred.get("incumbent_draw"),
+                "pred_away": pred.get("incumbent_away"),
+                "actual": np.nan,
+            })
+
+    if snapshot_rows:
+        with snapshot_path.open("a", encoding="utf-8") as fh:
+            for row in snapshot_rows:
+                fh.write(row + "\n")
+
+    if baseline_rows:
+        bdf = pd.DataFrame(baseline_rows)
+        if baseline_path.exists() and baseline_path.stat().st_size:
+            try:
+                old = pd.read_csv(baseline_path)
+            except Exception:
+                old = pd.DataFrame()
+            bdf = pd.concat([old, bdf], ignore_index=True)
+        bdf.drop_duplicates(["game_id", "prediction_time_utc"], keep="last").to_csv(
+            baseline_path, index=False
+        )
+
+
 def stable_hash(obj):
     return hashlib.sha256(json.dumps(obj,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode()).hexdigest()
 
@@ -563,6 +696,11 @@ def main() -> int:
             g["weather_state"]="PROJECTED"
         else:
             g["weather_available_at"]=""; g["weather_state"]="UNKNOWN"
+        roster_events=[]
+        for ev in roster.get("events", []):
+            if ev.get("team") in {g["home"], g["away"]}:
+                roster_events.append(ev)
+        g["roster_events"]=roster_events
         g["rest_travel"]=rest_travel(historical,g)
 
         pred_payload={"incumbent_status":"DEFERRED","shadow_status":"DEFERRED","shadow_not_promoted":True}
@@ -733,6 +871,8 @@ def main() -> int:
             pred_payload["incumbent_reason"]=model_error
         g["prediction"]=pred_payload
         predictions.append(g)
+
+    persist_matchday_forward_ledger(predictions)
 
     payload={
         "schema_version":1,
