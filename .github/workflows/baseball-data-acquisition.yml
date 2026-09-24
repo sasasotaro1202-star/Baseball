@@ -91,6 +91,45 @@ jobs:
           NPB_COLLECTION_SAFETY_SEC: "600"
           BASEBALL_TIME_BUDGET_SEC: "6000"
         run: python npb_multi_source.py
+      - name: Persist resumable NPB checkpoint after acquisition failure
+        if: failure()
+        run: |
+          set -euo pipefail
+          status_file="data/checkpoints/npb_collection_status.json"
+          if [ ! -s "$status_file" ]; then
+            echo '[ACQ RECOVERY] no checkpoint status to persist'
+            exit 0
+          fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('data/checkpoints/npb_collection_status.json')
+          s=json.loads(p.read_text(encoding='utf-8'))
+          games=int(s.get('aggregate_games') or 0)
+          if games <= 0:
+              raise SystemExit('[ACQ RECOVERY] refusing to persist zero-game checkpoint')
+          print(f'[ACQ RECOVERY] checkpoint valid for persistence: aggregate_games={games} complete={bool(s.get("complete"))}')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/checkpoints data/npb_games data/weather data/source_coverage.csv npb_multi_source.py
+          if git diff --cached --quiet; then
+            echo '[ACQ RECOVERY] no resumable checkpoint changes'
+            exit 0
+          fi
+          git commit -m 'Checkpoint resumable NPB acquisition after failure'
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            if git rebase origin/main && git push origin HEAD:main; then
+              echo "[ACQ RECOVERY] resumable checkpoint persisted on attempt $attempt"
+              exit 0
+            fi
+            git rebase --abort 2>/dev/null || true
+            sleep $((attempt * 5))
+          done
+          echo '[ACQ RECOVERY] failed to persist resumable checkpoint after 5 attempts'
+          exit 1
+
       - name: NPB checkpoint gate
         id: npb_gate
         run: |
