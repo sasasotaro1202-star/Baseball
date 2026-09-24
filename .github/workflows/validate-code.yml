@@ -69,6 +69,7 @@ jobs:
           python -m py_compile research/matchday_integrated_acceptance_gate.py
           python -m py_compile production_matchday_intelligence.py
           python -m py_compile research/ci_runtime_smoke.py
+          python -m py_compile research/calibration_oos.py
           python -m research.matchday_intelligence
           python -m research.matchday_policy
           python -m research.matchday_policy_learning
@@ -87,5 +88,7 @@ jobs:
           python -m json.tool results/routing_oos_replay.json >/dev/null
           python -m research.routing_acceptance_gate
           python -m json.tool results/routing_acceptance_gate.json >/dev/null
+          python -m research.calibration_oos
+          python -m json.tool results/calibration_oos.json >/dev/null
           python -m pytest -q tests
           echo "All Baseball Python syntax/runtime smoke checks passed"
