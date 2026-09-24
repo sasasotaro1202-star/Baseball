@@ -220,17 +220,8 @@ def fetch_spaia_game_ids(year: int, target_date: str):
         return result
 
 
-def fetch_official_starters(target_date: str):
-    """Parse only the NPB official starter block for the requested date.
-
-    NPB's public starter page can roll to the next day's announced starters
-    after the current slate is complete. The target-date heading is therefore
-    a hard safety gate; no heading match means UNKNOWN.
-    """
-    r = get(f"{NPB}/announcement/starter/")
-    doc = lxml_html.fromstring(r.content)
-    target_label = f"{int(target_date[5:7])}月{int(target_date[8:10])}日の予告先発投手"
-
+def _extract_official_starters(doc, target_label: str):
+    """Pure parser for the NPB starter page; network I/O stays outside this helper."""
     heading = None
     for node in doc.xpath("//h1|//h2|//h3|//h4|//strong"):
         txt = re.sub(r"\s+", " ", "".join(node.itertext())).strip()
@@ -242,15 +233,9 @@ def fetch_official_starters(target_date: str):
 
     starters = {}
     current_team = None
-    generic_labels = {
-        "個人年度別成績",
-        "選手一覧",
-        "球団別インデックス",
-        "選手検索",
-    }
-    # The official page includes a generic /bis/players/ navigation link.
-    # Only a numeric player-profile URL is a valid starter identity.
+    generic_labels = {"個人年度別成績", "選手一覧", "球団別インデックス", "選手検索"}
     player_href_re = re.compile(r"/bis/players/\d+\.html(?:[?#].*)?$")
+
     for node in heading.xpath("following::*"):
         tag = getattr(node, "tag", None)
         if tag == "img":
@@ -263,12 +248,7 @@ def fetch_official_starters(target_date: str):
             href = str(node.get("href") or "").strip()
             txt = re.sub(r"\s+", " ", "".join(node.itertext())).strip()
             href_path = re.sub(r"^https://npb\.jp", "", href)
-            if (
-                txt
-                and txt not in generic_labels
-                and player_href_re.search(href_path)
-                and not re.fullmatch(r"[-‐ー—]+", txt)
-            ):
+            if txt and txt not in generic_labels and player_href_re.search(href_path):
                 starters.setdefault(current_team, txt)
                 current_team = None
         if tag in {"h1","h2","h3","h4"} and node is not heading:
@@ -278,6 +258,12 @@ def fetch_official_starters(target_date: str):
     return {team: name for team, name in starters.items() if team in TEAM_NAMES and name}
 
 
+def fetch_official_starters(target_date: str):
+    """Fetch and parse only the NPB official starter block for the requested date."""
+    r = get(f"{NPB}/announcement/starter/")
+    doc = lxml_html.fromstring(r.content)
+    target_label = f"{int(target_date[5:7])}月{int(target_date[8:10])}日の予告先発投手"
+    return _extract_official_starters(doc, target_label)
 def fetch_roster_notice(target_date: str):
     """Read official same-day NPB registration/removal notices.
 
