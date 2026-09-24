@@ -158,6 +158,7 @@ def reforecast(
     history_logloss: np.ndarray,
     observations: Iterable[Observation],
     previous_weights: Optional[np.ndarray] = None,
+    drift_score: float = 0.0,
     calibrator: Optional[AdaptiveTemperatureCalibrator] = None,
     config: RoutingConfig = RoutingConfig(),
     effect_path: Path = EFFECTS,
@@ -180,7 +181,7 @@ def reforecast(
     routed = route_experts(
         expert_probs=expert_p,
         history_logloss=np.asarray(history_logloss, dtype=float),
-        drift_score=0.0,
+        drift_score=float(np.clip(drift_score, 0.0, 1.0)),
         previous_weights=previous_weights,
         config=config,
     )
