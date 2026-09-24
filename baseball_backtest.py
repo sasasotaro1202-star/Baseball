@@ -178,7 +178,6 @@ def result_from_score(h: float, a: float, league: str) -> int:
 
 
 @dataclass
-@dataclass
 class VenueState:
     games: int = 0
     total_runs: float = 0.0
@@ -186,6 +185,7 @@ class VenueState:
     draws: int = 0
 
 
+@dataclass
 class TeamState:
     results: deque = field(default_factory=lambda: deque(maxlen=MAX_FORM))
     gf: deque = field(default_factory=lambda: deque(maxlen=MAX_FORM))
