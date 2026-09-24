@@ -86,11 +86,23 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/ results/npb/ results/mlb/ 2>/dev/null || true
+          git add -A -- data/ results/npb/ results/mlb/
           if git diff --cached --quiet; then echo "[MAC] no new OOS state"; else git commit -m "Persist Mac OOS research results"; fi
           for attempt in 1 2 3 4 5; do
-            if git fetch origin main && git rebase origin/main && git push origin HEAD:main; then exit 0; fi
-            git rebase --abort 2>/dev/null || true
+            if ! git fetch origin main; then
+              echo "[MAC] git fetch failed on attempt ${attempt}"
+            elif git rebase origin/main; then
+              if git push origin HEAD:main; then
+                exit 0
+              fi
+              echo "[MAC] git push failed on attempt ${attempt}"
+            else
+              echo "[MAC] git rebase failed on attempt ${attempt}; attempting explicit rebase abort"
+              if ! git rebase --abort 2>/dev/null; then
+                echo "[MAC] git rebase --abort failed; refusing to mask repository state"
+                exit 1
+              fi
+            fi
             sleep $((attempt * 5))
           done
           echo "[MAC] failed to persist OOS state after 5 attempts"
