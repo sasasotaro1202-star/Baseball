@@ -60,6 +60,7 @@ jobs:
           python -m py_compile research/matchday_policy_learning.py
           python -m py_compile research/matchday_replay.py
           python -m py_compile research/matchday_settle.py
+          python -m py_compile research/matchday_change_ledger.py
           python -m py_compile research/matchday_effect_dataset.py
           python -m py_compile research/matchday_effect_fit.py
           python -m py_compile research/matchday_reforecast.py
@@ -69,6 +70,7 @@ jobs:
           python research/matchday_policy_learning.py
           python research/matchday_replay.py
           python research/matchday_settle.py
+          python research/matchday_change_ledger.py
           python research/matchday_effect_dataset.py
           python research/ci_runtime_smoke.py
           python research/matchday_effect_fit.py
