@@ -149,9 +149,23 @@ def main() -> int:
         context_val = apply_effects(base_val, val[event_cols], effects)
         bm = metrics(base_val, y_val)
         cm = metrics(context_val, y_val)
-        delta = {k: float(cm[k]-bm[k]) for k in bm}
+
+        # Learn how strongly the context layer should be fused with the
+        # context-free baseline. The validation segment chooses alpha only
+        # after the event effects themselves have been frozen from train.
+        best_alpha = 0.0
+        best_mix_metrics = bm
+        for alpha in np.linspace(0.0, 1.0, 21):
+            mix = normalize((1.0-alpha) * base_val + alpha * context_val)
+            mm = metrics(mix, y_val)
+            if mm["logloss"] < best_mix_metrics["logloss"]:
+                best_alpha = float(alpha)
+                best_mix_metrics = mm
+
+        delta = {k: float(best_mix_metrics[k]-bm[k]) for k in bm}
         candidate_ok = (
-            delta["logloss"] <= -MIN_LL
+            best_alpha > 0.0
+            and delta["logloss"] <= -MIN_LL
             and delta["brier"] <= -MIN_BRIER
             and delta["accuracy"] >= -MAX_ACC_REG
             and delta["ece"] <= MAX_ECE_REG
