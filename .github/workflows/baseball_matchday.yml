@@ -51,7 +51,7 @@ jobs:
         run: |
           set -euo pipefail
           . .venv/bin/activate
-          python -m py_compile production_matchday_intelligence.py baseball_backtest.py research/drift_uncertainty_routing.py research/conformal_uncertainty.py research/matchday_intelligence.py research/matchday_policy.py research/matchday_policy_learning.py research/matchday_effect_fit.py research/matchday_replay.py research/matchday_settle.py research/routing_oos_replay.py research/routing_acceptance_gate.py
+          python -m py_compile production_matchday_intelligence.py baseball_backtest.py research/drift_uncertainty_routing.py research/conformal_uncertainty.py research/matchday_intelligence.py research/matchday_policy.py research/matchday_policy_learning.py research/matchday_effect_fit.py research/matchday_effect_dataset.py research/matchday_replay.py research/matchday_settle.py research/routing_oos_replay.py research/routing_acceptance_gate.py
           python research/drift_uncertainty_routing.py >/dev/null
           python research/conformal_uncertainty.py >/dev/null
           python research/matchday_intelligence.py >/dev/null
@@ -59,7 +59,11 @@ jobs:
           python research/matchday_effect_fit.py >/dev/null
           python research/matchday_policy_learning.py >/dev/null
           python research/matchday_settle.py
+          python research/matchday_effect_dataset.py
+          python research/matchday_effect_fit.py
+          python research/matchday_policy_learning.py >/dev/null
           python -m json.tool results/matchday_settlement.json >/dev/null
+          python -m json.tool results/matchday_effects.json >/dev/null
 
       - name: Run matchday intelligence with fail-closed retries
         run: |
@@ -127,6 +131,7 @@ jobs:
             results/matchday_policy.json
             results/matchday_replay.json
             results/matchday_settlement.json
+            results/matchday_effect_replay.csv
             results/matchday_baseline.csv
             results/matchday_snapshots.jsonl
           if-no-files-found: warn
