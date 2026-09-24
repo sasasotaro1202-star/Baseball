@@ -77,7 +77,7 @@ jobs:
           python -m research.ci_runtime_smoke
           python -m research.matchday_effect_fit
           python -m json.tool results/matchday_effects.json >/dev/null
-          python research/matchday_reforecast.py | tee matchday_reforecast_smoke.json
+          python -m research.matchday_reforecast | tee matchday_reforecast_smoke.json
           python -m json.tool matchday_reforecast_smoke.json >/dev/null
           python backtest_audit_v2.py
           python -m research.drift_uncertainty_routing
