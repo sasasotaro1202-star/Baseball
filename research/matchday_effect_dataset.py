@@ -105,6 +105,9 @@ def main() -> int:
                 changed_events.setdefault(key, set()).add(str(ev["event"]))
             except Exception:
                 continue
+    # Keep durable-change events, but model state transitions explicitly:
+    # OUT is cleared by RETURNED; PROJECTED is cleared by CONFIRMED. This avoids
+    # impossible final snapshots carrying both states at once.
     cumulative_events_by_game = {}
     event_values = {
         "STARTER_CONFIRMED","STARTER_CHANGED",
@@ -113,15 +116,24 @@ def main() -> int:
         "REST_ASYMMETRY","TRAVEL_BURDEN","MARKET_MOVED",
         "BULLPEN_STATE_CHANGED",
     }
+    transition_pairs = {
+        "PLAYER_RETURNED": "PLAYER_OUT",
+        "LINEUP_CONFIRMED": "LINEUP_PROJECTED",
+    }
     for gid, seq in all_snapshots_by_game.items():
         cumulative = set()
         for _pt, env in sorted(seq, key=lambda x: x[0]):
             pt = str(env.get("prediction_time_utc"))
-            cumulative |= set(changed_events.get((gid, pt), set()))
+            events_now = set(changed_events.get((gid, pt), set()))
             for item in env.get("observations", []):
                 value = item.get("value")
                 if isinstance(value, str) and value in event_values:
-                    cumulative.add(value)
+                    events_now.add(value)
+            for event_name in events_now:
+                prior = transition_pairs.get(event_name)
+                if prior:
+                    cumulative.discard(prior)
+                cumulative.add(event_name)
         cumulative_events_by_game[gid] = cumulative
 
     rows = []
