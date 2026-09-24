@@ -21,7 +21,7 @@ from typing import Any, Dict, List
 import numpy as np
 import pandas as pd
 
-from research.matchday_intelligence import Observation, usable_observations
+from research.matchday_intelligence import Observation, is_pit_safe, usable_observations
 from research.matchday_policy import apply_matchday_policy, load_policy
 
 RESULTS = Path("results")
@@ -120,7 +120,7 @@ def main() -> int:
         for item in env.get("observations", []):
             try:
                 o = Observation(**item)
-                if is_pit_safe := (o.available_at <= o.prediction_time):
+                if is_pit_safe(o):
                     obs.append(o)
             except Exception:
                 continue
