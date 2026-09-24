@@ -125,9 +125,9 @@ jobs:
                       except Exception as exc:
                           errors.append(f'dispatch {workflow}: {exc}'); print(f'[WATCHDOG] dispatch failed for {workflow}: {exc}')
                   current_main_sha = main_sha()
-              validation_current = bool(validation) and str(validation.get('head_sha') or '') == current_main_sha and success(validation)
-              print(f'[WATCHDOG] current_main_sha={current_main_sha} validation_sha={validation.get("head_sha") if validation else ""} validation_current={validation_current}')
-              if not validation_current and not recently_created(data.get('validation',[])):
+                  validation_current = bool(validation) and str(validation.get('head_sha') or '') == current_main_sha and success(validation)
+                  print(f'[WATCHDOG] current_main_sha={current_main_sha} validation_sha={validation.get("head_sha") if validation else ""} validation_current={validation_current}')
+                  if not validation_current and not recently_created(data.get('validation',[])):
                       dispatch('validation',workflows['validation'])
                   elif not recently_created(data.get('matchday',[])) and (
                       matchday is None
@@ -150,7 +150,7 @@ jobs:
               errors.append(f'watchdog fatal: {exc}')
               print('[WATCHDOG] degraded:',exc); traceback.print_exc()
 
-          diagnostic={'version':'baseball-recovery-v4','time':datetime.now(timezone.utc).isoformat(),'status':'degraded' if errors else 'ok','action':action,'errors':errors,'active_runs':{k:[r['id'] for r in v] for k,v in active_runs.items()} if 'active_runs' in locals() else {},'cancelled_stuck_runs':stuck,'latest':{k:({'id':r.get('id'),'status':r.get('status'),'conclusion':r.get('conclusion'),'created_at':r.get('created_at')} if r else None) for k,r in latest.items()}}
+          diagnostic={'version':'baseball-recovery-v5','time':datetime.now(timezone.utc).isoformat(),'status':'degraded' if errors else 'ok','action':action,'errors':errors,'active_runs':{k:[r['id'] for r in v] for k,v in active_runs.items()} if 'active_runs' in locals() else {},'cancelled_stuck_runs':stuck,'latest':{k:({'id':r.get('id'),'status':r.get('status'),'conclusion':r.get('conclusion'),'created_at':r.get('created_at')} if r else None) for k,r in latest.items()}}
           Path('recovery_diagnostics/latest.json').write_text(json.dumps(diagnostic,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           Path('recovery_diagnostics/recent_runs.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           print(json.dumps(diagnostic,ensure_ascii=False,indent=2))
