@@ -57,7 +57,7 @@ audit_workflow = need(".github/workflows/baseball_audit.yml", r"backtest_audit_v
 if audit_workflow and "backtest_audit.py" in audit_workflow:
     errors.append("stale audit workflow still references removed backtest_audit.py")
 
-routing = need("research/drift_uncertainty_routing.py", r"def\\s+route_experts\\b", "drift/uncertainty routing")
+routing = need("research/drift_uncertainty_routing.py", r"def\s+route_experts\b", "drift/uncertainty routing")
 if routing:
     for token, label in [
         ("def mmd_drift_score", "MMD drift signal"),
@@ -67,7 +67,7 @@ if routing:
         if token not in routing:
             errors.append(f"missing {label} in research/drift_uncertainty_routing.py")
 
-matchday = need("research/matchday_intelligence.py", r"class\\s+ContextState", "Matchday Intelligence PIT layer")
+matchday = need("research/matchday_intelligence.py", r"class\s+ContextState", "Matchday Intelligence PIT layer")
 if matchday:
     for token, label in [
         ("def is_pit_safe", "matchday PIT check"),
