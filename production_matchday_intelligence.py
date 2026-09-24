@@ -956,11 +956,23 @@ def main() -> int:
                                     g["prediction_time_utc"],
                                 )
                                 if previous_obs:
+                                    event_value_names = {
+                                        "STARTER_CONFIRMED","STARTER_CHANGED",
+                                        "LINEUP_CONFIRMED","LINEUP_PROJECTED",
+                                        "PLAYER_OUT","PLAYER_RETURNED","WEATHER_PRESENT",
+                                        "WEATHER_CHANGED","REST_TRAVEL_PRESENT",
+                                        "REST_ASYMMETRY","TRAVEL_BURDEN","MARKET_MOVED",
+                                        "BULLPEN_STATE_CHANGED",
+                                    }
                                     current_by_kind = {}
                                     for obs in observations:
+                                        if isinstance(obs.value, str) and obs.value in event_value_names:
+                                            continue
                                         current_by_kind.setdefault(str(obs.kind), []).append(obs)
                                     previous_by_kind = {}
                                     for obs in previous_obs:
+                                        if isinstance(obs.value, str) and obs.value in event_value_names:
+                                            continue
                                         previous_by_kind.setdefault(str(obs.kind), []).append(obs)
                                     for kind, current_list in current_by_kind.items():
                                         prev_list = previous_by_kind.get(kind, [])
