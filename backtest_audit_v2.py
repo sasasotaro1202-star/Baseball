@@ -87,7 +87,7 @@ if matchday:
         if token not in matchday:
             errors.append(f"missing {label} in research/matchday_intelligence.py")
 
-effect_fit = need("research/matchday_effect_fit.py", r"def\\s+fit_effects\\b", "Matchday effect learner")
+effect_fit = need("research/matchday_effect_fit.py", r"def\s+fit_effects\b", "Matchday effect learner")
 if effect_fit:
     for token, label in [
         ("baseline_context_free", "context-free baseline guard"),
@@ -97,7 +97,7 @@ if effect_fit:
         if token not in effect_fit:
             errors.append(f"missing {label} in research/matchday_effect_fit.py")
 
-reforecast = need("research/matchday_reforecast.py", r"def\\s+reforecast\\b", "Matchday reforecast controller")
+reforecast = need("research/matchday_reforecast.py", r"def\s+reforecast\b", "Matchday reforecast controller")
 if reforecast:
     for token, label in [
         ("FileNotFoundError", "fail-closed effect loading"),
