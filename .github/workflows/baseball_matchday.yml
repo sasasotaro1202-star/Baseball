@@ -84,8 +84,10 @@ jobs:
           python research/matchday_effect_dataset.py
           python research/matchday_effect_fit.py
           python research/matchday_policy_learning.py
+          python research/matchday_replay.py
           python -m json.tool results/matchday_settlement.json >/dev/null
           python -m json.tool results/matchday_effects.json >/dev/null
+          python -m json.tool results/matchday_replay.json >/dev/null
           python research/matchday_integrated_acceptance_gate.py
           python -m json.tool results/matchday_integrated_acceptance_gate.json >/dev/null
           python -m json.tool results/matchday_policy.json >/dev/null
@@ -95,7 +97,6 @@ jobs:
           set -euo pipefail
           test -s results/matchday_intelligence_current.json
           python -m json.tool results/matchday_intelligence_current.json >/dev/null
-          python research/matchday_replay.py
           python -m json.tool results/matchday_settlement.json >/dev/null
           python -m json.tool results/matchday_replay.json >/dev/null
           python - <<'PY'
