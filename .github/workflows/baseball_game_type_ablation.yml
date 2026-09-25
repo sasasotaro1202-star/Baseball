@@ -2,18 +2,23 @@ name: Baseball NPB Game-Type OOS Ablation
 
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Baseball Source Acquisition
+    types: [completed]
   schedule:
-    - cron: "31 13 * * 6"
+    - cron: "31 */6 * * *"
 
 permissions:
   contents: read
 
 concurrency:
   group: baseball-game-type-ablation
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   ablation:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 140
     strategy:
