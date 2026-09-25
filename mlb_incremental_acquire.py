@@ -42,10 +42,15 @@ MIN_COMPLETED_GAMES_BY_YEAR = {
 
 
 def history_coverage(df: pd.DataFrame, start_year: int, end_year: int) -> dict[int, int]:
-    if df.empty or "datetime" not in df.columns:
+    """Count completed Regular Season rows only for historical completeness gates."""
+    if df.empty or "datetime" not in df.columns or "mlb_game_category" not in df.columns:
         return {year: 0 for year in range(start_year, end_year + 1)}
     years = pd.to_datetime(df["datetime"], errors="coerce", utc=True).dt.year
-    return {year: int((years == year).sum()) for year in range(start_year, end_year + 1)}
+    regular = df["mlb_game_category"].fillna("").astype(str).str.strip().str.lower().eq("regular")
+    return {
+        year: int(((years == year) & regular).sum())
+        for year in range(start_year, end_year + 1)
+    }
 
 
 def incomplete_historical_years(df: pd.DataFrame, start_year: int, end_year: int) -> list[int]:
@@ -57,16 +62,17 @@ def incomplete_historical_years(df: pd.DataFrame, start_year: int, end_year: int
 
 
 def validate_historical_coverage(df: pd.DataFrame, start_year: int, end_year: int, allow_current_partial: bool = True) -> None:
+    """Fail closed unless each completed historical season has enough Regular Season games."""
     coverage = history_coverage(df, start_year, end_year)
     missing = []
     for year, minimum in MIN_COMPLETED_GAMES_BY_YEAR.items():
         if not (start_year <= year <= end_year):
             continue
         if coverage.get(year, 0) < minimum:
-            missing.append({"year": year, "rows": coverage.get(year, 0), "minimum": minimum})
+            missing.append({"year": year, "regular_season_rows": coverage.get(year, 0), "minimum": minimum})
     if missing:
-        raise RuntimeError(f"MLB historical coverage incomplete: {missing}")
-    print(f"[MLB] historical coverage PASS: {coverage}")
+        raise RuntimeError(f"MLB historical coverage incomplete (regular-season gate): {missing}")
+    print(f"[MLB] historical Regular Season coverage PASS: {coverage}")
 
 
 

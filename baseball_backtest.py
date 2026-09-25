@@ -82,13 +82,15 @@ MLB_MIN_HISTORY_BY_YEAR = {
 
 
 def mlb_history_coverage_ok(df: pd.DataFrame, start_year: int, end_year: int) -> bool:
-    if df.empty or "datetime" not in df.columns:
+    """Require historical Regular Season coverage; special games cannot mask gaps."""
+    if df.empty or "datetime" not in df.columns or "mlb_game_category" not in df.columns:
         return False
     years = pd.to_datetime(df["datetime"], errors="coerce", utc=True).dt.year
+    regular = df["mlb_game_category"].fillna("").astype(str).str.strip().str.lower().eq("regular")
     current_year = pd.Timestamp.now(tz="UTC").year
     for year, minimum in MLB_MIN_HISTORY_BY_YEAR.items():
         if start_year <= year <= min(end_year, current_year - 1):
-            if int((years == year).sum()) < minimum:
+            if int(((years == year) & regular).sum()) < minimum:
                 return False
     return True
 
