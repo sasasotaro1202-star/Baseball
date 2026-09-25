@@ -68,6 +68,7 @@ DEFAULT_EVALUATION_CATEGORIES = (
     "division_series",
     "league_championship",
     "world_series",
+    "championship",
     "allstar",
     "spring_training",
     "exhibition_special",
