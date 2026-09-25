@@ -223,14 +223,9 @@ def main():
         print(f"[MLB] recovering historical season {year}: {year_start}..{year_end}")
         parts.append(fetch_schedule(year_start, year_end))
 
-    # If this is a true empty bootstrap, fetch every historical year in range.
-    if bootstrap:
-        parts = [fetch_schedule(
-            datetime(year, 3, 1, tzinfo=timezone.utc).date(),
-            datetime(year, 11, 30, tzinfo=timezone.utc).date(),
-        ) for year in range(BOOTSTRAP_START_YEAR, SEASON)] + parts
-
-    # Always refresh the current season from the last correction window onward.
+    # A truly empty cache is covered by missing_years above, so no second
+    # bootstrap pass is needed. Always refresh the current season from the last
+    # correction window onward.
     current_start = start
     parts.append(fetch_schedule(current_start, end))
     fresh = norm(pd.concat(parts, ignore_index=True, sort=False)) if parts else pd.DataFrame()
