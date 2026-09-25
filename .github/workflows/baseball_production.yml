@@ -249,20 +249,8 @@ jobs:
           python production_data_quality_gate.py
           python production_integrity_gate.py
 
-      - name: Upload verified state artifact
-        if: success() && steps.sha_gate.outputs.ok == 'true' && (steps.npb_ready.outputs.ready == 'true' || steps.mlb_ready.outputs.ready == 'true')
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: baseball-production-state
-          path: |
-            data/
-            results/
-            npb_multi_source.py
-            production_run_manifest.json
-          if-no-files-found: error
-          retention-days: 90
-
       - name: Persist verified state atomically
+        id: persist_state
         if: success() && steps.sha_gate.outputs.ok == 'true' && (steps.npb_ready.outputs.ready == 'true' || steps.mlb_ready.outputs.ready == 'true')
         run: |
           git fetch origin main
@@ -270,6 +258,7 @@ jobs:
           VALIDATED_SHA="${{ github.event.workflow_run.head_sha }}"
           EVENT_NAME="${{ github.event_name }}"
           if [ "$EVENT_NAME" = "workflow_run" ] && [ -n "$VALIDATED_SHA" ] && [ "$CURRENT_REMOTE_SHA" != "$VALIDATED_SHA" ]; then
+            echo "status=deferred" >> "$GITHUB_OUTPUT"
             echo "[PERSIST] DEFERRED: OOS was computed from validated_sha=$VALIDATED_SHA but current_main=$CURRENT_REMOTE_SHA"
             mkdir -p results
             CURRENT_REMOTE_SHA="$CURRENT_REMOTE_SHA" VALIDATED_SHA="$VALIDATED_SHA" python - <<'PY'
@@ -287,6 +276,7 @@ Path("results/production_persist_deferred.json").write_text(
 PY
             exit 0
           fi
+          echo "status=ready" >> "$GITHUB_OUTPUT"
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -314,6 +304,28 @@ PY
           done
           echo '[PERSIST] verified state push failed after 5 attempts'
           exit 1
+
+      - name: Upload verified state artifact
+        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.persist_state.outputs.status != 'deferred' && (steps.npb_ready.outputs.ready == 'true' || steps.mlb_ready.outputs.ready == 'true')
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: baseball-production-state
+          path: |
+            data/
+            results/
+            npb_multi_source.py
+            production_run_manifest.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Upload stale-OOS persistence diagnostics
+        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.persist_state.outputs.status == 'deferred'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: baseball-production-stale-oos-deferred
+          path: results/production_persist_deferred.json
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Upload deferred diagnostics
         if: success() && steps.sha_gate.outputs.ok == 'true' && steps.npb_ready.outputs.ready != 'true' && steps.mlb_ready.outputs.ready != 'true'
