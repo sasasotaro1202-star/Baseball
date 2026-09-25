@@ -137,13 +137,15 @@ def acquire_chunked(start_date, end_date):
         path = chunk_path(cursor, chunk_end)
         refetch = not path.exists()
         if path.exists():
-            # pandas writes an empty DataFrame as a single newline. A single
-            # newline is therefore a valid completed no-games checkpoint, but
-            # a truly zero-byte file is incomplete/corrupt and must be rebuilt.
-            if path.stat().st_size == 0:
+            # Classify the raw checkpoint bytes first. This avoids pandas parser
+            # behavior deciding whether a deliberately empty range is valid.
+            raw = path.read_bytes()
+            if raw == b"":
                 refetch = True
                 reason = "zero-byte checkpoint"
-            elif path.stat().st_size == 1 and path.read_bytes() == b"\n":
+            elif raw == b"\n":
+                # pandas writes an empty DataFrame as a single newline. It is a
+                # valid completed no-games checkpoint, not corruption.
                 chunk = empty_chunk_frame()
                 refetch = False
                 print(f"[MLB] resume existing empty chunk {cursor}..{chunk_end}")
