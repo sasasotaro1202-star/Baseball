@@ -34,9 +34,10 @@ permissions:
   contents: read
 
 concurrency:
-  group: baseball-autonomous-recovery
-  # Only the newest watchdog should remain queued/running. Older watchdogs
-  # are redundant and can otherwise amplify workflow churn.
+  # Isolate scheduled watchdogs from workflow_run notifications. Successful
+  # workflow_run events normally skip the recovery job and must never cancel
+  # an active watchdog that is reconciling failures or stale runs.
+  group: baseball-autonomous-recovery-${{ github.event_name }}-${{ github.event.workflow_run.conclusion || 'scheduled' }}
   cancel-in-progress: true
 
 jobs:
