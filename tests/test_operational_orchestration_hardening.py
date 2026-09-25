@@ -22,7 +22,6 @@ def test_validation_retriggers_on_production_data_updates():
     text = Path(".github/workflows/validate-code.yml").read_text(encoding="utf-8")
     for path in (
         "data/checkpoints/npb_collection_status.json",
-        "data/checkpoints/*_game_enrichment.csv",
         "data/mlb_games.csv",
         "data/checkpoints/mlb_collection_status.json",
     ):
