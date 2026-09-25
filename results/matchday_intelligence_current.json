@@ -7,7 +7,49 @@
     "pass": 0,
     "deferred": 0
   },
-  "prediction_time_utc": "2026-09-25T09:05:23.088722+00:00",
+  "schedule_summary": {
+    "games_seen": 5,
+    "future_games": 0,
+    "started_or_in_progress_games": 5,
+    "games": [
+      {
+        "home": "東京ヤクルトスワローズ",
+        "away": "中日ドラゴンズ",
+        "venue": "神",
+        "start_datetime_jst": "2026-09-25T18:00:00+09:00",
+        "schedule_state": "STARTED_OR_IN_PROGRESS"
+      },
+      {
+        "home": "横浜DeNAベイスターズ",
+        "away": "阪神タイガース",
+        "venue": "横",
+        "start_datetime_jst": "2026-09-25T18:00:00+09:00",
+        "schedule_state": "STARTED_OR_IN_PROGRESS"
+      },
+      {
+        "home": "広島東洋カープ",
+        "away": "読売ジャイアンツ",
+        "venue": "マツダスタジアム",
+        "start_datetime_jst": "2026-09-25T18:00:00+09:00",
+        "schedule_state": "STARTED_OR_IN_PROGRESS"
+      },
+      {
+        "home": "埼玉西武ライオンズ",
+        "away": "千葉ロッテマリーンズ",
+        "venue": "ベルーナドーム",
+        "start_datetime_jst": "2026-09-25T18:00:00+09:00",
+        "schedule_state": "STARTED_OR_IN_PROGRESS"
+      },
+      {
+        "home": "オリックス・バファローズ",
+        "away": "福岡ソフトバンクホークス",
+        "venue": "京セラD大阪",
+        "start_datetime_jst": "2026-09-25T18:00:00+09:00",
+        "schedule_state": "STARTED_OR_IN_PROGRESS"
+      }
+    ]
+  },
+  "prediction_time_utc": "2026-09-25T09:55:16.645866+00:00",
   "target_date_jst": "2026-09-25",
   "source_policy": {
     "schedule": "NPB.jp",
@@ -201,5 +243,5 @@
     ]
   },
   "games": [],
-  "state_hash": "0344d93ee1969c4707bb2fbecdc2fddb1c6d400307e454ca305517c2e495d65d"
+  "state_hash": "c2aa24984110b6b622919d7e8c1b3313a65e435ce11942607238ab4d8524a792"
 }
