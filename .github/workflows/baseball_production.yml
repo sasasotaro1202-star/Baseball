@@ -14,7 +14,10 @@ permissions:
   actions: read
 concurrency:
   group: baseball-production
-  cancel-in-progress: true
+  # Let a running chronological OOS finish. With cancel-in-progress=false,
+  # GitHub keeps at most one pending run for this group, so a long OOS is not
+  # destroyed by a newer validation/data commit.
+  cancel-in-progress: false
 env:
   PYTHONUNBUFFERED: "1"
 jobs:
