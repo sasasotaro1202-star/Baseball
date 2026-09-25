@@ -111,6 +111,19 @@ jobs:
           p=Path('results/matchday_intelligence_current.json')
           x=json.loads(p.read_text(encoding='utf-8'))
           assert x.get('status') in {'PASS','DEFERRED'}
+          assert x.get('prediction_status') in {'PASS','PARTIAL','DEFERRED'}
+          summary=x.get('prediction_summary') or {}
+          total=len(x.get('games') or [])
+          assert int(summary.get('games', 0)) == total
+          assert int(summary.get('pass', 0)) + int(summary.get('deferred', 0)) == total
+          if x.get('prediction_status') == 'PASS':
+              assert x.get('status') == 'PASS'
+              assert int(summary.get('pass', 0)) == total
+          elif x.get('prediction_status') == 'DEFERRED':
+              assert x.get('status') == 'DEFERRED'
+              assert int(summary.get('pass', 0)) == 0
+          else:
+              assert x.get('status') == 'DEFERRED'
           if x.get('status') == 'PASS':
               assert 'games' in x
               assert 'source_policy' in x
