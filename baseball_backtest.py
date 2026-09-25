@@ -1024,61 +1024,67 @@ class BaseballBacktest:
             for (gid,pid,side),g in self.player_game.groupby(['game_id','player_id','side'],sort=False):
                 self.player_index[(str(gid),str(pid),str(side))] = g.iloc[-1].to_dict()
         Xrows, y, meta = [], [], []
-        # Enable pregame starter/lineup features in the core model only when the
-        # historical training corpus contains >=50% PIT-safe observations. Until
-        # then those signals remain Matchday-layer-only to prevent support mismatch.
-        def _ready(kind: str) -> bool:
-            if len(games) == 0:
-                return False
-            ok_count = 0
-            valid_count = 0
-            for _, rr in games.iterrows():
-                try:
-                    cutoff = pd.to_datetime(rr.get("prediction_time_utc"), errors="coerce", utc=True)
-                    if pd.isna(cutoff):
-                        continue
-                    valid_count += 1
-                    if kind == "starter":
-                        a = str(rr.get("home_pregame_starter", "") or "")
-                        z = str(rr.get("away_pregame_starter", "") or "")
-                        av = pd.to_datetime(rr.get("starter_available_at"), errors="coerce", utc=True)
-                        ok = bool(a and z and pd.notna(av) and av <= cutoff)
-                    else:
-                        h = str(rr.get("home_pregame_lineup_json", "") or "")
-                        a = str(rr.get("away_pregame_lineup_json", "") or "")
-                        hav = pd.to_datetime(rr.get("home_lineup_available_at"), errors="coerce", utc=True)
-                        aav = pd.to_datetime(rr.get("away_lineup_available_at"), errors="coerce", utc=True)
-                        hs = str(rr.get("home_lineup_state", "") or "").upper()
-                        aas = str(rr.get("away_lineup_state", "") or "").upper()
-                        ok = bool(
-                            h and a and pd.notna(hav) and pd.notna(aav)
-                            and hav <= cutoff and aav <= cutoff
-                            and hs in {"VERIFIED", "PROJECTED"}
-                            and aas in {"VERIFIED", "PROJECTED"}
-                        )
-                    ok_count += int(ok)
-                except Exception:
-                    continue
-            return valid_count > 0 and (ok_count / valid_count) >= 0.50
+        # Context readiness is learned strictly from rows already observed before
+        # the current prediction row. A future availability-rate scan would be a
+        # subtle form of PIT violation even without target/outcome leakage.
+        starter_valid_seen = starter_ok_seen = 0
+        lineup_valid_seen = lineup_ok_seen = 0
 
-        self.core_context_training_ready["starter"] = _ready("starter")
-        self.core_context_training_ready["lineup"] = _ready("lineup")
-        self.context_pit_counters["core_starter_training_ready"] = int(self.core_context_training_ready["starter"])
-        self.context_pit_counters["core_lineup_training_ready"] = int(self.core_context_training_ready["lineup"])
-        # Deterministic chronological order: datetime then game_id. This handles doubleheaders better than date-only logic.
+        def _pit_observation_safe(rr, kind: str) -> tuple[bool, bool]:
+            """Return (valid_timestamp_context, safe_observation) for one historical row."""
+            try:
+                cutoff = pd.to_datetime(rr.get("prediction_time_utc"), errors="coerce", utc=True)
+                if pd.isna(cutoff):
+                    return False, False
+                if kind == "starter":
+                    h = str(rr.get("home_pregame_starter", "") or "")
+                    a = str(rr.get("away_pregame_starter", "") or "")
+                    av = pd.to_datetime(rr.get("starter_available_at"), errors="coerce", utc=True)
+                    return True, bool(h and a and pd.notna(av) and av <= cutoff)
+                h = str(rr.get("home_pregame_lineup_json", "") or "")
+                a = str(rr.get("away_pregame_lineup_json", "") or "")
+                hav = pd.to_datetime(rr.get("home_lineup_available_at"), errors="coerce", utc=True)
+                aav = pd.to_datetime(rr.get("away_lineup_available_at"), errors="coerce", utc=True)
+                hs = str(rr.get("home_lineup_state", "") or "").upper()
+                aas = str(rr.get("away_lineup_state", "") or "").upper()
+                return True, bool(
+                    h and a and pd.notna(hav) and pd.notna(aav)
+                    and hav <= cutoff and aav <= cutoff
+                    and hs in {"VERIFIED", "PROJECTED"}
+                    and aas in {"VERIFIED", "PROJECTED"}
+                )
+            except Exception:
+                return False, False
+
+        # Deterministic chronological order: datetime then game_id.
+        # Readiness is updated only after the current row has been featurized.
         games = games.sort_values(["datetime", "game_id"]).reset_index(drop=True)
-        last_season=None
+        last_season = None
         for _, row in games.iterrows():
             category = str(row.get("npb_game_category", "unknown") or "unknown").strip().lower() if row.get("league") == "NPB" else "mlb"
             train_include = category in self.training_set if row.get("league") == "NPB" else True
             eval_include = category in self.evaluation_set if row.get("league") == "NPB" else True
-            cur_season=int(pd.Timestamp(row["datetime"]).year)
+            cur_season = int(pd.Timestamp(row["datetime"]).year)
             if last_season is not None and cur_season != last_season:
                 # Regress Elo at each season boundary; rolling team form naturally
                 # retains only recent games through bounded deques.
-                for key,val in list(self.elo_ratings.items()):
-                    self.elo_ratings[key] = ELO_START + ELO_REGRESSION*(val-ELO_START)
-            last_season=cur_season
+                for key, val in list(self.elo_ratings.items()):
+                    self.elo_ratings[key] = ELO_START + ELO_REGRESSION * (val - ELO_START)
+            last_season = cur_season
+
+            self.core_context_training_ready["starter"] = (
+                starter_valid_seen > 0 and starter_ok_seen / starter_valid_seen >= 0.50
+            )
+            self.core_context_training_ready["lineup"] = (
+                lineup_valid_seen > 0 and lineup_ok_seen / lineup_valid_seen >= 0.50
+            )
+            self.context_pit_counters["core_starter_training_ready"] = int(
+                self.core_context_training_ready["starter"]
+            )
+            self.context_pit_counters["core_lineup_training_ready"] = int(
+                self.core_context_training_ready["lineup"]
+            )
+
             feat = self.match_features(row)
             Xrows.append(feat)
             league = row["league"]
@@ -1093,15 +1099,23 @@ class BaseballBacktest:
             payload["training_included"] = bool(train_include)
             payload["evaluation_included"] = bool(eval_include)
             meta.append(payload)
-            # Excluded/unknown/special classes do not alter the chronological
-            # state unless the explicit training policy opts them in.
+
+            # Update PIT support counters only after the current row is processed.
+            # Excluded/unknown/special games do not modify model state or readiness.
             if train_include:
+                starter_valid, starter_safe = _pit_observation_safe(row, "starter")
+                lineup_valid, lineup_safe = _pit_observation_safe(row, "lineup")
+                starter_valid_seen += int(starter_valid)
+                starter_ok_seen += int(starter_safe)
+                lineup_valid_seen += int(lineup_valid)
+                lineup_ok_seen += int(lineup_safe)
                 self.update_after_game(row)
+
         self.audit.append({
             "type": "matchday_context_pit",
             "prediction_rows": int(len(Xrows)),
             "counters": dict(self.context_pit_counters),
-            "policy": "lineup/weather require explicit prediction_time_utc and availability timestamp; unknown fails closed",
+            "policy": "context readiness uses prior training rows only; lineup/starter require explicit prediction_time_utc and availability timestamp; unknown fails closed",
         })
         X = pd.DataFrame(Xrows).replace([np.inf, -np.inf], np.nan).fillna(0.0).astype(float)
         return X, np.asarray(y, dtype=int), pd.DataFrame(meta)
