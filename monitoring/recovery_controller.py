@@ -151,6 +151,30 @@ def recently_created(rows: list[dict], now: datetime) -> bool:
     return any(0.0 <= age_minutes(row, now) < RECENT_DISPATCH_GUARD_MINUTES for row in rows)
 
 
+def duplicate_production_run_ids(rows: list[dict]) -> list[int]:
+    """Cancel queued same-SHA production runs when an active run already owns that SHA.
+
+    The OOS result is immutable to its evaluated SHA. A queued duplicate adds no new
+    information and only waits for the same computation to rerun.
+    """
+    by_sha: dict[str, list[dict]] = {}
+    for row in rows:
+        if not active(row):
+            continue
+        sha = str(row.get("head_sha") or "")
+        if sha:
+            by_sha.setdefault(sha, []).append(row)
+    out: list[int] = []
+    for sha, group in by_sha.items():
+        running = [r for r in group if str(r.get("status")) == "in_progress"]
+        queued = [r for r in group if str(r.get("status")) in QUEUED_STATES]
+        if not running or not queued:
+            continue
+        for row in queued:
+            out.append(int(row["id"]))
+    return out
+
+
 def runs(filename: str) -> list[dict]:
     return request(
         "GET",
@@ -247,6 +271,14 @@ def main() -> int:
             stuck.append(run_id)
         except Exception as exc:
             errors.append(f"cancel stale production {run_id}: {exc}")
+
+    for run_id in duplicate_production_run_ids(logical_active.get("production", [])):
+        print(f"[WATCHDOG] DUPLICATE production run={run_id}; cancelling queued duplicate with same SHA")
+        try:
+            request("POST", f"/repos/{REPO}/actions/runs/{run_id}/cancel")
+            stuck.append(run_id)
+        except Exception as exc:
+            errors.append(f"cancel duplicate production {run_id}: {exc}")
 
     npb_ready, npb_games = readiness("data/checkpoints/npb_collection_status.json")
     mlb_ready, mlb_games = readiness("data/checkpoints/mlb_collection_status.json")
