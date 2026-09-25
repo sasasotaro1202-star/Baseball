@@ -307,6 +307,62 @@ class BaseballBacktest:
         out["home_pitcher"] = pick(("home_pitcher","home_starter")).astype(str).replace({"nan":"","None":""}).str.strip()
         out["away_pitcher"] = pick(("away_pitcher","away_starter")).astype(str).replace({"nan":"","None":""}).str.strip()
 
+        # Recover authoritative competition taxonomy from the tracked RAW
+        # fallback where the multi-source collector could not identify it.
+        # This is target-independent metadata and does not use outcomes beyond
+        # the game's own published kind classification.
+        kind_map = {
+            "1":"regular", "2":"regular", "11":"regular", "26":"interleague",
+            "3":"japan_series", "4":"allstar", "13":"allstar",
+            "35":"climax", "36":"climax", "37":"climax", "38":"climax",
+            "5":"excluded",
+        }
+        raw_categories = {}
+        raw_dir = self.data_dir / "npb"
+        for raw_path in sorted(raw_dir.glob("npb_games_*_RAW_UNNORMALIZED.csv")) if raw_dir.exists() else []:
+            try:
+                rd = pd.read_csv(raw_path, usecols=lambda c: c in {"game_id","game_kind_id","game_state"})
+                if "game_id" not in rd or "game_kind_id" not in rd:
+                    continue
+                if "game_state" in rd.columns:
+                    rd = rd[pd.to_numeric(rd["game_state"], errors="coerce").eq(2)]
+                for gid, kind in zip(rd["game_id"].astype(str), rd["game_kind_id"].astype(str)):
+                    cat = kind_map.get(kind)
+                    if cat:
+                        raw_categories[gid.strip()] = cat
+            except Exception as exc:
+                self.audit.append({"type":"npb_category_map_error","file":str(raw_path),"error":str(exc)})
+
+        existing_cat = (
+            df["npb_game_category"].astype(str).str.strip().str.lower()
+            if "npb_game_category" in df.columns
+            else pd.Series(["unknown"] * len(df), index=df.index)
+        )
+        resolved_cat = existing_cat.where(
+            ~existing_cat.isin({"","nan","none","unknown"}),
+            out["game_id"].map(raw_categories).fillna("unknown"),
+        )
+        out["npb_game_category"] = resolved_cat.astype(str).str.strip().str.lower()
+
+        if "npb_type_confidence" not in df.columns:
+            out["npb_type_confidence"] = np.where(
+                out["npb_game_category"].eq("unknown"), "low", "high"
+            )
+        else:
+            out["npb_type_confidence"] = df["npb_type_confidence"]
+        if "npb_training_default" not in df.columns:
+            out["npb_training_default"] = out["npb_game_category"].isin(
+                {"regular","interleague"}
+            )
+        else:
+            out["npb_training_default"] = df["npb_training_default"].astype(str).str.lower().eq("true")
+        if "npb_evaluation_default" not in df.columns:
+            out["npb_evaluation_default"] = out["npb_game_category"].isin(
+                {"regular","interleague","climax","japan_series","allstar","special"}
+            )
+        else:
+            out["npb_evaluation_default"] = df["npb_evaluation_default"].astype(str).str.lower().eq("true")
+
         if "row_order" in df.columns:
             out["row_order"] = pd.to_numeric(df["row_order"], errors="coerce").fillna(0)
         else:
@@ -498,8 +554,21 @@ class BaseballBacktest:
                 continue
             # Retain all requested NPB competitive/special classes.  The taxonomy
             # separately controls whether a class may influence model state/training.
+            stored_category = self._first_value(g, ("npb_game_category",))
+            stored_confidence = self._first_value(g, ("npb_type_confidence",))
+            stored_training = self._first_value(g, ("npb_training_default",))
+            stored_evaluation = self._first_value(g, ("npb_evaluation_default",))
             gt = " ".join(g["game_type"].dropna().astype(str).tolist())
             type_info = __import__("npb_game_type").classify_npb_game(gt)
+            if stored_category and str(stored_category).strip().lower() not in {"", "nan", "none"}:
+                category = str(stored_category).strip().lower()
+                type_info = {
+                    **type_info,
+                    "category": category,
+                    "confidence": str(stored_confidence or type_info["confidence"]),
+                    "training_default": str(stored_training).lower() == "true" if stored_training not in (None, "") else category in self.training_set,
+                    "evaluation_default": str(stored_evaluation).lower() == "true" if stored_evaluation not in (None, "") else category in self.evaluation_set,
+                }
             if type_info["category"] == "excluded":
                 continue
             hp = self._first_pitcher(g, "home")
