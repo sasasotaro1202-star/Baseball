@@ -1,0 +1,11 @@
+year,games,both_starters,home_starter_lines,away_starter_lines,both_starter_lines,starter_line_coverage_pct,checkpoint_complete,remaining_games
+2017,886,0,0,0,0,0.0,True,0
+2018,970,0,0,0,0,0.0,True,0
+2019,969,773,769,770,769,99.48,True,0
+2020,787,787,786,785,785,99.75,True,0
+2021,958,958,957,955,955,99.69,True,0
+2022,967,967,967,967,967,100.0,True,0
+2023,975,975,975,975,975,100.0,True,0
+2024,972,906,897,895,893,98.57,True,0
+2025,966,966,965,966,965,99.9,True,0
+2026,909,909,903,902,900,99.01,True,0

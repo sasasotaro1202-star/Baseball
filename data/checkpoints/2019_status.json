@@ -1,0 +1,12 @@
+{
+  "year": 2019,
+  "schedule_games": 969,
+  "checkpoint_games": 969,
+  "done": 969,
+  "failures": 0,
+  "both_starters": 773,
+  "both_starter_lines": 769,
+  "coverage_pct": 99.48,
+  "complete": true,
+  "updated_at": "2026-09-25T12:40:33.393295+00:00"
+}
