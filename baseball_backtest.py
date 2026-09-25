@@ -1297,7 +1297,15 @@ class BaseballBacktest:
                     self._fit_model(model,X.iloc[:cut],y[:cut],self._sample_weights(cut),league)
                     p=self.align_proba(model.predict_proba(X.iloc[cut:cut+val]),model.classes_,league)
                     losses.append(log_loss(y[cut:cut+val],p,labels=list(range(k))))
-                except Exception:
+                except Exception as e:
+                    self.audit.append({
+                        "type": "model_cv_error",
+                        "model": name,
+                        "league": league,
+                        "cut": int(cut),
+                        "validation_size": int(val),
+                        "error": f"{type(e).__name__}: {e}",
+                    })
                     losses=[]; break
             if losses: scored.append((name,float(np.mean(losses))))
         if not scored: return None,{},None
