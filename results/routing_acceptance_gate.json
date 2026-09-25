@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "status": "DEFERRED",
+  "candidate_eligible_count": 0,
+  "results": [],
+  "production_auto_promotion": false,
+  "promotion_requires_external_frozen_holdout_and_integrity_gates": true
+}

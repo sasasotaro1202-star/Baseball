@@ -1,0 +1,72 @@
+{
+  "generated_at": "2026-09-25T16:38:15.490631+00:00",
+  "model": "local-deterministic-advisor-v1",
+  "source_policy": "prior_rows_only",
+  "advisory_only": true,
+  "network_used": false,
+  "advice": {
+    "focus": {
+      "league": "NPB",
+      "objective": "win",
+      "priority": 1.0,
+      "reason": "評価データ待ち"
+    },
+    "evidence_from_current_state": {
+      "NPB": "no model leaderboard is currently available",
+      "MLB": "no model leaderboard is currently available",
+      "source_policy": "prior_rows_only",
+      "missing_data_is_not_invented": true
+    },
+    "top_research_hypotheses": [
+      {
+        "name": "chronological ensemble stability",
+        "test": "Compare current weighted ensemble with frozen and recency-weighted variants on two untouched chronological windows.",
+        "guard": "Require OOS improvement in LogLoss and Brier with no material Accuracy regression."
+      },
+      {
+        "name": "starter quality interactions",
+        "test": "Ablate pregame starter quality gaps and uncertainty terms by coverage tier.",
+        "guard": "Reject any candidate lacking defensible pregame provenance."
+      },
+      {
+        "name": "bullpen and environment interactions",
+        "test": "Test bullpen fatigue, park, weather and run-environment interactions independently before combining them.",
+        "guard": "Never replace missing historical observations with future or target-game data."
+      },
+      {
+        "name": "score-to-win coherence",
+        "test": "Measure disagreement between score-distribution and win-probability outputs by context.",
+        "guard": "Use only relationships that survive both chronological validation windows and calibration checks."
+      }
+    ],
+    "recommended_oos_tests": [
+      "chronological two-window OOS comparison",
+      "LogLoss/Brier calibration check",
+      "feature ablation without future target rows",
+      "robustness by starter coverage, home/away and scoring environment"
+    ],
+    "failure_modes_to_check": [
+      "timestamp or provenance ambiguity",
+      "starter/lineup contamination",
+      "single-window overfitting",
+      "production-state writes before all gates pass"
+    ],
+    "promotion_conditions": {
+      "require_oos": true,
+      "min_oos_rows": 200,
+      "min_relative_improvement": 0.01,
+      "max_logloss_regression": 0.005,
+      "max_brier_regression": 0.005,
+      "max_accuracy_regression": 0.005,
+      "max_ece_regression": 0.01,
+      "max_high_state_logloss_regression": 0.01,
+      "require_two_validation_windows": true,
+      "require_calibration_check": true,
+      "require_no_future_target_data": true,
+      "require_reproducible_candidate": true,
+      "require_matchday_pit_snapshots": true,
+      "require_routing_two_late_oos_windows": true,
+      "rollback_on_post_promotion_regression": true
+    }
+  }
+}

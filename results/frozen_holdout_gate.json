@@ -1,0 +1,15 @@
+{
+  "status": "DEFERRED",
+  "holdout_fraction": 0.15,
+  "min_holdout_rows": 50,
+  "leagues": {
+    "NPB": {
+      "status": "DEFERRED",
+      "reason": "OOS result file missing"
+    },
+    "MLB": {
+      "status": "DEFERRED",
+      "reason": "OOS result file missing"
+    }
+  }
+}

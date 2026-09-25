@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "status": "DEFERRED",
+  "production_auto_promotion": false,
+  "split": {
+    "fit_fraction": 0.7,
+    "evaluation_fraction": 0.30000000000000004
+  },
+  "leagues": {
+    "NPB": {
+      "status": "DEFERRED",
+      "reason": "OOS result file missing",
+      "rows": 0
+    },
+    "MLB": {
+      "status": "DEFERRED",
+      "reason": "OOS result file missing",
+      "rows": 0
+    }
+  }
+}

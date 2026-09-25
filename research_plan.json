@@ -1,26 +1,16 @@
 {
-  "schema_version": 2,
-  "updated_at": "2026-09-25T16:38:14.935001+00:00",
-  "goal": "maximize validated out-of-sample accuracy for every prediction item",
-  "processing_budget_seconds": 3600,
-  "focus": {
+  "generated_at": "2026-09-25T16:38:14.935001+00:00",
+  "priority": {
     "league": "NPB",
     "objective": "win",
     "priority": 1.0,
     "reason": "評価データ待ち"
   },
-  "weaknesses": [],
-  "leagues": {
-    "NPB": {
-      "summary": {},
-      "model_leaderboard": [],
-      "detail": {}
-    },
-    "MLB": {
-      "summary": {},
-      "model_leaderboard": [],
-      "detail": {}
-    }
+  "next": {
+    "objective": "win",
+    "league": "NPB",
+    "reason": "評価データ待ち",
+    "rule": "candidate must pass the fixed promotion gate and improve OOS without unacceptable regression"
   },
   "promotion_gate": {
     "require_oos": true,
@@ -39,10 +29,11 @@
     "require_routing_two_late_oos_windows": true,
     "rollback_on_post_promotion_regression": true
   },
-  "next_research": {
-    "objective": "win",
-    "league": "NPB",
-    "reason": "評価データ待ち",
-    "rule": "candidate must pass the fixed promotion gate and improve OOS without unacceptable regression"
+  "automatic_adoption_policy": {
+    "require_oos": true,
+    "require_no_material_regression": true,
+    "keep_failed_candidates_for_learning": true,
+    "never_use_future_target_data": true,
+    "fixed_gate": true
   }
 }
