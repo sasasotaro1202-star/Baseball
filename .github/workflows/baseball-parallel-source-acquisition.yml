@@ -98,7 +98,9 @@ jobs:
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             if git rebase origin/main && git push origin HEAD:main; then
-              git stash list | grep -q 'npb-runtime-ephemeral-before-push' && git stash drop
+              if git stash list | grep -q 'npb-runtime-ephemeral-before-push'; then
+                git stash drop
+              fi
               exit 0
             fi
             if git rebase --abort 2>/dev/null; then
