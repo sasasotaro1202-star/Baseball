@@ -207,6 +207,12 @@ def main() -> int:
     def any_active(label: str) -> bool:
         return bool(logical_active.get(label))
 
+    def active_current_sha(label: str, sha: str) -> bool:
+        return any(
+            active(row) and str(row.get("head_sha") or "") == str(sha or "")
+            for row in logical_active.get(label, [])
+        )
+
     def dispatch(label: str, workflow_file: str) -> None:
         try:
             request(
@@ -220,7 +226,12 @@ def main() -> int:
             errors.append(f"dispatch {workflow_file}: {exc}")
             print(f"[WATCHDOG] dispatch failed for {workflow_file}: {exc}")
 
-    if not validation_current and not any_active("validation") and not recently_created(data["validation"], now):
+    # A validation run on an older SHA must not block validation of current main.
+    # The validation workflow has cancel-in-progress enabled, so dispatching the
+    # current SHA safely supersedes the stale active run.
+    if not validation_current and not active_current_sha("validation", current_sha) and not recently_created(
+        [r for r in data["validation"] if str(r.get("head_sha") or "") == str(current_sha or "")], now
+    ):
         dispatch("validation", "validate-code.yml")
 
     if not any_active("matchday") and not recently_created(data["matchday"], now):
