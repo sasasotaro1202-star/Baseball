@@ -289,10 +289,13 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
 
     base_arr = np.asarray(base_probs, dtype=float)
     routed_arr = np.asarray(routed_probs, dtype=float)
+    local_routed_arr = np.asarray(local_routed_probs, dtype=float)
     y_arr = np.asarray(outcomes)
     baseline_metrics = _metrics(base_arr, y_arr)
     routed_metrics = _metrics(routed_arr, y_arr)
+    local_metrics = _metrics(local_routed_arr, y_arr)
     delta = {f"delta_{k}": float(routed_metrics[k] - baseline_metrics[k]) for k in baseline_metrics}
+    local_delta = {f"delta_{k}": float(local_metrics[k] - routed_metrics[k]) for k in routed_metrics}
 
     diag_df = pd.DataFrame(routing_rows)
     diagnostics = {
@@ -329,13 +332,16 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
                 continue
             bm = _metrics(base_arr[start:end], y_arr[start:end])
             rm = _metrics(routed_arr[start:end], y_arr[start:end])
+            lm = _metrics(local_routed_arr[start:end], y_arr[start:end])
             windows[f"window_{idx}"] = {
                 "start_index": int(start),
                 "end_index": int(end),
                 "rows": int(end - start),
                 "baseline": bm,
                 "routed_recalibrated": rm,
+                "local_competence_shadow": lm,
                 "delta": {f"delta_{k}": float(rm[k] - bm[k]) for k in bm},
+                "local_vs_routed_delta": {f"delta_{k}": float(lm[k] - rm[k]) for k in rm},
             }
 
     artifact = {
@@ -346,7 +352,9 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
         "feature_drift_columns": feature_cols,
         "baseline": baseline_metrics,
         "routed_recalibrated": routed_metrics,
+        "local_competence_shadow": local_metrics,
         "delta": delta,
+        "local_vs_routed_delta": local_delta,
         "late_oos_windows": windows,
         "final_temperature": float(calibrator.temperature),
         "diagnostics": diagnostics,
