@@ -76,7 +76,12 @@ jobs:
               exit 0
             else
               echo "[INTERNATIONAL] push/rebase failed attempt ${attempt}"
-              git rebase --abort 2>/dev/null || true
+              if git rebase --abort 2>/dev/null; then
+                echo "[INTERNATIONAL] rebase abort PASS"
+              else
+                echo "[INTERNATIONAL] rebase abort FAILED; refusing to mask repository state"
+                exit 1
+              fi
             fi
             sleep $((attempt * 4))
           done
