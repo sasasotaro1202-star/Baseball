@@ -15,7 +15,7 @@ on:
       - Baseball Production Backtest
       - Baseball Mac OOS Compute
       - Baseball Autonomous Research
-      - Baseball Source Acquisition
+      - Baseball NPB Source Acquisition
       - Baseball MLB + Competition Research
       - Baseball Matchday Intelligence
       - Baseball NPB Game-Type OOS Ablation
@@ -162,12 +162,16 @@ jobs:
                   ):
                       dispatch('matchday',workflows['matchday']); dispatched.append('matchday')
 
-                  if (mlb_competition and (mlb_competition.get('conclusion') in {'failure','cancelled','timed_out'} or age_minutes(mlb_competition) > STALE_MINUTES['mlb_competition']) and not any(
+                  if ((
+                      mlb_competition is None
+                      or mlb_competition.get('conclusion') in {'failure','cancelled','timed_out'}
+                      or age_minutes(mlb_competition) > STALE_MINUTES['mlb_competition']
+                  ) and not any(
                       str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('mlb_competition',[])
                   ) and not recently_created(data.get('mlb_competition',[])):
                       dispatch('mlb-competition-recovery',workflows['mlb_competition']); dispatched.append('mlb_competition')
 
-                  if (not npb_ready or not mlb_ready) and not any(
+                  if (not npb_ready) and not any(
                       str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('acquisition',[])
                   ) and not recently_created(data.get('acquisition',[])):
                       dispatch('baseball-source-acquisition',workflows['acquisition']); dispatched.append('acquisition')
@@ -231,7 +235,7 @@ jobs:
         if: always()
         run: |
           echo '[RECOVERY] Hosted watchdog runs independently of the OOS compute worker.'
-          echo '[RECOVERY] Production -> OOS Compute -> Research -> next Production is enforced as a state machine.'
+          echo '[RECOVERY] Independent production, acquisition, competition, research and Matchday lanes are reconciled concurrently.'
           echo '[RECOVERY] Failed/cancelled/stuck stages are recovered without duplicating active work.'
           echo '[RECOVERY] Active-run detection scans the full recent run window, not only the newest run.'
           echo '[RECOVERY] Recovery reacts to completed workflow events and also reconciles every 15 minutes.'
