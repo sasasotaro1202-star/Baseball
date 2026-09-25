@@ -547,39 +547,34 @@ class BaseballBacktest:
         return df
 
     def enrich_mlb_starters(self, games: pd.DataFrame) -> pd.DataFrame:
-        """Use game feed to identify actual starting pitchers for completed games."""
+        """Preserve only explicitly PIT-safe pregame starter evidence.
+
+        The MLB game feed is a postgame source and can reveal the actual starter
+        after first pitch.  That information must never be copied into a
+        historical pregame feature row.  This compatibility method therefore
+        refuses postgame enrichment unless the input already carries explicit
+        pregame provenance (prediction_time_utc + starter_available_at).
+        """
         games = games.copy()
-        for i in range(len(games)):
-            gid = games.iloc[i]["game_id"]
-            if not gid or str(gid) == "nan":
-                continue
-            try:
-                feed = self._get_json(f"{MLB_API}/game/{gid}/feed/live")
-                live = feed.get("liveData", {})
-                box = live.get("boxscore", {}).get("teams", {})
-                hp = box.get("home", {}).get("players", {})
-                ap = box.get("away", {}).get("players", {})
-                def find_starter(players):
-                    for p in players.values():
-                        pit = p.get("stats", {}).get("pitching", {})
-                        if pit.get("gamesStarted", 0) == 1:
-                            return p.get("person", {}).get("fullName", "")
-                    # More reliable for game feed: first pitcher listed in pitchers array.
-                    arr = []
-                    for p in players.values():
-                        pid = p.get("person", {}).get("id")
-                        if pid and p.get("stats", {}).get("pitching"):
-                            arr.append((p.get("gameStatus", {}).get("isStartingPitcher", False), p.get("person", {}).get("fullName", "")))
-                    for flag, name in arr:
-                        if flag and name:
-                            return name
-                    return ""
-                hname, aname = find_starter(hp), find_starter(ap)
-                if hname: games.at[i, "home_starter"] = hname
-                if aname: games.at[i, "away_starter"] = aname
-                games.at[i, "confirmed_starters"] = bool(hname and aname)
-            except Exception as e:
-                print(f"[MLB feed skip] {gid}: {e}")
+        required = {"prediction_time_utc", "starter_available_at"}
+        if not required.issubset(games.columns):
+            print("[MLB STARTER PIT] postgame feed enrichment disabled: missing explicit pregame provenance")
+            games["starter_confirmation_state"] = "UNKNOWN"
+            games["starter_confirmation_source"] = "none"
+            return games
+
+        cutoff = pd.to_datetime(games["prediction_time_utc"], errors="coerce", utc=True)
+        available = pd.to_datetime(games["starter_available_at"], errors="coerce", utc=True)
+        safe = (
+            games.get("home_pregame_starter", "").fillna("").astype(str).str.len().gt(0)
+            & games.get("away_pregame_starter", "").fillna("").astype(str).str.len().gt(0)
+            & cutoff.notna()
+            & available.notna()
+            & (available <= cutoff)
+        )
+        games["starter_confirmation_state"] = np.where(safe, "CONFIRMED", "UNKNOWN")
+        games["starter_confirmation_source"] = np.where(safe, "pregame_snapshot", "none")
+        games["confirmed_starters"] = safe.astype(bool)
         return games
 
     def _normalize_mlb_games(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -1765,8 +1760,8 @@ class BaseballBacktest:
         elif mlb:
             try:
                 mlb_games = self.load_mlb(mlb_start, mlb_end)
-                # Actual starters are obtained from completed game feeds where possible.
-                # This can be slow for many seasons, so only refresh when explicitly requested.
+                # Never enrich historical rows with the postgame actual starter:
+                # that would create look-ahead leakage in pregame features.
                 if os.getenv("MLB_ENRICH_STARTERS", "0") == "1":
                     mlb_games = self.enrich_mlb_starters(mlb_games)
                     mlb_games.to_csv(self.data_dir / "mlb_games.csv", index=False)
