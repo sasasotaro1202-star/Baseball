@@ -105,7 +105,8 @@ jobs:
         run: |
           set -euo pipefail
           . .venv/bin/activate
-          python research/openai_research_advisor.py
+          python -m research.openai_research_advisor
+          test -s research_ai_advice.json
           python -m json.tool research_ai_advice.json >/dev/null
           python -m json.tool results/frozen_holdout_gate.json >/dev/null
       - name: Validate research artifacts
