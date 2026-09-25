@@ -109,7 +109,7 @@ def main() -> int:
         }
         SNAP.mkdir(parents=True, exist_ok=True)
         (SNAP / f"{league.lower()}_{category}_comparison.json").write_text(
-            json.dumps(payload, ensure_ascii=False, indent=2) + "\\n",
+            json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
         print(json.dumps(payload, ensure_ascii=False))
@@ -140,11 +140,17 @@ def main() -> int:
     baseline_result = run_variant(league, baseline, root / "baseline", Path(args.data_dir))
     candidate_result = run_variant(league, candidate, root / "candidate", Path(args.data_dir))
 
+    statuses = {baseline_result["status"], candidate_result["status"]}
+    overall_status = (
+        "FAIL" if "FAIL" in statuses
+        else "DEFERRED" if "DEFERRED" in statuses
+        else "PASS"
+    )
     summary = {
         "schema_version": 1,
         "league": league,
         "category": category,
-        "status": "PASS",
+        "status": overall_status,
         "promotion_auto": False,
         "baseline": baseline_result,
         "candidate": candidate_result,
