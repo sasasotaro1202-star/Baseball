@@ -74,6 +74,20 @@ PARKS = {
 TEAM_NAMES = set(ALIASES.values())
 
 
+def classify_schedule_states(games, now):
+    """Annotate schedule identity without exposing outcome information to prediction code."""
+    out = []
+    for game in games:
+        g = dict(game)
+        start_dt = pd.Timestamp(
+            f'{g["date"]} {g["hour"]:02d}:{g["minute"]:02d}', tz="Asia/Tokyo"
+        )
+        g["schedule_state"] = "FUTURE" if start_dt > now else "STARTED_OR_IN_PROGRESS"
+        g["start_datetime_jst"] = start_dt.isoformat()
+        out.append(g)
+    return out
+
+
 def norm_team(x):
     return ALIASES.get(str(x or "").strip(), str(x or "").strip())
 
@@ -835,13 +849,7 @@ def main() -> int:
     # future games. Once a game has started, it must never be passed to the
     # prediction path, even though its schedule identity remains useful for the
     # current-status snapshot.
-    scheduled_games = list(games)
-    for g in scheduled_games:
-        start_dt = pd.Timestamp(
-            f'{g["date"]} {g["hour"]:02d}:{g["minute"]:02d}', tz="Asia/Tokyo"
-        )
-        g["schedule_state"] = "FUTURE" if start_dt > now else "STARTED_OR_IN_PROGRESS"
-        g["start_datetime_jst"] = start_dt.isoformat()
+    scheduled_games = classify_schedule_states(games, now)
     predictions=[]
     games = [g for g in scheduled_games if g["schedule_state"] == "FUTURE"]
     for g in games:
