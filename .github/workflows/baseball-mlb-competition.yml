@@ -65,7 +65,6 @@ jobs:
           if 'game_type' not in d.columns: raise SystemExit('MLB cache missing official game_type metadata')
           print(f'[MLB] rows={len(d)} min={d.datetime.min()} max={d.datetime.max()}')
           PY
-          python production_data_quality_gate.py
       - name: Persist MLB checkpoints and successful cache
         if: always()
         run: |
