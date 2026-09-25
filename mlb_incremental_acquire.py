@@ -137,10 +137,13 @@ def acquire_chunked(start_date, end_date):
         path = chunk_path(cursor, chunk_end)
         refetch = not path.exists()
         if path.exists():
-            # pandas writes an empty DataFrame as a single newline. Such a
-            # checkpoint is a valid completed no-games date range (common in
-            # MLB offseason / postponed periods), not corruption.
-            if path.stat().st_size <= 1:
+            # pandas writes an empty DataFrame as a single newline. A single
+            # newline is therefore a valid completed no-games checkpoint, but
+            # a truly zero-byte file is incomplete/corrupt and must be rebuilt.
+            if path.stat().st_size == 0:
+                refetch = True
+                reason = "zero-byte checkpoint"
+            elif path.stat().st_size == 1 and path.read_bytes() == b"\\n":
                 chunk = empty_chunk_frame()
                 refetch = False
                 print(f"[MLB] resume existing empty chunk {cursor}..{chunk_end}")
@@ -148,11 +151,12 @@ def acquire_chunked(start_date, end_date):
                 try:
                     chunk = norm(pd.read_csv(path, low_memory=False))
                     print(f"[MLB] resume existing chunk {cursor}..{chunk_end}: {len(chunk)} rows")
-                except pd.errors.EmptyDataError as exc:
-                    raise RuntimeError(f"MLB checkpoint chunk unreadable: {path}: {exc}") from exc
+                except pd.errors.EmptyDataError:
+                    refetch = True
+                    reason = "empty-data checkpoint"
                 except Exception as exc:
                     raise RuntimeError(f"MLB checkpoint chunk unreadable: {path}: {exc}") from exc
-                if "game_type" not in chunk.columns:
+                if not refetch and "game_type" not in chunk.columns:
                     refetch = True
                     reason = "checkpoint lacks official game_type"
         if refetch:
