@@ -565,9 +565,11 @@ class BaseballBacktest:
 
         cutoff = pd.to_datetime(games["prediction_time_utc"], errors="coerce", utc=True)
         available = pd.to_datetime(games["starter_available_at"], errors="coerce", utc=True)
+        home_pregame = games["home_pregame_starter"] if "home_pregame_starter" in games.columns else pd.Series("", index=games.index)
+        away_pregame = games["away_pregame_starter"] if "away_pregame_starter" in games.columns else pd.Series("", index=games.index)
         safe = (
-            games.get("home_pregame_starter", "").fillna("").astype(str).str.len().gt(0)
-            & games.get("away_pregame_starter", "").fillna("").astype(str).str.len().gt(0)
+            home_pregame.fillna("").astype(str).str.len().gt(0)
+            & away_pregame.fillna("").astype(str).str.len().gt(0)
             & cutoff.notna()
             & available.notna()
             & (available <= cutoff)
