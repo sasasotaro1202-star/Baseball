@@ -101,12 +101,21 @@ def age_minutes(row: dict | None, now: datetime) -> float:
 
 
 NONSEMANTIC_PRODUCTION_PATH_PREFIXES = ("results/matchday_",)
+NONSEMANTIC_PRODUCTION_EXACT_PATHS = {
+    "research_ai_advice.json",
+    "research_history.json",
+    "research_plan.json",
+    "research_state.json",
+}
 
 def production_update_is_nonsemantic(filenames: list[str]) -> bool:
-    """Return True only when every changed path is a Matchday snapshot artifact."""
+    """Return True only for changes proven not to alter production inputs."""
     paths = [str(x or "") for x in filenames]
-    return bool(paths) and all(
+    if not paths:
+        return False
+    return all(
         any(path.startswith(prefix) for prefix in NONSEMANTIC_PRODUCTION_PATH_PREFIXES)
+        or path in NONSEMANTIC_PRODUCTION_EXACT_PATHS
         for path in paths
     )
 
