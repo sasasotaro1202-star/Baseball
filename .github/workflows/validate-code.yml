@@ -8,6 +8,10 @@ on:
       - 'pyproject.toml'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: write
+
 concurrency:
   group: baseball-validate-${{ github.ref }}
   cancel-in-progress: true
@@ -103,3 +107,11 @@ jobs:
           python -m json.tool results/calibration_oos.json >/dev/null
           python -m pytest -q tests
           echo "All Baseball Python syntax/runtime smoke checks passed"
+      - name: Dispatch production backtest after verified validation
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run .github/workflows/baseball_production.yml --ref main
+          echo "[PRODUCTION DISPATCH] requested for validated main"
