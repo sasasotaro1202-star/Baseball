@@ -69,3 +69,31 @@ def test_empty_data_chunk_is_rebuilt(monkeypatch, tmp_path):
     out, _ = m.acquire_chunked(start, end)
     assert len(out) == 0
     assert path.exists()
+
+
+
+def test_single_newline_empty_checkpoint_is_valid_no_games_range(tmp_path, monkeypatch):
+    import mlb_incremental_acquire as m
+    from datetime import date
+
+    monkeypatch.setattr(m, "CHUNK_DIR", tmp_path)
+    start = date(2021, 11, 21)
+    end = date(2022, 1, 4)
+    path = m.chunk_path(start, end)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(b"\\n")
+
+    calls = []
+    monkeypatch.setattr(m, "fetch_schedule", lambda *_args: calls.append(True) or m.empty_chunk_frame())
+    out, ranges = m.acquire_chunked(start, end)
+
+    assert calls == []
+    assert len(out) == 0
+    assert ranges[0]["rows"] == 0
+
+
+def test_mlb_acquisition_writes_production_readiness_status_contract():
+    text = Path("mlb_incremental_acquire.py").read_text(encoding="utf-8")
+    assert '"complete": True' in text
+    assert '"aggregate_games"' in text
+    assert "mlb_collection_status.json" in text
