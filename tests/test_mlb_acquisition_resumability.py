@@ -81,7 +81,7 @@ def test_single_newline_empty_checkpoint_is_valid_no_games_range(tmp_path, monke
     end = date(2022, 1, 4)
     path = m.chunk_path(start, end)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(b"\\n")
+    path.write_bytes(b"\n")
 
     calls = []
     monkeypatch.setattr(m, "fetch_schedule", lambda *_args: calls.append(True) or m.empty_chunk_frame())
