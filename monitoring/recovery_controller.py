@@ -12,7 +12,7 @@ from pathlib import Path
 
 API = os.environ.get("GITHUB_API_URL", "https://api.github.com").rstrip("/")
 REPO = os.environ["GITHUB_REPOSITORY"]
-TOKEN = os.environ["GH_TOKEN"]
+TOKEN = os.environ.get("GH_TOKEN", "")
 
 WORKFLOWS = {
     "validation": ["validate-code.yml"],
@@ -46,6 +46,8 @@ RETRYABLE = {408, 409, 425, 429, 500, 502, 503, 504}
 
 
 def request(method: str, path: str, payload: dict | None = None, attempts: int = 5):
+    if not TOKEN:
+        raise RuntimeError("GH_TOKEN is required for GitHub API requests")
     body = None if payload is None else json.dumps(payload).encode("utf-8")
     last = None
     for attempt in range(1, attempts + 1):
