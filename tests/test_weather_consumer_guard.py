@@ -34,3 +34,9 @@ def test_unknown_weather_provenance_fails_closed():
         "weather_available_at",
         "weather_state",
     )
+
+
+def test_audit_enforces_weather_fail_closed_marker():
+    text = Path("backtest_audit_v2.py").read_text(encoding="utf-8")
+    assert "FAIL_CLOSED_NO_ISSUANCE_TIMESTAMP" in text
+    assert "historical weather still synthesizes availability" in text
