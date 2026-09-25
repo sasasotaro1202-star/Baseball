@@ -24,3 +24,16 @@ def test_case_risk_never_reverses_prediction():
     assert 0.0 <= out["risk_score"] <= 1.0
     assert 0.0 <= out["upset_risk_signal"] <= 1.0
     assert out["risk_state"] in {"LOW", "MEDIUM", "HIGH"}
+
+
+
+def test_case_risk_flags_situational_anomaly():
+    out = assess_case_risk(
+        [0.72, 0.28],
+        rest_travel={
+            "home": {"rest_days": 1.0, "games_last_3d": 3, "games_last_7d": 6, "travel_miles": 1200},
+            "away": {"rest_days": 5.0, "games_last_3d": 1, "games_last_7d": 3, "travel_miles": 50},
+        },
+    )
+    assert out["situational_risk"] >= 0.60
+    assert "situational_load_or_travel_anomaly" in out["reasons"]
