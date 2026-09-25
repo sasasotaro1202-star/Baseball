@@ -1,1 +1,47 @@
-{"mlb":{"start_season":2015,"end_season":2026},"npb":{"start_season":2010,"end_season":2026},"soccer":{"leagues":["E0","SP1","D1","I1","F1","N1"],"start_season":2010,"end_season":2025,"understat_start":2014}}
+{
+  "mlb": {
+    "start_season": 2015,
+    "end_season": 2026
+  },
+  "npb": {
+    "start_season": 2010,
+    "end_season": 2026
+  },
+  "soccer": {
+    "leagues": [
+      "E0",
+      "SP1",
+      "D1",
+      "I1",
+      "F1",
+      "N1"
+    ],
+    "start_season": 2010,
+    "end_season": 2025,
+    "understat_start": 2014
+  },
+  "international": {
+    "competitions": [
+      "WBC",
+      "WBSC Premier12",
+      "Olympic Baseball",
+      "Asian Games",
+      "Asian Professional Baseball Championship",
+      "International Friendly",
+      "International Special"
+    ],
+    "training_categories_default": [],
+    "evaluation_categories_default": [
+      "wbc",
+      "premier12",
+      "olympics",
+      "asian_games",
+      "asian_professional_baseball_championship",
+      "international_friendly",
+      "international_special",
+      "other_international"
+    ],
+    "data_contract": "data/international_games.csv",
+    "fail_closed": true
+  }
+}
