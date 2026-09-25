@@ -1784,7 +1784,7 @@ class BaseballBacktest:
             "npb_predictions": int(sum(1 for x in self.results if x.get("league") == "NPB")),
             "mlb_predictions": int(sum(1 for x in self.results if x.get("league") == "MLB")),
             "failures": failures,
-            "status": "FAIL" if (failures or budget_exhausted) else "PASS",
+            "status": "FAIL" if (failures or budget_exhausted or runtime_seconds > self.time_budget_sec) else "PASS",
         }
         pd.DataFrame([runtime_summary]).to_csv(RESULTS / "runtime_summary.csv", index=False)
         print(json.dumps(runtime_summary, ensure_ascii=False))
