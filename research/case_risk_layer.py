@@ -120,10 +120,17 @@ def assess_case_risk(
         item = rt.get(side) if isinstance(rt.get(side), Mapping) else {}
         if str(item.get("state", "UNKNOWN")).upper() != "VERIFIED":
             continue
-        rest_days = float(item.get("rest_days", 0.0) or 0.0)
-        games_3d = float(item.get("games_last_3d", 0.0) or 0.0)
-        games_7d = float(item.get("games_last_7d", 0.0) or 0.0)
-        travel_miles = float(item.get("travel_miles", 0.0) or 0.0)
+        def _finite_number(value: object, default: float = 0.0) -> float:
+            try:
+                parsed = float(value)
+                return parsed if math.isfinite(parsed) else default
+            except Exception:
+                return default
+
+        rest_days = _finite_number(item.get("rest_days"), 0.0)
+        games_3d = _finite_number(item.get("games_last_3d"), 0.0)
+        games_7d = _finite_number(item.get("games_last_7d"), 0.0)
+        travel_miles = _finite_number(item.get("travel_miles"), 0.0)
         short_rest = _clip01((2.0 - rest_days) / 2.0)
         density = _clip01(max(games_3d / 3.0, games_7d / 7.0))
         travel = _clip01(travel_miles / 1000.0)
