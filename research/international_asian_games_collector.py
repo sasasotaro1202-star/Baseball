@@ -84,8 +84,13 @@ def _normalize_date(raw: str, edition: int) -> str | None:
     return None
 
 
+def _norm_cell(raw: Any) -> str:
+    return re.sub(r"\s+", " ", str(raw or "")).strip()
+
+
 def _parse_matchup(raw: str) -> tuple[str, str, int | None, int | None, str]:
-    text = re.sub(r"\s+", " ", str(raw or "")).strip()
+    """Parse compact matchup text such as 'Thailand 15 - 0 Laos'."""
+    text = _norm_cell(raw)
     if not text:
         return "", "", None, None, "UNKNOWN"
     score = re.match(r"^(.+?)\s+(\d+)\s*-\s*(\d+)\s+(.+?)$", text)
@@ -103,6 +108,56 @@ def _parse_matchup(raw: str) -> tuple[str, str, int | None, int | None, str]:
     return "", "", None, None, "UNKNOWN"
 
 
+def _parse_row_matchup(cells: list[str]) -> tuple[str, str, int | None, int | None, str]:
+    """Parse both the compact and split-cell table layouts used by japan-baseball.jp.
+
+    The official pages render results as separate cells:
+        Home | 15 | - | 0 | Visitor
+    while unresolved fixtures can be:
+        Home - Visitor
+    and some legacy tables use one compact matchup cell.
+    """
+    payload = [_norm_cell(x) for x in cells[2:] if _norm_cell(x)]
+    if not payload:
+        return "", "", None, None, "UNKNOWN"
+
+    # Split score layout: Home, score, '-', score, Visitor.
+    if len(payload) >= 5:
+        for start in range(max(1, len(payload) - 5), -1, -1):
+            window = payload[start:start + 5]
+            if (
+                len(window) == 5
+                and re.fullmatch(r"\d+", window[1] or "")
+                and window[2] == "-"
+                and re.fullmatch(r"\d+", window[3] or "")
+            ):
+                home = _norm_cell(window[0])
+                away = _norm_cell(window[4])
+                if home and away:
+                    return home, away, int(window[1]), int(window[3]), "FINAL"
+
+    # Compact layout.
+    if len(payload) == 1:
+        return _parse_matchup(payload[0])
+
+    compact = " ".join(payload)
+    parsed = _parse_matchup(compact)
+    if parsed[0] and parsed[1]:
+        return parsed
+
+    # Some HTML tables place the team names in separate cells without scores
+    # for an unresolved fixture.
+    if "-" in payload:
+        dash = payload.index("-")
+        if 0 < dash < len(payload) - 1:
+            home = " ".join(payload[:dash]).strip()
+            away = " ".join(payload[dash + 1:]).strip()
+            if home and away and not home.isdigit() and not away.isdigit():
+                return home, away, None, None, "SCHEDULED"
+
+    return "", "", None, None, "UNKNOWN"
+
+
 def parse_overview_html(content: bytes, edition: int, source_url: str, retrieved_at: str) -> pd.DataFrame:
     """Parse tournament-wide schedule tables from an official overview page."""
     doc = lxml_html.fromstring(content)
@@ -112,16 +167,15 @@ def parse_overview_html(content: bytes, edition: int, source_url: str, retrieved
         phase = _heading_before(table) or "UNKNOWN"
         tr_nodes = table.xpath(".//tr")
         for row_index, tr in enumerate(tr_nodes):
-            cells = [
-                re.sub(r"\s+", " ", cell.text_content()).strip()
-                for cell in tr.xpath("./th|./td")
-            ]
+            cells = [_norm_cell(cell.text_content()) for cell in tr.xpath("./th|./td")]
             if len(cells) < 3:
                 continue
-            date_text, venue, matchup = cells[0], cells[1], cells[2]
+            date_text, venue = cells[0], cells[1]
             dt = _normalize_date(date_text, edition)
-            home, away, hs, aas, status = _parse_matchup(matchup)
-            if not home or not away or not dt:
+            if not dt:
+                continue
+            home, away, hs, aas, status = _parse_row_matchup(cells)
+            if not home or not away:
                 continue
             identity = f"asian_games|{edition}|{dt}|{home}|{away}|{venue}"
             game_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()[:24]
