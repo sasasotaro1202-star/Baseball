@@ -1,0 +1,98 @@
+name: Baseball NPB Game-Type OOS Ablation
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "31 13 * * 6"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: baseball-game-type-ablation
+  cancel-in-progress: true
+
+jobs:
+  ablation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 140
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        include:
+          - variant: baseline
+            training: regular,interleague
+          - variant: +climax
+            training: regular,interleague,climax
+          - variant: +japan_series
+            training: regular,interleague,japan_series
+          - variant: +allstar
+            training: regular,interleague,allstar
+          - variant: +special
+            training: regular,interleague,special
+          - variant: +postseason
+            training: regular,interleague,climax,japan_series
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Verify NPB data readiness
+        id: ready
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s data/npb_multi_source_games_all.csv || {
+            echo '[GAME-TYPE ABLATION] DEFERRED: aggregate NPB dataset is not available'
+            echo 'ready=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          }
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import pandas as pd
+          d=pd.read_csv("data/npb_multi_source_games_all.csv",usecols=lambda c: c in {"game_id","npb_game_category","game_type"})
+          if "game_id" not in d or len(d) < 200:
+              print("ready=false")
+              raise SystemExit
+          cats=d.get("npb_game_category",pd.Series(dtype=str)).fillna("unknown").value_counts()
+          print(f"[GAME-TYPE ABLATION] rows={len(d)} categories={cats.to_dict()}")
+          print("ready=true")
+          PY
+      - name: Setup Python
+        if: steps.ready.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/python" -m pip install --disable-pip-version-check -r requirements.txt
+          echo "$RUNNER_TEMP/venv/bin" >> "$GITHUB_PATH"
+      - name: Preflight and run OOS variant
+        if: steps.ready.outputs.ready == 'true'
+        env:
+          BASEBALL_TIME_BUDGET_SEC: "900"
+          NPB_TRAINING_GAME_CATEGORIES: ${{ matrix.training }}
+          NPB_EVALUATION_GAME_CATEGORIES: "regular,interleague,climax,japan_series,allstar,special"
+          BASEBALL_MATCHDAY_SHADOW: "0"
+        run: |
+          set -euo pipefail
+          python npb_game_type.py >/dev/null 2>&1 || true
+          python -m py_compile npb_game_type.py baseball_backtest.py research/npb_game_type_ablation.py
+          python baseball_backtest.py --npb-only --data-dir data
+          python research/npb_game_type_ablation.py --variant "${{ matrix.variant }}"
+      - name: Emit explicit deferred artifact
+        if: steps.ready.outputs.ready != 'true'
+        run: |
+          mkdir -p results
+          printf '%s\n' '{"schema_version":1,"variant":"${{ matrix.variant }}","status":"DEFERRED","reason":"NPB aggregate dataset not available","promotion_auto":false}' > results/npb_game_type_ablation_summary.json
+      - name: Validate result schema
+        run: |
+          set -euo pipefail
+          python -m json.tool results/npb_game_type_ablation_summary.json >/dev/null
+          test -s results/npb_game_type_ablation_summary.json
+      - name: Upload variant
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: baseball-game-type-ablation-${{ matrix.variant }}
+          path: |
+            results/npb_game_type_ablation_summary.json
+            results/npb_backtest_summary.csv
+            results/npb_game_type_metrics.csv
+          if-no-files-found: ignore
+          retention-days: 30
