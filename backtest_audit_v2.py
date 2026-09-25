@@ -116,10 +116,13 @@ if weather_ingest:
     for token, label in [
         ("weather_available_at", "weather availability timestamp"),
         ("weather_pit_quality", "weather PIT quality marker"),
-        ("CONSERVATIVE_8H_BOUND", "conservative weather availability bound"),
+        ("FAIL_CLOSED_NO_ISSUANCE_TIMESTAMP", "fail-closed historical weather provenance"),
+        ("CONSERVATIVE_8H_BOUND is RETIRED", "retired inferred weather bound marker"),
     ]:
         if token not in weather_ingest:
             errors.append(f"missing {label} in npb_multi_source.py")
+    if "weather_available_at']=(valid-pd.Timedelta(hours=8)).astype(str)" in weather_ingest:
+        errors.append("historical weather still synthesizes availability from valid time minus 8h")
 
 matchday_workflow = need(".github/workflows/baseball_matchday.yml", r"baseball-matchday", "Matchday Intelligence workflow")
 if matchday_workflow:

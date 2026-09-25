@@ -52,6 +52,7 @@ def main() -> int:
     safe_row["prediction_time_utc"] = "2026-09-24T08:00:00Z"
     safe_row["weather_available_at"] = "2026-09-24T07:00:00Z"
     safe_row["weather_state"] = "PROJECTED"
+    safe_row["weather_pit_quality"] = "EXPLICIT_AVAILABILITY"
     safe_row["lineup_available_at"] = "2026-09-24T07:00:00Z"
     safe_row["lineup_state"] = "PROJECTED"
     safe_row["home_lineup_available_at"] = "2026-09-24T07:00:00Z"
