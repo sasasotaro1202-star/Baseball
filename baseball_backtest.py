@@ -951,50 +951,55 @@ class BaseballBacktest:
             for (gid,pid,side),g in self.player_game.groupby(['game_id','player_id','side'],sort=False):
                 self.player_index[(str(gid),str(pid),str(side))] = g.iloc[-1].to_dict()
         Xrows, y, meta = [], [], []
-        # Enable pregame starter/lineup features in the core model only when the
-        # historical training corpus contains >=50% PIT-safe observations. Until
-        # then those signals remain Matchday-layer-only to prevent support mismatch.
-        def _ready(kind: str) -> bool:
-            if len(games) == 0:
-                return False
-            ok_count = 0
-            valid_count = 0
-            for _, rr in games.iterrows():
-                try:
-                    cutoff = pd.to_datetime(rr.get("prediction_time_utc"), errors="coerce", utc=True)
-                    if pd.isna(cutoff):
-                        continue
-                    valid_count += 1
-                    if kind == "starter":
-                        a = str(rr.get("home_pregame_starter", "") or "")
-                        z = str(rr.get("away_pregame_starter", "") or "")
-                        av = pd.to_datetime(rr.get("starter_available_at"), errors="coerce", utc=True)
-                        ok = bool(a and z and pd.notna(av) and av <= cutoff)
-                    else:
-                        h = str(rr.get("home_pregame_lineup_json", "") or "")
-                        a = str(rr.get("away_pregame_lineup_json", "") or "")
-                        hav = pd.to_datetime(rr.get("home_lineup_available_at"), errors="coerce", utc=True)
-                        aav = pd.to_datetime(rr.get("away_lineup_available_at"), errors="coerce", utc=True)
-                        hs = str(rr.get("home_lineup_state", "") or "").upper()
-                        aas = str(rr.get("away_lineup_state", "") or "").upper()
-                        ok = bool(
-                            h and a and pd.notna(hav) and pd.notna(aav)
-                            and hav <= cutoff and aav <= cutoff
-                            and hs in {"VERIFIED", "PROJECTED"}
-                            and aas in {"VERIFIED", "PROJECTED"}
-                        )
-                    ok_count += int(ok)
-                except Exception:
-                    continue
-            return valid_count > 0 and (ok_count / valid_count) >= 0.50
+        # PIT-safe context activation must itself be chronological. A global
+        # readiness decision computed from the full dataset would let early
+        # historical rows benefit from future context coverage (a subtle form of
+        # look-ahead in feature-support selection). We therefore activate each
+        # context only after enough *prior* rows have valid prediction timestamps
+        # and >=50% of those prior rows carry PIT-safe context.
+        CONTEXT_READY_MIN_VALID = 30
+        CONTEXT_READY_RATIO = 0.50
 
-        self.core_context_training_ready["starter"] = _ready("starter")
-        self.core_context_training_ready["lineup"] = _ready("lineup")
-        self.context_pit_counters["core_starter_training_ready"] = int(self.core_context_training_ready["starter"])
-        self.context_pit_counters["core_lineup_training_ready"] = int(self.core_context_training_ready["lineup"])
+        def _context_row_is_safe(rr: pd.Series, kind: str) -> tuple[bool, bool]:
+            try:
+                cutoff = pd.to_datetime(
+                    rr.get("prediction_time_utc"), errors="coerce", utc=True
+                )
+                if pd.isna(cutoff):
+                    return False, False
+                if kind == "starter":
+                    home = str(rr.get("home_pregame_starter", "") or "")
+                    away = str(rr.get("away_pregame_starter", "") or "")
+                    available = pd.to_datetime(
+                        rr.get("starter_available_at"), errors="coerce", utc=True
+                    )
+                    return bool(home and away and pd.notna(available) and available <= cutoff), True
+                home_lineup = str(rr.get("home_pregame_lineup_json", "") or "")
+                away_lineup = str(rr.get("away_pregame_lineup_json", "") or "")
+                home_available = pd.to_datetime(
+                    rr.get("home_lineup_available_at"), errors="coerce", utc=True
+                )
+                away_available = pd.to_datetime(
+                    rr.get("away_lineup_available_at"), errors="coerce", utc=True
+                )
+                home_state = str(rr.get("home_lineup_state", "") or "").upper()
+                away_state = str(rr.get("away_lineup_state", "") or "").upper()
+                safe = bool(
+                    home_lineup and away_lineup
+                    and pd.notna(home_available) and pd.notna(away_available)
+                    and home_available <= cutoff and away_available <= cutoff
+                    and home_state in {"VERIFIED", "PROJECTED"}
+                    and away_state in {"VERIFIED", "PROJECTED"}
+                )
+                return safe, True
+            except Exception:
+                return False, False
+
         # Deterministic chronological order: datetime then game_id. This handles doubleheaders better than date-only logic.
         games = games.sort_values(["datetime", "game_id"]).reset_index(drop=True)
         last_season=None
+        context_seen = {"starter": 0, "lineup": 0}
+        context_safe = {"starter": 0, "lineup": 0}
         for _, row in games.iterrows():
             category = str(row.get("npb_game_category", "unknown") or "unknown").strip().lower() if row.get("league") == "NPB" else "mlb"
             train_include = category in training_set if row.get("league") == "NPB" else True
@@ -1006,8 +1011,24 @@ class BaseballBacktest:
                 for key,val in list(self.elo_ratings.items()):
                     self.elo_ratings[key] = ELO_START + ELO_REGRESSION*(val-ELO_START)
             last_season=cur_season
+            # Activate context using only rows strictly earlier in chronology.
+            # The current row may contribute to the counters only after its
+            # feature vector has been constructed.
+            for kind in ("starter", "lineup"):
+                self.core_context_training_ready[kind] = bool(
+                    context_seen[kind] >= CONTEXT_READY_MIN_VALID
+                    and (context_safe[kind] / max(context_seen[kind], 1)) >= CONTEXT_READY_RATIO
+                )
+            self.context_pit_counters["core_starter_training_ready"] = int(self.core_context_training_ready["starter"])
+            self.context_pit_counters["core_lineup_training_ready"] = int(self.core_context_training_ready["lineup"])
             feat = self.match_features(row)
             Xrows.append(feat)
+            # Update readiness counters only after the current row has been
+            # converted to features, preserving predict-then-update chronology.
+            for kind in ("starter", "lineup"):
+                safe, valid = _context_row_is_safe(row, kind)
+                context_seen[kind] += int(valid)
+                context_safe[kind] += int(safe)
             league = row["league"]
             hscore, ascore = float(row["home_score"]), float(row["away_score"])
             if league == "NPB":
@@ -1024,11 +1045,24 @@ class BaseballBacktest:
             # state unless the explicit training policy opts them in.
             if train_include:
                 self.update_after_game(row)
+        # Expose the final readiness state for a subsequent real-time
+        # prediction made after this entire historical corpus.
+        for kind in ("starter", "lineup"):
+            self.core_context_training_ready[kind] = bool(
+                context_seen[kind] >= CONTEXT_READY_MIN_VALID
+                and (context_safe[kind] / max(context_seen[kind], 1)) >= CONTEXT_READY_RATIO
+            )
+        self.context_pit_counters["core_starter_training_ready"] = int(self.core_context_training_ready["starter"])
+        self.context_pit_counters["core_lineup_training_ready"] = int(self.core_context_training_ready["lineup"])
+        self.context_pit_counters["starter_context_seen"] = int(context_seen["starter"])
+        self.context_pit_counters["starter_context_safe"] = int(context_safe["starter"])
+        self.context_pit_counters["lineup_context_seen"] = int(context_seen["lineup"])
+        self.context_pit_counters["lineup_context_safe"] = int(context_safe["lineup"])
         self.audit.append({
             "type": "matchday_context_pit",
             "prediction_rows": int(len(Xrows)),
             "counters": dict(self.context_pit_counters),
-            "policy": "lineup/weather require explicit prediction_time_utc and availability timestamp; unknown fails closed",
+            "policy": "context readiness is chronological: only prior PIT-safe rows can enable starter/lineup features; unknown/missing timestamps fail closed",
         })
         X = pd.DataFrame(Xrows).replace([np.inf, -np.inf], np.nan).fillna(0.0).astype(float)
         return X, np.asarray(y, dtype=int), pd.DataFrame(meta)
