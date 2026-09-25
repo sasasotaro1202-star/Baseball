@@ -921,7 +921,7 @@ def main() -> int:
             })
             try:
                 fx=pd.DataFrame([bt.match_features(row)])
-                incumbent=bt.ensemble_proba(fitted,fx)[0]
+                incumbent=bt.ensemble_proba(fitted,fx,"NPB")[0]
                 pred_payload.update({
                     "incumbent_status":"PASS",
                     "incumbent_home":float(incumbent[0]),
