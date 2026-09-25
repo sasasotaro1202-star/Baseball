@@ -157,3 +157,11 @@ def test_asian_games_collector_preserves_jst_and_provenance():
     assert out.loc[0, "datetime_jst"].endswith("+09:00")
     assert out.loc[0, "source_url"].startswith("https://www.japan-baseball.jp/")
     assert out.loc[0, "international_game_category"] == "asian_games"
+
+
+def test_model_fit_minimum_matches_validation_requirement():
+    from baseball_backtest import MODEL_MIN_TRAIN
+
+    assert MODEL_MIN_TRAIN == 120
+    assert not BaseballBacktest.__dict__.get("_validation_splits", lambda self, n: [])(BaseballBacktest.__new__(BaseballBacktest), 119)
+    assert BaseballBacktest.__dict__.get("_validation_splits", lambda self, n: [])(BaseballBacktest.__new__(BaseballBacktest), 120)
