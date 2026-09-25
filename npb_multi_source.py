@@ -22,6 +22,8 @@ import numpy as np
 import pandas as pd
 import requests
 
+from npb_game_type import classify_npb_game, is_excluded_game_type
+
 SPAIA = "https://spaia.jp/baseball/npb/api"
 NPB = "https://npb.jp"
 OPEN_METEO = "https://historical-forecast-api.open-meteo.com/v1/forecast"
@@ -94,9 +96,13 @@ def parse_dt(g):
     return pd.to_datetime(str(d),errors='coerce')
 def game_kind(g): return str(_first(g,'GameKindName','game_kind_name','GameTypeName','game_type_name','gameTypeName','LeagueName','league_name',default='') or '')
 def official_game(g):
-    s=game_kind(g)
-    if any(x in s for x in ('オープン戦','オールスター','ファーム','二軍','教育','練習試合')): return False
-    return ('公式戦' in s) or ('交流戦' in s) or ('セ・リーグ' in s) or ('パ・リーグ' in s) or s==''
+    """Retain all requested competitive/special NPB classes.
+
+    Only clearly non-competitive exhibition/farm/education/training games are
+    hard-excluded. Unknown labels are retained for audit but fail closed for
+    model-training eligibility downstream.
+    """
+    return not is_excluded_game_type(game_kind(g))
 def num(v):
     try:
         s=str(v).replace(',','').strip()
@@ -313,8 +319,17 @@ def fetch_games(year):
         if not gid or not np.isfinite(hs) or not np.isfinite(aas):continue
         park=str(_first(g,'StadiumName','stadiumName','BallparkName','ballpark','venue','VenueName',default='') or '');home=official_name(_first(g,'HTeamNameS','home_team_short_name','homeTeamShort','homeTeam','home_team','HomeTeamName',default=''));away=official_name(_first(g,'VTeamNameS','away_team_short_name','visitorTeamShort','visitorTeam','away_team','AwayTeamName',default=''))
         if not home or not away:continue
-        rows.append({'game_id':gid,'datetime':dt,'home':home,'away':away,'home_score':hs,'away_score':aas,'game_type':game_kind(g) or '公式戦','venue':park})
-    return pd.DataFrame(rows,columns=['game_id','datetime','home','away','home_score','away_score','game_type','venue']).drop_duplicates('game_id').sort_values(['datetime','game_id']).reset_index(drop=True) if rows else pd.DataFrame(columns=['game_id','datetime','home','away','home_score','away_score','game_type','venue'])
+        raw_game_type = game_kind(g)
+        type_info = classify_npb_game(raw_game_type, raw_context=str(g))
+        rows.append({
+            'game_id':gid,'datetime':dt,'home':home,'away':away,'home_score':hs,'away_score':aas,
+            'game_type':raw_game_type or 'UNKNOWN','venue':park,
+            'npb_game_category':type_info['category'],
+            'npb_type_confidence':type_info['confidence'],
+            'npb_training_default':bool(type_info['training_default']),
+            'npb_evaluation_default':bool(type_info['evaluation_default']),
+        })
+    return pd.DataFrame(rows,columns=['game_id','datetime','home','away','home_score','away_score','game_type','venue','npb_game_category','npb_type_confidence','npb_training_default','npb_evaluation_default']).drop_duplicates('game_id').sort_values(['datetime','game_id']).reset_index(drop=True) if rows else pd.DataFrame(columns=['game_id','datetime','home','away','home_score','away_score','game_type','venue','npb_game_category','npb_type_confidence','npb_training_default','npb_evaluation_default'])
 
 def load_checkpoint(year):
     p=season_paths(year)
