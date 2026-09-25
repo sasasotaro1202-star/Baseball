@@ -72,6 +72,17 @@ def chunk_path(start_date, end_date) -> Path:
     return CHUNK_DIR / f"{start_date:%Y%m%d}_{end_date:%Y%m%d}.csv"
 
 
+EMPTY_SCHEMA = [
+    "league", "game_id", "datetime", "home", "away", "home_score", "away_score",
+    "home_starter", "away_starter", "venue", "game_type", "series_description",
+    "confirmed_starters",
+]
+
+
+def empty_chunk_frame() -> pd.DataFrame:
+    return pd.DataFrame(columns=EMPTY_SCHEMA)
+
+
 def read_existing_cache():
     if CACHE.exists():
         try:
@@ -126,19 +137,22 @@ def acquire_chunked(start_date, end_date):
         path = chunk_path(cursor, chunk_end)
         refetch = not path.exists()
         if path.exists():
-            if path.stat().st_size == 0:
-                refetch = True
-                reason = "zero-byte checkpoint"
+            # pandas writes an empty DataFrame as a single newline. Such a
+            # checkpoint is a valid completed no-games date range (common in
+            # MLB offseason / postponed periods), not corruption.
+            if path.stat().st_size <= 1:
+                chunk = empty_chunk_frame()
+                refetch = False
+                print(f"[MLB] resume existing empty chunk {cursor}..{chunk_end}")
             else:
                 try:
                     chunk = norm(pd.read_csv(path, low_memory=False))
                     print(f"[MLB] resume existing chunk {cursor}..{chunk_end}: {len(chunk)} rows")
-                except pd.errors.EmptyDataError:
-                    refetch = True
-                    reason = "empty-data checkpoint"
+                except pd.errors.EmptyDataError as exc:
+                    raise RuntimeError(f"MLB checkpoint chunk unreadable: {path}: {exc}") from exc
                 except Exception as exc:
                     raise RuntimeError(f"MLB checkpoint chunk unreadable: {path}: {exc}") from exc
-                if not refetch and "game_type" not in chunk.columns:
+                if "game_type" not in chunk.columns:
                     refetch = True
                     reason = "checkpoint lacks official game_type"
         if refetch:
@@ -297,6 +311,25 @@ def main():
         "total_rows": int(len(combined)),
     })
     save_manifest(manifest)
+
+    # A successful full-scope bootstrap must emit the readiness contract that
+    # the production gate consumes. This is distinct from the resumable
+    # manifest: readiness is only true after the complete requested range has
+    # been processed without an acquisition exception.
+    status = {
+        "schema_version": 1,
+        "complete": True,
+        "aggregate_games": int(len(combined)),
+        "bootstrap_start_year": BOOTSTRAP_START_YEAR,
+        "last_start": str(start),
+        "last_end": str(TODAY),
+        "source": API,
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    save_status = CHECKPOINTS / "mlb_collection_status.json"
+    tmp_status = save_status.with_suffix(".json.tmp")
+    tmp_status.write_text(json.dumps(status, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    tmp_status.replace(save_status)
 
     print(f"[MLB] starter_repairs={changed} total={len(combined)}")
     if len(combined) < 100:
