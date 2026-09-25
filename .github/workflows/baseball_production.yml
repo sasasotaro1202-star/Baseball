@@ -297,3 +297,51 @@ jobs:
             production_run_manifest.json
           if-no-files-found: error
           retention-days: 90
+
+
+      - name: Persist verified state atomically
+        if: success() && steps.sha_gate.outputs.ok == 'true' && (steps.npb_ready.outputs.ready == 'true' || steps.mlb_ready.outputs.ready == 'true')
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          mkdir -p data results
+          git add -A data results npb_multi_source.py production_run_manifest.json
+          if git diff --cached --quiet; then
+            echo '[COMMIT] no verified state changes'
+            exit 0
+          fi
+          git commit -m 'Persist verified Baseball production state'
+          for attempt in 1 2 3 4 5; do
+            if ! git fetch origin main; then
+              echo "[PERSIST] git fetch failed on attempt ${attempt}"
+            elif git rebase origin/main; then
+              if git push origin HEAD:main; then
+                echo "[PERSIST] verified state push succeeded on attempt ${attempt}"
+                exit 0
+              fi
+              echo "[PERSIST] git push failed on attempt ${attempt}"
+            else
+              echo "[PERSIST] git rebase failed on attempt ${attempt}; attempting explicit rebase abort"
+              if ! git rebase --abort 2>/dev/null; then
+                echo "[PERSIST] git rebase --abort failed; refusing to mask repository state"
+                exit 1
+              fi
+            fi
+            sleep $((attempt * 5))
+          done
+          echo '[PERSIST] verified state push failed after 5 attempts'
+          exit 1
+
+      - name: Upload failure diagnostics without touching production state
+        if: failure() && steps.sha_gate.outputs.ok == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: baseball-production-failure-${{ github.run_id }}
+          path: |
+            data/
+            results/
+            npb_multi_source.py
+            production_run_manifest.json
+          if-no-files-found: ignore
+          retention-days: 30
