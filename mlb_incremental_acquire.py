@@ -3,12 +3,14 @@
 """Full-scope, incremental MLB source acquisition.
 
 The dataset scope is NOT reduced: the first bootstrap acquires the full
-historical window, then subsequent runs refresh only the delta while retaining
-all historical rows locally.
+historical window in resumable date chunks, then subsequent runs refresh only
+the delta while retaining all historical rows locally.
 """
 from __future__ import annotations
 
+import json
 import os
+import time
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
 
@@ -18,14 +20,18 @@ import requests
 API = "https://statsapi.mlb.com/api/v1"
 DATA = Path(os.getenv("BASEBALL_DATA_DIR", "data"))
 CACHE = DATA / "mlb_games.csv"
+CHECKPOINTS = DATA / "checkpoints"
+CHUNK_DIR = CHECKPOINTS / "mlb_schedule_chunks"
+MANIFEST = CHECKPOINTS / "mlb_acquisition_manifest.json"
 TIMEOUT = int(os.getenv("MLB_INCREMENTAL_TIMEOUT", "20"))
 CORRECTION_DAYS = int(os.getenv("MLB_CORRECTION_DAYS", "7"))
 BOOTSTRAP_START_YEAR = int(os.getenv("MLB_BOOTSTRAP_START_YEAR", "2020"))
+CHUNK_DAYS = max(14, int(os.getenv("MLB_BOOTSTRAP_CHUNK_DAYS", "45")))
 TODAY = datetime.now(timezone.utc).date()
 SEASON = TODAY.year
 
 S = requests.Session()
-S.headers.update({"User-Agent": "BaseballIncrementalAcquisition/1.1", "Accept": "application/json"})
+S.headers.update({"User-Agent": "BaseballIncrementalAcquisition/1.2", "Accept": "application/json"})
 
 
 def get_json(url, params=None):
@@ -39,7 +45,6 @@ def get_json(url, params=None):
             last = exc
             if attempt == 4:
                 raise
-            import time
             time.sleep(min(1.5 * (attempt + 1), 8))
     raise RuntimeError(last)
 
@@ -54,6 +59,26 @@ def norm(df):
     df["game_id"] = df["game_id"].astype(str)
     df = df.dropna(subset=["datetime", "home_score", "away_score", "home", "away"])
     return df.sort_values(["datetime", "game_id"]).drop_duplicates("game_id", keep="last").reset_index(drop=True)
+
+
+def atomic_csv(df: pd.DataFrame, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    df.to_csv(tmp, index=False)
+    tmp.replace(path)
+
+
+def chunk_path(start_date, end_date) -> Path:
+    return CHUNK_DIR / f"{start_date:%Y%m%d}_{end_date:%Y%m%d}.csv"
+
+
+def read_existing_cache():
+    if CACHE.exists():
+        try:
+            return norm(pd.read_csv(CACHE, low_memory=False))
+        except Exception as exc:
+            raise RuntimeError(f"MLB cache exists but is unreadable; refusing to discard it: {exc}") from exc
+    return pd.DataFrame()
 
 
 def fetch_schedule(start_date, end_date):
@@ -82,9 +107,59 @@ def fetch_schedule(start_date, end_date):
                 "home_starter": (home.get("probablePitcher") or {}).get("fullName", ""),
                 "away_starter": (away.get("probablePitcher") or {}).get("fullName", ""),
                 "venue": (game.get("venue") or {}).get("name", ""),
-                "confirmed_starters": bool((home.get("probablePitcher") or {}).get("fullName") and (away.get("probablePitcher") or {}).get("fullName")),
+                "confirmed_starters": bool(
+                    (home.get("probablePitcher") or {}).get("fullName")
+                    and (away.get("probablePitcher") or {}).get("fullName")
+                ),
             })
     return pd.DataFrame(rows)
+
+
+def acquire_chunked(start_date, end_date):
+    frames = []
+    completed = []
+    cursor = start_date
+    while cursor <= end_date:
+        chunk_end = min(end_date, cursor + timedelta(days=CHUNK_DAYS - 1))
+        path = chunk_path(cursor, chunk_end)
+        if path.exists() and path.stat().st_size > 0:
+            try:
+                chunk = norm(pd.read_csv(path, low_memory=False))
+                print(f"[MLB] resume existing chunk {cursor}..{chunk_end}: {len(chunk)} rows")
+            except Exception as exc:
+                raise RuntimeError(f"MLB checkpoint chunk unreadable: {path}: {exc}") from exc
+        else:
+            print(f"[MLB] fetch chunk {cursor}..{chunk_end}")
+            chunk = norm(fetch_schedule(cursor, chunk_end))
+            atomic_csv(chunk, path)
+            print(f"[MLB] checkpointed chunk {path.name}: {len(chunk)} rows")
+        frames.append(chunk)
+        completed.append({
+            "start": str(cursor),
+            "end": str(chunk_end),
+            "path": str(path),
+            "rows": int(len(chunk)),
+        })
+        cursor = chunk_end + timedelta(days=1)
+    if not frames:
+        return pd.DataFrame(), completed
+    return norm(pd.concat(frames, ignore_index=True, sort=False)), completed
+
+
+def load_manifest():
+    if not MANIFEST.exists():
+        return {"schema_version": 1, "completed_ranges": []}
+    try:
+        return json.loads(MANIFEST.read_text(encoding="utf-8"))
+    except Exception as exc:
+        raise RuntimeError(f"MLB acquisition manifest unreadable: {exc}") from exc
+
+
+def save_manifest(payload):
+    CHECKPOINTS.mkdir(parents=True, exist_ok=True)
+    tmp = MANIFEST.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    tmp.replace(MANIFEST)
 
 
 def enrich_missing_starters(df):
@@ -112,10 +187,14 @@ def enrich_missing_starters(df):
                 return ""
             h2, a2 = find_starter("home"), find_starter("away")
             if h2 and h2 != hs:
-                df.at[i, "home_starter"] = h2; changed += 1
+                df.at[i, "home_starter"] = h2
+                changed += 1
             if a2 and a2 != ass:
-                df.at[i, "away_starter"] = a2; changed += 1
-            df.at[i, "confirmed_starters"] = bool(df.at[i, "home_starter"] and df.at[i, "away_starter"])
+                df.at[i, "away_starter"] = a2
+                changed += 1
+            df.at[i, "confirmed_starters"] = bool(
+                df.at[i, "home_starter"] and df.at[i, "away_starter"]
+            )
         except Exception as e:
             print(f"[MLB] starter skip game={gid}: {e}")
     return changed
@@ -123,39 +202,53 @@ def enrich_missing_starters(df):
 
 def main():
     DATA.mkdir(parents=True, exist_ok=True)
-    if CACHE.exists():
-        try:
-            existing = norm(pd.read_csv(CACHE, low_memory=False))
-        except Exception:
-            existing = pd.DataFrame()
-    else:
-        existing = pd.DataFrame()
+    CHECKPOINTS.mkdir(parents=True, exist_ok=True)
+    CHUNK_DIR.mkdir(parents=True, exist_ok=True)
+
+    existing = read_existing_cache()
+    manifest = load_manifest()
 
     # IMPORTANT: no historical data is discarded. An empty cache triggers a
-    # complete bootstrap from the configured historical start through today.
+    # complete bootstrap from the configured historical start through today,
+    # using resumable date chunks.
     if existing.empty:
         start = datetime(BOOTSTRAP_START_YEAR, 3, 1, tzinfo=timezone.utc).date()
         bootstrap = True
+        fresh, ranges = acquire_chunked(start, TODAY)
+        combined = norm(fresh)
     else:
         current = existing[existing["datetime"].dt.year == SEASON]
         if current.empty:
             start = datetime(SEASON, 3, 1, tzinfo=timezone.utc).date()
         else:
-            start = max(datetime(SEASON, 3, 1, tzinfo=timezone.utc).date(), current["datetime"].max().date() - timedelta(days=CORRECTION_DAYS))
+            start = max(
+                datetime(SEASON, 3, 1, tzinfo=timezone.utc).date(),
+                current["datetime"].max().date() - timedelta(days=CORRECTION_DAYS),
+            )
+        end = TODAY
         bootstrap = False
-
-    end = TODAY
-    if start > end:
-        start = end
+        if start > end:
+            start = end
+        fresh = norm(fetch_schedule(start, end))
+        ranges = [{
+            "start": str(start),
+            "end": str(end),
+            "path": "incremental-live",
+            "rows": int(len(fresh)),
+        }]
+        combined = norm(pd.concat([existing, fresh], ignore_index=True, sort=False))
 
     mode = "FULL HISTORICAL BOOTSTRAP" if bootstrap else "INCREMENTAL DELTA"
-    print(f"[MLB] mode={mode} cache={len(existing)} rows; querying {start}..{end}")
-    fresh = norm(fetch_schedule(start, end))
-    combined = norm(pd.concat([existing, fresh], ignore_index=True, sort=False)) if not existing.empty else fresh
+    print(f"[MLB] mode={mode} cache={len(existing)} rows")
+    print(f"[MLB] acquisition ranges={len(ranges)}")
 
-    missing = ((combined["home_starter"].fillna("").astype(str).str.strip() == "") |
-               (combined["away_starter"].fillna("").astype(str).str.strip() == ""))
-    current_or_recent = combined["datetime"] >= pd.Timestamp(datetime.now(timezone.utc) - timedelta(days=CORRECTION_DAYS))
+    missing = (
+        (combined["home_starter"].fillna("").astype(str).str.strip() == "")
+        | (combined["away_starter"].fillna("").astype(str).str.strip() == "")
+    )
+    current_or_recent = combined["datetime"] >= pd.Timestamp(
+        datetime.now(timezone.utc) - timedelta(days=CORRECTION_DAYS)
+    )
     target = combined[missing & current_or_recent].copy()
     changed = enrich_missing_starters(target)
     if not target.empty:
@@ -166,8 +259,23 @@ def main():
                 combined.at[gid, c] = r[c]
         combined = combined.reset_index()
 
-    combined.to_csv(CACHE, index=False)
-    print(f"[MLB] fresh={len(fresh)} starter_repairs={changed} total={len(combined)}")
+    atomic_csv(combined, CACHE)
+
+    manifest.update({
+        "schema_version": 1,
+        "source": API,
+        "bootstrap_start_year": BOOTSTRAP_START_YEAR,
+        "chunk_days": CHUNK_DAYS,
+        "last_mode": mode,
+        "last_run_utc": datetime.now(timezone.utc).isoformat(),
+        "last_start": str(start),
+        "last_end": str(TODAY),
+        "completed_ranges_tail": ranges[-50:],
+        "total_rows": int(len(combined)),
+    })
+    save_manifest(manifest)
+
+    print(f"[MLB] starter_repairs={changed} total={len(combined)}")
     if len(combined) < 100:
         raise RuntimeError("MLB cache unexpectedly small; full-scope acquisition was not completed")
 
