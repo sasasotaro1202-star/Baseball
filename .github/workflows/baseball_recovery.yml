@@ -130,8 +130,8 @@ jobs:
                               request('POST',f'/repos/{repo}/actions/runs/{run_id}/cancel'); stuck.append(run_id)
                           except Exception as exc:
                               errors.append(f'cancel {run_id}: {exc}'); print(f'[WATCHDOG] cancel failed for {run_id}: {exc}')
-              if stuck: action='cancel-stuck'
-              elif any(active_runs.values()): action='active-no-dispatch'
+              if stuck:
+                  action='cancel-stuck'
               else:
                   validation=latest['validation']; prod=latest['production']; mac=latest['mac']; research=latest['research']; acquisition=latest['acquisition']; matchday=latest['matchday']; game_type_ablation=latest['game_type_ablation']
                   npb_ready, npb_games = npb_complete()
@@ -139,10 +139,10 @@ jobs:
                   print(f'[WATCHDOG] NPB readiness complete={npb_ready} aggregate_games={npb_games}')
                   print(f'[WATCHDOG] MLB readiness complete={mlb_ready} aggregate_games={mlb_games}')
                   def dispatch(label,workflow):
-                      global action
                       try:
                           print(f'[WATCHDOG] dispatch {label}: {workflow}')
-                          request('POST',f'/repos/{repo}/actions/workflows/{workflow}/dispatches',{'ref':'main'}); action=f'dispatch-{label}'
+                          request('POST',f'/repos/{repo}/actions/workflows/{workflow}/dispatches',{'ref':'main'})
+                          dispatched.append(label)
                       except Exception as exc:
                           errors.append(f'dispatch {workflow}: {exc}'); print(f'[WATCHDOG] dispatch failed for {workflow}: {exc}')
                   current_main_sha = main_sha()
@@ -195,7 +195,9 @@ jobs:
                   ) and not recently_created(data.get('game_type_ablation',[])):
                       dispatch('game-type-ablation',workflows['game_type_ablation']); dispatched.append('game_type_ablation')
 
-                  if dispatched:
+                  if not dispatched:
+                      action='active-no-dispatch'
+                  else:
                       action='dispatch-parallel:' + ','.join(dispatched)
 
 
