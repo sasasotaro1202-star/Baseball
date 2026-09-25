@@ -12,7 +12,7 @@ from pathlib import Path
 
 API = os.environ.get("GITHUB_API_URL", "https://api.github.com").rstrip("/")
 REPO = os.environ["GITHUB_REPOSITORY"]
-TOKEN = os.environ["GH_TOKEN"]
+TOKEN = os.environ.get("GH_TOKEN", "")
 
 WORKFLOWS = {
     "validation": ["validate-code.yml"],
@@ -46,6 +46,8 @@ RETRYABLE = {408, 409, 425, 429, 500, 502, 503, 504}
 
 
 def request(method: str, path: str, payload: dict | None = None, attempts: int = 5):
+    if not TOKEN:
+        raise RuntimeError("GH_TOKEN is required for GitHub API requests")
     body = None if payload is None else json.dumps(payload).encode("utf-8")
     last = None
     for attempt in range(1, attempts + 1):
@@ -96,6 +98,18 @@ def success(row: dict | None) -> bool:
 
 def age_minutes(row: dict | None, now: datetime) -> float:
     return (now - ts(row)).total_seconds() / 60.0 if row else 0.0
+
+
+def stale_production_runs(rows: list[dict], current_sha: str) -> list[int]:
+    """Return active production run IDs evaluated against an older main SHA."""
+    if not current_sha:
+        return []
+    out = []
+    for row in rows:
+        row_sha = str(row.get("head_sha") or "")
+        if active(row) and row_sha and row_sha != current_sha:
+            out.append(int(row["id"]))
+    return out
 
 
 def recently_created(rows: list[dict], now: datetime) -> bool:
@@ -185,6 +199,20 @@ def main() -> int:
             except Exception as exc:
                 errors.append(f"cancel {run_id}: {exc}")
 
+    current_sha = main_sha()
+
+    # A production OOS run is immutable to its evaluated SHA. When main
+    # advances, any older active production run cannot safely persist its result
+    # and only consumes a runner. Cancel it early; its checkpointed work can be
+    # resumed under the current validated SHA.
+    for run_id in stale_production_runs(logical_active.get("production", []), current_sha):
+        print(f"[WATCHDOG] STALE production run={run_id} current_main={current_sha}; cancelling")
+        try:
+            request("POST", f"/repos/{REPO}/actions/runs/{run_id}/cancel")
+            stuck.append(run_id)
+        except Exception as exc:
+            errors.append(f"cancel stale production {run_id}: {exc}")
+
     npb_ready, npb_games = readiness("data/checkpoints/npb_collection_status.json")
     mlb_ready, mlb_games = readiness("data/checkpoints/mlb_collection_status.json")
     validation = logical_latest["validation"]
@@ -196,7 +224,6 @@ def main() -> int:
     matchday = logical_latest["matchday"]
     game_type_ablation = logical_latest["game_type_ablation"]
 
-    current_sha = main_sha()
     validation_current = success(validation) and str(validation.get("head_sha") or "") == current_sha
 
     print(f"[WATCHDOG] main_sha={current_sha}")
