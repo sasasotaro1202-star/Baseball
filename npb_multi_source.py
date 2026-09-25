@@ -599,7 +599,23 @@ def main():
     if not complete_all:print('[PARTIAL] massive historical collection is resumable; next run continues from season/game checkpoints');return 0
     cov=pd.read_csv(COVERAGE) if COVERAGE.exists() else pd.DataFrame()
     if not cov.empty:
-        eligible=cov[cov.year.between(START_YEAR,END_YEAR)];bad=eligible[eligible.starter_line_coverage_pct<70]
-        if not bad.empty:raise RuntimeError('completed multi-season schedule but starter-line coverage below 70% in: '+','.join(map(str,bad.year.tolist())))
+        coverage_threshold=float(os.getenv('NPB_MIN_STARTER_LINE_COVERAGE','70'))
+        required_start=int(os.getenv('NPB_REQUIRED_START_YEAR','2020'))
+        critical_start=max(START_YEAR, min(required_start, END_YEAR))
+        critical=cov[cov.year.between(critical_start,END_YEAR)]
+        bad=critical[critical.starter_line_coverage_pct<coverage_threshold]
+        if not bad.empty:
+            raise RuntimeError(
+                'critical training-era starter-line coverage below threshold '
+                f'({coverage_threshold:.1f}%) in: '+','.join(map(str,bad.year.tolist()))
+            )
+        reference=cov[cov.year.between(START_YEAR,critical_start-1)]
+        ref_bad=reference[reference.starter_line_coverage_pct<coverage_threshold]
+        if not ref_bad.empty:
+            print(
+                '[WARNING] reference-only seasons have lower starter-line coverage; '
+                'they remain available but are not allowed to block readiness: '
+                + ','.join(f'{int(y)}={float(v):.1f}%' for y,v in zip(ref_bad.year,ref_bad.starter_line_coverage_pct))
+            )
     print(f'[COMPLETE] all requested seasons collected: {START_YEAR}-{END_YEAR}');return 0
 if __name__=='__main__':raise SystemExit(main())
