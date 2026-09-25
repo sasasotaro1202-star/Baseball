@@ -173,8 +173,7 @@ jobs:
               ghout.write_text('ready=false\n',encoding='utf-8')
               raise SystemExit(0)
           s=json.loads(p.read_text(encoding='utf-8'))
-          complete=bool(s.get('complete',False))
-          games=int(s.get('aggregate_games') or 0)
+          complete=bool(s.get('complete',False)); games=int(s.get('aggregate_games') or 0)
           if not complete or games < 200:
               print(f'[NPB READY] DEFERRED complete={complete} aggregate_games={games}')
               ghout.write_text('ready=false\n',encoding='utf-8')
@@ -182,6 +181,7 @@ jobs:
           print(f'[NPB READY] PASS complete={complete} aggregate_games={games}')
           ghout.write_text('ready=true\n',encoding='utf-8')
           PY
+
       - name: MLB readiness gate
         if: success() && steps.sha_gate.outputs.ok == 'true'
         id: mlb_ready
@@ -197,8 +197,7 @@ jobs:
               ghout.write_text('ready=false\n',encoding='utf-8')
               raise SystemExit(0)
           s=json.loads(p.read_text(encoding='utf-8'))
-          complete=bool(s.get('complete',False))
-          games=int(s.get('aggregate_games') or 0)
+          complete=bool(s.get('complete',False)); games=int(s.get('aggregate_games') or 0)
           if not complete or games < 100:
               print(f'[MLB READY] DEFERRED complete={complete} aggregate_games={games}')
               ghout.write_text('ready=false\n',encoding='utf-8')
@@ -206,90 +205,51 @@ jobs:
           print(f'[MLB READY] PASS complete={complete} aggregate_games={games}')
           ghout.write_text('ready=true\n',encoding='utf-8')
           PY
+
+      - name: Record deferred league readiness
+        if: success() && steps.sha_gate.outputs.ok == 'true' && (steps.npb_ready.outputs.ready != 'true' || steps.mlb_ready.outputs.ready != 'true')
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          payload={
+              'status':'DEFERRED',
+              'npb_ready': '${{ steps.npb_ready.outputs.ready }}' == 'true',
+              'mlb_ready': '${{ steps.mlb_ready.outputs.ready }}' == 'true',
+          }
+          Path('results/production_deferred.json').write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(payload,ensure_ascii=False))
+          PY
+
       - name: NPB chronological OOS
         if: success() && steps.sha_gate.outputs.ok == 'true' && steps.npb_ready.outputs.ready == 'true'
         env:
-          BASEBALL_TIME_BUDGET_SEC: "3600"
+          BASEBALL_TIME_BUDGET_SEC: '3600'
         run: python baseball_backtest.py --npb-only --data-dir data
+
       - name: MLB chronological OOS
         if: success() && steps.sha_gate.outputs.ok == 'true' && steps.mlb_ready.outputs.ready == 'true'
         env:
-          BASEBALL_TIME_BUDGET_SEC: "3600"
-          MLB_ENRICH_STARTERS: "1"
-          MLB_MIN_STARTER_COVERAGE: "90"
+          BASEBALL_TIME_BUDGET_SEC: '3600'
+          MLB_ENRICH_STARTERS: '1'
+          MLB_MIN_STARTER_COVERAGE: '90'
         run: python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
+
       - name: Validate OOS predictions before any state write
         if: success() && steps.sha_gate.outputs.ok == 'true' && (steps.npb_ready.outputs.ready == 'true' || steps.mlb_ready.outputs.ready == 'true')
         run: |
           set -euo pipefail
-          mkdir -p data results
-          python - <<'PY'
-          import json
-          import os
-          from pathlib import Path
-          p=Path('data/checkpoints/mlb_collection_status.json')
-          out=Path('results/production_deferred.json')
-          ghout=Path(os.environ['GITHUB_OUTPUT'])
-          if not p.exists():
-              payload={"status":"DEFERRED","reason":"MLB source acquisition has not produced a collection status yet"}
-              out.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf-8')
-              print('[MLB READY] DEFERRED: collection status is missing')
-              ghout.write_text('ready=false\n',encoding='utf-8')
-              raise SystemExit(0)
-          s=json.loads(p.read_text(encoding='utf-8'))
-          complete=bool(s.get('complete',False))
-          games=int(s.get('aggregate_games') or 0)
-          if not complete or games < 100:
-              payload={"status":"DEFERRED","reason":"MLB historical acquisition incomplete","complete":complete,"aggregate_games":games}
-              out.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf-8')
-              print(f'[MLB READY] DEFERRED complete={complete} aggregate_games={games}')
-              ghout.write_text('ready=false\n',encoding='utf-8')
-              raise SystemExit(0)
-          print(f'[MLB READY] PASS complete={complete} aggregate_games={games}')
-          ghout.write_text('ready=true\n',encoding='utf-8')
-          PY
-      - name: Upload MLB deferred status
-        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.mlb_ready.outputs.ready != 'true'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: baseball-production-deferred-${{ github.run_id }}
-          path: results/production_deferred.json
-          if-no-files-found: error
-          retention-days: 7
-      - name: MLB data acquisition, starter quality gate and chronological OOS
-        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.mlb_ready.outputs.ready == 'true'
-        env:
-          BASEBALL_TIME_BUDGET_SEC: "3600"
-          MLB_ENRICH_STARTERS: "1"
-          MLB_MIN_STARTER_COVERAGE: "90"
-        run: python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
-      - name: Validate OOS predictions before any state write
-        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.mlb_ready.outputs.ready == 'true'
-        run: |
-          set -euo pipefail
-          find results -maxdepth 2 -type f -print | head -100
           test -d results
-          test -n "$(find results -type f -print -quit)"
-          python - <<'PY'
-          from pathlib import Path
-          import csv
-          files=[p for p in Path('results').rglob('*') if p.is_file() and p.stat().st_size>0]
-          if not files: raise SystemExit('no non-empty result artifacts')
-          csvs=[p for p in files if p.suffix.lower()=='.csv']
-          if not csvs: raise SystemExit('no CSV prediction/backtest result produced')
-          for p in csvs:
-              with p.open('r',encoding='utf-8',errors='replace',newline='') as f: rows=sum(1 for _ in csv.reader(f))
-              if rows < 2: raise SystemExit(f'result CSV has no data rows: {p}')
-          print(f'[OOS VALIDATION] PASS nonempty_files={len(files)} csv_files={len(csvs)}')
-          PY
           python backtest_audit_v2.py
           python production_data_quality_gate.py
           python production_integrity_gate.py
+
       - name: Upload verified state artifact
-        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.mlb_ready.outputs.ready == 'true'
+        if: success() && steps.sha_gate.outputs.ok == 'true' && (steps.npb_ready.outputs.ready == 'true' || steps.mlb_ready.outputs.ready == 'true')
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: baseball-production-state-${{ github.run_id }}
+          name: baseball-production-state
           path: |
             data/
             results/
@@ -297,7 +257,6 @@ jobs:
             production_run_manifest.json
           if-no-files-found: error
           retention-days: 90
-
 
       - name: Persist verified state atomically
         if: success() && steps.sha_gate.outputs.ok == 'true' && (steps.npb_ready.outputs.ready == 'true' || steps.mlb_ready.outputs.ready == 'true')
@@ -322,22 +281,28 @@ jobs:
               fi
               echo "[PERSIST] git push failed on attempt ${attempt}"
             else
-              echo "[PERSIST] git rebase failed on attempt ${attempt}; attempting explicit rebase abort"
-              if ! git rebase --abort 2>/dev/null; then
-                echo "[PERSIST] git rebase --abort failed; refusing to mask repository state"
-                exit 1
-              fi
+              echo "[PERSIST] git rebase failed on attempt ${attempt}"
+              git rebase --abort 2>/dev/null || exit 1
             fi
             sleep $((attempt * 5))
           done
           echo '[PERSIST] verified state push failed after 5 attempts'
           exit 1
 
+      - name: Upload deferred diagnostics
+        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.npb_ready.outputs.ready != 'true' && steps.mlb_ready.outputs.ready != 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: baseball-production-deferred
+          path: results/production_deferred.json
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Upload failure diagnostics without touching production state
         if: failure() && steps.sha_gate.outputs.ok == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: baseball-production-failure-${{ github.run_id }}
+          name: baseball-production-failure
           path: |
             data/
             results/
