@@ -26,10 +26,24 @@ def main():
    reader=csv.DictReader(f); fields=reader.fieldnames or []; rows=list(reader)
   if not fields or not rows: raise SystemExit(f'INTEGRITY_FAIL: empty/headerless CSV: {path}')
   total_rows+=len(rows)
-  for c in [c for c in fields if c.lower().endswith('prob') or 'probability' in c.lower()]:
+  strict_prob_cols=[c for c in fields if c.lower().endswith('prob') or 'probability' in c.lower() or c.lower() in {'pred_home','pred_draw','pred_away'}]
+  for c in strict_prob_cols:
    probability_columns.append(f'{path}:{c}')
    for i,row in enumerate(rows,2):
-    if row.get(c,'')=='' or not finite(row[c]): raise SystemExit(f'INTEGRITY_FAIL: invalid probability {path}:{c} row={i}')
+    raw=row.get(c,'')
+    if raw=='' or not finite(raw): raise SystemExit(f'INTEGRITY_FAIL: invalid probability {path}:{c} row={i}')
+    value=float(raw)
+    if value < 0.0 or value > 1.0: raise SystemExit(f'INTEGRITY_FAIL: probability out of range {path}:{c} row={i}: {value}')
+  pred_cols=[c for c in fields if c.lower() in {'pred_home','pred_draw','pred_away'}]
+  if pred_cols:
+   missing=[c for c in ('pred_home','pred_draw','pred_away') if c in fields]
+   if len(missing) not in (2,3):
+    raise SystemExit(f'INTEGRITY_FAIL: incomplete prediction probability set in {path}: {missing}')
+   # For each supported prediction row, the probability mass must sum to 1.
+   for i,row in enumerate(rows,2):
+    vals=[float(row[c]) for c in missing]
+    if abs(sum(vals)-1.0) > 1e-6:
+     raise SystemExit(f'INTEGRITY_FAIL: probability mass does not sum to 1 in {path} row={i}: {sum(vals)}')
   seen=set()
   for row in rows:
    key=tuple(row.get(c,'') for c in fields)
