@@ -19,6 +19,8 @@ def test_mlb_code_taxonomy():
     assert classify_mlb_game("W")["category"] == "world_series"
     assert classify_mlb_game("C")["category"] == "championship"
     assert classify_mlb_game("P")["category"] == "postseason"
+    assert classify_mlb_game("C")["category"] == "championship"
+    assert "championship" in evaluation_categories()
     assert classify_mlb_game("A")["category"] == "allstar"
     assert classify_mlb_game("S")["category"] == "spring_training"
     assert classify_mlb_game("E")["category"] == "exhibition_special"
