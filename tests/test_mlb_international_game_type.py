@@ -140,7 +140,7 @@ def test_asian_games_collector_parses_official_split_score_cells():
     assert scheduled["away"] == "Palestine"
     assert pd.isna(scheduled["home_score"])
     assert pd.isna(scheduled["away_score"])
-    assert scheduled["prediction_features_allowed"] is False
+    assert bool(scheduled["prediction_features_allowed"]) is False
     assert scheduled["pit_prediction_status"] == "NOT_A_PREDICTION_FEATURE_SOURCE"
 
 
