@@ -34,13 +34,14 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install --disable-pip-version-check -r requirements.txt
-      - name: Download shared MLB dataset
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          name: baseball-mlb-ablation-data
-          path: data
-          repository: sasasotaro1202-star/Baseball
-          run-id: 36107364013
+      - name: Acquire MLB dataset
+        env:
+          MLB_BOOTSTRAP_START_YEAR: "2020"
+          MLB_CORRECTION_DAYS: "14"
+          BASEBALL_DATA_DIR: data
+        run: |
+          set -euo pipefail
+          python mlb_incremental_acquire.py
       - name: Run focused diagnostic
         run: |
           set -euo pipefail
