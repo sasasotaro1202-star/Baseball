@@ -16,7 +16,7 @@ def test_production_downstream_steps_are_guarded_by_sha_gate():
         "Setup Python",
         "Preflight and integrity gate",
         "NPB readiness gate and chronological OOS",
-        "MLB data acquisition and chronological OOS",
+        "MLB data acquisition, starter quality gate and chronological OOS",
         "Validate OOS predictions before any state write",
         "Persist verified state atomically",
     ):
