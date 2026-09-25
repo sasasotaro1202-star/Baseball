@@ -5,6 +5,8 @@ on:
     workflows:
       - Validate Code Syntax
     types: [completed]
+    branches:
+      - main
   schedule:
     - cron: "17 */6 * * *"
 permissions:
