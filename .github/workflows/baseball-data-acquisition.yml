@@ -1,99 +1,13 @@
-name: Baseball NPB Source Acquisition
-
+name: Baseball Source Acquisition (Legacy Manual)
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'control/baseball-acquisition-trigger.txt'
-  schedule:
-    - cron: '14 11 * * *'
-
 permissions:
   contents: write
-
 concurrency:
-  group: baseball-npb-source-acquisition
+  group: baseball-source-acquisition
   cancel-in-progress: false
-
-env:
-  PYTHONUNBUFFERED: "1"
-
 jobs:
-  npb:
-    name: NPB historical + postseason acquisition
+  legacy:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-      - name: Hosted runner health gate
-        run: |
-          set -euo pipefail
-          uname -a
-          python3 --version
-          df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
-          curl --fail --silent --show-error --location --retry 4 --retry-delay 3 --retry-all-errors --max-time 20 https://npb.jp/ >/dev/null
-          echo '[NPB HEALTH] NPB HTTPS PASS'
-      - name: Setup Python
-        run: |
-          set -euo pipefail
-          python3 -m venv "$RUNNER_TEMP/npb-venv"
-          "$RUNNER_TEMP/npb-venv/bin/python" -m pip install -r requirements.txt
-          echo "$RUNNER_TEMP/npb-venv/bin" >> "$GITHUB_PATH"
-      - name: Acquisition preflight
-        run: |
-          set -euo pipefail
-          python -m py_compile npb_multi_source.py npb_runtime_patch.py source_quality_gate.py
-          python source_quality_gate.py
-          python npb_runtime_patch.py
-          python -m py_compile npb_multi_source.py
-          python source_quality_gate.py
-      - name: NPB full-scope resumable acquisition
-        id: npb_acquire
-        continue-on-error: true
-        env:
-          NPB_START_YEAR: "2017"
-          NPB_END_YEAR: "2026"
-          NPB_DOWNLOAD_WORKERS: "12"
-          NPB_LIGHT_ENRICH: "1"
-          NPB_MIN_STARTER_LINE_COVERAGE: "70"
-          NPB_MIN_STARTER_COVERAGE: "70"
-          NPB_REQUIRED_START_YEAR: "2020"
-          NPB_COLLECTION_BUDGET_SEC: "6000"
-          NPB_COLLECTION_SAFETY_SEC: "600"
-          BASEBALL_TIME_BUDGET_SEC: "6000"
-        run: python npb_multi_source.py
-      - name: Persist NPB checkpoints and outputs
-        if: always()
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/checkpoints data/npb_games data/weather data/source_coverage.csv npb_multi_source.py
-          if git diff --cached --quiet; then
-            echo '[NPB] no checkpoint/output changes'
-            exit 0
-          fi
-          git commit -m 'Checkpoint isolated NPB acquisition lane'
-          for attempt in 1 2 3 4 5; do
-            git fetch origin main
-            if git rebase origin/main && git push origin HEAD:main; then
-              echo "[NPB] checkpoint persisted on attempt $attempt"
-              exit 0
-            fi
-            git rebase --abort 2>/dev/null
-            abort_rc=$?
-            if [ "$abort_rc" -ne 0 ] && [ "$abort_rc" -ne 128 ]; then exit "$abort_rc"; fi
-            sleep $((attempt * 5))
-          done
-          exit 1
-      - name: Finalize NPB acquisition outcome
-        if: always()
-        run: |
-          set -euo pipefail
-          outcome='${{ steps.npb_acquire.outcome }}'
-          echo "[NPB] acquisition outcome=$outcome"
-          if [ "$outcome" != "success" ]; then
-            echo '[NPB] failed; resumable checkpoint is preserved'
-            exit 1
-          fi
-
+      - run: echo "Legacy sequential acquisition retained for manual recovery only; scheduled acquisition uses parallel lanes."
