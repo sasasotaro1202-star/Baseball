@@ -23,6 +23,7 @@ from research.drift_uncertainty_routing import (
     route_experts,
 )
 from research.conformal_uncertainty import uncertainty_summary
+from research.local_competence_routing import local_competence_weights, mix_with_global_prior
 
 
 RESULTS = Path("results")
@@ -149,6 +150,8 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
 
     base_probs = []
     routed_probs = []
+    local_routed_probs = []
+    local_mixed_probs = []
     mixed_probs = []
     outcomes = []
     history_logloss = []
@@ -160,6 +163,7 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
     history_pregame_features = []
     previous_weights = None
     calibrator = AdaptiveTemperatureCalibrator(config=config)
+    local_calibrator = AdaptiveTemperatureCalibrator(config=config)
     routing_rows = []
 
     for i, row in df.iterrows():
@@ -241,7 +245,33 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
         mixed = mix_expert_probabilities(current, rr.weights)
         final = calibrator.predict(mixed)
 
-        # Outcome enters only after final prediction is produced.
+        # Shadow-only local competence: compare the current prediction-space
+        # case to already-resolved historical cases, then softly blend that
+        # local competence with the global routing weights. This path cannot
+        # affect production unless a separate acceptance gate promotes it.
+        local_weights = rr.weights.copy()
+        local_neighbors = 0
+        local_distance = float("nan")
+        if len(raw_expert_history) >= 40:
+            local_result = local_competence_weights(
+                current,
+                np.asarray(history_expert_probs[-120:], dtype=float),
+                np.asarray(outcomes[-120:], dtype=int),
+                history_expert_logloss=np.asarray(history_logloss[-120:], dtype=float),
+            )
+            local_weights = mix_with_global_prior(
+                local_result.weights,
+                rr.weights,
+                local_result.neighbor_count,
+                min_local_observations=8,
+                local_mix_max=0.65,
+            )
+            local_neighbors = int(local_result.neighbor_count)
+            local_distance = float(local_result.mean_distance)
+        local_mixed = mix_expert_probabilities(current, local_weights)
+        local_final = local_calibrator.predict(local_mixed)
+
+        # Outcome enters only after both candidate forecasts are produced.
         y = int(row["actual"])
         base = [float(row.get("pred_home", np.nan))]
         if league == "NPB":
@@ -254,6 +284,8 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
         base_probs.append(base)
         mixed_probs.append(mixed.tolist())
         routed_probs.append(final.tolist())
+        local_mixed_probs.append(local_mixed.tolist())
+        local_routed_probs.append(local_final.tolist())
         outcomes.append(y)
         routing_rows.append({
             "game_id": str(row["game_id"]),
@@ -266,6 +298,9 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
             "disagreement": rr.disagreement,
             "temperature_before_update": calibrator.temperature,
             "weights": rr.weights.tolist(),
+            "local_competence_weights": local_weights.tolist(),
+            "local_competence_neighbors": local_neighbors,
+            "local_competence_mean_distance": local_distance,
         })
 
         # Predict-then-update: current outcome becomes eligible for future routing.
@@ -286,13 +321,21 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
                 np.asarray(outcomes[-config.long_window:]),
             )
         calibrator.update(np.asarray(mixed_probs[-config.long_window:]), np.asarray(outcomes[-config.long_window:]))
+        if len(local_mixed_probs) >= 2:
+            local_calibrator.update(
+                np.asarray(local_mixed_probs[-config.long_window:]),
+                np.asarray(outcomes[-config.long_window:], dtype=int),
+            )
 
     base_arr = np.asarray(base_probs, dtype=float)
     routed_arr = np.asarray(routed_probs, dtype=float)
+    local_routed_arr = np.asarray(local_routed_probs, dtype=float)
     y_arr = np.asarray(outcomes)
     baseline_metrics = _metrics(base_arr, y_arr)
     routed_metrics = _metrics(routed_arr, y_arr)
+    local_metrics = _metrics(local_routed_arr, y_arr)
     delta = {f"delta_{k}": float(routed_metrics[k] - baseline_metrics[k]) for k in baseline_metrics}
+    local_delta = {f"delta_{k}": float(local_metrics[k] - routed_metrics[k]) for k in routed_metrics}
 
     diag_df = pd.DataFrame(routing_rows)
     diagnostics = {
@@ -300,6 +343,9 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
         "calibration_updates_rejected": int(calibrator.rejected_updates),
         "temperature_start": 1.0,
         "temperature_end": float(calibrator.temperature),
+        "local_calibration_updates_accepted": int(local_calibrator.accepted_updates),
+        "local_calibration_updates_rejected": int(local_calibrator.rejected_updates),
+        "local_temperature_end": float(local_calibrator.temperature),
         "expert_calibration_updates_accepted": int(expert_calibrators.accepted_updates),
         "expert_calibration_updates_rejected": int(expert_calibrators.rejected_updates),
         "expert_temperatures_end": [float(x) for x in expert_calibrators.temperatures()],
@@ -329,13 +375,16 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
                 continue
             bm = _metrics(base_arr[start:end], y_arr[start:end])
             rm = _metrics(routed_arr[start:end], y_arr[start:end])
+            lm = _metrics(local_routed_arr[start:end], y_arr[start:end])
             windows[f"window_{idx}"] = {
                 "start_index": int(start),
                 "end_index": int(end),
                 "rows": int(end - start),
                 "baseline": bm,
                 "routed_recalibrated": rm,
+                "local_competence_shadow": lm,
                 "delta": {f"delta_{k}": float(rm[k] - bm[k]) for k in bm},
+                "local_vs_routed_delta": {f"delta_{k}": float(lm[k] - rm[k]) for k in rm},
             }
 
     artifact = {
@@ -346,7 +395,9 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
         "feature_drift_columns": feature_cols,
         "baseline": baseline_metrics,
         "routed_recalibrated": routed_metrics,
+        "local_competence_shadow": local_metrics,
         "delta": delta,
+        "local_vs_routed_delta": local_delta,
         "late_oos_windows": windows,
         "final_temperature": float(calibrator.temperature),
         "diagnostics": diagnostics,
