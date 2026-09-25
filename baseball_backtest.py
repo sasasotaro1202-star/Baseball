@@ -339,16 +339,19 @@ class BaseballBacktest:
             else pd.Series(["unknown"] * len(df), index=df.index)
         )
         raw_resolved = out["game_id"].map(raw_categories)
-        resolved_cat = existing_cat.where(
-            ~existing_cat.isin({"","nan","none","unknown"}),
-            raw_resolved.fillna("unknown"),
-        )
+        # For overlapping historical rows, tracked RAW game_kind_id is the
+        # authoritative competition taxonomy. Stored multi-source labels are a
+        # fallback only when no RAW game_kind_id is available for that game.
+        resolved_cat = raw_resolved.fillna(existing_cat)
+        resolved_cat = resolved_cat.replace({
+            "": "unknown", "nan": "unknown", "none": "unknown",
+        })
         out["npb_game_category"] = resolved_cat.astype(str).str.strip().str.lower()
 
-        # If the category was recovered from authoritative RAW game_kind_id,
-        # recompute eligibility from the recovered category rather than retaining
-        # the stale False flags emitted by the original UNKNOWN multi-source row.
-        recovered = existing_cat.isin({"","nan","none","unknown"}) & raw_resolved.notna()
+        # Any RAW-resolved row must derive eligibility from the authoritative
+        # category, even when the original multi-source row had a conflicting
+        # non-unknown label.
+        recovered = raw_resolved.notna()
         category_training = out["npb_game_category"].isin({"regular","interleague"})
         category_evaluation = out["npb_game_category"].isin(
             {"regular","interleague","climax","japan_series","allstar","special"}
@@ -360,9 +363,7 @@ class BaseballBacktest:
             )
         else:
             original_conf = df["npb_type_confidence"].astype(str).str.strip().str.lower()
-            out["npb_type_confidence"] = original_conf.where(
-                ~recovered, "high"
-            )
+            out["npb_type_confidence"] = original_conf.where(~recovered, "high")
 
         original_training = (
             df["npb_training_default"].astype(str).str.lower().eq("true")
