@@ -316,10 +316,17 @@ def main():
     })
     save_manifest(manifest)
 
+    print(f"[MLB] starter_repairs={changed} total={len(combined)}")
+    if len(combined) < 100:
+        # Do not publish a misleading readiness contract for a partial or
+        # unexpectedly small historical acquisition.
+        raise RuntimeError("MLB cache unexpectedly small; full-scope acquisition was not completed")
+
     # A successful full-scope bootstrap must emit the readiness contract that
     # the production gate consumes. This is distinct from the resumable
     # manifest: readiness is only true after the complete requested range has
-    # been processed without an acquisition exception.
+    # been processed without an acquisition exception and the cache-size gate
+    # has passed.
     status = {
         "schema_version": 1,
         "complete": True,
@@ -332,12 +339,8 @@ def main():
     }
     save_status = CHECKPOINTS / "mlb_collection_status.json"
     tmp_status = save_status.with_suffix(".json.tmp")
-    tmp_status.write_text(json.dumps(status, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    tmp_status.write_text(json.dumps(status, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     tmp_status.replace(save_status)
-
-    print(f"[MLB] starter_repairs={changed} total={len(combined)}")
-    if len(combined) < 100:
-        raise RuntimeError("MLB cache unexpectedly small; full-scope acquisition was not completed")
 
 
 if __name__ == "__main__":
