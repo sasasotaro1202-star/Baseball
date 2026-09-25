@@ -100,6 +100,16 @@ jobs:
               except Exception as exc:
                   print(f'[WATCHDOG] NPB readiness lookup deferred: {exc}')
                   return False, 0
+          def mlb_complete():
+              try:
+                  payload=request('GET',f'/repos/{repo}/contents/data/checkpoints/mlb_collection_status.json?ref=main')
+                  import base64
+                  raw=base64.b64decode(payload.get('content','')).decode('utf-8')
+                  state=json.loads(raw)
+                  return bool(state.get('complete',False)), int(state.get('aggregate_games') or 0)
+              except Exception as exc:
+                  print(f'[WATCHDOG] MLB readiness lookup deferred: {exc}')
+                  return False, 0
           def ts(row):
               value=(row or {}).get('created_at') or (row or {}).get('updated_at')
               return datetime.fromisoformat(value.replace('Z','+00:00')) if value else datetime.min.replace(tzinfo=timezone.utc)
@@ -125,7 +135,9 @@ jobs:
               else:
                   validation=latest['validation']; prod=latest['production']; mac=latest['mac']; research=latest['research']; acquisition=latest['acquisition']; matchday=latest['matchday']; game_type_ablation=latest['game_type_ablation']
                   npb_ready, npb_games = npb_complete()
+                  mlb_ready, mlb_games = mlb_complete()
                   print(f'[WATCHDOG] NPB readiness complete={npb_ready} aggregate_games={npb_games}')
+                  print(f'[WATCHDOG] MLB readiness complete={mlb_ready} aggregate_games={mlb_games}')
                   def dispatch(label,workflow):
                       global action
                       try:
@@ -144,19 +156,19 @@ jobs:
                       or age_minutes(matchday) > STALE_MINUTES['matchday']
                   ):
                       dispatch('matchday',workflows['matchday'])
-                  elif (not npb_ready) and not recently_created(data.get('acquisition',[])):
-                      dispatch('npb-acquisition',workflows['acquisition'])
-                  elif npb_ready and validation_current and not success(prod) and not recently_created(data.get('production',[])):
+                  elif mlb_ready and validation_current and not success(prod) and not recently_created(data.get('production',[])):
                       dispatch('production-recovery',workflows['production'])
-                  elif npb_ready and validation_current and (not success(mac) or ts(mac)<ts(prod)) and not recently_created(data.get('mac',[])):
+                  elif (not npb_ready or not mlb_ready) and not recently_created(data.get('acquisition',[])):
+                      dispatch('baseball-source-acquisition',workflows['acquisition'])
+                  elif npb_ready and mlb_ready and validation_current and (not success(mac) or ts(mac)<ts(prod)) and not recently_created(data.get('mac',[])):
                       dispatch('mac-oos',workflows['mac'])
-                  elif npb_ready and validation_current and (not success(research) or ts(research)<ts(mac)) and not recently_created(data.get('research',[])):
+                  elif npb_ready and mlb_ready and validation_current and (not success(research) or ts(research)<ts(mac)) and not recently_created(data.get('research',[])):
                       dispatch('autonomous-research',workflows['research'])
-                  elif npb_ready and validation_current and game_type_ablation and game_type_ablation.get('conclusion') in {'failure','cancelled','timed_out'} and not recently_created(data.get('game_type_ablation',[])):
+                  elif npb_ready and mlb_ready and validation_current and game_type_ablation and game_type_ablation.get('conclusion') in {'failure','cancelled','timed_out'} and not recently_created(data.get('game_type_ablation',[])):
                       dispatch('game-type-ablation-recovery',workflows['game_type_ablation'])
-                  elif npb_ready and validation_current and not game_type_ablation and not recently_created(data.get('game_type_ablation',[])):
+                  elif npb_ready and mlb_ready and validation_current and not game_type_ablation and not recently_created(data.get('game_type_ablation',[])):
                       dispatch('game-type-ablation-recovery',workflows['game_type_ablation'])
-                  elif npb_ready and validation_current and success(research) and ts(research)>ts(prod) and not recently_created(data.get('production',[])):
+                  elif npb_ready and mlb_ready and validation_current and success(research) and ts(research)>ts(prod) and not recently_created(data.get('production',[])):
                       dispatch('next-production',workflows['production'])
 
           except Exception as exc:
