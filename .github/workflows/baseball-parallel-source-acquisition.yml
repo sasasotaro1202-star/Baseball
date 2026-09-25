@@ -1,4 +1,4 @@
-name: Baseball Parallel Source Acquisition
+name: Baseball Parallel NPB Source Acquisition
 
 on:
   workflow_dispatch:
@@ -20,7 +20,7 @@ env:
 
 jobs:
   npb:
-    name: NPB full-scope acquisition
+    name: NPB full-scope resumable acquisition
     runs-on: ubuntu-latest
     timeout-minutes: 150
     steps:
@@ -104,71 +104,5 @@ jobs:
             data/npb_games/
             data/weather/
             data/source_coverage.csv
-          if-no-files-found: ignore
-          retention-days: 30
-
-  mlb:
-    name: MLB full-scope acquisition
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - name: Health and setup
-        run: |
-          set -euo pipefail
-          python3 --version
-          curl --fail --silent --show-error --location --retry 4 --retry-delay 2 --retry-all-errors --max-time 20 https://statsapi.mlb.com/api/v1/sports/1 >/dev/null
-          python3 -m venv .venv
-          . .venv/bin/activate
-          python -m pip install -r requirements.txt
-      - name: Preflight
-        run: |
-          set -euo pipefail
-          . .venv/bin/activate
-          python -m py_compile mlb_incremental_acquire.py production_data_quality_gate.py
-          python source_quality_gate.py
-      - name: MLB full-scope incremental acquisition
-        env:
-          MLB_INCREMENTAL_TIMEOUT: "20"
-          MLB_CORRECTION_DAYS: "7"
-          MLB_BOOTSTRAP_START_YEAR: "2020"
-        run: . .venv/bin/activate && python mlb_incremental_acquire.py
-      - name: MLB data quality gate
-        run: |
-          set -euo pipefail
-          . .venv/bin/activate
-          test -s data/mlb_games.csv
-          python production_data_quality_gate.py
-          python - <<'PY'
-          import pandas as pd
-          d=pd.read_csv("data/mlb_games.csv",low_memory=False)
-          if len(d) <= 100: raise SystemExit("MLB cache unexpectedly small")
-          print(f"[MLB READY] rows={len(d)}")
-          PY
-      - name: Persist MLB data
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/mlb_games.csv data/checkpoints/mlb_collection_status.json data/checkpoints/mlb_acquisition_manifest.json data/checkpoints/mlb_schedule_chunks
-          if git diff --cached --quiet; then exit 0; fi
-          git commit -m 'Update parallel MLB source data'
-          for attempt in 1 2 3 4 5; do
-            git fetch origin main
-            if git rebase origin/main && git push origin HEAD:main; then exit 0; fi
-            git rebase --abort 2>/dev/null || true
-            sleep $((attempt * 5))
-          done
-          exit 1
-      - name: Upload MLB diagnostics
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: baseball-mlb-acquisition-${{ github.run_id }}
-          path: |
-            data/mlb_games.csv
-            data/checkpoints/mlb_collection_status.json
-            data/checkpoints/mlb_acquisition_manifest.json
-            data/checkpoints/mlb_schedule_chunks/
           if-no-files-found: ignore
           retention-days: 30
