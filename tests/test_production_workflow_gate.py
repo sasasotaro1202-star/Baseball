@@ -3,8 +3,9 @@ from pathlib import Path
 
 def test_production_workflow_validation_gate_is_race_safe():
     text = Path(".github/workflows/baseball_production.yml").read_text(encoding="utf-8")
-    expected = "if: github.event_name != 'workflow_run' && steps.sha_gate.outputs.ok == 'true'"
-    assert expected in text, "manual/scheduled validation check must remain gated"
+    expected = "if: steps.sha_gate.outputs.ok == 'true'"
+    assert expected in text, "all production triggers must remain gated after SHA validation"
+    assert "github.event_name != 'workflow_run' && steps.sha_gate.outputs.ok == 'true'" not in text
     assert "FAIL-CLOSED: upstream validation conclusion" in text, "workflow_run validation must fail closed when upstream validation is not successful"
     assert "Verify validation SHA matches current main" in text
     assert "Require successful validation for current main" in text
@@ -16,7 +17,7 @@ def test_production_downstream_steps_are_guarded_by_sha_gate():
         "Hosted runner health gate",
         "Setup Python",
         "Preflight and integrity gate",
-        "NPB readiness gate and chronological OOS",
+        "MLB readiness gate and chronological OOS",
         "MLB data acquisition, starter quality gate and chronological OOS",
         "Validate OOS predictions before any state write",
         "Persist verified state atomically",
