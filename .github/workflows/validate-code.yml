@@ -40,6 +40,7 @@ jobs:
           python -m py_compile production_integrity_gate.py
           python -m py_compile baseball_backtest.py
           python -m py_compile npb_multi_source.py
+          python -m py_compile npb_game_type.py
           python -m py_compile npb_runtime_patch.py
           python -m py_compile npb_official_schedule_patch.py
           python -m py_compile npb_quality_runtime_patch.py
@@ -72,6 +73,8 @@ jobs:
           python -m py_compile research/calibration_oos.py
           python -m py_compile research/negative_binomial_score_oos.py
           python -m py_compile research/bivariate_poisson_score_oos.py
+          python -m py_compile research/npb_game_type_ablation.py
+          python -m py_compile research/compare_game_type_ablation.py
           python -m py_compile research/upset_uncertainty_oos.py
           python -m research.matchday_intelligence
           python -m research.matchday_policy
