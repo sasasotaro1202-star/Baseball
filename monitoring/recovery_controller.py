@@ -100,15 +100,50 @@ def age_minutes(row: dict | None, now: datetime) -> float:
     return (now - ts(row)).total_seconds() / 60.0 if row else 0.0
 
 
+NONSEMANTIC_PRODUCTION_PATH_PREFIXES = ("results/matchday_",)
+
+def production_update_is_nonsemantic(filenames: list[str]) -> bool:
+    """Return True only when every changed path is a Matchday snapshot artifact."""
+    paths = [str(x or "") for x in filenames]
+    return bool(paths) and all(
+        any(path.startswith(prefix) for prefix in NONSEMANTIC_PRODUCTION_PATH_PREFIXES)
+        for path in paths
+    )
+
+
 def stale_production_runs(rows: list[dict], current_sha: str) -> list[int]:
-    """Return active production run IDs evaluated against an older main SHA."""
+    """Return active production run IDs that cannot safely continue after main advances.
+
+    Matchday snapshot-only commits do not change production model/data inputs, so an
+    active OOS run may continue. Any comparison failure or unknown changed path
+    fails closed and remains cancellable.
+    """
     if not current_sha:
         return []
     out = []
     for row in rows:
         row_sha = str(row.get("head_sha") or "")
-        if active(row) and row_sha and row_sha != current_sha:
-            out.append(int(row["id"]))
+        if not (active(row) and row_sha and row_sha != current_sha):
+            continue
+        try:
+            compare = request(
+                "GET",
+                f"/repos/{REPO}/compare/{row_sha}...{current_sha}",
+            )
+            files = compare.get("files") or []
+            filenames = [str(item.get("filename") or "") for item in files if item.get("filename")]
+            if len(files) < 300 and production_update_is_nonsemantic(filenames):
+                print(
+                    f"[WATCHDOG] STALE production run={row.get('id')} but "
+                    f"main advanced only via Matchday snapshot; allowing OOS continuation"
+                )
+                continue
+        except Exception as exc:
+            print(
+                f"[WATCHDOG] production stale-path comparison failed for run={row.get('id')}: {exc}; "
+                "cancelling fail-closed"
+            )
+        out.append(int(row["id"]))
     return out
 
 

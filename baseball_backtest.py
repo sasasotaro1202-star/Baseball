@@ -1836,11 +1836,23 @@ class BaseballBacktest:
             "failures": failures,
             "status": "FAIL" if (failures or budget_exhausted or runtime_seconds > self.time_budget_sec) else "PASS",
         }
+        # A walk-forward loop can stop cleanly at the computation deadline without
+        # raising. Treat that terminal budget hit as incomplete/fail-closed.
+        if time.time() - self.started_at >= self.time_budget_sec:
+            budget_exhausted = True
+            runtime_summary["budget_exhausted"] = True
         pd.DataFrame([runtime_summary]).to_csv(RESULTS / "runtime_summary.csv", index=False)
         print(json.dumps(runtime_summary, ensure_ascii=False))
         print("="*72)
-        if failures or budget_exhausted:
-            print("FAIL-CLOSED: backtest did not produce a fully valid run")
+        runtime_over_budget = bool(runtime_seconds > self.time_budget_sec)
+        if failures or budget_exhausted or runtime_over_budget:
+            if runtime_over_budget:
+                print(
+                    f"FAIL-CLOSED: runtime {runtime_seconds}s exceeded "
+                    f"configured budget {self.time_budget_sec}s"
+                )
+            else:
+                print("FAIL-CLOSED: backtest did not produce a fully valid run")
             raise RuntimeError("Baseball backtest incomplete or failed; see results/audit_log.csv and runtime_summary.csv")
         print("COMPLETE")
         print("="*72)
