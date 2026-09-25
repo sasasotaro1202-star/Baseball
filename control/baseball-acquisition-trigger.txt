@@ -7,3 +7,4 @@ manual validation trigger
 2026-09-25T09:15:00+00:00 parallel NPB + MLB/competition rerun after checkpoint recovery
 2026-09-25T09:24:00+00:00 restart isolated NPB acquisition lane
 2026-09-25T19:20:00+09:00 autonomous NPB acquisition restart after readiness audit
+2026-09-25T21:21:00+09:00 autonomous NPB acquisition restart after persistence fix
