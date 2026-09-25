@@ -831,13 +831,19 @@ def main() -> int:
     except Exception as exc:
         model_error=f"{type(exc).__name__}: {exc}"
 
-    predictions=[]
-    games = [
-        g for g in games
-        if pd.Timestamp(
+    # Keep the complete schedule inventory separate from prediction-eligible
+    # future games. Once a game has started, it must never be passed to the
+    # prediction path, even though its schedule identity remains useful for the
+    # current-status snapshot.
+    scheduled_games = list(games)
+    for g in scheduled_games:
+        start_dt = pd.Timestamp(
             f'{g["date"]} {g["hour"]:02d}:{g["minute"]:02d}', tz="Asia/Tokyo"
-        ) > now
-    ]
+        )
+        g["schedule_state"] = "FUTURE" if start_dt > now else "STARTED_OR_IN_PROGRESS"
+        g["start_datetime_jst"] = start_dt.isoformat()
+    predictions=[]
+    games = [g for g in scheduled_games if g["schedule_state"] == "FUTURE"]
     for g in games:
         g["game_id"]=gid_map.get((g["home"],g["away"]),"")
         local_dt=pd.Timestamp(f'{g["date"]} {g["hour"]:02d}:{g["minute"]:02d}',tz="Asia/Tokyo")
@@ -1206,11 +1212,27 @@ def main() -> int:
     else:
         prediction_status = "DEFERRED"
 
+    scheduled_summary = {
+        "games_seen": int(len(scheduled_games)),
+        "future_games": int(sum(g.get("schedule_state") == "FUTURE" for g in scheduled_games)),
+        "started_or_in_progress_games": int(sum(g.get("schedule_state") == "STARTED_OR_IN_PROGRESS" for g in scheduled_games)),
+        "games": [
+            {
+                "home": g.get("home"),
+                "away": g.get("away"),
+                "venue": g.get("venue"),
+                "start_datetime_jst": g.get("start_datetime_jst"),
+                "schedule_state": g.get("schedule_state"),
+            }
+            for g in scheduled_games
+        ],
+    }
     payload={
         "schema_version":1,
-        "status":"PASS" if (games and not schedule_error and prediction_status == "PASS") else "DEFERRED",
+        "status":"PASS" if (predictions and not schedule_error and prediction_status == "PASS") else "DEFERRED",
         "prediction_status":prediction_status,
         "prediction_summary":{"games":len(predictions),"pass":pass_count,"deferred":deferred_count},
+        "schedule_summary":scheduled_summary,
         "prediction_time_utc":now.astimezone(timezone.utc).isoformat(),
         "target_date_jst":target_date,
         "source_policy":{"schedule":"NPB.jp","starter":"NPB.jp announcement","lineup":"SPAIA current snapshot","weather":"Open-Meteo forecast","market":"UNKNOWN/no paid source"},
