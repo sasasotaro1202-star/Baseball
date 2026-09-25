@@ -43,6 +43,7 @@ jobs:
           python -m py_compile npb_game_type.py
           python -m py_compile baseball_game_type.py
           python -m py_compile international_asian_games_acquire.py
+          python -m py_compile research/competition_type_ablation.py
           python -m py_compile npb_runtime_patch.py
           python -m py_compile npb_official_schedule_patch.py
           python -m py_compile npb_quality_runtime_patch.py
