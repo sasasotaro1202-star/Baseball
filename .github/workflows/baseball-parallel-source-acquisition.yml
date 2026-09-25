@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: baseball-source-acquisition
+  group: baseball-parallel-npb-acquisition
   cancel-in-progress: false
 
 env:
