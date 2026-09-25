@@ -1549,8 +1549,17 @@ class BaseballBacktest:
                     league,
                 )
             except Exception as e:
-                print(f"[{league}] block {bstart}: model failure {e}")
-                continue
+                self.audit.append({
+                    "type": "model_block_failure",
+                    "league": league,
+                    "bstart": int(bstart),
+                    "bend": int(bend),
+                    "error": f"{type(e).__name__}: {e}",
+                })
+                print(f"[{league}] block {bstart}: model failure {e}; FAIL-CLOSED")
+                raise RuntimeError(
+                    f"{league} walk-forward model block failed at {bstart}:{bend}"
+                ) from e
             # Preserve each expert's raw OOS probabilities for research-only
             # dynamic routing. These probabilities are produced before any
             # realized outcome from the current block is consumed.
@@ -1638,7 +1647,12 @@ class BaseballBacktest:
                     version_file.write_text(self.checkpoint_version, encoding="utf-8")
                     print(f"[{league}] checkpoint saved: {len(completed_ids)} games")
                 except Exception as e:
-                    self.audit.append({"type":"checkpoint_write_error","league":league,"error":str(e)})
+                    self.audit.append({
+                        "type":"checkpoint_write_error",
+                        "league":league,
+                        "error":f"{type(e).__name__}: {e}",
+                    })
+                    raise RuntimeError(f"{league} checkpoint write failed") from e
         return pd.DataFrame(all_rows)
 
     # ------------------------------------------------------------------
@@ -1714,11 +1728,13 @@ class BaseballBacktest:
 
     def run(self, npb: bool = True, mlb: bool = True, mlb_start: int = 2020, mlb_end: int = 2026):
         RESULTS.mkdir(exist_ok=True)
+        failures = []
+        budget_exhausted = False
         print("="*72); print("BASEBALL BACKTEST SYSTEM / NPB + MLB"); print("="*72)
         if time.time() - self.started_at >= self.time_budget_sec:
-            print("[HARD STOP] 30-minute limit reached before processing")
-            return
-        if npb:
+            print("[HARD STOP] computation budget reached before processing; FAIL-CLOSED")
+            failures.append("budget_exhausted_before_start")
+        if not failures and npb:
             try:
                 npb_raw = self.load_npb_pbp()
                 npb_games = self.aggregate_npb_games(npb_raw)
@@ -1728,15 +1744,18 @@ class BaseballBacktest:
                 if not r.empty: self.results.extend(r.to_dict("records"))
             except TimeoutError as e:
                 print(f"[NPB STOP] {e}")
+                failures.append(f"NPB TimeoutError: {e}")
+                self.audit.append({"type":"league_failure","league":"NPB","error":f"TimeoutError: {e}"})
             except Exception as e:
                 print(f"[NPB ERROR] {type(e).__name__}: {e}")
+                failures.append(f"NPB {type(e).__name__}: {e}")
+                self.audit.append({"type":"league_failure","league":"NPB","error":f"{type(e).__name__}: {e}"})
         if time.time() - self.started_at >= self.time_budget_sec:
-            print("[HARD STOP] 30-minute limit reached; skipping remaining leagues")
+            budget_exhausted = True
+            print(f"[HARD STOP] computation budget exhausted at {self.time_budget_sec}s; preserving checkpoints")
         elif mlb:
             try:
                 mlb_games = self.load_mlb(mlb_start, mlb_end)
-                # Actual starters are obtained from completed game feeds where possible.
-                # This can be slow for many seasons, so only refresh when explicitly requested.
                 if os.getenv("MLB_ENRICH_STARTERS", "0") == "1":
                     mlb_games = self.enrich_mlb_starters(mlb_games)
                     mlb_games.to_csv(self.data_dir / "mlb_games.csv", index=False)
@@ -1746,22 +1765,35 @@ class BaseballBacktest:
                 if not r.empty: self.results.extend(r.to_dict("records"))
             except TimeoutError as e:
                 print(f"[MLB STOP] {e}")
+                failures.append(f"MLB TimeoutError: {e}")
+                self.audit.append({"type":"league_failure","league":"MLB","error":f"TimeoutError: {e}"})
             except Exception as e:
                 print(f"[MLB ERROR] {type(e).__name__}: {e}")
+                failures.append(f"MLB {type(e).__name__}: {e}")
+                self.audit.append({"type":"league_failure","league":"MLB","error":f"{type(e).__name__}: {e}"})
         if self.results:
             pd.DataFrame(self.results).to_csv(RESULTS / "combined_backtest_results.csv", index=False)
-        if time.time() - self.started_at >= self.time_budget_sec:
-            print("[HARD STOP] computation budget exhausted; writing emergency summary")
         audit = pd.DataFrame(self.audit)
         audit.to_csv(RESULTS / "audit_log.csv", index=False)
-        pd.DataFrame([{
-            "runtime_seconds": round(time.time() - self.started_at, 2),
+        runtime_seconds = round(time.time() - self.started_at, 2)
+        runtime_summary = {
+            "runtime_seconds": runtime_seconds,
             "time_budget_seconds": self.time_budget_sec,
-            "budget_ok": bool(time.time() - self.started_at <= self.time_budget_sec),
+            "budget_ok": bool(runtime_seconds <= self.time_budget_sec),
+            "budget_exhausted": bool(budget_exhausted),
             "npb_predictions": int(sum(1 for x in self.results if x.get("league") == "NPB")),
             "mlb_predictions": int(sum(1 for x in self.results if x.get("league") == "MLB")),
-        }]).to_csv(RESULTS / "runtime_summary.csv", index=False)
-        print("="*72); print("COMPLETE"); print("="*72)
+            "failures": failures,
+            "status": "FAIL" if (failures or budget_exhausted) else "PASS",
+        }
+        pd.DataFrame([runtime_summary]).to_csv(RESULTS / "runtime_summary.csv", index=False)
+        print(json.dumps(runtime_summary, ensure_ascii=False))
+        print("="*72)
+        if failures or budget_exhausted:
+            print("FAIL-CLOSED: backtest did not produce a fully valid run")
+            raise RuntimeError("Baseball backtest incomplete or failed; see results/audit_log.csv and runtime_summary.csv")
+        print("COMPLETE")
+        print("="*72)
 
 
 def main():
