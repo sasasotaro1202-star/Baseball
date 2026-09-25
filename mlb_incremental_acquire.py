@@ -124,26 +124,35 @@ def acquire_chunked(start_date, end_date):
     while cursor <= end_date:
         chunk_end = min(end_date, cursor + timedelta(days=CHUNK_DAYS - 1))
         path = chunk_path(cursor, chunk_end)
-        if path.exists() and path.stat().st_size > 0:
-            try:
-                chunk = norm(pd.read_csv(path, low_memory=False))
-                print(f"[MLB] resume existing chunk {cursor}..{chunk_end}: {len(chunk)} rows")
-            except Exception as exc:
-                raise RuntimeError(f"MLB checkpoint chunk unreadable: {path}: {exc}") from exc
-        elif path.exists() and path.stat().st_size == 0:
-            # A zero-byte checkpoint is not valid CSV. Preserve evidence locally,
-            # then rebuild only that exact date range from the canonical API.
-            quarantine = path.with_suffix(path.suffix + ".corrupt")
-            if quarantine.exists():
-                raise RuntimeError(
-                    f"MLB checkpoint remains corrupt and has an existing quarantine: {path}"
-                )
-            path.replace(quarantine)
-            print(f"[MLB] zero-byte checkpoint quarantined: {quarantine.name}")
-            chunk = norm(fetch_schedule(cursor, chunk_end))
-            atomic_csv(chunk, path)
-        else:
-            print(f"[MLB] fetch chunk {cursor}..{chunk_end}")
+        refetch = not path.exists()
+        if path.exists():
+            if path.stat().st_size == 0:
+                refetch = True
+                reason = "zero-byte checkpoint"
+            else:
+                try:
+                    chunk = norm(pd.read_csv(path, low_memory=False))
+                    print(f"[MLB] resume existing chunk {cursor}..{chunk_end}: {len(chunk)} rows")
+                except pd.errors.EmptyDataError:
+                    refetch = True
+                    reason = "empty-data checkpoint"
+                except Exception as exc:
+                    raise RuntimeError(f"MLB checkpoint chunk unreadable: {path}: {exc}") from exc
+                if not refetch and "game_type" not in chunk.columns:
+                    refetch = True
+                    reason = "checkpoint lacks official game_type"
+        if refetch:
+            quarantine = None
+            if path.exists():
+                quarantine = path.with_suffix(path.suffix + ".corrupt")
+                if quarantine.exists():
+                    raise RuntimeError(
+                        f"MLB checkpoint remains corrupt and has an existing quarantine: {path}"
+                    )
+                path.replace(quarantine)
+                print(f"[MLB] {reason}; quarantined {quarantine.name}")
+            else:
+                print(f"[MLB] fetch chunk {cursor}..{chunk_end}")
             chunk = norm(fetch_schedule(cursor, chunk_end))
             atomic_csv(chunk, path)
             print(f"[MLB] checkpointed chunk {path.name}: {len(chunk)} rows")
