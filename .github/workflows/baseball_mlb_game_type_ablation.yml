@@ -1,0 +1,285 @@
+name: Baseball MLB Game-Type OOS Ablation
+
+on:
+  push:
+    branches:
+      - research/mlb-international-game-types
+  workflow_dispatch:
+  schedule:
+    - cron: "47 14 * * 6"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: baseball-mlb-game-type-ablation
+  cancel-in-progress: true
+
+env:
+  MLB_EVAL_CATEGORIES: "regular,wild_card,division_series,league_championship,world_series,championship,postseason,allstar,spring_training,exhibition_special"
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Setup Python
+        run: |
+          set -euo pipefail
+          python3 -m venv "$RUNNER_TEMP/venv"
+          for attempt in 1 2 3 4; do
+            if "$RUNNER_TEMP/venv/bin/python" -m pip install --disable-pip-version-check -r requirements.txt; then break; fi
+            if [ "$attempt" -eq 4 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+          echo "$RUNNER_TEMP/venv/bin" >> "$GITHUB_PATH"
+      - name: Acquire/validate MLB history once
+        env:
+          MLB_BOOTSTRAP_START_YEAR: "2020"
+          MLB_CORRECTION_DAYS: "14"
+          BASEBALL_DATA_DIR: data
+        run: |
+          set -euo pipefail
+          python mlb_incremental_acquire.py
+          test -s data/mlb_games.csv
+          python - <<'PY'
+          import pandas as pd
+          d=pd.read_csv("data/mlb_games.csv", low_memory=False)
+          required={"game_id","datetime","home_score","away_score","game_type_code","series_description","mlb_game_category"}
+          missing=required-set(d.columns)
+          if missing:
+              raise SystemExit(f"missing competition metadata: {sorted(missing)}")
+          if d.empty:
+              raise SystemExit("empty MLB history")
+          print("[MLB ABLATION] rows=",len(d))
+          print("[MLB ABLATION] categories=",d["mlb_game_category"].fillna("unknown").value_counts().to_dict())
+          unknown=int((d["mlb_game_category"].fillna("unknown")=="unknown").sum())
+          print("[MLB ABLATION] unknown_category_rows=",unknown)
+          PY
+      - name: Smoke-test taxonomy and effective OOS gate
+        run: |
+          set -euo pipefail
+          python -m py_compile mlb_game_type.py international_game_type.py mlb_incremental_acquire.py baseball_backtest.py
+          python -m pytest -q tests
+
+      - name: Package shared MLB dataset
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: baseball-mlb-ablation-data
+          path: data/mlb_games.csv
+          if-no-files-found: error
+          retention-days: 30
+
+  ablation:
+    needs: acquire
+    runs-on: ubuntu-latest
+    timeout-minutes: 140
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        include:
+          - variant: baseline
+            training: regular
+          - variant: +wild_card
+            training: regular,wild_card
+          - variant: +division_series
+            training: regular,wild_card,division_series
+          - variant: +league_championship
+            training: regular,wild_card,division_series,league_championship
+          - variant: +world_series
+            training: regular,wild_card,division_series,league_championship,world_series
+          - variant: +allstar
+            training: regular,allstar
+          - variant: +postseason
+            training: regular,wild_card,division_series,league_championship,world_series,postseason,championship
+          - variant: +spring_training
+            training: regular,spring_training
+          - variant: +exhibition_special
+            training: regular,exhibition_special
+
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Setup Python
+        run: |
+          set -euo pipefail
+          python3 -m venv "$RUNNER_TEMP/venv"
+          for attempt in 1 2 3 4; do
+            if "$RUNNER_TEMP/venv/bin/python" -m pip install --disable-pip-version-check -r requirements.txt; then break; fi
+            if [ "$attempt" -eq 4 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+          echo "$RUNNER_TEMP/venv/bin" >> "$GITHUB_PATH"
+
+      - name: Download shared MLB dataset
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: baseball-mlb-ablation-data
+          path: data
+
+      - name: Validate shared data
+        run: |
+          set -euo pipefail
+          test -s data/mlb_games.csv
+          python - <<'PY'
+          import pandas as pd
+          d=pd.read_csv("data/mlb_games.csv", low_memory=False)
+          required={"game_id","datetime","home_score","away_score","game_type_code","series_description","mlb_game_category"}
+          missing=required-set(d.columns)
+          if missing:
+              raise SystemExit(f"missing competition metadata: {sorted(missing)}")
+          print("[MLB ABLATION] shared dataset PASS rows=",len(d))
+          PY
+
+      - name: Run chronological OOS variant
+        env:
+          BASEBALL_TIME_BUDGET_SEC: "1500"
+          MLB_TRAINING_GAME_CATEGORIES: ${{ matrix.training }}
+          MLB_EVALUATION_GAME_CATEGORIES: regular,wild_card,division_series,league_championship,world_series,championship,postseason,allstar,spring_training,exhibition_special
+          BASEBALL_MATCHDAY_SHADOW: "0"
+        run: |
+          set -euo pipefail
+          python -m py_compile mlb_game_type.py international_game_type.py mlb_incremental_acquire.py baseball_backtest.py
+          python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
+          test -s results/mlb_game_type_metrics.csv
+
+      - name: Emit variant manifest
+        env:
+          VARIANT: ${{ matrix.variant }}
+          TRAINING: ${{ matrix.training }}
+          MLB_EVAL_CATEGORIES: regular,wild_card,division_series,league_championship,world_series,championship,postseason,allstar,spring_training,exhibition_special
+        run: |
+          set -euo pipefail
+          mkdir -p ablation_out
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path("results/mlb_game_type_metrics.csv")
+          manifest={
+              "schema_version":1,
+              "variant":os.environ["VARIANT"],
+              "training_categories":os.environ["TRAINING"].split(","),
+              "evaluation_categories":os.environ["MLB_EVAL_CATEGORIES"].split(","),
+              "metrics_path":str(p),
+              "status":"PASS" if p.exists() and p.stat().st_size>0 else "DEFERRED",
+              "promotion_auto":False,
+          }
+          Path("ablation_out/manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n")
+          PY
+          for artifact in mlb_game_type_metrics.csv mlb_backtest_results.csv mlb_backtest_summary.csv mlb_model_comparison.csv mlb_calibration.csv; do
+            if [ -s "results/$artifact" ]; then cp "results/$artifact" "ablation_out/$artifact"; fi
+          done
+          test -s ablation_out/mlb_backtest_results.csv
+
+      - name: Upload variant
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: baseball-mlb-game-type-${{ matrix.variant }}
+          path: ablation_out/
+          if-no-files-found: warn
+          retention-days: 30
+
+  compare:
+    needs: ablation
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Download all variant artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: baseball-mlb-game-type-*
+          path: ablation_artifacts
+
+      - name: Compare on common chronological OOS population
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, math
+          from pathlib import Path
+          import pandas as pd
+          import numpy as np
+
+          root=Path("ablation_artifacts")
+          variants={}
+          manifests={}
+          for p in sorted(root.glob("*/manifest.json")):
+              m=json.loads(p.read_text(encoding="utf-8"))
+              manifests[m["variant"]]=m
+              csv=p.parent/"mlb_backtest_results.csv"
+              if csv.exists() and csv.stat().st_size:
+                  variants[m["variant"]]=pd.read_csv(csv, low_memory=False)
+
+          def metric(df):
+              p=pd.to_numeric(df["pred_home"],errors="coerce").to_numpy(float)
+              y=pd.to_numeric(df["actual"],errors="coerce")
+              y=y.to_numpy(float)
+              keep=np.isfinite(p) & np.isfinite(y)
+              p=np.clip(p[keep],1e-9,1-1e-9); y=y[keep].astype(int)
+              if len(y)==0:
+                  return {"rows":0,"accuracy":None,"logloss":None,"brier":None,"ece":None}
+              actual_home=(y==0).astype(int)
+              pred_home=(p>=0.5).astype(int)
+              acc=float(np.mean(pred_home==actual_home))
+              ll=float(np.mean(-(actual_home*np.log(p)+(1-actual_home)*np.log(1-p))))
+              br=float(np.mean((p-actual_home)**2))
+              conf=np.maximum(p,1-p)
+              ece=0.0
+              for lo,hi in zip(np.linspace(0,1,11)[:-1],np.linspace(0,1,11)[1:]):
+                  mask=(conf>=lo)&((conf<=hi) if hi==1 else (conf<hi))
+                  if np.any(mask):
+                      ece += float(mask.mean())*abs(float(conf[mask].mean())-float((pred_home[mask]==actual_home[mask]).mean()))
+              return {"rows":int(len(y)),"accuracy":acc,"logloss":ll,"brier":br,"ece":float(ece)}
+
+          baseline=variants.get("baseline")
+          if baseline is None or baseline.empty:
+              raise SystemExit("baseline OOS artifact missing")
+          base_ids=set(baseline["game_id"].astype(str))
+          out={"schema_version":2,"status":"DEFERRED","promotion_auto":False,"common_population_required":True,"variants":{}}
+          for name,df in sorted(variants.items()):
+              common=base_ids & set(df["game_id"].astype(str))
+              cand=df[df["game_id"].astype(str).isin(common)].copy().sort_values(["datetime","game_id"],kind="mergesort")
+              base_common=baseline[baseline["game_id"].astype(str).isin(common)].copy().sort_values(["datetime","game_id"],kind="mergesort")
+              row={"variant":name,"common_rows":int(len(common)),"overall":metric(cand)}
+              if name!="baseline" and len(common)>=200 and not cand.empty:
+                  row["baseline"]=metric(base_common)
+                  for frac,label in ((0.70,"latest30pct"),(0.80,"latest20pct")):
+                      cut=max(1,int(math.floor(len(cand)*frac)))
+                      row[label]={"candidate":metric(cand.iloc[cut:]),"baseline":metric(base_common.iloc[cut:])}
+                  b=row["baseline"]; o=row["overall"]
+                  row["relative_logloss_improvement"]=float((b["logloss"]-o["logloss"])/max(b["logloss"],1e-12))
+                  row["relative_brier_improvement"]=float((b["brier"]-o["brier"])/max(b["brier"],1e-12))
+                  row["delta_accuracy"]=float(o["accuracy"]-b["accuracy"])
+                  row["delta_ece"]=float(o["ece"]-b["ece"])
+                  latest=row["latest20pct"]
+                  latest_ok=(latest["candidate"]["logloss"]<=latest["baseline"]["logloss"] and latest["candidate"]["brier"]<=latest["baseline"]["brier"])
+                  row["latest_ok"]=latest_ok
+                  row["research_candidate_eligible"]=bool(
+                      row["relative_logloss_improvement"]>=0.03 and
+                      row["relative_brier_improvement"]>=0.01 and
+                      row["delta_accuracy"]>=-0.005 and
+                      row["delta_ece"]<=0.0 and
+                      latest_ok and
+                      len(common)>=200
+                  )
+              out["variants"][name]=row
+          out["status"]="PASS" if len(out["variants"])>=2 else "DEFERRED"
+          Path("results").mkdir(exist_ok=True)
+          Path("results/mlb_game_type_ablation_comparison.json").write_text(
+              json.dumps(out,ensure_ascii=False,indent=2,allow_nan=False)+"\n",encoding="utf-8"
+          )
+          print(Path("results/mlb_game_type_ablation_comparison.json").read_text(encoding="utf-8"))
+          PY
+          python -m json.tool results/mlb_game_type_ablation_comparison.json >/dev/null
+
+      - name: Upload comparison
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.4.0
+        with:
+          name: baseball-mlb-game-type-ablation-comparison
+          path: results/mlb_game_type_ablation_comparison.json
+          if-no-files-found: error
+          retention-days: 30

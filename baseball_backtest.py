@@ -61,6 +61,7 @@ from sklearn.metrics import accuracy_score, brier_score_loss, log_loss, mean_abs
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from npb_game_type import category_is_evaluation, category_is_training, evaluation_categories, training_categories
+from mlb_game_type import classify_mlb_game, category_is_evaluation as mlb_category_is_evaluation, category_is_training as mlb_category_is_training, evaluation_categories as mlb_evaluation_categories, training_categories as mlb_training_categories
 
 RANDOM_STATE = 42
 ROOT = Path(__file__).resolve().parent
@@ -70,8 +71,31 @@ DATA = ROOT / "data"
 MLB_API = "https://statsapi.mlb.com/api/v1"
 REQUEST_TIMEOUT = 30
 
+MLB_MIN_HISTORY_BY_YEAR = {
+    2020: 800,
+    2021: 2000,
+    2022: 2000,
+    2023: 2000,
+    2024: 2000,
+    2025: 2000,
+}
+
+
+def mlb_history_coverage_ok(df: pd.DataFrame, start_year: int, end_year: int) -> bool:
+    if df.empty or "datetime" not in df.columns:
+        return False
+    years = pd.to_datetime(df["datetime"], errors="coerce", utc=True).dt.year
+    current_year = pd.Timestamp.now(tz="UTC").year
+    for year, minimum in MLB_MIN_HISTORY_BY_YEAR.items():
+        if start_year <= year <= min(end_year, current_year - 1):
+            if int((years == year).sum()) < minimum:
+                return False
+    return True
+
 # Backtest controls
 MIN_TRAIN = 100
+# fit_ensemble requires _validation_splits(), which is defined only for n >= 120.
+MODEL_MIN_TRAIN = 120
 RETRAIN_EVERY = int(os.getenv("NPB_RETRAIN_EVERY", "150"))
 VALIDATION_RATIO = 0.20
 MIN_VALIDATION = 45
@@ -257,7 +281,7 @@ class BaseballBacktest:
         self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 1500.0)  # hard cap: 29:00
         self.audit: List[Dict[str, Any]] = []
         self.checkpoint_dir = RESULTS / "checkpoints"
-        self.checkpoint_version = "npb-massive-resume-v5-matchday-shadow"
+        self.checkpoint_version = "npb-massive-resume-v6-competition-types"
         self._last_temperature = 1.0
         self.context_pit_counters = defaultdict(int)
         self.core_context_training_ready = {"starter": False, "lineup": False}
@@ -497,12 +521,14 @@ class BaseballBacktest:
         cache = self.data_dir / "mlb_games.csv"
         if cache.exists():
             try:
-                df = pd.read_csv(cache)
-                if len(df) > 100:
+                df = self._normalize_mlb_games(pd.read_csv(cache))
+                if len(df) > 100 and {"game_type_code", "series_description"}.issubset(df.columns) and mlb_history_coverage_ok(df, start_year, end_year):
                     print(f"[MLB] using cache: {cache} ({len(df)})")
-                    return self._normalize_mlb_games(df)
-            except Exception:
-                pass
+                    return df
+                if len(df) > 100:
+                    print(f"[MLB] cache rejected: incomplete history or competition metadata ({len(df)})")
+            except Exception as exc:
+                print(f"[MLB] cache read/validation failed: {type(exc).__name__}: {exc}")
         rows = []
         for year in range(start_year, end_year + 1):
             url = f"{MLB_API}/schedule"
@@ -530,6 +556,9 @@ class BaseballBacktest:
                         "home_starter": hp, "away_starter": ap,
                         "venue": (game.get("venue") or {}).get("name", ""),
                         "confirmed_starters": bool(hp and ap),
+                        "game_type_code": str(game.get("gameType") or ""),
+                        "series_description": str(game.get("seriesDescription") or ""),
+                        "game_type": str(game.get("seriesDescription") or game.get("gameType") or "UNKNOWN"),
                     })
             time.sleep(0.1)
         df = pd.DataFrame(rows)
@@ -541,39 +570,36 @@ class BaseballBacktest:
         return df
 
     def enrich_mlb_starters(self, games: pd.DataFrame) -> pd.DataFrame:
-        """Use game feed to identify actual starting pitchers for completed games."""
+        """Preserve only explicitly PIT-safe pregame starter evidence.
+
+        The MLB game feed is a postgame source and can reveal the actual starter
+        after first pitch.  That information must never be copied into a
+        historical pregame feature row.  This compatibility method therefore
+        refuses postgame enrichment unless the input already carries explicit
+        pregame provenance (prediction_time_utc + starter_available_at).
+        """
         games = games.copy()
-        for i in range(len(games)):
-            gid = games.iloc[i]["game_id"]
-            if not gid or str(gid) == "nan":
-                continue
-            try:
-                feed = self._get_json(f"{MLB_API}/game/{gid}/feed/live")
-                live = feed.get("liveData", {})
-                box = live.get("boxscore", {}).get("teams", {})
-                hp = box.get("home", {}).get("players", {})
-                ap = box.get("away", {}).get("players", {})
-                def find_starter(players):
-                    for p in players.values():
-                        pit = p.get("stats", {}).get("pitching", {})
-                        if pit.get("gamesStarted", 0) == 1:
-                            return p.get("person", {}).get("fullName", "")
-                    # More reliable for game feed: first pitcher listed in pitchers array.
-                    arr = []
-                    for p in players.values():
-                        pid = p.get("person", {}).get("id")
-                        if pid and p.get("stats", {}).get("pitching"):
-                            arr.append((p.get("gameStatus", {}).get("isStartingPitcher", False), p.get("person", {}).get("fullName", "")))
-                    for flag, name in arr:
-                        if flag and name:
-                            return name
-                    return ""
-                hname, aname = find_starter(hp), find_starter(ap)
-                if hname: games.at[i, "home_starter"] = hname
-                if aname: games.at[i, "away_starter"] = aname
-                games.at[i, "confirmed_starters"] = bool(hname and aname)
-            except Exception as e:
-                print(f"[MLB feed skip] {gid}: {e}")
+        required = {"prediction_time_utc", "starter_available_at"}
+        if not required.issubset(games.columns):
+            print("[MLB STARTER PIT] postgame feed enrichment disabled: missing explicit pregame provenance")
+            games["starter_confirmation_state"] = "UNKNOWN"
+            games["starter_confirmation_source"] = "none"
+            return games
+
+        cutoff = pd.to_datetime(games["prediction_time_utc"], errors="coerce", utc=True)
+        available = pd.to_datetime(games["starter_available_at"], errors="coerce", utc=True)
+        home_pregame = games["home_pregame_starter"] if "home_pregame_starter" in games.columns else pd.Series("", index=games.index)
+        away_pregame = games["away_pregame_starter"] if "away_pregame_starter" in games.columns else pd.Series("", index=games.index)
+        safe = (
+            home_pregame.fillna("").astype(str).str.len().gt(0)
+            & away_pregame.fillna("").astype(str).str.len().gt(0)
+            & cutoff.notna()
+            & available.notna()
+            & (available <= cutoff)
+        )
+        games["starter_confirmation_state"] = np.where(safe, "CONFIRMED", "UNKNOWN")
+        games["starter_confirmation_source"] = np.where(safe, "pregame_snapshot", "none")
+        games["confirmed_starters"] = safe.astype(bool)
         return games
 
     def _normalize_mlb_games(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -584,6 +610,22 @@ class BaseballBacktest:
         out = out.dropna(subset=["datetime", "home_score", "away_score", "home", "away"])
         out["league"] = "MLB"
         out["game_id"] = out["game_id"].astype(str)
+        if "game_type_code" not in out.columns:
+            out["game_type_code"] = ""
+        if "series_description" not in out.columns:
+            out["series_description"] = ""
+        classified = out.apply(
+            lambda r: classify_mlb_game(
+                r.get("game_type_code", ""),
+                r.get("series_description", ""),
+                r.get("game_type", ""),
+            ),
+            axis=1,
+        )
+        out["mlb_game_category"] = classified.map(lambda x: x["category"])
+        out["mlb_type_confidence"] = classified.map(lambda x: x["confidence"])
+        out["mlb_training_default"] = classified.map(lambda x: bool(x["training_default"]))
+        out["mlb_evaluation_default"] = classified.map(lambda x: bool(x["evaluation_default"]))
         return out.sort_values(["datetime", "game_id"]).drop_duplicates("game_id").reset_index(drop=True)
 
     def _get_json(self, url: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -996,9 +1038,18 @@ class BaseballBacktest:
         games = games.sort_values(["datetime", "game_id"]).reset_index(drop=True)
         last_season=None
         for _, row in games.iterrows():
-            category = str(row.get("npb_game_category", "unknown") or "unknown").strip().lower() if row.get("league") == "NPB" else "mlb"
-            train_include = category in training_set if row.get("league") == "NPB" else True
-            eval_include = category in evaluation_set if row.get("league") == "NPB" else True
+            if row.get("league") == "NPB":
+                category = str(row.get("npb_game_category", "unknown") or "unknown").strip().lower()
+                train_include = category_is_training(category)
+                eval_include = category_is_evaluation(category)
+            elif row.get("league") == "MLB":
+                category = str(row.get("mlb_game_category", "unknown") or "unknown").strip().lower()
+                train_include = mlb_category_is_training(category)
+                eval_include = mlb_category_is_evaluation(category)
+            else:
+                category = "unknown"
+                train_include = False
+                eval_include = False
             cur_season=int(pd.Timestamp(row["datetime"]).year)
             if last_season is not None and cur_season != last_season:
                 # Regress Elo at each season boundary; rolling team form naturally
@@ -1016,7 +1067,12 @@ class BaseballBacktest:
                 target = 0 if hscore > ascore else 1
             y.append(target)
             payload = row.to_dict()
-            payload["npb_game_category"] = category
+            if row.get("league") == "NPB":
+                payload["npb_game_category"] = category
+            elif row.get("league") == "MLB":
+                payload["mlb_game_category"] = category
+                payload["mlb_type_confidence"] = row.get("mlb_type_confidence", "unknown")
+            payload["competition_category"] = category
             payload["training_included"] = bool(train_include)
             payload["evaluation_included"] = bool(eval_include)
             meta.append(payload)
@@ -1402,18 +1458,17 @@ class BaseballBacktest:
                 )
 
         X, y, meta = self.build_features(games)
-        if league == "NPB":
-            train_mask = meta["training_included"].astype(bool).to_numpy() if "training_included" in meta else np.ones(len(meta), dtype=bool)
-            eval_mask = meta["evaluation_included"].astype(bool).to_numpy() if "evaluation_included" in meta else np.ones(len(meta), dtype=bool)
-        else:
-            train_mask = np.ones(len(meta), dtype=bool)
-            eval_mask = np.ones(len(meta), dtype=bool)
+        train_mask = meta["training_included"].astype(bool).to_numpy() if "training_included" in meta else np.ones(len(meta), dtype=bool)
+        eval_mask = meta["evaluation_included"].astype(bool).to_numpy() if "evaluation_included" in meta else np.ones(len(meta), dtype=bool)
+        cat_col = "npb_game_category" if league == "NPB" else "mlb_game_category"
         self.audit.append({
-            "type":"npb_game_type_counts",
+            "type":"competition_game_type_counts",
             "league":league,
             "training_rows":int(train_mask.sum()),
             "evaluation_rows":int(eval_mask.sum()),
-            "categories":meta["npb_game_category"].value_counts(dropna=False).to_dict() if "npb_game_category" in meta else {},
+            "categories":meta[cat_col].value_counts(dropna=False).to_dict() if cat_col in meta else {},
+            "training_categories":sorted(training_categories() if league == "NPB" else mlb_training_categories()),
+            "evaluation_categories":sorted(evaluation_categories() if league == "NPB" else mlb_evaluation_categories()),
         })
         matchday_shadow = os.getenv("BASEBALL_MATCHDAY_SHADOW", "0").strip().lower() in {"1","true","yes"}
         X_free = self._context_free_matrix(X) if matchday_shadow else None
@@ -1437,9 +1492,49 @@ class BaseballBacktest:
             existing = pd.DataFrame()
         completed_ids = set(existing.get("game_id", pd.Series(dtype=str)).astype(str)) if not existing.empty else set()
         all_rows = existing.to_dict("records") if not existing.empty else []
-        start = max(MIN_TRAIN, int(len(X) * 0.25))
+        # Start only after the prefix actually contains enough
+        # training-eligible rows for BOTH model fitting and chronological
+        # validation.  _validation_splits() requires at least 120 samples;
+        # starting at MIN_TRAIN=100 would otherwise deterministically fail the
+        # first MLB block when competition-type filtering leaves exactly 100
+        # eligible regular-season games.
+        required_classes = 3 if league == "NPB" else 2
+        min_effective_fit_train = max(MIN_TRAIN, MODEL_MIN_TRAIN)
+        prefix_train = np.cumsum(train_mask.astype(int))
+        valid_positions = np.flatnonzero(prefix_train >= min_effective_fit_train)
+        if len(valid_positions) == 0:
+            self.audit.append({
+                "type": "effective_training_gate",
+                "league": league,
+                "status": "DEFERRED",
+                "reason": "fewer than the model-fit/validation minimum training-eligible rows across the full chronological sample",
+                "min_train": int(min_effective_fit_train),
+                "training_rows": int(train_mask.sum()),
+            })
+            print(f"[{league}] DEFERRED: no chronological prefix reaches {min_effective_fit_train} eligible rows")
+            return pd.DataFrame(all_rows)
+        first_valid_start = int(valid_positions[0]) + 1
+        start = max(first_valid_start, int(len(X) * 0.25))
+        self.audit.append({
+            "type": "effective_training_gate",
+            "league": league,
+            "status": "PASS",
+            "first_valid_start": int(first_valid_start),
+            "min_train": int(min_effective_fit_train),
+            "required_classes": int(required_classes),
+            "total_training_rows": int(train_mask.sum()),
+        })
         for bstart in range(start, len(X), RETRAIN_EVERY):
             bend = min(len(X), bstart + RETRAIN_EVERY)
+            effective_train_y = y[:bstart][train_mask[:bstart]]
+            train_count = int(len(effective_train_y))
+            class_count = int(len(np.unique(effective_train_y))) if train_count else 0
+            if train_count < min_effective_fit_train or class_count < required_classes:
+                print(
+                    f"[{league}] skip block {bstart}:{bend}: "
+                    f"effective_train={train_count}, classes={class_count}"
+                )
+                continue
             block_ids = set(meta.iloc[bstart:bend].loc[eval_mask[bstart:bend], "game_id"].astype(str))
             if block_ids and block_ids.issubset(completed_ids):
                 print(f"[{league}] resume skip block {bstart}:{bend} ({len(block_ids)} games already checkpointed)")
@@ -1476,8 +1571,19 @@ class BaseballBacktest:
                     league,
                 )
             except Exception as e:
-                print(f"[{league}] block {bstart}: model failure {e}")
-                continue
+                self.audit.append({
+                    "type": "oos_block_failure",
+                    "league": league,
+                    "bstart": int(bstart),
+                    "bend": int(bend),
+                    "error": f"{type(e).__name__}: {e}",
+                    "status": "FAIL",
+                })
+                print(f"[{league}] block {bstart}: model failure -> FAIL-CLOSED: {e}")
+                raise RuntimeError(
+                    f"{league} chronological OOS block {bstart}:{bend} failed; "
+                    "refusing to emit a misleading partial OOS result"
+                ) from e
             # Preserve each expert's raw OOS probabilities for research-only
             # dynamic routing. These probabilities are produced before any
             # realized outcome from the current block is consumed.
@@ -1521,7 +1627,9 @@ class BaseballBacktest:
                     "league": league, "game_id": r["game_id"], "datetime": r["datetime"],
                     "home": r["home"], "away": r["away"], "home_starter": r.get("home_starter", ""), "away_starter": r.get("away_starter", ""),
                     "game_type": r.get("game_type", "UNKNOWN"),
+                    "competition_category": r.get("competition_category", r.get("npb_game_category", r.get("mlb_game_category", "unknown"))),
                     "npb_game_category": r.get("npb_game_category", "unknown"),
+                    "mlb_game_category": r.get("mlb_game_category", "unknown"),
                     "training_included": bool(r.get("training_included", True)),
                     "evaluation_included": bool(r.get("evaluation_included", True)),
                     "pred_home": float(prob[0]), "pred_draw": float(prob[1]) if league == "NPB" else np.nan,
@@ -1595,9 +1703,10 @@ class BaseballBacktest:
         summary.to_csv(RESULTS / f"{league.lower()}_backtest_summary.csv", index=False)
         model = df.groupby("model").agg(Predictions=("correct", "size"), Accuracy=("correct", "mean"), LogLoss=("logloss", "mean"), Brier=("brier", "mean")).reset_index()
         model.to_csv(RESULTS / f"{league.lower()}_model_comparison.csv", index=False)
-        if league == "NPB" and "npb_game_category" in df.columns:
+        if league in {"NPB", "MLB"} and ("npb_game_category" if league == "NPB" else "mlb_game_category") in df.columns:
             rows=[]
-            for category, g in df.groupby("npb_game_category", dropna=False):
+            cat_col = "npb_game_category" if league == "NPB" else "mlb_game_category"
+            for category, g in df.groupby(cat_col, dropna=False):
                 rows.append({
                     "League": league, "Category": str(category),
                     "Predictions": int(len(g)), "Accuracy": float(g.correct.mean()),
@@ -1606,7 +1715,7 @@ class BaseballBacktest:
                     "LowHighAccuracy": float((((g.high>=0.5).astype(int)) == ((g.actual_home_score+g.actual_away_score>=7).astype(int))).mean()),
                     "Top4ScoreHitRate": float(g.apply(lambda r: (("その他" in {str(r.score1),str(r.score2),str(r.score3),str(r.score4)}) if (r.actual_home_score>=7 or r.actual_away_score>=7) else (f"{int(r.actual_home_score)}-{int(r.actual_away_score)}" in {str(r.score1),str(r.score2),str(r.score3),str(r.score4)})), axis=1).mean()),
                 })
-            pd.DataFrame(rows).to_csv(RESULTS / "npb_game_type_metrics.csv", index=False)
+            pd.DataFrame(rows).to_csv(RESULTS / f"{league.lower()}_game_type_metrics.csv", index=False)
         # Calibration bins are useful for diagnosing overconfidence.
         if league == "MLB":
             tmp = df.copy(); tmp["bin"] = pd.cut(tmp.pred_home, np.linspace(0,1,11), include_lowest=True)
@@ -1623,9 +1732,33 @@ class BaseballBacktest:
             for g in d.get("games", []):
                 t=g.get("teams",{}); h=t.get("home",{}); a=t.get("away",{})
                 hp=(h.get("probablePitcher") or {}).get("fullName",""); ap=(a.get("probablePitcher") or {}).get("fullName","")
-                # "probable" is not equivalent to officially confirmed. Only mark confirmed when status/game data says it.
-                confirmed=bool(hp and ap)
-                rows.append({"game_id":g.get("gamePk"),"datetime":g.get("gameDate"),"home":h.get("team",{}).get("name",""),"away":a.get("team",{}).get("name",""),"home_starter":hp,"away_starter":ap,"confirmed_starters":confirmed})
+                # Stats API schedule exposes probablePitcher, but that is not by itself
+                # explicit official pre-first-pitch confirmation. Keep it visible for
+                # research while leaving the production prediction gate CLOSED.
+                confirmation_state = "PROBABLE" if (hp and ap) else "UNKNOWN"
+                confirmation_source = "statsapi_schedule_probable" if (hp and ap) else "none"
+                confirmed = False
+                info=classify_mlb_game(
+                    g.get("gameType", ""),
+                    g.get("seriesDescription", ""),
+                    "",
+                )
+                rows.append({
+                    "game_id":g.get("gamePk"),
+                    "datetime":g.get("gameDate"),
+                    "home":h.get("team",{}).get("name",""),
+                    "away":a.get("team",{}).get("name",""),
+                    "home_starter":hp,
+                    "away_starter":ap,
+                    "confirmed_starters":confirmed,
+                    "starter_confirmation_state":confirmation_state,
+                    "starter_confirmation_source":confirmation_source,
+                    "game_type_code":str(g.get("gameType") or ""),
+                    "series_description":str(g.get("seriesDescription") or ""),
+                    "game_type":str(g.get("seriesDescription") or g.get("gameType") or "UNKNOWN"),
+                    "mlb_game_category":info["category"],
+                    "mlb_type_confidence":info["confidence"],
+                })
         return pd.DataFrame(rows)
 
     def build_future_mlb_predictions(self, schedule: pd.DataFrame) -> pd.DataFrame:
@@ -1662,8 +1795,8 @@ class BaseballBacktest:
         elif mlb:
             try:
                 mlb_games = self.load_mlb(mlb_start, mlb_end)
-                # Actual starters are obtained from completed game feeds where possible.
-                # This can be slow for many seasons, so only refresh when explicitly requested.
+                # Never enrich historical rows with the postgame actual starter:
+                # that would create look-ahead leakage in pregame features.
                 if os.getenv("MLB_ENRICH_STARTERS", "0") == "1":
                     mlb_games = self.enrich_mlb_starters(mlb_games)
                     mlb_games.to_csv(self.data_dir / "mlb_games.csv", index=False)

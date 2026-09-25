@@ -15,6 +15,8 @@ from datetime import datetime, timedelta, timezone
 import pandas as pd
 import requests
 
+from mlb_game_type import classify_mlb_game
+
 API = "https://statsapi.mlb.com/api/v1"
 DATA = Path(os.getenv("BASEBALL_DATA_DIR", "data"))
 CACHE = DATA / "mlb_games.csv"
@@ -26,6 +28,46 @@ SEASON = TODAY.year
 
 S = requests.Session()
 S.headers.update({"User-Agent": "BaseballIncrementalAcquisition/1.1", "Accept": "application/json"})
+
+# Conservative minimum final-game counts used only to detect obviously incomplete
+# historical seasons. These are data-quality gates, not assumed exact schedules.
+MIN_COMPLETED_GAMES_BY_YEAR = {
+    2020: 800,
+    2021: 2000,
+    2022: 2000,
+    2023: 2000,
+    2024: 2000,
+    2025: 2000,
+}
+
+
+def history_coverage(df: pd.DataFrame, start_year: int, end_year: int) -> dict[int, int]:
+    if df.empty or "datetime" not in df.columns:
+        return {year: 0 for year in range(start_year, end_year + 1)}
+    years = pd.to_datetime(df["datetime"], errors="coerce", utc=True).dt.year
+    return {year: int((years == year).sum()) for year in range(start_year, end_year + 1)}
+
+
+def incomplete_historical_years(df: pd.DataFrame, start_year: int, end_year: int) -> list[int]:
+    coverage = history_coverage(df, start_year, end_year)
+    return [
+        year for year, minimum in MIN_COMPLETED_GAMES_BY_YEAR.items()
+        if start_year <= year <= end_year and coverage.get(year, 0) < minimum
+    ]
+
+
+def validate_historical_coverage(df: pd.DataFrame, start_year: int, end_year: int, allow_current_partial: bool = True) -> None:
+    coverage = history_coverage(df, start_year, end_year)
+    missing = []
+    for year, minimum in MIN_COMPLETED_GAMES_BY_YEAR.items():
+        if not (start_year <= year <= end_year):
+            continue
+        if coverage.get(year, 0) < minimum:
+            missing.append({"year": year, "rows": coverage.get(year, 0), "minimum": minimum})
+    if missing:
+        raise RuntimeError(f"MLB historical coverage incomplete: {missing}")
+    print(f"[MLB] historical coverage PASS: {coverage}")
+
 
 
 def get_json(url, params=None):
@@ -53,6 +95,21 @@ def norm(df):
     df["datetime"] = pd.to_datetime(df["datetime"], errors="coerce", utc=True)
     df["game_id"] = df["game_id"].astype(str)
     df = df.dropna(subset=["datetime", "home_score", "away_score", "home", "away"])
+    for col, default in [("game_type_code", ""), ("series_description", ""), ("game_type", "UNKNOWN")]:
+        if col not in df.columns:
+            df[col] = default
+    classified = df.apply(
+        lambda r: classify_mlb_game(
+            r.get("game_type_code", ""),
+            r.get("series_description", ""),
+            r.get("game_type", ""),
+        ),
+        axis=1,
+    )
+    df["mlb_game_category"] = classified.map(lambda x: x["category"])
+    df["mlb_type_confidence"] = classified.map(lambda x: x["confidence"])
+    df["mlb_training_default"] = classified.map(lambda x: bool(x["training_default"]))
+    df["mlb_evaluation_default"] = classified.map(lambda x: bool(x["evaluation_default"]))
     return df.sort_values(["datetime", "game_id"]).drop_duplicates("game_id", keep="last").reset_index(drop=True)
 
 
@@ -83,6 +140,9 @@ def fetch_schedule(start_date, end_date):
                 "away_starter": (away.get("probablePitcher") or {}).get("fullName", ""),
                 "venue": (game.get("venue") or {}).get("name", ""),
                 "confirmed_starters": bool((home.get("probablePitcher") or {}).get("fullName") and (away.get("probablePitcher") or {}).get("fullName")),
+                "game_type_code": str(game.get("gameType") or ""),
+                "series_description": str(game.get("seriesDescription") or ""),
+                "game_type": str(game.get("seriesDescription") or game.get("gameType") or "UNKNOWN"),
             })
     return pd.DataFrame(rows)
 
@@ -148,9 +208,27 @@ def main():
     if start > end:
         start = end
 
-    mode = "FULL HISTORICAL BOOTSTRAP" if bootstrap else "INCREMENTAL DELTA"
-    print(f"[MLB] mode={mode} cache={len(existing)} rows; querying {start}..{end}")
-    fresh = norm(fetch_schedule(start, end))
+    # A non-empty but truncated cache must never silently switch to incremental
+    # mode. Re-acquire every obviously incomplete completed season before using
+    # the dataset for OOS/modeling. Current season remains a delta refresh.
+    historical_years = [y for y in range(BOOTSTRAP_START_YEAR, SEASON) if y >= BOOTSTRAP_START_YEAR]
+    missing_years = incomplete_historical_years(existing, BOOTSTRAP_START_YEAR, max(SEASON - 1, BOOTSTRAP_START_YEAR))
+    mode = "FULL HISTORICAL RECOVERY" if missing_years else ("FULL HISTORICAL BOOTSTRAP" if bootstrap else "INCREMENTAL DELTA")
+    print(f"[MLB] mode={mode} cache={len(existing)} rows; missing_years={missing_years}")
+
+    parts = []
+    for year in missing_years:
+        year_start = datetime(year, 3, 1, tzinfo=timezone.utc).date()
+        year_end = datetime(year, 11, 30, tzinfo=timezone.utc).date()
+        print(f"[MLB] recovering historical season {year}: {year_start}..{year_end}")
+        parts.append(fetch_schedule(year_start, year_end))
+
+    # A truly empty cache is covered by missing_years above, so no second
+    # bootstrap pass is needed. Always refresh the current season from the last
+    # correction window onward.
+    current_start = start
+    parts.append(fetch_schedule(current_start, end))
+    fresh = norm(pd.concat(parts, ignore_index=True, sort=False)) if parts else pd.DataFrame()
     combined = norm(pd.concat([existing, fresh], ignore_index=True, sort=False)) if not existing.empty else fresh
 
     missing = ((combined["home_starter"].fillna("").astype(str).str.strip() == "") |
@@ -166,6 +244,8 @@ def main():
                 combined.at[gid, c] = r[c]
         combined = combined.reset_index()
 
+    combined = norm(combined)
+    validate_historical_coverage(combined, BOOTSTRAP_START_YEAR, SEASON - 1)
     combined.to_csv(CACHE, index=False)
     print(f"[MLB] fresh={len(fresh)} starter_repairs={changed} total={len(combined)}")
     if len(combined) < 100:

@@ -190,11 +190,10 @@ jobs:
           path: results/production_deferred.json
           if-no-files-found: error
           retention-days: 7
-      - name: MLB data acquisition, starter quality gate and chronological OOS
+      - name: MLB data acquisition and chronological OOS
         if: success() && steps.sha_gate.outputs.ok == 'true' && steps.npb_ready.outputs.ready == 'true'
         env:
           BASEBALL_TIME_BUDGET_SEC: "3600"
-          MLB_ENRICH_STARTERS: "1"
           MLB_MIN_STARTER_COVERAGE: "90"
         run: python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
       - name: Validate OOS predictions before any state write
