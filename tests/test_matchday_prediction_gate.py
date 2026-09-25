@@ -40,3 +40,18 @@ def test_mlb_probable_starter_is_not_confirmed_without_explicit_signal(monkeypat
     assert bool(out.iloc[0]["probable_starters"]) is True
     assert bool(out.iloc[0]["confirmed_starters"]) is False
     assert out.iloc[0]["starter_state"] == "PROJECTED"
+\n\ndef test_schedule_state_tracks_started_games_without_prediction_leakage():
+    import pandas as pd
+    from production_matchday_intelligence import classify_schedule_states
+
+    now = pd.Timestamp("2026-09-25T18:30:00", tz="Asia/Tokyo")
+    rows = classify_schedule_states([
+        {"date":"2026-09-25","hour":18,"minute":0,"home":"A","away":"B","venue":"X"},
+        {"date":"2026-09-26","hour":14,"minute":0,"home":"A","away":"C","venue":"Y"},
+    ], now)
+
+    assert rows[0]["schedule_state"] == "STARTED_OR_IN_PROGRESS"
+    assert rows[1]["schedule_state"] == "FUTURE"
+    assert rows[0]["home"] == "A"
+    assert "score" not in rows[0]
+    assert "actual" not in rows[0]
