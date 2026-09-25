@@ -1484,11 +1484,11 @@ class BaseballBacktest:
                 "type": "effective_training_gate",
                 "league": league,
                 "status": "DEFERRED",
-                "reason": "fewer than MIN_TRAIN training-eligible rows across the full chronological sample",
+                "reason": "fewer than the model-fit/validation minimum training-eligible rows across the full chronological sample",
                 "min_train": int(min_effective_fit_train),
                 "training_rows": int(train_mask.sum()),
             })
-            print(f"[{league}] DEFERRED: no chronological prefix reaches MIN_TRAIN eligible rows")
+            print(f"[{league}] DEFERRED: no chronological prefix reaches {min_effective_fit_train} eligible rows")
             return pd.DataFrame(all_rows)
         first_valid_start = int(valid_positions[0]) + 1
         start = max(first_valid_start, int(len(X) * 0.25))
