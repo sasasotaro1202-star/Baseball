@@ -458,7 +458,7 @@ def rest_travel(historical, game):
         return {"state":"UNKNOWN"}
     result={}
     for side, team in (("home",game["home"]),("away",game["away"])):
-        dt=pd.Timestamp(game["datetime"])
+        dt=pd.to_datetime(game.get("datetime"), errors="coerce", utc=True)
         if pd.isna(dt):
             result[side]={"state":"UNKNOWN","reason":"target game datetime invalid"}
             continue
