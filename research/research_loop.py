@@ -19,6 +19,7 @@ OBJECTIVES=[
  ('environment','球場・天候・日程環境',['MeanAbsoluteScoreError','LowHighAccuracy']),
  ('matchday','Matchday Intelligence（先発・打線・欠場・休養・天候・市場）',['LogLoss','Brier','ECE']),
  ('routing','Drift/Uncertainty-aware expert routing + 再校正',['LogLoss','Brier','ECE']),
+ ('game_type','NPB試合種別別の学習包含アブレーション',['Accuracy','LogLoss','Brier','ECE','Top4ScoreHitRate']),
 ]
 PROMOTION_GATE={
  'require_oos':True,
