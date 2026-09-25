@@ -1,0 +1,64 @@
+name: Sports Data Gates
+
+on:
+  pull_request:
+    paths:
+      - 'core/**'
+      - 'schemas/**'
+      - 'sports_data_pipeline_v2.py'
+      - 'tests/**'
+      - '.github/workflows/sports-data-gates.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install test dependencies
+        run: python -m pip install --upgrade pip pytest pandas
+
+      - name: Run diagnostics
+        id: diagnostics
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          {
+            echo '=== ENV ==='
+            python --version
+            python -m pip --version
+            echo '=== IMPORTS ==='
+            python -c "import pandas, pytest; print('dependencies OK')"
+            echo '=== COMPILEALL ==='
+            python -m compileall -q core sports_data_pipeline_v2.py
+            echo "compileall_exit=$?"
+            echo '=== PYTEST ==='
+            python -m pytest -vv -s tests/test_sports_data_gates.py
+            echo "pytest_exit=$?"
+            echo '=== PYCOMPILE ==='
+            python -m py_compile core/acquisition_engine.py core/schema_gate.py core/id_registry.py core/cutoff_gate.py sports_data_pipeline_v2.py
+            echo "pycompile_exit=$?"
+          } 2>&1 | tee diagnostics.txt
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sports-data-gates-diagnostics
+          path: diagnostics.txt
+          if-no-files-found: error
+
+      - name: Enforce diagnostics result
+        if: steps.diagnostics.outcome != 'success'
+        run: exit 1
