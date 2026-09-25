@@ -185,6 +185,24 @@ def main() -> int:
             except Exception as exc:
                 errors.append(f"cancel {run_id}: {exc}")
 
+    # A production OOS run is immutable to its evaluated SHA. When main
+    # advances, any older active production run cannot safely persist its result
+    # and only consumes a runner. Cancel it early; its checkpointed work can be
+    # resumed under the current validated SHA.
+    for row in logical_active.get("production", []):
+        row_sha = str(row.get("head_sha") or "")
+        if row_sha and current_sha and row_sha != current_sha:
+            run_id = int(row["id"])
+            print(
+                f"[WATCHDOG] STALE production run={run_id} head_sha={row_sha} "
+                f"current_main={current_sha}; cancelling"
+            )
+            try:
+                request("POST", f"/repos/{REPO}/actions/runs/{run_id}/cancel")
+                stuck.append(run_id)
+            except Exception as exc:
+                errors.append(f"cancel stale production {run_id}: {exc}")
+
     npb_ready, npb_games = readiness("data/checkpoints/npb_collection_status.json")
     mlb_ready, mlb_games = readiness("data/checkpoints/mlb_collection_status.json")
     validation = logical_latest["validation"]
