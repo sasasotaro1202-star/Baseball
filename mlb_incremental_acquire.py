@@ -107,6 +107,8 @@ def fetch_schedule(start_date, end_date):
                 "home_starter": (home.get("probablePitcher") or {}).get("fullName", ""),
                 "away_starter": (away.get("probablePitcher") or {}).get("fullName", ""),
                 "venue": (game.get("venue") or {}).get("name", ""),
+                "game_type": str(game.get("gameType") or "").strip(),
+                "series_description": str(game.get("seriesDescription") or "").strip(),
                 "confirmed_starters": bool(
                     (home.get("probablePitcher") or {}).get("fullName")
                     and (away.get("probablePitcher") or {}).get("fullName")
