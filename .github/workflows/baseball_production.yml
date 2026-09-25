@@ -236,12 +236,40 @@ jobs:
         if: success() && steps.sha_gate.outputs.ok == 'true' && steps.mlb_ready.outputs.ready == 'true'
         env:
           BASEBALL_TIME_BUDGET_SEC: '3600'
-          MLB_ENRICH_STARTERS: '1'
+          # Historical final-boxscore starter names have no PIT availability timestamp.
+          # Disable until a timestamped pregame snapshot ledger is available.
+          MLB_ENRICH_STARTERS: '0'
           MLB_MIN_STARTER_COVERAGE: '90'
         run: python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
 
+      - name: Verify OOS state SHA is still current main
+        id: oos_sha_gate
+        if: success() && steps.sha_gate.outputs.ok == 'true'
+        env:
+          VALIDATED_SHA: ${{ github.event.workflow_run.head_sha }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          CURRENT_REMOTE_SHA="$(git rev-parse origin/main)"
+          CURRENT_CHECKOUT_SHA="$(git rev-parse HEAD)"
+          if [ "$CURRENT_REMOTE_SHA" != "$CURRENT_CHECKOUT_SHA" ]; then
+            echo "[OOS SHA GATE] DEFERRED: checkout=$CURRENT_CHECKOUT_SHA current_main=$CURRENT_REMOTE_SHA"
+            echo "status=deferred" >> "$GITHUB_OUTPUT"
+            { echo "status=DEFERRED"; echo "checkout_sha=$CURRENT_CHECKOUT_SHA"; echo "current_main_sha=$CURRENT_REMOTE_SHA"; echo "validated_sha=$VALIDATED_SHA"; } > results/production_persist_deferred.txt
+            exit 0
+          fi
+          if [ "$EVENT_NAME" = "workflow_run" ] && [ -n "$VALIDATED_SHA" ] && [ "$CURRENT_REMOTE_SHA" != "$VALIDATED_SHA" ]; then
+            echo "[OOS SHA GATE] DEFERRED: validated=$VALIDATED_SHA current_main=$CURRENT_REMOTE_SHA"
+            echo "status=deferred" >> "$GITHUB_OUTPUT"
+            { echo "status=DEFERRED"; echo "checkout_sha=$CURRENT_CHECKOUT_SHA"; echo "current_main_sha=$CURRENT_REMOTE_SHA"; echo "validated_sha=$VALIDATED_SHA"; } > results/production_persist_deferred.txt
+            exit 0
+          fi
+          echo "[OOS SHA GATE] PASS sha=$CURRENT_REMOTE_SHA"
+          echo "status=pass" >> "$GITHUB_OUTPUT"
+
       - name: Validate OOS predictions before any state write
-        if: success() && steps.sha_gate.outputs.ok == 'true' && (steps.npb_ready.outputs.ready == 'true' || steps.mlb_ready.outputs.ready == 'true')
+        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.oos_sha_gate.outputs.status == 'pass' && (steps.npb_ready.outputs.ready == 'true' || steps.mlb_ready.outputs.ready == 'true')
         run: |
           set -euo pipefail
           test -d results
@@ -250,7 +278,7 @@ jobs:
           python production_integrity_gate.py
 
       - name: Upload verified state artifact
-        if: success() && steps.sha_gate.outputs.ok == 'true' && (steps.npb_ready.outputs.ready == 'true' || steps.mlb_ready.outputs.ready == 'true')
+        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.oos_sha_gate.outputs.status == 'pass' && (steps.npb_ready.outputs.ready == 'true' || steps.mlb_ready.outputs.ready == 'true')
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: baseball-production-state
@@ -263,7 +291,7 @@ jobs:
           retention-days: 90
 
       - name: Persist verified state atomically
-        if: success() && steps.sha_gate.outputs.ok == 'true' && (steps.npb_ready.outputs.ready == 'true' || steps.mlb_ready.outputs.ready == 'true')
+        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.oos_sha_gate.outputs.status == 'pass' && (steps.npb_ready.outputs.ready == 'true' || steps.mlb_ready.outputs.ready == 'true')
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
@@ -292,6 +320,15 @@ jobs:
           done
           echo '[PERSIST] verified state push failed after 5 attempts'
           exit 1
+
+      - name: Upload stale-OOS diagnostics
+        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.oos_sha_gate.outputs.status == 'deferred'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: baseball-production-stale-oos-deferred
+          path: results/production_persist_deferred.txt
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Upload deferred diagnostics
         if: success() && steps.sha_gate.outputs.ok == 'true' && steps.npb_ready.outputs.ready != 'true' && steps.mlb_ready.outputs.ready != 'true'
