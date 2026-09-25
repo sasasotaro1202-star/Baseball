@@ -3,3 +3,4 @@ manual parallel-lane trigger
 2026-09-25T09:05:00+00:00 retry after artifact/quality-gate fixes
 2026-09-25T09:15:00+00:00 retry corrupt-checkpoint recovery
 2026-09-25T09:15:00+00:00 parallel NPB + MLB/competition rerun after checkpoint recovery
+2026-09-25T09:23:00+00:00 retry MLB after valid-empty-checkpoint/readiness fix
