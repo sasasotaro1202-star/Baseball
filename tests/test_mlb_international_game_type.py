@@ -76,7 +76,7 @@ def test_mlb_postgame_starter_enrichment_is_pit_closed(tmp_path):
         }]
     )
     out = bt.enrich_mlb_starters(games)
-    assert out.loc[0, "confirmed_starters"] is False
+    assert bool(out.loc[0, "confirmed_starters"]) is False
     assert out.loc[0, "starter_confirmation_state"] == "UNKNOWN"
     assert out.loc[0, "starter_confirmation_source"] == "none"
     assert out.loc[0, "home_starter"] == "Probable Home"
