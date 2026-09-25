@@ -98,6 +98,18 @@ def age_minutes(row: dict | None, now: datetime) -> float:
     return (now - ts(row)).total_seconds() / 60.0 if row else 0.0
 
 
+def stale_production_runs(rows: list[dict], current_sha: str) -> list[int]:
+    """Return active production run IDs evaluated against an older main SHA."""
+    if not current_sha:
+        return []
+    out = []
+    for row in rows:
+        row_sha = str(row.get("head_sha") or "")
+        if active(row) and row_sha and row_sha != current_sha:
+            out.append(int(row["id"]))
+    return out
+
+
 def recently_created(rows: list[dict], now: datetime) -> bool:
     return any(0.0 <= age_minutes(row, now) < RECENT_DISPATCH_GUARD_MINUTES for row in rows)
 
@@ -185,23 +197,19 @@ def main() -> int:
             except Exception as exc:
                 errors.append(f"cancel {run_id}: {exc}")
 
+    current_sha = main_sha()
+
     # A production OOS run is immutable to its evaluated SHA. When main
     # advances, any older active production run cannot safely persist its result
     # and only consumes a runner. Cancel it early; its checkpointed work can be
     # resumed under the current validated SHA.
-    for row in logical_active.get("production", []):
-        row_sha = str(row.get("head_sha") or "")
-        if row_sha and current_sha and row_sha != current_sha:
-            run_id = int(row["id"])
-            print(
-                f"[WATCHDOG] STALE production run={run_id} head_sha={row_sha} "
-                f"current_main={current_sha}; cancelling"
-            )
-            try:
-                request("POST", f"/repos/{REPO}/actions/runs/{run_id}/cancel")
-                stuck.append(run_id)
-            except Exception as exc:
-                errors.append(f"cancel stale production {run_id}: {exc}")
+    for run_id in stale_production_runs(logical_active.get("production", []), current_sha):
+        print(f"[WATCHDOG] STALE production run={run_id} current_main={current_sha}; cancelling")
+        try:
+            request("POST", f"/repos/{REPO}/actions/runs/{run_id}/cancel")
+            stuck.append(run_id)
+        except Exception as exc:
+            errors.append(f"cancel stale production {run_id}: {exc}")
 
     npb_ready, npb_games = readiness("data/checkpoints/npb_collection_status.json")
     mlb_ready, mlb_games = readiness("data/checkpoints/mlb_collection_status.json")
@@ -214,7 +222,6 @@ def main() -> int:
     matchday = logical_latest["matchday"]
     game_type_ablation = logical_latest["game_type_ablation"]
 
-    current_sha = main_sha()
     validation_current = success(validation) and str(validation.get("head_sha") or "") == current_sha
 
     print(f"[WATCHDOG] main_sha={current_sha}")
