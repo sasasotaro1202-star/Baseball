@@ -12,6 +12,7 @@ on:
       - '.github/workflows/baseball-mlb-competition.yml'
       - '.github/workflows/baseball_game_type_ablation.yml'
       - '.github/workflows/validate-code.yml'
+      - 'monitoring/recovery_controller.py'
   workflow_run:
     workflows:
       - Baseball Production Backtest

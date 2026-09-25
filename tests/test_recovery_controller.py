@@ -15,3 +15,11 @@ def test_recovery_controller_treats_legacy_and_new_acquisition_as_one_logical_la
     assert '"acquisition": [' in text
     assert '"baseball-parallel-source-acquisition.yml"' in text
     assert '"baseball-data-acquisition.yml"' in text
+
+
+def test_recovery_cancels_legacy_acquisition_when_parallel_lane_is_active():
+    text = Path("monitoring/recovery_controller.py").read_text(encoding="utf-8")
+    assert "parallel_acquisition_active" in text
+    assert "legacy_acquisition_superseded" in text
+    assert 'row.get("_workflow_file") == "baseball-data-acquisition.yml"' in text
+    assert 'row.get("_workflow_file") == "baseball-parallel-source-acquisition.yml"' in text

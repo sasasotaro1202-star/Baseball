@@ -150,8 +150,28 @@ def main() -> int:
         logical_active[label] = [row for row in combined if active(row)]
 
     for label, rows in logical_active.items():
+        parallel_acquisition_active = (
+            label == "acquisition"
+            and any(
+                row.get("_workflow_file") == "baseball-parallel-source-acquisition.yml"
+                for row in rows
+            )
+        )
         for row in rows:
-            limit = QUEUED_STALE_MINUTES if row.get("status") in QUEUED_STATES else STALE_MINUTES[label]
+            legacy_acquisition_superseded = (
+                label == "acquisition"
+                and row.get("_workflow_file") == "baseball-data-acquisition.yml"
+                and parallel_acquisition_active
+            )
+            limit = (
+                0.0
+                if legacy_acquisition_superseded
+                else (
+                    QUEUED_STALE_MINUTES
+                    if row.get("status") in QUEUED_STATES
+                    else STALE_MINUTES[label]
+                )
+            )
             if age_minutes(row, now) <= limit:
                 continue
             run_id = int(row["id"])
