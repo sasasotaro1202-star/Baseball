@@ -1674,6 +1674,25 @@ class BaseballBacktest:
             "evaluation_rows":int(eval_mask.sum()),
             "categories":meta["npb_game_category"].value_counts(dropna=False).to_dict() if "npb_game_category" in meta else {},
         })
+        if league == "NPB":
+            training_rows = int(train_mask.sum())
+            training_class_count = int(np.unique(y[train_mask]).size) if training_rows else 0
+            if training_rows < 200 or training_class_count < 2:
+                raise RuntimeError(
+                    f"NPB training-data gate failed: training_rows={training_rows}; "
+                    f"classes={training_class_count}; refusing to enter walk-forward fitting"
+                )
+            self.audit.append({
+                "type": "npb_training_data_gate",
+                "training_rows": training_rows,
+                "training_class_count": training_class_count,
+                "min_training_rows": 200,
+                "status": "PASS",
+            })
+            print(
+                f"[NPB DATA GATE] training_rows={training_rows} "
+                f"classes={training_class_count} required_rows=200 PASS"
+            )
         matchday_shadow = os.getenv("BASEBALL_MATCHDAY_SHADOW", "0").strip().lower() in {"1","true","yes"}
         X_free = self._context_free_matrix(X) if matchday_shadow else None
         if matchday_shadow:
