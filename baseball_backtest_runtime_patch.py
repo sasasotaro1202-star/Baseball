@@ -162,4 +162,48 @@ s=s[:start]+replacement+s[end:]
 s=s.replace("# BACKTEST_RUNTIME_HARDENING_V3\n", "")
 s="# BACKTEST_RUNTIME_HARDENING_V4\n"+s
 P.write_text(s,encoding='utf-8')
+
+# Targeted regression smoke: reproduce the historical pandas fillna(ndarray)
+# failure condition against the patched score-prior implementation before OOS.
+try:
+    import importlib.util
+    import numpy as np
+    import pandas as pd
+    spec=importlib.util.spec_from_file_location('_bb_score_prior_smoke', str(P))
+    mod=importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(mod)
+    obj=object.__new__(mod.BaseballBacktest)
+    X=pd.DataFrame({
+        'expected_env':[8.0,8.5],
+        'h_gf_3':[np.nan,4.2],
+        'h_gf_5':[4.0,4.1],
+        'h_gf_10':[4.0,4.1],
+        'h_gf_20':[4.0,4.1],
+        'a_ga_3':[4.0,4.0],
+        'a_ga_5':[4.0,4.0],
+        'a_ga_10':[4.0,4.0],
+        'a_ga_20':[4.0,4.0],
+        'a_gf_3':[4.0,4.0],
+        'a_gf_5':[4.0,4.0],
+        'a_gf_10':[4.0,4.0],
+        'a_gf_20':[4.0,4.0],
+        'h_ga_3':[4.0,4.0],
+        'h_ga_5':[4.0,4.0],
+        'h_ga_10':[4.0,4.0],
+        'h_ga_20':[4.0,4.0],
+        'home_adv':[1.0,1.0],
+        'hs_fip':[4.0,4.0],
+        'as_fip':[4.0,4.0],
+        'offense_power_gap_10':[0.0,0.0],
+        'bullpen_fatigue_diff':[0.0,0.0],
+    })
+    h,a=obj._score_prior(X,'MLB')
+    assert h.shape==(2,) and a.shape==(2,)
+    assert np.isfinite(h).all() and np.isfinite(a).all()
+    print('[BACKTEST PATCH] V4 score-prior ndarray-fallback smoke PASS')
+except Exception as exc:
+    print(f'[BACKTEST PATCH] score-prior smoke FAIL: {type(exc).__name__}: {exc}')
+    raise
+
 print('[BACKTEST PATCH] V4 applied: adaptive score prior + chronological blend calibration + overdispersion')
