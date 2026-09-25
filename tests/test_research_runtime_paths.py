@@ -54,7 +54,6 @@ def test_common_venue_columns_are_preserved():
     out = bt.aggregate_npb_games(g)
     assert out.loc[0, "venue"] == "甲子園"
 
-
 def test_context_readiness_uses_only_prior_training_eligible_pit_safe_rows():
     import pandas as pd
     from baseball_backtest import BaseballBacktest
