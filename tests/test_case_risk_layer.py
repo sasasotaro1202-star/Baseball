@@ -31,8 +31,8 @@ def test_case_risk_flags_situational_anomaly():
     out = assess_case_risk(
         [0.72, 0.28],
         rest_travel={
-            "home": {"rest_days": 1.0, "games_last_3d": 3, "games_last_7d": 6, "travel_miles": 1200},
-            "away": {"rest_days": 5.0, "games_last_3d": 1, "games_last_7d": 3, "travel_miles": 50},
+            "home": {"state":"VERIFIED","rest_days": 1.0, "games_last_3d": 3, "games_last_7d": 6, "travel_miles": 1200},
+            "away": {"state":"VERIFIED","rest_days": 5.0, "games_last_3d": 1, "games_last_7d": 3, "travel_miles": 50},
         },
     )
     assert out["situational_risk"] >= 0.60
