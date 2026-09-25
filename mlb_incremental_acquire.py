@@ -15,6 +15,8 @@ from datetime import datetime, timedelta, timezone
 import pandas as pd
 import requests
 
+from mlb_game_type import classify_mlb_game
+
 API = "https://statsapi.mlb.com/api/v1"
 DATA = Path(os.getenv("BASEBALL_DATA_DIR", "data"))
 CACHE = DATA / "mlb_games.csv"
@@ -53,6 +55,21 @@ def norm(df):
     df["datetime"] = pd.to_datetime(df["datetime"], errors="coerce", utc=True)
     df["game_id"] = df["game_id"].astype(str)
     df = df.dropna(subset=["datetime", "home_score", "away_score", "home", "away"])
+    for col, default in [("game_type_code", ""), ("series_description", ""), ("game_type", "UNKNOWN")]:
+        if col not in df.columns:
+            df[col] = default
+    classified = df.apply(
+        lambda r: classify_mlb_game(
+            r.get("game_type_code", ""),
+            r.get("series_description", ""),
+            r.get("game_type", ""),
+        ),
+        axis=1,
+    )
+    df["mlb_game_category"] = classified.map(lambda x: x["category"])
+    df["mlb_type_confidence"] = classified.map(lambda x: x["confidence"])
+    df["mlb_training_default"] = classified.map(lambda x: bool(x["training_default"]))
+    df["mlb_evaluation_default"] = classified.map(lambda x: bool(x["evaluation_default"]))
     return df.sort_values(["datetime", "game_id"]).drop_duplicates("game_id", keep="last").reset_index(drop=True)
 
 
@@ -83,6 +100,9 @@ def fetch_schedule(start_date, end_date):
                 "away_starter": (away.get("probablePitcher") or {}).get("fullName", ""),
                 "venue": (game.get("venue") or {}).get("name", ""),
                 "confirmed_starters": bool((home.get("probablePitcher") or {}).get("fullName") and (away.get("probablePitcher") or {}).get("fullName")),
+                "game_type_code": str(game.get("gameType") or ""),
+                "series_description": str(game.get("seriesDescription") or ""),
+                "game_type": str(game.get("seriesDescription") or game.get("gameType") or "UNKNOWN"),
             })
     return pd.DataFrame(rows)
 
