@@ -49,7 +49,7 @@
       }
     ]
   },
-  "prediction_time_utc": "2026-09-25T16:34:27.779676+00:00",
+  "prediction_time_utc": "2026-09-25T16:43:31.262608+00:00",
   "target_date_jst": "2026-09-26",
   "source_policy": {
     "schedule": "NPB.jp",
@@ -62,7 +62,7 @@
     "schedule_error": "",
     "spaia_schedule_error": "",
     "starter_error": "",
-    "model_error": "AttributeError: 'BaseballBacktest' object has no attribute '_normalize_npb_pbp'"
+    "model_error": ""
   },
   "roster_notice": {
     "source": "NPB.jp roster",
@@ -88,8 +88,8 @@
       "starter_away": "涌井 秀章",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-09-25T16:34:27.779676+00:00",
-      "prediction_time_utc": "2026-09-25T16:34:27.779676+00:00",
+      "starter_available_at": "2026-09-25T16:43:31.262608+00:00",
+      "prediction_time_utc": "2026-09-25T16:43:31.262608+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -101,20 +101,36 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-25T16:34:34.093143+00:00",
+        "retrieved_at": "2026-09-25T16:44:39.035295+00:00",
         "valid_time_local": "2026-09-26T18:00",
         "temperature_c": 18.8,
         "humidity_pct": 94.0,
         "precip_mm": 0.8,
         "wind_kmh": 4.4,
         "wind_direction_deg": 9.0,
-        "available_at": "2026-09-25T16:34:34.093159+00:00"
+        "available_at": "2026-09-25T16:44:39.035313+00:00"
       },
-      "weather_available_at": "2026-09-25T16:34:34.093159+00:00",
+      "weather_available_at": "2026-09-25T16:44:39.035313+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
-        "state": "UNKNOWN"
+        "home": {
+          "state": "VERIFIED",
+          "rest_days": 2.7916666666666665,
+          "games_last_3d": 1,
+          "games_last_7d": 4,
+          "travel_miles": 0.0,
+          "history_cutoff": "strictly_before_target"
+        },
+        "away": {
+          "state": "VERIFIED",
+          "rest_days": 2.625,
+          "games_last_3d": 1,
+          "games_last_7d": 5,
+          "travel_miles": 0.0,
+          "history_cutoff": "strictly_before_target"
+        },
+        "state": "VERIFIED"
       },
       "prediction": {
         "incumbent_status": "DEFERRED",
@@ -123,7 +139,7 @@
         "score_choices": [],
         "shadow_status": "DEFERRED",
         "shadow_not_promoted": true,
-        "incumbent_reason": "AttributeError: 'BaseballBacktest' object has no attribute '_normalize_npb_pbp'"
+        "shadow_reason": "TypeError: BaseballBacktest.ensemble_proba() missing 1 required positional argument: 'league'"
       }
     },
     {
@@ -142,8 +158,8 @@
       "starter_away": "才木 浩人",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-09-25T16:34:27.779676+00:00",
-      "prediction_time_utc": "2026-09-25T16:34:27.779676+00:00",
+      "starter_available_at": "2026-09-25T16:43:31.262608+00:00",
+      "prediction_time_utc": "2026-09-25T16:43:31.262608+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -155,20 +171,36 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-25T16:34:34.197814+00:00",
+        "retrieved_at": "2026-09-25T16:44:39.460390+00:00",
         "valid_time_local": "2026-09-26T14:00",
         "temperature_c": 19.6,
         "humidity_pct": 93.0,
         "precip_mm": 1.5,
         "wind_kmh": 10.6,
         "wind_direction_deg": 350.0,
-        "available_at": "2026-09-25T16:34:34.197831+00:00"
+        "available_at": "2026-09-25T16:44:39.460408+00:00"
       },
-      "weather_available_at": "2026-09-25T16:34:34.197831+00:00",
+      "weather_available_at": "2026-09-25T16:44:39.460408+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
-        "state": "UNKNOWN"
+        "home": {
+          "state": "VERIFIED",
+          "rest_days": 2.4583333333333335,
+          "games_last_3d": 1,
+          "games_last_7d": 5,
+          "travel_miles": 0.0,
+          "history_cutoff": "strictly_before_target"
+        },
+        "away": {
+          "state": "VERIFIED",
+          "rest_days": 2.625,
+          "games_last_3d": 1,
+          "games_last_7d": 5,
+          "travel_miles": 0.0,
+          "history_cutoff": "strictly_before_target"
+        },
+        "state": "VERIFIED"
       },
       "prediction": {
         "incumbent_status": "DEFERRED",
@@ -177,7 +209,7 @@
         "score_choices": [],
         "shadow_status": "DEFERRED",
         "shadow_not_promoted": true,
-        "incumbent_reason": "AttributeError: 'BaseballBacktest' object has no attribute '_normalize_npb_pbp'"
+        "shadow_reason": "TypeError: BaseballBacktest.ensemble_proba() missing 1 required positional argument: 'league'"
       }
     },
     {
@@ -196,8 +228,8 @@
       "starter_away": "小島 和哉",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-09-25T16:34:27.779676+00:00",
-      "prediction_time_utc": "2026-09-25T16:34:27.779676+00:00",
+      "starter_available_at": "2026-09-25T16:43:31.262608+00:00",
+      "prediction_time_utc": "2026-09-25T16:43:31.262608+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -209,20 +241,36 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-25T16:34:34.301872+00:00",
+        "retrieved_at": "2026-09-25T16:44:39.886135+00:00",
         "valid_time_local": "2026-09-26T14:00",
         "temperature_c": 18.1,
         "humidity_pct": 95.0,
         "precip_mm": 0.3,
         "wind_kmh": 6.5,
         "wind_direction_deg": 341.0,
-        "available_at": "2026-09-25T16:34:34.301888+00:00"
+        "available_at": "2026-09-25T16:44:39.886152+00:00"
       },
-      "weather_available_at": "2026-09-25T16:34:34.301888+00:00",
+      "weather_available_at": "2026-09-25T16:44:39.886152+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
-        "state": "UNKNOWN"
+        "home": {
+          "state": "VERIFIED",
+          "rest_days": 2.625,
+          "games_last_3d": 1,
+          "games_last_7d": 3,
+          "travel_miles": 0.0,
+          "history_cutoff": "strictly_before_target"
+        },
+        "away": {
+          "state": "VERIFIED",
+          "rest_days": 2.5,
+          "games_last_3d": 1,
+          "games_last_7d": 3,
+          "travel_miles": 0.0,
+          "history_cutoff": "strictly_before_target"
+        },
+        "state": "VERIFIED"
       },
       "prediction": {
         "incumbent_status": "DEFERRED",
@@ -231,7 +279,7 @@
         "score_choices": [],
         "shadow_status": "DEFERRED",
         "shadow_not_promoted": true,
-        "incumbent_reason": "AttributeError: 'BaseballBacktest' object has no attribute '_normalize_npb_pbp'"
+        "shadow_reason": "TypeError: BaseballBacktest.ensemble_proba() missing 1 required positional argument: 'league'"
       }
     },
     {
@@ -250,8 +298,8 @@
       "starter_away": "伊藤 大海",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-09-25T16:34:27.779676+00:00",
-      "prediction_time_utc": "2026-09-25T16:34:27.779676+00:00",
+      "starter_available_at": "2026-09-25T16:43:31.262608+00:00",
+      "prediction_time_utc": "2026-09-25T16:43:31.262608+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -263,20 +311,36 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-25T16:34:34.418003+00:00",
+        "retrieved_at": "2026-09-25T16:44:40.307307+00:00",
         "valid_time_local": "2026-09-26T14:00",
         "temperature_c": 19.2,
         "humidity_pct": 93.0,
         "precip_mm": 5.2,
         "wind_kmh": 7.1,
         "wind_direction_deg": 41.0,
-        "available_at": "2026-09-25T16:34:34.418017+00:00"
+        "available_at": "2026-09-25T16:44:40.307324+00:00"
       },
-      "weather_available_at": "2026-09-25T16:34:34.418017+00:00",
+      "weather_available_at": "2026-09-25T16:44:40.307324+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
-        "state": "UNKNOWN"
+        "home": {
+          "state": "VERIFIED",
+          "rest_days": 2.5,
+          "games_last_3d": 1,
+          "games_last_7d": 5,
+          "travel_miles": 0.0,
+          "history_cutoff": "strictly_before_target"
+        },
+        "away": {
+          "state": "VERIFIED",
+          "rest_days": 1.4583333333333333,
+          "games_last_3d": 2,
+          "games_last_7d": 6,
+          "travel_miles": 0.0,
+          "history_cutoff": "strictly_before_target"
+        },
+        "state": "VERIFIED"
       },
       "prediction": {
         "incumbent_status": "DEFERRED",
@@ -285,7 +349,7 @@
         "score_choices": [],
         "shadow_status": "DEFERRED",
         "shadow_not_promoted": true,
-        "incumbent_reason": "AttributeError: 'BaseballBacktest' object has no attribute '_normalize_npb_pbp'"
+        "shadow_reason": "TypeError: BaseballBacktest.ensemble_proba() missing 1 required positional argument: 'league'"
       }
     },
     {
@@ -304,8 +368,8 @@
       "starter_away": "古謝 樹",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-09-25T16:34:27.779676+00:00",
-      "prediction_time_utc": "2026-09-25T16:34:27.779676+00:00",
+      "starter_available_at": "2026-09-25T16:43:31.262608+00:00",
+      "prediction_time_utc": "2026-09-25T16:43:31.262608+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -317,20 +381,36 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-25T16:34:34.579912+00:00",
+        "retrieved_at": "2026-09-25T16:44:40.731137+00:00",
         "valid_time_local": "2026-09-26T18:00",
         "temperature_c": 22.3,
         "humidity_pct": 89.0,
         "precip_mm": 0.0,
         "wind_kmh": 5.1,
         "wind_direction_deg": 8.0,
-        "available_at": "2026-09-25T16:34:34.579926+00:00"
+        "available_at": "2026-09-25T16:44:40.731153+00:00"
       },
-      "weather_available_at": "2026-09-25T16:34:34.579926+00:00",
+      "weather_available_at": "2026-09-25T16:44:40.731153+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
-        "state": "UNKNOWN"
+        "home": {
+          "state": "VERIFIED",
+          "rest_days": 2.7916666666666665,
+          "games_last_3d": 1,
+          "games_last_7d": 4,
+          "travel_miles": 0.0,
+          "history_cutoff": "strictly_before_target"
+        },
+        "away": {
+          "state": "VERIFIED",
+          "rest_days": 1.625,
+          "games_last_3d": 2,
+          "games_last_7d": 5,
+          "travel_miles": 0.0,
+          "history_cutoff": "strictly_before_target"
+        },
+        "state": "VERIFIED"
       },
       "prediction": {
         "incumbent_status": "DEFERRED",
@@ -339,9 +419,9 @@
         "score_choices": [],
         "shadow_status": "DEFERRED",
         "shadow_not_promoted": true,
-        "incumbent_reason": "AttributeError: 'BaseballBacktest' object has no attribute '_normalize_npb_pbp'"
+        "shadow_reason": "TypeError: BaseballBacktest.ensemble_proba() missing 1 required positional argument: 'league'"
       }
     }
   ],
-  "state_hash": "3fbdd9915452acd3776ed0b963acde23e21f1034f76007bc57e3e30dcdf492ac"
+  "state_hash": "8fef5ec79ce0ded4665cfc66e32fc135152d148bb73485035c300a6ad134337a"
 }
