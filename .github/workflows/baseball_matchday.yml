@@ -9,8 +9,10 @@ permissions:
   contents: write
 
 concurrency:
+  # A newer snapshot supersedes an older in-progress snapshot. This avoids
+  # queued runs producing stale matchday output after the scheduled time.
   group: baseball-matchday
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 env:
   PYTHONUNBUFFERED: "1"
