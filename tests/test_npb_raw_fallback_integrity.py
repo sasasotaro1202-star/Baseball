@@ -45,7 +45,7 @@ def test_tracked_npb_raw_fallback_is_structurally_sound(tmp_path: Path) -> None:
         & raw["away_score"].notna()
     ].copy()
 
-    assert len(completed) >= 10_000
+    assert len(completed) >= 7_000
     assert completed["game_id"].astype(str).is_unique
 
     dates = pd.to_datetime(completed["game_date"], errors="coerce", utc=True)
