@@ -337,6 +337,18 @@ def load_checkpoint(year):
         try:return pd.read_csv(p['cp'],low_memory=False)
         except Exception:pass
     return pd.DataFrame()
+def resume_missing_game_ids(games, checkpoint, player_done_ids, light_enrich):
+    """Select unfinished work without reprocessing completed core enrichments.
+
+    Light mode intentionally skips player micro-features, so player-row presence
+    must never be used as the resume key there; the per-game core checkpoint is
+    authoritative.
+    """
+    game_ids=set(games.game_id.astype(str)) if 'game_id' in games else set()
+    if light_enrich:
+        core_ids=set(checkpoint.get('game_id', pd.Series(dtype=str)).astype(str)) if not checkpoint.empty else set()
+        return game_ids-core_ids
+    return game_ids-set(str(x) for x in player_done_ids)
 def atomic_csv(df,path):
     path=Path(path);tmp=path.with_suffix(path.suffix+'.tmp');df.to_csv(tmp,index=False);tmp.replace(path)
 def atomic_json(obj,path):
@@ -558,7 +570,7 @@ def main():
         if games.empty:
             atomic_csv(pd.DataFrame(columns=['game_id','datetime','home','away','home_score','away_score','game_type','venue']),paths['cp']);atomic_json({'year':year,'schedule_games':0,'checkpoint_games':0,'done':0,'failures':0,'both_starters':0,'both_starter_lines':0,'coverage_pct':0.0,'complete':True,'unavailable':True,'updated_at':pd.Timestamp.utcnow().isoformat()},paths['status']);coverage_rows.append({'year':year,'games':0,'both_starters':0,'home_starter_lines':0,'away_starter_lines':0,'both_starter_lines':0,'starter_line_coverage_pct':0.0,'checkpoint_complete':True,'remaining_games':0});persist_global_checkpoint();continue
         if not cp.empty and 'game_id' in cp:cp=cp.drop_duplicates('game_id',keep='last')
-        player_done_ids=set(pd.DataFrame(player_rows).get('game_id',pd.Series(dtype=str)).astype(str)) if player_rows else set();missing_ids=(set(games.game_id.astype(str))-set(cp.get('game_id',pd.Series(dtype=str)).astype(str))) if LIGHT_ENRICH else (set(games.game_id.astype(str))-player_done_ids);missing=games[games.game_id.astype(str).isin(missing_ids)].copy();print(f'[CHECKPOINT] year={year} existing={len(cp)} player_enriched={len(player_done_ids)} light_mode={LIGHT_ENRICH} missing={len(missing)}')
+        player_done_ids=set(pd.DataFrame(player_rows).get('game_id',pd.Series(dtype=str)).astype(str)) if player_rows else set();missing_ids=resume_missing_game_ids(games,cp,player_done_ids,LIGHT_ENRICH);missing=games[games.game_id.astype(str).isin(missing_ids)].copy();print(f'[CHECKPOINT] year={year} existing={len(cp)} player_enriched={len(player_done_ids)} light_mode={LIGHT_ENRICH} missing={len(missing)}')
         with cf.ThreadPoolExecutor(max_workers=WORKERS) as ex:
             futures={ex.submit(enrich_one,r):r.game_id for r in missing.itertuples(index=False)};completed=0
             for f in cf.as_completed(futures):
