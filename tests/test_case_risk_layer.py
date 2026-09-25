@@ -49,3 +49,15 @@ def test_case_risk_ignores_unknown_situational_side():
         },
     )
     assert out["situational_risk"] < 0.60
+
+
+
+def test_case_risk_malformed_situational_values_fail_safe():
+    out = assess_case_risk(
+        [0.55, 0.45],
+        rest_travel={
+            "home": {"state":"VERIFIED","rest_days":"not-a-number","games_last_3d":None,"games_last_7d":float("nan"),"travel_miles":"bad"},
+            "away": {"state":"VERIFIED","rest_days":5.0,"games_last_3d":1,"games_last_7d":3,"travel_miles":50},
+        },
+    )
+    assert 0.0 <= out["situational_risk"] <= 1.0
