@@ -60,7 +60,8 @@ from sklearn.linear_model import LogisticRegression, PoissonRegressor
 from sklearn.metrics import accuracy_score, brier_score_loss, log_loss, mean_absolute_error, roc_auc_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-from npb_game_type import category_is_evaluation, category_is_training, evaluation_categories, training_categories
+from npb_game_type import training_categories as npb_training_categories, evaluation_categories as npb_evaluation_categories
+from baseball_game_type import classify_game, category_is_evaluation as category_is_evaluation_generic, category_is_training as category_is_training_generic, training_categories as training_categories_generic, evaluation_categories as evaluation_categories_generic
 
 RANDOM_STATE = 42
 ROOT = Path(__file__).resolve().parent
@@ -265,9 +266,16 @@ class BaseballBacktest:
         self.pitcher_history = defaultdict(list)
         self.player_history = defaultdict(list)
         self.venue_states: Dict[Tuple[str, str], VenueState] = {}
-        training_set = set(training_categories())
-        evaluation_set = set(evaluation_categories())
-        self.audit.append({"type":"npb_game_type_policy","training_categories":sorted(training_set),"evaluation_categories":sorted(evaluation_set)})
+        self.audit.append({
+            "type": "unified_game_type_policy",
+            "policies": {
+                lg: {
+                    "training_categories": sorted(training_categories_generic(lg)),
+                    "evaluation_categories": sorted(evaluation_categories_generic(lg)),
+                }
+                for lg in ("NPB", "MLB", "INTERNATIONAL")
+            },
+        })
         self.player_index = {}
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
@@ -530,6 +538,9 @@ class BaseballBacktest:
                         "home_starter": hp, "away_starter": ap,
                         "venue": (game.get("venue") or {}).get("name", ""),
                         "confirmed_starters": bool(hp and ap),
+                        "game_type_code": str(game.get("gameType") or ""),
+                        "game_type": str((game.get("status") or {}).get("detailedState") or ""),
+                        "series_description": str((game.get("seriesDescription") or "")),
                     })
             time.sleep(0.1)
         df = pd.DataFrame(rows)
@@ -539,6 +550,44 @@ class BaseballBacktest:
         self.data_dir.mkdir(parents=True, exist_ok=True)
         df.to_csv(cache, index=False)
         return df
+
+    def load_international(self, path: Optional[Path] = None) -> pd.DataFrame:
+        """Load fail-closed international baseball data from a normalized CSV."""
+        cache = Path(path or (self.data_dir / "international_games.csv"))
+        if not cache.exists():
+            print(f"[INTERNATIONAL] no normalized dataset: {cache}")
+            return pd.DataFrame()
+        df = pd.read_csv(cache)
+        required = {"datetime", "game_id", "home", "away", "home_score", "away_score"}
+        missing = sorted(required - set(df.columns))
+        if missing:
+            raise RuntimeError(
+                f"INTERNATIONAL dataset missing required columns: {', '.join(missing)}"
+            )
+        df = df.copy()
+        df["league"] = "INTERNATIONAL"
+        df["game_id"] = df["game_id"].astype(str)
+        df["datetime"] = pd.to_datetime(df["datetime"], errors="coerce", utc=True)
+        df["home_score"] = pd.to_numeric(df["home_score"], errors="coerce")
+        df["away_score"] = pd.to_numeric(df["away_score"], errors="coerce")
+        df = df.dropna(subset=["datetime", "game_id", "home", "away", "home_score", "away_score"])
+        for c in ("competition", "game_type", "series_description"):
+            if c not in df.columns:
+                df[c] = ""
+        classifications = [
+            classify_game(
+                "INTERNATIONAL",
+                game_type=r.get("game_type", ""),
+                series_description=r.get("series_description", ""),
+                competition=r.get("competition", ""),
+            )
+            for _, r in df.iterrows()
+        ]
+        df["competition_category"] = [x["category"] for x in classifications]
+        df["competition_recognized"] = [bool(x["recognized"]) for x in classifications]
+        df["competition_training_default"] = [bool(x["training_default"]) for x in classifications]
+        df["competition_evaluation_default"] = [bool(x["evaluation_default"]) for x in classifications]
+        return df.sort_values(["datetime", "game_id"]).drop_duplicates("game_id").reset_index(drop=True)
 
     def enrich_mlb_starters(self, games: pd.DataFrame) -> pd.DataFrame:
         """Use game feed to identify actual starting pitchers for completed games."""
@@ -584,6 +633,23 @@ class BaseballBacktest:
         out = out.dropna(subset=["datetime", "home_score", "away_score", "home", "away"])
         out["league"] = "MLB"
         out["game_id"] = out["game_id"].astype(str)
+        for c in ("game_type_code", "game_type", "series_description", "competition"):
+            if c not in out.columns:
+                out[c] = ""
+        classifications = [
+            classify_game(
+                "MLB",
+                game_type_code=r.get("game_type_code", ""),
+                game_type=r.get("game_type", ""),
+                series_description=r.get("series_description", ""),
+                competition=r.get("competition", ""),
+            )
+            for _, r in out.iterrows()
+        ]
+        out["competition_category"] = [x["category"] for x in classifications]
+        out["competition_recognized"] = [bool(x["recognized"]) for x in classifications]
+        out["competition_training_default"] = [bool(x["training_default"]) for x in classifications]
+        out["competition_evaluation_default"] = [bool(x["evaluation_default"]) for x in classifications]
         return out.sort_values(["datetime", "game_id"]).drop_duplicates("game_id").reset_index(drop=True)
 
     def _get_json(self, url: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -996,9 +1062,22 @@ class BaseballBacktest:
         games = games.sort_values(["datetime", "game_id"]).reset_index(drop=True)
         last_season=None
         for _, row in games.iterrows():
-            category = str(row.get("npb_game_category", "unknown") or "unknown").strip().lower() if row.get("league") == "NPB" else "mlb"
-            train_include = category in training_set if row.get("league") == "NPB" else True
-            eval_include = category in evaluation_set if row.get("league") == "NPB" else True
+            league = str(row.get("league", "")).strip().upper()
+            existing_npb_category = str(row.get("npb_game_category", "") or "").strip().lower()
+            if league == "NPB" and existing_npb_category:
+                category = existing_npb_category
+            else:
+                info = classify_game(
+                    league,
+                    game_type_code=row.get("game_type_code", ""),
+                    game_type=row.get("game_type", ""),
+                    series_description=row.get("series_description", ""),
+                    competition=row.get("competition", ""),
+                    raw_context=row.get("game_name", ""),
+                )
+                category = str(info["category"]).strip().lower()
+            train_include = category_is_training_generic(league, category)
+            eval_include = category_is_evaluation_generic(league, category)
             cur_season=int(pd.Timestamp(row["datetime"]).year)
             if last_season is not None and cur_season != last_season:
                 # Regress Elo at each season boundary; rolling team form naturally
@@ -1016,7 +1095,11 @@ class BaseballBacktest:
                 target = 0 if hscore > ascore else 1
             y.append(target)
             payload = row.to_dict()
-            payload["npb_game_category"] = category
+            payload["competition_category"] = category
+            payload["competition_training_included"] = bool(train_include)
+            payload["competition_evaluation_included"] = bool(eval_include)
+            if league == "NPB":
+                payload["npb_game_category"] = category
             payload["training_included"] = bool(train_include)
             payload["evaluation_included"] = bool(eval_include)
             meta.append(payload)
@@ -1402,18 +1485,17 @@ class BaseballBacktest:
                 )
 
         X, y, meta = self.build_features(games)
-        if league == "NPB":
-            train_mask = meta["training_included"].astype(bool).to_numpy() if "training_included" in meta else np.ones(len(meta), dtype=bool)
-            eval_mask = meta["evaluation_included"].astype(bool).to_numpy() if "evaluation_included" in meta else np.ones(len(meta), dtype=bool)
-        else:
-            train_mask = np.ones(len(meta), dtype=bool)
-            eval_mask = np.ones(len(meta), dtype=bool)
+        train_mask = meta["training_included"].astype(bool).to_numpy() if "training_included" in meta else np.ones(len(meta), dtype=bool)
+        eval_mask = meta["evaluation_included"].astype(bool).to_numpy() if "evaluation_included" in meta else np.ones(len(meta), dtype=bool)
+        category_col = "competition_category" if "competition_category" in meta.columns else ("npb_game_category" if "npb_game_category" in meta.columns else "")
         self.audit.append({
-            "type":"npb_game_type_counts",
-            "league":league,
-            "training_rows":int(train_mask.sum()),
-            "evaluation_rows":int(eval_mask.sum()),
-            "categories":meta["npb_game_category"].value_counts(dropna=False).to_dict() if "npb_game_category" in meta else {},
+            "type": "competition_type_counts",
+            "league": league,
+            "training_rows": int(train_mask.sum()),
+            "evaluation_rows": int(eval_mask.sum()),
+            "categories": meta[category_col].value_counts(dropna=False).to_dict() if category_col else {},
+            "training_categories": sorted(training_categories_generic(league)),
+            "evaluation_categories": sorted(evaluation_categories_generic(league)),
         })
         matchday_shadow = os.getenv("BASEBALL_MATCHDAY_SHADOW", "0").strip().lower() in {"1","true","yes"}
         X_free = self._context_free_matrix(X) if matchday_shadow else None
@@ -1521,7 +1603,8 @@ class BaseballBacktest:
                     "league": league, "game_id": r["game_id"], "datetime": r["datetime"],
                     "home": r["home"], "away": r["away"], "home_starter": r.get("home_starter", ""), "away_starter": r.get("away_starter", ""),
                     "game_type": r.get("game_type", "UNKNOWN"),
-                    "npb_game_category": r.get("npb_game_category", "unknown"),
+                    "competition_category": r.get("competition_category", r.get("npb_game_category", "unknown")),
+                    "npb_game_category": r.get("npb_game_category", r.get("competition_category", "unknown")),
                     "training_included": bool(r.get("training_included", True)),
                     "evaluation_included": bool(r.get("evaluation_included", True)),
                     "pred_home": float(prob[0]), "pred_draw": float(prob[1]) if league == "NPB" else np.nan,
@@ -1595,6 +1678,20 @@ class BaseballBacktest:
         summary.to_csv(RESULTS / f"{league.lower()}_backtest_summary.csv", index=False)
         model = df.groupby("model").agg(Predictions=("correct", "size"), Accuracy=("correct", "mean"), LogLoss=("logloss", "mean"), Brier=("brier", "mean")).reset_index()
         model.to_csv(RESULTS / f"{league.lower()}_model_comparison.csv", index=False)
+        if "competition_category" in df.columns:
+            rows = []
+            for category, g in df.groupby("competition_category", dropna=False):
+                rows.append({
+                    "League": league,
+                    "CompetitionCategory": str(category),
+                    "Predictions": int(len(g)),
+                    "Accuracy": float(g.correct.mean()),
+                    "LogLoss": float(g.logloss.mean()),
+                    "Brier": float(g.brier.mean()),
+                    "TrainingIncludedRate": float(g.training_included.mean()) if "training_included" in g.columns else np.nan,
+                    "EvaluationIncludedRate": float(g.evaluation_included.mean()) if "evaluation_included" in g.columns else np.nan,
+                })
+            pd.DataFrame(rows).to_csv(RESULTS / f"{league.lower()}_competition_type_metrics.csv", index=False)
         if league == "NPB" and "npb_game_category" in df.columns:
             rows=[]
             for category, g in df.groupby("npb_game_category", dropna=False):
@@ -1675,6 +1772,21 @@ class BaseballBacktest:
                 print(f"[MLB STOP] {e}")
             except Exception as e:
                 print(f"[MLB ERROR] {type(e).__name__}: {e}")
+        intl_games = self.load_international()
+        if not intl_games.empty:
+            try:
+                print(f"INTERNATIONAL games: {len(intl_games)}")
+                r = self.run_walkforward(intl_games, "INTERNATIONAL")
+                self.save_reports(r, "INTERNATIONAL")
+                if not r.empty:
+                    self.results.extend(r.to_dict("records"))
+            except TimeoutError as e:
+                print(f"[INTERNATIONAL STOP] {e}")
+            except Exception as e:
+                print(f"[INTERNATIONAL ERROR] {type(e).__name__}: {e}")
+        elif os.getenv("BASEBALL_REQUIRE_INTERNATIONAL_DATA", "0").strip().lower() in {"1","true","yes"}:
+            raise RuntimeError("INTERNATIONAL data is required but no normalized dataset is available.")
+
         if self.results:
             pd.DataFrame(self.results).to_csv(RESULTS / "combined_backtest_results.csv", index=False)
         if time.time() - self.started_at >= self.time_budget_sec:
