@@ -258,7 +258,7 @@ class BaseballBacktest:
         self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 1500.0)  # hard cap: 29:00
         self.audit: List[Dict[str, Any]] = []
         self.checkpoint_dir = RESULTS / "checkpoints"
-        self.checkpoint_version = "npb-massive-resume-v5-matchday-shadow"
+        self.checkpoint_version = "baseball-unified-competition-taxonomy-v1"
         self._last_temperature = 1.0
         self.context_pit_counters = defaultdict(int)
         self.core_context_training_ready = {"starter": False, "lineup": False}
