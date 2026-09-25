@@ -1,0 +1,36 @@
+league,game_id,datetime,home,away,home_score,away_score,home_starter,away_starter,venue,game_type,series_description,confirmed_starters
+MLB,660936,2021-10-07 20:07:00+00:00,Houston Astros,Chicago White Sox,6.0,1.0,Lance McCullers Jr.,Lance Lynn,Minute Maid Park,D,AL Division Series,True
+MLB,660929,2021-10-08 00:07:00+00:00,Tampa Bay Rays,Boston Red Sox,5.0,0.0,Shane McClanahan,Eduardo Rodriguez,Tropicana Field,D,AL Division Series,True
+MLB,660934,2021-10-08 18:07:00+00:00,Houston Astros,Chicago White Sox,9.0,4.0,Framber Valdez,Lucas Giolito,Minute Maid Park,D,AL Division Series,True
+MLB,660917,2021-10-08 20:37:00+00:00,Milwaukee Brewers,Atlanta Braves,2.0,1.0,Corbin Burnes,Charlie Morton,American Family Field,D,NL Division Series,True
+MLB,660932,2021-10-08 23:02:00+00:00,Tampa Bay Rays,Boston Red Sox,6.0,14.0,Shane Baz,Chris Sale,Tropicana Field,D,AL Division Series,True
+MLB,660933,2021-10-09 01:37:00+00:00,San Francisco Giants,Los Angeles Dodgers,4.0,0.0,Logan Webb,Walker Buehler,Oracle Park,D,NL Division Series,True
+MLB,660907,2021-10-09 21:07:00+00:00,Milwaukee Brewers,Atlanta Braves,0.0,3.0,Brandon Woodruff,Max Fried,American Family Field,D,NL Division Series,True
+MLB,660925,2021-10-10 01:07:00+00:00,San Francisco Giants,Los Angeles Dodgers,2.0,9.0,Kevin Gausman,Julio Urías,Oracle Park,D,NL Division Series,True
+MLB,660928,2021-10-10 20:07:00+00:00,Boston Red Sox,Tampa Bay Rays,6.0,4.0,Nathan Eovaldi,Drew Rasmussen,Fenway Park,D,AL Division Series,True
+MLB,660931,2021-10-11 00:07:00+00:00,Chicago White Sox,Houston Astros,12.0,6.0,Dylan Cease,Luis Garcia,Guaranteed Rate Field,D,AL Division Series,True
+MLB,660905,2021-10-11 17:07:00+00:00,Atlanta Braves,Milwaukee Brewers,3.0,0.0,Ian Anderson,Freddy Peralta,Truist Park,D,NL Division Series,True
+MLB,660927,2021-10-11 23:07:00+00:00,Boston Red Sox,Tampa Bay Rays,6.0,5.0,Eduardo Rodriguez,Collin McHugh,Fenway Park,D,AL Division Series,True
+MLB,660919,2021-10-12 01:37:00+00:00,Los Angeles Dodgers,San Francisco Giants,0.0,1.0,Max Scherzer,Alex Wood,Dodger Stadium,D,NL Division Series,True
+MLB,660926,2021-10-12 18:07:00+00:00,Chicago White Sox,Houston Astros,1.0,10.0,Carlos Rodón,Lance McCullers Jr.,Guaranteed Rate Field,D,AL Division Series,True
+MLB,660914,2021-10-12 21:15:00+00:00,Atlanta Braves,Milwaukee Brewers,5.0,4.0,Charlie Morton,Eric Lauer,Truist Park,D,NL Division Series,True
+MLB,660918,2021-10-13 01:07:00+00:00,Los Angeles Dodgers,San Francisco Giants,7.0,2.0,Walker Buehler,Anthony DeSclafani,Dodger Stadium,D,NL Division Series,True
+MLB,660920,2021-10-15 01:07:00+00:00,San Francisco Giants,Los Angeles Dodgers,1.0,2.0,Logan Webb,Corey Knebel,Oracle Park,D,NL Division Series,True
+MLB,660896,2021-10-16 00:07:00+00:00,Houston Astros,Boston Red Sox,5.0,4.0,Framber Valdez,Chris Sale,Minute Maid Park,L,AL Championship Series,True
+MLB,660913,2021-10-16 20:20:00+00:00,Houston Astros,Boston Red Sox,5.0,9.0,Luis Garcia,Nathan Eovaldi,Minute Maid Park,L,AL Championship Series,True
+MLB,660924,2021-10-17 00:08:00+00:00,Atlanta Braves,Los Angeles Dodgers,3.0,2.0,Max Fried,Corey Knebel,Truist Park,L,NL Championship Series,True
+MLB,660922,2021-10-17 23:38:00+00:00,Atlanta Braves,Los Angeles Dodgers,5.0,4.0,Ian Anderson,Max Scherzer,Truist Park,L,NL Championship Series,True
+MLB,660898,2021-10-19 00:08:00+00:00,Boston Red Sox,Houston Astros,12.0,3.0,Eduardo Rodriguez,José Urquidy,Fenway Park,L,AL Championship Series,True
+MLB,660916,2021-10-19 21:08:00+00:00,Los Angeles Dodgers,Atlanta Braves,6.0,5.0,Walker Buehler,Charlie Morton,Dodger Stadium,L,NL Championship Series,True
+MLB,660923,2021-10-20 00:08:00+00:00,Boston Red Sox,Houston Astros,2.0,9.0,Nick Pivetta,Zack Greinke,Fenway Park,L,AL Championship Series,True
+MLB,660900,2021-10-20 21:08:00+00:00,Boston Red Sox,Houston Astros,1.0,9.0,Chris Sale,Framber Valdez,Fenway Park,L,AL Championship Series,True
+MLB,660904,2021-10-21 00:08:00+00:00,Los Angeles Dodgers,Atlanta Braves,2.0,9.0,Julio Urías,Jesse Chavez,Dodger Stadium,L,NL Championship Series,True
+MLB,660903,2021-10-22 00:08:00+00:00,Los Angeles Dodgers,Atlanta Braves,11.0,2.0,Joe Kelly,Max Fried,Dodger Stadium,L,NL Championship Series,True
+MLB,660899,2021-10-23 00:08:00+00:00,Houston Astros,Boston Red Sox,5.0,0.0,Luis Garcia,Nathan Eovaldi,Minute Maid Park,L,AL Championship Series,True
+MLB,660921,2021-10-24 00:08:00+00:00,Atlanta Braves,Los Angeles Dodgers,4.0,2.0,Ian Anderson,Walker Buehler,Truist Park,L,NL Championship Series,True
+MLB,660897,2021-10-27 00:09:00+00:00,Houston Astros,Atlanta Braves,2.0,6.0,Framber Valdez,Charlie Morton,Minute Maid Park,W,World Series,True
+MLB,660908,2021-10-28 00:09:00+00:00,Houston Astros,Atlanta Braves,7.0,2.0,José Urquidy,Max Fried,Minute Maid Park,W,World Series,True
+MLB,660910,2021-10-30 00:09:00+00:00,Atlanta Braves,Houston Astros,2.0,0.0,Ian Anderson,Luis Garcia,Truist Park,W,World Series,True
+MLB,660902,2021-10-31 00:09:00+00:00,Atlanta Braves,Houston Astros,3.0,2.0,Dylan Lee,Zack Greinke,Truist Park,W,World Series,True
+MLB,660911,2021-11-01 00:15:00+00:00,Atlanta Braves,Houston Astros,5.0,9.0,Tucker Davidson,Framber Valdez,Truist Park,W,World Series,True
+MLB,660906,2021-11-03 00:09:00+00:00,Houston Astros,Atlanta Braves,0.0,7.0,Luis Garcia,Max Fried,Minute Maid Park,W,World Series,True

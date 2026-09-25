@@ -1,0 +1,582 @@
+league,game_id,datetime,home,away,home_score,away_score,home_starter,away_starter,venue,game_type,series_description,confirmed_starters
+MLB,747816,2024-03-25 16:05:00+00:00,Philadelphia Phillies,Tampa Bay Rays,3.0,6.0,David Buchanan,Jacob Waguespack,BayCare Ballpark,S,Spring Training,True
+MLB,747813,2024-03-25 17:05:00+00:00,Atlanta Braves,Minnesota Twins,4.0,0.0,Chris Sale,Bailey Ober,CoolToday Park,S,Spring Training,True
+MLB,747815,2024-03-25 17:05:00+00:00,Pittsburgh Pirates,Toronto Blue Jays,4.0,3.0,Marco Gonzales,Kevin Gausman,LECOM Park,S,Spring Training,True
+MLB,748868,2024-03-25 17:05:00+00:00,New York Yankees,New York Mets,3.0,0.0,Clarke Schmidt,Sean Manaea,George M. Steinbrenner Field,S,Spring Training,True
+MLB,748338,2024-03-25 20:05:00+00:00,Chicago Cubs,St. Louis Cardinals,3.0,6.0,Jordan Wicks,Steven Matz,Sloan Park,S,Spring Training,True
+MLB,747810,2024-03-25 20:10:00+00:00,Milwaukee Brewers,Colorado Rockies,10.0,1.0,Colin Rea,Dakota Hudson,American Family Fields of Phoenix,S,Spring Training,True
+MLB,764494,2024-03-25 23:05:00+00:00,Northwest Arkansas Naturals,Kansas City Royals,1.0,7.0,,Brady Singer,Arvest Ballpark,E,Exhibition Game,False
+MLB,766494,2024-03-26 00:00:00+00:00,Diablos Rojos del Mexico,New York Yankees,8.0,5.0,,Luis Serna,Estadio Alfredo Harp Helu,E,Exhibition,False
+MLB,747812,2024-03-26 00:05:00+00:00,Texas Rangers,Boston Red Sox,2.0,9.0,,Garrett Whitlock,Globe Life Field,S,Spring Training,False
+MLB,747814,2024-03-26 00:10:00+00:00,Houston Astros,Sugar Land Space Cowboys,1.0,3.0,Misael Tamarez,Rhett Kouba,Minute Maid Park,E,Exhibition Game,True
+MLB,747811,2024-03-26 01:10:00+00:00,Los Angeles Dodgers,Los Angeles Angels,0.0,6.0,Gavin Stone,Reid Detmers,Dodger Stadium,S,Spring Training,True
+MLB,747807,2024-03-26 01:40:00+00:00,Oakland Athletics,San Francisco Giants,1.0,4.0,JP Sears,Jordan Hicks,Oakland Coliseum,S,Spring Training,True
+MLB,747808,2024-03-26 01:40:00+00:00,San Diego Padres,Seattle Mariners,1.0,4.0,Dylan Cease,Bryce Miller,Petco Park,S,Spring Training,True
+MLB,747809,2024-03-26 01:40:00+00:00,Arizona Diamondbacks,Cleveland Guardians,6.0,0.0,Tommy Henry,Tyler Beede,Chase Field,S,Spring Training,True
+MLB,761424,2024-03-26 16:05:00+00:00,Washington Nationals,Washington Nationals Prospects,13.0,1.0,MacKenzie Gore,Jackson Rutledge,Nationals Park,E,Exhibition Game,True
+MLB,747806,2024-03-26 16:35:00+00:00,Tampa Bay Rays,Detroit Tigers,3.0,3.0,Ryan Pepiot,Casey Mize,Tropicana Field,S,Spring Training,True
+MLB,747804,2024-03-26 17:05:00+00:00,Minnesota Twins,Atlanta Braves,9.0,6.0,Louis Varland,Samuel Strickland,Lee Health Sports Complex,S,Spring Training,True
+MLB,747802,2024-03-26 18:05:00+00:00,Texas Rangers,Boston Red Sox,1.0,4.0,Dane Dunning,Richard Fitts,Globe Life Field,S,Spring Training,True
+MLB,748339,2024-03-26 19:05:00+00:00,Chicago Cubs,St. Louis Cardinals,2.0,7.0,Shota Imanaga,Kyle Gibson,Sloan Park,S,Spring Training,True
+MLB,747798,2024-03-26 19:10:00+00:00,Colorado Rockies,Milwaukee Brewers,6.0,1.0,Ryan Feltner,Aaron Ashby,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,747803,2024-03-26 19:40:00+00:00,Arizona Diamondbacks,Cleveland Guardians,6.0,1.0,Brandon Pfaadt,Triston McKenzie,Chase Field,S,Spring Training,True
+MLB,747799,2024-03-26 20:10:00+00:00,San Diego Padres,Seattle Mariners,6.0,7.0,Michael King,Casey Lawrence,Petco Park,S,Spring Training,True
+MLB,747800,2024-03-27 00:05:00+00:00,San Francisco Giants,Oakland Athletics,1.0,3.0,Spencer Howard,Paul Blackburn,Oracle Park,S,Spring Training,True
+MLB,747805,2024-03-27 00:10:00+00:00,Houston Astros,Sugar Land Space Cowboys,7.0,3.0,Ronel Blanco,J.P. France,Minute Maid Park,E,Exhibition Game,True
+MLB,747801,2024-03-27 01:07:00+00:00,Los Angeles Angels,Los Angeles Dodgers,4.0,3.0,Chase Silseth,James Paxton,Angel Stadium,S,Spring Training,True
+MLB,747060,2024-03-28 19:05:00+00:00,Baltimore Orioles,Los Angeles Angels,11.0,3.0,Corbin Burnes,Patrick Sandoval,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,745116,2024-03-28 20:10:00+00:00,Tampa Bay Rays,Toronto Blue Jays,2.0,8.0,Zach Eflin,José Berríos,Tropicana Field,R,Regular Season,True
+MLB,745445,2024-03-28 20:10:00+00:00,San Diego Padres,San Francisco Giants,6.0,4.0,Yu Darvish,Logan Webb,Petco Park,R,Regular Season,True
+MLB,746089,2024-03-28 20:10:00+00:00,Miami Marlins,Pittsburgh Pirates,5.0,6.0,Jesús Luzardo,Mitch Keller,loanDepot park,R,Regular Season,True
+MLB,746165,2024-03-28 20:10:00+00:00,Los Angeles Dodgers,St. Louis Cardinals,7.0,1.0,Tyler Glasnow,Miles Mikolas,Dodger Stadium,R,Regular Season,True
+MLB,746335,2024-03-28 20:10:00+00:00,Kansas City Royals,Minnesota Twins,1.0,4.0,Cole Ragans,Pablo López,Kauffman Stadium,R,Regular Season,True
+MLB,746418,2024-03-28 20:10:00+00:00,Houston Astros,New York Yankees,4.0,5.0,Framber Valdez,Nestor Cortes,Minute Maid Park,R,Regular Season,True
+MLB,746737,2024-03-28 20:10:00+00:00,Cincinnati Reds,Washington Nationals,8.0,2.0,Frankie Montas,Josiah Gray,Great American Ball Park,R,Regular Season,True
+MLB,746821,2024-03-28 20:10:00+00:00,Chicago White Sox,Detroit Tigers,0.0,1.0,Garrett Crochet,Tarik Skubal,Guaranteed Rate Field,R,Regular Season,True
+MLB,745039,2024-03-28 23:35:00+00:00,Texas Rangers,Chicago Cubs,4.0,3.0,Nathan Eovaldi,Justin Steele,Globe Life Field,R,Regular Season,True
+MLB,745687,2024-03-29 02:07:00+00:00,Oakland Athletics,Cleveland Guardians,0.0,8.0,Alex Wood,Shane Bieber,Oakland Coliseum,R,Regular Season,True
+MLB,745283,2024-03-29 02:10:00+00:00,Seattle Mariners,Boston Red Sox,4.0,6.0,Luis Castillo,Brayan Bello,T-Mobile Park,R,Regular Season,True
+MLB,747224,2024-03-29 02:10:00+00:00,Arizona Diamondbacks,Colorado Rockies,16.0,1.0,Zac Gallen,Kyle Freeland,Chase Field,R,Regular Season,True
+MLB,745848,2024-03-29 17:40:00+00:00,New York Mets,Milwaukee Brewers,1.0,3.0,Jose Quintana,Freddy Peralta,Citi Field,R,Regular Season,True
+MLB,745604,2024-03-29 19:05:00+00:00,Philadelphia Phillies,Atlanta Braves,3.0,9.0,Zack Wheeler,Spencer Strider,Citizens Bank Park,R,Regular Season,True
+MLB,745117,2024-03-29 22:50:00+00:00,Tampa Bay Rays,Toronto Blue Jays,8.0,2.0,Aaron Civale,Chris Bassitt,Tropicana Field,R,Regular Season,True
+MLB,746091,2024-03-29 23:10:00+00:00,Miami Marlins,Pittsburgh Pirates,2.0,7.0,A.J. Puk,Martín Pérez,loanDepot park,R,Regular Season,True
+MLB,746412,2024-03-30 00:10:00+00:00,Houston Astros,New York Yankees,1.0,7.0,Cristian Javier,Carlos Rodón,Minute Maid Park,R,Regular Season,True
+MLB,745276,2024-03-30 01:40:00+00:00,Seattle Mariners,Boston Red Sox,1.0,0.0,George Kirby,Nick Pivetta,T-Mobile Park,R,Regular Season,True
+MLB,745435,2024-03-30 01:40:00+00:00,San Diego Padres,San Francisco Giants,3.0,8.0,Joe Musgrove,Kyle Harrison,Petco Park,R,Regular Season,True
+MLB,745682,2024-03-30 01:40:00+00:00,Oakland Athletics,Cleveland Guardians,4.0,6.0,Ross Stripling,Logan Allen,Oakland Coliseum,R,Regular Season,True
+MLB,747223,2024-03-30 01:40:00+00:00,Arizona Diamondbacks,Colorado Rockies,7.0,3.0,Merrill Kelly,Cal Quantrill,Chase Field,R,Regular Season,True
+MLB,746167,2024-03-30 02:10:00+00:00,Los Angeles Dodgers,St. Louis Cardinals,6.0,3.0,Bobby Miller,Zack Thompson,Dodger Stadium,R,Regular Season,True
+MLB,745850,2024-03-30 17:40:00+00:00,New York Mets,Milwaukee Brewers,6.0,7.0,Luis Severino,DL Hall,Citi Field,R,Regular Season,True
+MLB,746818,2024-03-30 18:10:00+00:00,Chicago White Sox,Detroit Tigers,6.0,7.0,Michael Soroka,Kenta Maeda,Guaranteed Rate Field,R,Regular Season,True
+MLB,745599,2024-03-30 20:05:00+00:00,Philadelphia Phillies,Atlanta Braves,4.0,12.0,Aaron Nola,Max Fried,Citizens Bank Park,R,Regular Season,True
+MLB,747063,2024-03-30 20:05:00+00:00,Baltimore Orioles,Los Angeles Angels,13.0,4.0,Grayson Rodriguez,Griffin Canning,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,745684,2024-03-30 20:07:00+00:00,Oakland Athletics,Cleveland Guardians,3.0,12.0,JP Sears,Tanner Bibee,Oakland Coliseum,R,Regular Season,True
+MLB,745119,2024-03-30 20:10:00+00:00,Tampa Bay Rays,Toronto Blue Jays,5.0,1.0,Zack Littell,Yusei Kikuchi,Tropicana Field,R,Regular Season,True
+MLB,746087,2024-03-30 20:10:00+00:00,Miami Marlins,Pittsburgh Pirates,3.0,9.0,Ryan Weathers,Jared Jones,loanDepot park,R,Regular Season,True
+MLB,746333,2024-03-30 20:10:00+00:00,Kansas City Royals,Minnesota Twins,1.0,5.0,Seth Lugo,Joe Ryan,Kauffman Stadium,R,Regular Season,True
+MLB,746736,2024-03-30 20:10:00+00:00,Cincinnati Reds,Washington Nationals,6.0,7.0,Hunter Greene,Patrick Corbin,Great American Ball Park,R,Regular Season,True
+MLB,745037,2024-03-30 23:05:00+00:00,Texas Rangers,Chicago Cubs,11.0,2.0,Cody Bradford,Kyle Hendricks,Globe Life Field,R,Regular Season,True
+MLB,745436,2024-03-30 23:15:00+00:00,San Diego Padres,San Francisco Giants,6.0,9.0,Dylan Cease,Jordan Hicks,Petco Park,R,Regular Season,True
+MLB,746410,2024-03-30 23:15:00+00:00,Houston Astros,New York Yankees,3.0,5.0,Hunter Brown,Marcus Stroman,Minute Maid Park,R,Regular Season,True
+MLB,747221,2024-03-31 00:10:00+00:00,Arizona Diamondbacks,Colorado Rockies,4.0,9.0,Tommy Henry,Austin Gomber,Chase Field,R,Regular Season,True
+MLB,746168,2024-03-31 01:10:00+00:00,Los Angeles Dodgers,St. Louis Cardinals,5.0,6.0,Yoshinobu Yamamoto,Lance Lynn,Dodger Stadium,R,Regular Season,True
+MLB,745278,2024-03-31 01:40:00+00:00,Seattle Mariners,Boston Red Sox,4.0,3.0,Logan Gilbert,Kutter Crawford,T-Mobile Park,R,Regular Season,True
+MLB,745602,2024-03-31 17:35:00+00:00,Philadelphia Phillies,Atlanta Braves,5.0,4.0,Ranger Suarez,Chris Sale,Citizens Bank Park,R,Regular Season,True
+MLB,747062,2024-03-31 17:35:00+00:00,Baltimore Orioles,Los Angeles Angels,1.0,4.0,Tyler Wells,Reid Detmers,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,745115,2024-03-31 17:40:00+00:00,Tampa Bay Rays,Toronto Blue Jays,2.0,9.0,Shawn Armstrong,Kevin Gausman,Tropicana Field,R,Regular Season,True
+MLB,745845,2024-03-31 17:40:00+00:00,New York Mets,Milwaukee Brewers,1.0,4.0,Tylor Megill,Colin Rea,Citi Field,R,Regular Season,True
+MLB,746090,2024-03-31 17:40:00+00:00,Miami Marlins,Pittsburgh Pirates,7.0,9.0,Trevor Rogers,Bailey Falter,loanDepot park,R,Regular Season,True
+MLB,746739,2024-03-31 17:40:00+00:00,Cincinnati Reds,Washington Nationals,6.0,5.0,Nick Martinez,Jake Irvin,Great American Ball Park,R,Regular Season,True
+MLB,746332,2024-03-31 18:10:00+00:00,Kansas City Royals,Minnesota Twins,11.0,0.0,Brady Singer,Bailey Ober,Kauffman Stadium,R,Regular Season,True
+MLB,746413,2024-03-31 18:10:00+00:00,Houston Astros,New York Yankees,3.0,4.0,J.P. France,Clarke Schmidt,Minute Maid Park,R,Regular Season,True
+MLB,746815,2024-03-31 18:10:00+00:00,Chicago White Sox,Detroit Tigers,2.0,3.0,Erick Fedde,Jack Flaherty,Guaranteed Rate Field,R,Regular Season,True
+MLB,745035,2024-03-31 18:35:00+00:00,Texas Rangers,Chicago Cubs,5.0,9.0,Jon Gray,Jordan Wicks,Globe Life Field,R,Regular Season,True
+MLB,745683,2024-03-31 20:07:00+00:00,Oakland Athletics,Cleveland Guardians,4.0,3.0,Paul Blackburn,Carlos Carrasco,Oakland Coliseum,R,Regular Season,True
+MLB,745279,2024-03-31 20:10:00+00:00,Seattle Mariners,Boston Red Sox,1.0,5.0,Bryce Miller,Garrett Whitlock,T-Mobile Park,R,Regular Season,True
+MLB,745438,2024-03-31 20:10:00+00:00,San Diego Padres,San Francisco Giants,13.0,4.0,Michael King,Daulton Jefferies,Petco Park,R,Regular Season,True
+MLB,747222,2024-03-31 20:10:00+00:00,Arizona Diamondbacks,Colorado Rockies,5.0,1.0,Brandon Pfaadt,Ryan Feltner,Chase Field,R,Regular Season,True
+MLB,746166,2024-03-31 23:10:00+00:00,Los Angeles Dodgers,St. Louis Cardinals,5.0,4.0,Gavin Stone,Steven Matz,Dodger Stadium,R,Regular Season,True
+MLB,746817,2024-04-01 18:10:00+00:00,Chicago White Sox,Atlanta Braves,0.0,9.0,Chris Flexen,Charlie Morton,Guaranteed Rate Field,R,Regular Season,True
+MLB,746899,2024-04-01 18:20:00+00:00,Chicago Cubs,Colorado Rockies,5.0,0.0,Shota Imanaga,Dakota Hudson,Wrigley Field,R,Regular Season,True
+MLB,744875,2024-04-01 20:05:00+00:00,Washington Nationals,Pittsburgh Pirates,4.0,8.0,MacKenzie Gore,Marco Gonzales,Nationals Park,R,Regular Season,True
+MLB,747058,2024-04-01 22:35:00+00:00,Baltimore Orioles,Kansas City Royals,6.0,4.0,Dean Kremer,Michael Wacha,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,745600,2024-04-01 22:40:00+00:00,Philadelphia Phillies,Cincinnati Reds,3.0,6.0,Cristopher Sánchez,Andrew Abbott,Citizens Bank Park,R,Regular Season,True
+MLB,746085,2024-04-01 22:40:00+00:00,Miami Marlins,Los Angeles Angels,4.0,7.0,Max Meyer,Chase Silseth,loanDepot park,R,Regular Season,True
+MLB,745109,2024-04-01 22:50:00+00:00,Tampa Bay Rays,Texas Rangers,3.0,9.0,Ryan Pepiot,Dane Dunning,Tropicana Field,R,Regular Season,True
+MLB,745842,2024-04-01 23:10:00+00:00,New York Mets,Detroit Tigers,0.0,5.0,Sean Manaea,Reese Olson,Citi Field,R,Regular Season,True
+MLB,746409,2024-04-02 00:10:00+00:00,Houston Astros,Toronto Blue Jays,10.0,0.0,Ronel Blanco,Bowden Francis,Minute Maid Park,R,Regular Season,True
+MLB,745277,2024-04-02 01:40:00+00:00,Seattle Mariners,Cleveland Guardians,5.0,4.0,Emerson Hancock,Triston McKenzie,T-Mobile Park,R,Regular Season,True
+MLB,745437,2024-04-02 01:40:00+00:00,San Diego Padres,St. Louis Cardinals,2.0,6.0,Matt Waldron,Kyle Gibson,Petco Park,R,Regular Season,True
+MLB,745675,2024-04-02 01:40:00+00:00,Oakland Athletics,Boston Red Sox,0.0,9.0,Joe Boyle,Tanner Houck,Oakland Coliseum,R,Regular Season,True
+MLB,747218,2024-04-02 01:40:00+00:00,Arizona Diamondbacks,New York Yankees,2.0,5.0,Ryne Nelson,Luis Gil,Chase Field,R,Regular Season,True
+MLB,746170,2024-04-02 02:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,8.0,3.0,James Paxton,Keaton Winn,Dodger Stadium,R,Regular Season,True
+MLB,746009,2024-04-02 20:10:00+00:00,Milwaukee Brewers,Minnesota Twins,3.0,2.0,Jakob Junis,Louis Varland,American Family Field,R,Regular Season,True
+MLB,747057,2024-04-02 22:35:00+00:00,Baltimore Orioles,Kansas City Royals,1.0,4.0,Cole Irvin,Alec Marsh,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,745598,2024-04-02 22:40:00+00:00,Philadelphia Phillies,Cincinnati Reds,9.0,4.0,Spencer Turnbull,Graham Ashcraft,Citizens Bank Park,R,Regular Season,True
+MLB,746086,2024-04-02 22:40:00+00:00,Miami Marlins,Los Angeles Angels,1.0,3.0,Jesús Luzardo,Tyler Anderson,loanDepot park,R,Regular Season,True
+MLB,745111,2024-04-02 22:50:00+00:00,Tampa Bay Rays,Texas Rangers,5.0,2.0,Zach Eflin,Andrew Heaney,Tropicana Field,R,Regular Season,True
+MLB,746814,2024-04-02 23:40:00+00:00,Chicago White Sox,Atlanta Braves,3.0,2.0,Garrett Crochet,Reynaldo López,Guaranteed Rate Field,R,Regular Season,True
+MLB,746898,2024-04-02 23:40:00+00:00,Chicago Cubs,Colorado Rockies,12.0,2.0,Javier Assad,Kyle Freeland,Wrigley Field,R,Regular Season,True
+MLB,746411,2024-04-03 00:10:00+00:00,Houston Astros,Toronto Blue Jays,1.0,2.0,Framber Valdez,José Berríos,Minute Maid Park,R,Regular Season,True
+MLB,745273,2024-04-03 01:40:00+00:00,Seattle Mariners,Cleveland Guardians,2.0,5.0,Luis Castillo,Shane Bieber,T-Mobile Park,R,Regular Season,True
+MLB,745439,2024-04-03 01:40:00+00:00,San Diego Padres,St. Louis Cardinals,2.0,5.0,Yu Darvish,Miles Mikolas,Petco Park,R,Regular Season,True
+MLB,745680,2024-04-03 01:40:00+00:00,Oakland Athletics,Boston Red Sox,4.0,5.0,Alex Wood,Brayan Bello,Oakland Coliseum,R,Regular Season,True
+MLB,747220,2024-04-03 01:40:00+00:00,Arizona Diamondbacks,New York Yankees,7.0,0.0,Zac Gallen,Nestor Cortes,Chase Field,R,Regular Season,True
+MLB,746169,2024-04-03 02:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,5.0,4.0,Ryan Brasier,Logan Webb,Dodger Stadium,R,Regular Season,True
+MLB,747059,2024-04-03 17:05:00+00:00,Baltimore Orioles,Kansas City Royals,4.0,3.0,Corbin Burnes,Cole Ragans,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,745114,2024-04-03 17:10:00+00:00,Tampa Bay Rays,Texas Rangers,1.0,4.0,Aaron Civale,Nathan Eovaldi,Tropicana Field,R,Regular Season,True
+MLB,746008,2024-04-03 17:10:00+00:00,Milwaukee Brewers,Minnesota Twins,3.0,7.0,Joe Ross,Chris Paddack,American Family Field,R,Regular Season,True
+MLB,746083,2024-04-03 17:10:00+00:00,Miami Marlins,Los Angeles Angels,2.0,10.0,A.J. Puk,Patrick Sandoval,loanDepot park,R,Regular Season,True
+MLB,745678,2024-04-03 19:37:00+00:00,Oakland Athletics,Boston Red Sox,0.0,1.0,Ross Stripling,Nick Pivetta,Oakland Coliseum,R,Regular Season,True
+MLB,747219,2024-04-03 19:40:00+00:00,Arizona Diamondbacks,New York Yankees,5.0,6.0,Merrill Kelly,Carlos Rodón,Chase Field,R,Regular Season,True
+MLB,745603,2024-04-03 20:05:00+00:00,Philadelphia Phillies,Cincinnati Reds,1.0,4.0,Zack Wheeler,Frankie Montas,Citizens Bank Park,R,Regular Season,True
+MLB,745275,2024-04-03 20:10:00+00:00,Seattle Mariners,Cleveland Guardians,0.0,8.0,George Kirby,Logan Allen,T-Mobile Park,R,Regular Season,True
+MLB,745440,2024-04-03 20:10:00+00:00,San Diego Padres,St. Louis Cardinals,3.0,2.0,Joe Musgrove,Zack Thompson,Petco Park,R,Regular Season,True
+MLB,744869,2024-04-03 22:45:00+00:00,Washington Nationals,Pittsburgh Pirates,5.0,3.0,Trevor Williams,Mitch Keller,Nationals Park,R,Regular Season,True
+MLB,746900,2024-04-03 23:40:00+00:00,Chicago Cubs,Colorado Rockies,9.0,8.0,Luke Little,Cal Quantrill,Wrigley Field,R,Regular Season,True
+MLB,746407,2024-04-04 00:10:00+00:00,Houston Astros,Toronto Blue Jays,8.0,0.0,Cristian Javier,Chris Bassitt,Minute Maid Park,R,Regular Season,True
+MLB,746163,2024-04-04 02:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,5.0,4.0,Tyler Glasnow,Kyle Harrison,Dodger Stadium,R,Regular Season,True
+MLB,745844,2024-04-04 16:10:00+00:00,New York Mets,Detroit Tigers,3.0,6.0,Adrian Houser,Casey Mize,Citi Field,R,Regular Season,True
+MLB,745843,2024-04-04 16:15:00+00:00,New York Mets,Detroit Tigers,2.0,1.0,José Buttó,Matt Manning,Citi Field,R,Regular Season,True
+MLB,744870,2024-04-04 20:05:00+00:00,Washington Nationals,Pittsburgh Pirates,4.0,7.0,Josiah Gray,Martín Pérez,Nationals Park,R,Regular Season,True
+MLB,745928,2024-04-04 20:10:00+00:00,Minnesota Twins,Cleveland Guardians,2.0,4.0,Pablo López,Tanner Bibee,Target Field,R,Regular Season,True
+MLB,745200,2024-04-04 20:15:00+00:00,St. Louis Cardinals,Miami Marlins,8.0,5.0,Lance Lynn,Ryan Weathers,Busch Stadium,R,Regular Season,True
+MLB,746327,2024-04-04 23:40:00+00:00,Kansas City Royals,Chicago White Sox,10.0,1.0,Seth Lugo,Michael Soroka,Kauffman Stadium,R,Regular Season,True
+MLB,745764,2024-04-05 17:05:00+00:00,New York Yankees,Toronto Blue Jays,0.0,3.0,Marcus Stroman,Yusei Kikuchi,Yankee Stadium,R,Regular Season,True
+MLB,746497,2024-04-05 17:10:00+00:00,Detroit Tigers,Oakland Athletics,5.0,4.0,Tarik Skubal,JP Sears,Comerica Park,R,Regular Season,True
+MLB,746897,2024-04-05 18:20:00+00:00,Chicago Cubs,Los Angeles Dodgers,9.0,7.0,Kyle Hendricks,Bobby Miller,Wrigley Field,R,Regular Season,True
+MLB,746576,2024-04-05 20:10:00+00:00,Colorado Rockies,Tampa Bay Rays,10.0,7.0,Austin Gomber,Zack Littell,Coors Field,R,Regular Season,True
+MLB,745524,2024-04-05 20:12:00+00:00,Pittsburgh Pirates,Baltimore Orioles,2.0,5.0,Jared Jones,Grayson Rodriguez,PNC Park,R,Regular Season,True
+MLB,745361,2024-04-05 20:35:00+00:00,San Francisco Giants,San Diego Padres,3.0,2.0,Jordan Hicks,Dylan Cease,Oracle Park,R,Regular Season,True
+MLB,746733,2024-04-05 22:40:00+00:00,Cincinnati Reds,New York Mets,2.0,3.0,Hunter Greene,Jose Quintana,Great American Ball Park,R,Regular Season,True
+MLB,744874,2024-04-05 22:45:00+00:00,Washington Nationals,Philadelphia Phillies,0.0,4.0,Patrick Corbin,Aaron Nola,Nationals Park,R,Regular Season,True
+MLB,747143,2024-04-05 23:20:00+00:00,Atlanta Braves,Arizona Diamondbacks,6.0,5.0,Spencer Strider,Tommy Henry,Truist Park,R,Regular Season,True
+MLB,746328,2024-04-05 23:40:00+00:00,Kansas City Royals,Chicago White Sox,2.0,1.0,Brady Singer,Erick Fedde,Kauffman Stadium,R,Regular Season,True
+MLB,745033,2024-04-06 00:05:00+00:00,Texas Rangers,Houston Astros,10.0,2.0,Cody Bradford,Hunter Brown,Globe Life Field,R,Regular Season,True
+MLB,746007,2024-04-06 00:10:00+00:00,Milwaukee Brewers,Seattle Mariners,6.0,5.0,Freddy Peralta,Logan Gilbert,American Family Field,R,Regular Season,True
+MLB,746249,2024-04-06 01:38:00+00:00,Los Angeles Angels,Boston Red Sox,6.0,8.0,Griffin Canning,Kutter Crawford,Angel Stadium,R,Regular Season,True
+MLB,746498,2024-04-06 17:10:00+00:00,Detroit Tigers,Oakland Athletics,0.0,4.0,Kenta Maeda,Paul Blackburn,Comerica Park,R,Regular Season,True
+MLB,745926,2024-04-06 18:10:00+00:00,Minnesota Twins,Cleveland Guardians,1.0,3.0,Joe Ryan,Carlos Carrasco,Target Field,R,Regular Season,True
+MLB,745197,2024-04-06 18:15:00+00:00,St. Louis Cardinals,Miami Marlins,3.0,1.0,Steven Matz,Trevor Rogers,Busch Stadium,R,Regular Season,True
+MLB,744873,2024-04-06 20:05:00+00:00,Washington Nationals,Philadelphia Phillies,2.0,5.0,Jake Irvin,Ranger Suarez,Nationals Park,R,Regular Season,True
+MLB,745522,2024-04-06 20:05:00+00:00,Pittsburgh Pirates,Baltimore Orioles,5.0,4.0,Bailey Falter,Tyler Wells,PNC Park,R,Regular Season,True
+MLB,746896,2024-04-06 20:05:00+00:00,Chicago Cubs,Los Angeles Dodgers,1.0,4.0,Jordan Wicks,Yoshinobu Yamamoto,Wrigley Field,R,Regular Season,True
+MLB,746731,2024-04-06 20:10:00+00:00,Cincinnati Reds,New York Mets,9.0,6.0,Nick Martinez,Luis Severino,Great American Ball Park,R,Regular Season,True
+MLB,745031,2024-04-06 23:05:00+00:00,Texas Rangers,Houston Astros,7.0,2.0,Jon Gray,J.P. France,Globe Life Field,R,Regular Season,True
+MLB,745766,2024-04-06 23:05:00+00:00,New York Yankees,Toronto Blue Jays,9.0,8.0,Clarke Schmidt,Kevin Gausman,Yankee Stadium,R,Regular Season,True
+MLB,746006,2024-04-06 23:10:00+00:00,Milwaukee Brewers,Seattle Mariners,3.0,5.0,DL Hall,Bryce Miller,American Family Field,R,Regular Season,True
+MLB,746329,2024-04-06 23:10:00+00:00,Kansas City Royals,Chicago White Sox,3.0,0.0,Michael Wacha,Chris Flexen,Kauffman Stadium,R,Regular Season,True
+MLB,747140,2024-04-06 23:20:00+00:00,Atlanta Braves,Arizona Diamondbacks,9.0,8.0,Max Fried,Brandon Pfaadt,Truist Park,R,Regular Season,True
+MLB,746575,2024-04-07 00:10:00+00:00,Colorado Rockies,Tampa Bay Rays,6.0,8.0,Ryan Feltner,Tyler Alexander,Coors Field,R,Regular Season,True
+MLB,745359,2024-04-07 01:05:00+00:00,San Francisco Giants,San Diego Padres,0.0,4.0,Keaton Winn,Michael King,Oracle Park,R,Regular Season,True
+MLB,746248,2024-04-07 01:38:00+00:00,Los Angeles Angels,Boston Red Sox,2.0,1.0,Reid Detmers,Garrett Whitlock,Angel Stadium,R,Regular Season,True
+MLB,744871,2024-04-07 17:35:00+00:00,Washington Nationals,Philadelphia Phillies,3.0,2.0,MacKenzie Gore,Cristopher Sánchez,Nationals Park,R,Regular Season,True
+MLB,745523,2024-04-07 17:35:00+00:00,Pittsburgh Pirates,Baltimore Orioles,3.0,2.0,Marco Gonzales,Dean Kremer,PNC Park,R,Regular Season,True
+MLB,745765,2024-04-07 17:35:00+00:00,New York Yankees,Toronto Blue Jays,8.0,3.0,Luis Gil,Bowden Francis,Yankee Stadium,R,Regular Season,True
+MLB,747141,2024-04-07 17:35:00+00:00,Atlanta Braves,Arizona Diamondbacks,5.0,2.0,Chris Sale,Ryne Nelson,Truist Park,R,Regular Season,True
+MLB,746493,2024-04-07 17:40:00+00:00,Detroit Tigers,Oakland Athletics,1.0,7.0,Jack Flaherty,Joe Boyle,Comerica Park,R,Regular Season,True
+MLB,746734,2024-04-07 17:40:00+00:00,Cincinnati Reds,New York Mets,1.0,3.0,Andrew Abbott,Sean Manaea,Great American Ball Park,R,Regular Season,True
+MLB,746003,2024-04-07 18:10:00+00:00,Milwaukee Brewers,Seattle Mariners,12.0,4.0,Colin Rea,Emerson Hancock,American Family Field,R,Regular Season,True
+MLB,746330,2024-04-07 18:10:00+00:00,Kansas City Royals,Chicago White Sox,5.0,3.0,Alec Marsh,Garrett Crochet,Kauffman Stadium,R,Regular Season,True
+MLB,745198,2024-04-07 18:15:00+00:00,St. Louis Cardinals,Miami Marlins,3.0,10.0,Kyle Gibson,Max Meyer,Busch Stadium,R,Regular Season,True
+MLB,746895,2024-04-07 18:20:00+00:00,Chicago Cubs,Los Angeles Dodgers,8.0,1.0,Shota Imanaga,Gavin Stone,Wrigley Field,R,Regular Season,True
+MLB,746574,2024-04-07 19:10:00+00:00,Colorado Rockies,Tampa Bay Rays,2.0,3.0,Dakota Hudson,Ryan Pepiot,Coors Field,R,Regular Season,True
+MLB,745362,2024-04-07 20:05:00+00:00,San Francisco Giants,San Diego Padres,3.0,2.0,Logan Webb,Matt Waldron,Oracle Park,R,Regular Season,True
+MLB,746251,2024-04-07 20:07:00+00:00,Los Angeles Angels,Boston Red Sox,2.0,12.0,Chase Silseth,Tanner Houck,Angel Stadium,R,Regular Season,True
+MLB,745032,2024-04-07 23:10:00+00:00,Texas Rangers,Houston Astros,1.0,3.0,Dane Dunning,Ronel Blanco,Globe Life Field,R,Regular Season,True
+MLB,746654,2024-04-08 21:10:00+00:00,Cleveland Guardians,Chicago White Sox,4.0,0.0,Triston McKenzie,Tanner Banks,Progressive Field,R,Regular Season,True
+MLB,745761,2024-04-08 22:05:00+00:00,New York Yankees,Miami Marlins,7.0,0.0,Nestor Cortes,Jesús Luzardo,Yankee Stadium,R,Regular Season,True
+MLB,745520,2024-04-08 22:40:00+00:00,Pittsburgh Pirates,Detroit Tigers,7.0,4.0,Mitch Keller,Reese Olson,PNC Park,R,Regular Season,True
+MLB,746735,2024-04-08 22:40:00+00:00,Cincinnati Reds,Milwaukee Brewers,10.0,8.0,Graham Ashcraft,Aaron Ashby,Great American Ball Park,R,Regular Season,True
+MLB,744956,2024-04-08 23:07:00+00:00,Toronto Blue Jays,Seattle Mariners,5.0,2.0,José Berríos,Luis Castillo,Rogers Centre,R,Regular Season,True
+MLB,747142,2024-04-08 23:20:00+00:00,Atlanta Braves,New York Mets,7.0,8.0,Charlie Morton,Julio Teheran,Truist Park,R,Regular Season,True
+MLB,745925,2024-04-08 23:40:00+00:00,Minnesota Twins,Los Angeles Dodgers,2.0,4.0,Bailey Ober,James Paxton,Target Field,R,Regular Season,True
+MLB,745194,2024-04-08 23:45:00+00:00,St. Louis Cardinals,Philadelphia Phillies,3.0,5.0,Miles Mikolas,Spencer Turnbull,Busch Stadium,R,Regular Season,True
+MLB,745034,2024-04-09 00:05:00+00:00,Texas Rangers,Houston Astros,5.0,10.0,Andrew Heaney,Blair Henley,Globe Life Field,R,Regular Season,True
+MLB,746569,2024-04-09 00:40:00+00:00,Colorado Rockies,Arizona Diamondbacks,7.0,5.0,Kyle Freeland,Zac Gallen,Coors Field,R,Regular Season,True
+MLB,746252,2024-04-09 01:38:00+00:00,Los Angeles Angels,Tampa Bay Rays,7.0,1.0,Tyler Anderson,Zach Eflin,Angel Stadium,R,Regular Season,True
+MLB,745432,2024-04-09 01:40:00+00:00,San Diego Padres,Chicago Cubs,9.0,8.0,Yu Darvish,Javier Assad,Petco Park,R,Regular Season,True
+MLB,745363,2024-04-09 01:45:00+00:00,San Francisco Giants,Washington Nationals,1.0,8.0,Blake Snell,Trevor Williams,Oracle Park,R,Regular Season,True
+MLB,745517,2024-04-09 16:35:00+00:00,Pittsburgh Pirates,Detroit Tigers,3.0,5.0,Martín Pérez,Casey Mize,PNC Park,R,Regular Season,True
+MLB,746981,2024-04-09 18:10:00+00:00,Boston Red Sox,Baltimore Orioles,1.0,7.0,Brayan Bello,Corbin Burnes,Fenway Park,R,Regular Season,True
+MLB,746653,2024-04-09 22:10:00+00:00,Cleveland Guardians,Chicago White Sox,5.0,7.0,Logan Allen,Michael Soroka,Progressive Field,R,Regular Season,True
+MLB,746732,2024-04-09 22:40:00+00:00,Cincinnati Reds,Milwaukee Brewers,5.0,9.0,Frankie Montas,Joe Ross,Great American Ball Park,R,Regular Season,True
+MLB,745762,2024-04-09 23:05:00+00:00,New York Yankees,Miami Marlins,3.0,2.0,Carlos Rodón,A.J. Puk,Yankee Stadium,R,Regular Season,True
+MLB,744957,2024-04-09 23:07:00+00:00,Toronto Blue Jays,Seattle Mariners,5.0,3.0,Chris Bassitt,George Kirby,Rogers Centre,R,Regular Season,True
+MLB,747138,2024-04-09 23:20:00+00:00,Atlanta Braves,New York Mets,6.0,5.0,Reynaldo López,Adrian Houser,Truist Park,R,Regular Season,True
+MLB,745924,2024-04-09 23:40:00+00:00,Minnesota Twins,Los Angeles Dodgers,3.0,6.0,Louis Varland,Tyler Glasnow,Target Field,R,Regular Season,True
+MLB,746326,2024-04-09 23:40:00+00:00,Kansas City Royals,Houston Astros,4.0,3.0,Cole Ragans,Cristian Javier,Kauffman Stadium,R,Regular Season,True
+MLB,745195,2024-04-09 23:45:00+00:00,St. Louis Cardinals,Philadelphia Phillies,3.0,0.0,Sonny Gray,Zack Wheeler,Busch Stadium,R,Regular Season,True
+MLB,745030,2024-04-10 00:05:00+00:00,Texas Rangers,Oakland Athletics,3.0,4.0,Nathan Eovaldi,Alex Wood,Globe Life Field,R,Regular Season,True
+MLB,746571,2024-04-10 00:40:00+00:00,Colorado Rockies,Arizona Diamondbacks,2.0,3.0,Cal Quantrill,Merrill Kelly,Coors Field,R,Regular Season,True
+MLB,746250,2024-04-10 01:38:00+00:00,Los Angeles Angels,Tampa Bay Rays,4.0,6.0,Patrick Sandoval,Aaron Civale,Angel Stadium,R,Regular Season,True
+MLB,745357,2024-04-10 01:45:00+00:00,San Francisco Giants,Washington Nationals,3.0,5.0,Kyle Harrison,Joan Adon,Oracle Park,R,Regular Season,True
+MLB,745433,2024-04-10 02:05:00+00:00,San Diego Padres,Chicago Cubs,1.0,5.0,Joe Musgrove,Ben Brown,Petco Park,R,Regular Season,True
+MLB,745923,2024-04-10 17:10:00+00:00,Minnesota Twins,Los Angeles Dodgers,3.0,2.0,Chris Paddack,Bobby Miller,Target Field,R,Regular Season,True
+MLB,745196,2024-04-10 17:15:00+00:00,St. Louis Cardinals,Philadelphia Phillies,3.0,4.0,Lance Lynn,Aaron Nola,Busch Stadium,R,Regular Season,True
+MLB,744950,2024-04-10 19:07:00+00:00,Toronto Blue Jays,Seattle Mariners,1.0,6.0,Yusei Kikuchi,Logan Gilbert,Rogers Centre,R,Regular Season,True
+MLB,746573,2024-04-10 19:10:00+00:00,Colorado Rockies,Arizona Diamondbacks,3.0,5.0,Austin Gomber,Tommy Henry,Coors Field,R,Regular Season,True
+MLB,745355,2024-04-10 19:45:00+00:00,San Francisco Giants,Washington Nationals,7.0,1.0,Jordan Hicks,Patrick Corbin,Oracle Park,R,Regular Season,True
+MLB,746247,2024-04-10 20:07:00+00:00,Los Angeles Angels,Tampa Bay Rays,2.0,4.0,José Soriano,Zack Littell,Angel Stadium,R,Regular Season,True
+MLB,746655,2024-04-10 22:10:00+00:00,Cleveland Guardians,Chicago White Sox,7.0,6.0,Tanner Bibee,Erick Fedde,Progressive Field,R,Regular Season,True
+MLB,745429,2024-04-10 22:40:00+00:00,San Diego Padres,Chicago Cubs,10.0,2.0,Dylan Cease,Kyle Hendricks,Petco Park,R,Regular Season,True
+MLB,746728,2024-04-10 22:40:00+00:00,Cincinnati Reds,Milwaukee Brewers,2.0,7.0,Hunter Greene,Wade Miley,Great American Ball Park,R,Regular Season,True
+MLB,745763,2024-04-10 23:05:00+00:00,New York Yankees,Miami Marlins,2.0,5.0,Marcus Stroman,Ryan Weathers,Yankee Stadium,R,Regular Season,True
+MLB,746980,2024-04-10 23:10:00+00:00,Boston Red Sox,Baltimore Orioles,5.0,7.0,Kutter Crawford,Cole Irvin,Fenway Park,R,Regular Season,True
+MLB,746323,2024-04-10 23:40:00+00:00,Kansas City Royals,Houston Astros,11.0,2.0,Seth Lugo,Spencer Arrighetti,Kauffman Stadium,R,Regular Season,True
+MLB,745024,2024-04-11 00:05:00+00:00,Texas Rangers,Oakland Athletics,6.0,2.0,Cody Bradford,Ross Stripling,Globe Life Field,R,Regular Season,True
+MLB,747137,2024-04-11 16:20:00+00:00,Atlanta Braves,New York Mets,4.0,16.0,Allan Winans,Jose Quintana,Truist Park,R,Regular Season,True
+MLB,746322,2024-04-11 18:10:00+00:00,Kansas City Royals,Houston Astros,13.0,3.0,Brady Singer,Hunter Brown,Kauffman Stadium,R,Regular Season,True
+MLB,745029,2024-04-11 18:35:00+00:00,Texas Rangers,Oakland Athletics,0.0,1.0,Jon Gray,JP Sears,Globe Life Field,R,Regular Season,True
+MLB,745601,2024-04-11 22:40:00+00:00,Philadelphia Phillies,Pittsburgh Pirates,5.0,1.0,Ranger Suarez,Jared Jones,Citizens Bank Park,R,Regular Season,True
+MLB,746977,2024-04-11 23:10:00+00:00,Boston Red Sox,Baltimore Orioles,4.0,9.0,Garrett Whitlock,Grayson Rodriguez,Fenway Park,R,Regular Season,True
+MLB,745596,2024-04-12 22:40:00+00:00,Philadelphia Phillies,Pittsburgh Pirates,2.0,5.0,Cristopher Sánchez,Bailey Falter,Citizens Bank Park,R,Regular Season,True
+MLB,746491,2024-04-12 22:40:00+00:00,Detroit Tigers,Minnesota Twins,8.0,2.0,Tarik Skubal,Pablo López,Comerica Park,R,Regular Season,True
+MLB,745112,2024-04-12 22:50:00+00:00,Tampa Bay Rays,San Francisco Giants,2.0,1.0,Jacob Waguespack,Keaton Winn,Tropicana Field,R,Regular Season,True
+MLB,747055,2024-04-12 23:05:00+00:00,Baltimore Orioles,Milwaukee Brewers,1.0,11.0,Tyler Wells,Freddy Peralta,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,744954,2024-04-12 23:07:00+00:00,Toronto Blue Jays,Colorado Rockies,4.0,12.0,Kevin Gausman,Ryan Feltner,Rogers Centre,R,Regular Season,True
+MLB,745838,2024-04-12 23:10:00+00:00,New York Mets,Kansas City Royals,6.0,1.0,Luis Severino,Michael Wacha,Citi Field,R,Regular Season,True
+MLB,746084,2024-04-12 23:10:00+00:00,Miami Marlins,Atlanta Braves,1.0,8.0,Trevor Rogers,Max Fried,loanDepot park,R,Regular Season,True
+MLB,746978,2024-04-12 23:10:00+00:00,Boston Red Sox,Los Angeles Angels,0.0,7.0,Tanner Houck,Reid Detmers,Fenway Park,R,Regular Season,True
+MLB,746812,2024-04-12 23:40:00+00:00,Chicago White Sox,Cincinnati Reds,1.0,11.0,Chris Flexen,Andrew Abbott,Guaranteed Rate Field,R,Regular Season,True
+MLB,746408,2024-04-13 00:10:00+00:00,Houston Astros,Texas Rangers,8.0,12.0,J.P. France,Dane Dunning,Minute Maid Park,R,Regular Season,True
+MLB,745274,2024-04-13 01:40:00+00:00,Seattle Mariners,Chicago Cubs,4.0,2.0,Bryce Miller,Jordan Wicks,T-Mobile Park,R,Regular Season,True
+MLB,745679,2024-04-13 01:40:00+00:00,Oakland Athletics,Washington Nationals,2.0,1.0,Paul Blackburn,Jake Irvin,Oakland Coliseum,R,Regular Season,True
+MLB,747217,2024-04-13 01:40:00+00:00,Arizona Diamondbacks,St. Louis Cardinals,6.0,9.0,Brandon Pfaadt,Steven Matz,Chase Field,R,Regular Season,True
+MLB,746162,2024-04-13 02:10:00+00:00,Los Angeles Dodgers,San Diego Padres,7.0,8.0,Yoshinobu Yamamoto,Michael King,Dodger Stadium,R,Regular Season,True
+MLB,746656,2024-04-13 16:10:00+00:00,Cleveland Guardians,New York Yankees,2.0,3.0,Carlos Carrasco,Clarke Schmidt,Progressive Field,R,Regular Season,True
+MLB,746489,2024-04-13 17:10:00+00:00,Detroit Tigers,Minnesota Twins,5.0,11.0,Kenta Maeda,Joe Ryan,Comerica Park,R,Regular Season,True
+MLB,746490,2024-04-13 17:15:00+00:00,Detroit Tigers,Minnesota Twins,1.0,4.0,Matt Manning,Simeon Woods Richardson,Comerica Park,R,Regular Season,True
+MLB,745839,2024-04-13 17:40:00+00:00,New York Mets,Kansas City Royals,7.0,11.0,Sean Manaea,Alec Marsh,Citi Field,R,Regular Season,True
+MLB,746811,2024-04-13 18:10:00+00:00,Chicago White Sox,Cincinnati Reds,0.0,5.0,Garrett Crochet,Nick Lodolo,Guaranteed Rate Field,R,Regular Season,True
+MLB,744953,2024-04-13 19:07:00+00:00,Toronto Blue Jays,Colorado Rockies,5.0,3.0,Yariel Rodríguez,Dakota Hudson,Rogers Centre,R,Regular Season,True
+MLB,745594,2024-04-13 20:05:00+00:00,Philadelphia Phillies,Pittsburgh Pirates,4.0,3.0,Spencer Turnbull,Marco Gonzales,Citizens Bank Park,R,Regular Season,True
+MLB,746405,2024-04-13 20:05:00+00:00,Houston Astros,Texas Rangers,9.0,2.0,Ronel Blanco,Andrew Heaney,Minute Maid Park,R,Regular Season,True
+MLB,747054,2024-04-13 20:05:00+00:00,Baltimore Orioles,Milwaukee Brewers,5.0,11.0,Dean Kremer,DL Hall,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,745676,2024-04-13 20:07:00+00:00,Oakland Athletics,Washington Nationals,1.0,3.0,Joe Boyle,MacKenzie Gore,Oakland Coliseum,R,Regular Season,True
+MLB,745110,2024-04-13 20:10:00+00:00,Tampa Bay Rays,San Francisco Giants,2.0,11.0,Ryan Pepiot,Logan Webb,Tropicana Field,R,Regular Season,True
+MLB,746082,2024-04-13 20:10:00+00:00,Miami Marlins,Atlanta Braves,5.0,1.0,Max Meyer,Chris Sale,loanDepot park,R,Regular Season,True
+MLB,746979,2024-04-13 20:10:00+00:00,Boston Red Sox,Los Angeles Angels,7.0,2.0,Cooper Criswell,Griffin Canning,Fenway Park,R,Regular Season,True
+MLB,746658,2024-04-13 22:10:00+00:00,Cleveland Guardians,New York Yankees,2.0,8.0,Triston McKenzie,Cody Poteet,Progressive Field,R,Regular Season,True
+MLB,747215,2024-04-14 00:10:00+00:00,Arizona Diamondbacks,St. Louis Cardinals,4.0,2.0,Ryne Nelson,Kyle Gibson,Chase Field,R,Regular Season,True
+MLB,746161,2024-04-14 01:10:00+00:00,Los Angeles Dodgers,San Diego Padres,5.0,2.0,Gavin Stone,Matt Waldron,Dodger Stadium,R,Regular Season,True
+MLB,745272,2024-04-14 01:40:00+00:00,Seattle Mariners,Chicago Cubs,1.0,4.0,Emerson Hancock,Shota Imanaga,T-Mobile Park,R,Regular Season,True
+MLB,745595,2024-04-14 17:35:00+00:00,Philadelphia Phillies,Pittsburgh Pirates,2.0,9.0,Zack Wheeler,Mitch Keller,Citizens Bank Park,R,Regular Season,True
+MLB,746975,2024-04-14 17:35:00+00:00,Boston Red Sox,Los Angeles Angels,5.0,4.0,Brayan Bello,Tyler Anderson,Fenway Park,R,Regular Season,True
+MLB,747056,2024-04-14 17:35:00+00:00,Baltimore Orioles,Milwaukee Brewers,6.0,4.0,Corbin Burnes,Colin Rea,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,744952,2024-04-14 17:37:00+00:00,Toronto Blue Jays,Colorado Rockies,5.0,0.0,José Berríos,Kyle Freeland,Rogers Centre,R,Regular Season,True
+MLB,745113,2024-04-14 17:40:00+00:00,Tampa Bay Rays,San Francisco Giants,9.0,4.0,Shawn Armstrong,Blake Snell,Tropicana Field,R,Regular Season,True
+MLB,745841,2024-04-14 17:40:00+00:00,New York Mets,Kansas City Royals,2.0,1.0,José Buttó,Cole Ragans,Citi Field,R,Regular Season,True
+MLB,746079,2024-04-14 17:40:00+00:00,Miami Marlins,Atlanta Braves,7.0,9.0,Jesús Luzardo,Charlie Morton,loanDepot park,R,Regular Season,True
+MLB,746492,2024-04-14 17:40:00+00:00,Detroit Tigers,Minnesota Twins,4.0,3.0,Jack Flaherty,Bailey Ober,Comerica Park,R,Regular Season,True
+MLB,746648,2024-04-14 17:40:00+00:00,Cleveland Guardians,New York Yankees,8.0,7.0,Logan Allen,Nestor Cortes,Progressive Field,R,Regular Season,True
+MLB,746404,2024-04-14 18:10:00+00:00,Houston Astros,Texas Rangers,8.0,5.0,Cristian Javier,Nathan Eovaldi,Minute Maid Park,R,Regular Season,True
+MLB,746810,2024-04-14 18:10:00+00:00,Chicago White Sox,Cincinnati Reds,4.0,11.0,Michael Soroka,Graham Ashcraft,Guaranteed Rate Field,R,Regular Season,True
+MLB,745681,2024-04-14 20:07:00+00:00,Oakland Athletics,Washington Nationals,7.0,6.0,Alex Wood,Trevor Williams,Oakland Coliseum,R,Regular Season,True
+MLB,745271,2024-04-14 20:10:00+00:00,Seattle Mariners,Chicago Cubs,2.0,3.0,Luis Castillo,Javier Assad,T-Mobile Park,R,Regular Season,True
+MLB,747216,2024-04-14 20:10:00+00:00,Arizona Diamondbacks,St. Louis Cardinals,5.0,0.0,Zac Gallen,Miles Mikolas,Chase Field,R,Regular Season,True
+MLB,746164,2024-04-14 23:10:00+00:00,Los Angeles Dodgers,San Diego Padres,3.0,6.0,James Paxton,Yu Darvish,Dodger Stadium,R,Regular Season,True
+MLB,746974,2024-04-15 15:10:00+00:00,Boston Red Sox,Cleveland Guardians,0.0,6.0,Kutter Crawford,Xzavion Curry,Fenway Park,R,Regular Season,True
+MLB,747053,2024-04-15 22:35:00+00:00,Baltimore Orioles,Minnesota Twins,7.0,4.0,Cole Irvin,Louis Varland,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,745597,2024-04-15 22:40:00+00:00,Philadelphia Phillies,Colorado Rockies,2.0,1.0,Aaron Nola,Cal Quantrill,Citizens Bank Park,R,Regular Season,True
+MLB,746080,2024-04-15 22:40:00+00:00,Miami Marlins,San Francisco Giants,3.0,4.0,Edward Cabrera,Kyle Harrison,loanDepot park,R,Regular Season,True
+MLB,746488,2024-04-15 22:40:00+00:00,Detroit Tigers,Texas Rangers,0.0,1.0,Reese Olson,Michael Lorenzen,Comerica Park,R,Regular Season,True
+MLB,745106,2024-04-15 22:50:00+00:00,Tampa Bay Rays,Los Angeles Angels,3.0,7.0,Zach Eflin,Patrick Sandoval,Tropicana Field,R,Regular Season,True
+MLB,744951,2024-04-15 23:07:00+00:00,Toronto Blue Jays,New York Yankees,3.0,1.0,Chris Bassitt,Luis Gil,Rogers Centre,R,Regular Season,True
+MLB,745840,2024-04-15 23:10:00+00:00,New York Mets,Pittsburgh Pirates,6.0,3.0,Adrian Houser,Martín Pérez,Citi Field,R,Regular Season,True
+MLB,746002,2024-04-15 23:40:00+00:00,Milwaukee Brewers,San Diego Padres,3.0,7.0,Joe Ross,Joe Musgrove,American Family Field,R,Regular Season,True
+MLB,746813,2024-04-15 23:40:00+00:00,Chicago White Sox,Kansas City Royals,0.0,2.0,Nick Nastrini,Seth Lugo,Guaranteed Rate Field,R,Regular Season,True
+MLB,746406,2024-04-16 00:10:00+00:00,Houston Astros,Atlanta Braves,1.0,6.0,Spencer Arrighetti,Darius Vines,Minute Maid Park,R,Regular Season,True
+MLB,745677,2024-04-16 01:40:00+00:00,Oakland Athletics,St. Louis Cardinals,1.0,3.0,Ross Stripling,Sonny Gray,Oakland Coliseum,R,Regular Season,True
+MLB,747213,2024-04-16 01:40:00+00:00,Arizona Diamondbacks,Chicago Cubs,2.0,3.0,Merrill Kelly,Ben Brown,Chase Field,R,Regular Season,True
+MLB,745268,2024-04-16 01:42:00+00:00,Seattle Mariners,Cincinnati Reds,9.0,3.0,George Kirby,Frankie Montas,T-Mobile Park,R,Regular Season,True
+MLB,746158,2024-04-16 02:10:00+00:00,Los Angeles Dodgers,Washington Nationals,4.0,6.0,Tyler Glasnow,Mitchell Parker,Dodger Stadium,R,Regular Season,True
+MLB,746486,2024-04-16 17:10:00+00:00,Detroit Tigers,Texas Rangers,4.0,2.0,Casey Mize,Jon Gray,Comerica Park,R,Regular Season,True
+MLB,747051,2024-04-16 22:35:00+00:00,Baltimore Orioles,Minnesota Twins,11.0,3.0,Grayson Rodriguez,Chris Paddack,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,745593,2024-04-16 22:40:00+00:00,Philadelphia Phillies,Colorado Rockies,5.0,0.0,Ranger Suarez,Austin Gomber,Citizens Bank Park,R,Regular Season,True
+MLB,746081,2024-04-16 22:40:00+00:00,Miami Marlins,San Francisco Giants,6.0,3.0,Ryan Weathers,Jordan Hicks,loanDepot park,R,Regular Season,True
+MLB,745108,2024-04-16 22:50:00+00:00,Tampa Bay Rays,Los Angeles Angels,7.0,6.0,Aaron Civale,José Soriano,Tropicana Field,R,Regular Season,True
+MLB,744944,2024-04-16 23:07:00+00:00,Toronto Blue Jays,New York Yankees,5.0,4.0,Yusei Kikuchi,Carlos Rodón,Rogers Centre,R,Regular Season,True
+MLB,745837,2024-04-16 23:10:00+00:00,New York Mets,Pittsburgh Pirates,3.0,1.0,Jose Quintana,Jared Jones,Citi Field,R,Regular Season,True
+MLB,746976,2024-04-16 23:10:00+00:00,Boston Red Sox,Cleveland Guardians,7.0,10.0,Garrett Whitlock,Tanner Bibee,Fenway Park,R,Regular Season,True
+MLB,746004,2024-04-16 23:40:00+00:00,Milwaukee Brewers,San Diego Padres,3.0,6.0,Wade Miley,Dylan Cease,American Family Field,R,Regular Season,True
+MLB,746400,2024-04-17 00:10:00+00:00,Houston Astros,Atlanta Braves,2.0,6.0,Hunter Brown,Reynaldo López,Minute Maid Park,R,Regular Season,True
+MLB,745270,2024-04-17 01:40:00+00:00,Seattle Mariners,Cincinnati Reds,3.0,1.0,Logan Gilbert,Hunter Greene,T-Mobile Park,R,Regular Season,True
+MLB,745674,2024-04-17 01:40:00+00:00,Oakland Athletics,St. Louis Cardinals,2.0,3.0,JP Sears,Lance Lynn,Oakland Coliseum,R,Regular Season,True
+MLB,747214,2024-04-17 01:40:00+00:00,Arizona Diamondbacks,Chicago Cubs,12.0,11.0,Tommy Henry,Kyle Hendricks,Chase Field,R,Regular Season,True
+MLB,746157,2024-04-17 02:10:00+00:00,Los Angeles Dodgers,Washington Nationals,6.0,2.0,Kyle Hurt,Patrick Corbin,Dodger Stadium,R,Regular Season,True
+MLB,746076,2024-04-17 16:10:00+00:00,Miami Marlins,San Francisco Giants,1.0,3.0,Trevor Rogers,Keaton Winn,loanDepot park,R,Regular Season,True
+MLB,747049,2024-04-17 17:05:00+00:00,Baltimore Orioles,Minnesota Twins,4.0,2.0,Albert Suárez,Pablo López,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,745836,2024-04-17 17:10:00+00:00,New York Mets,Pittsburgh Pirates,9.0,1.0,Luis Severino,Bailey Falter,Citi Field,R,Regular Season,True
+MLB,746005,2024-04-17 17:10:00+00:00,Milwaukee Brewers,San Diego Padres,1.0,0.0,Bryse Wilson,Michael King,American Family Field,R,Regular Season,True
+MLB,746487,2024-04-17 17:10:00+00:00,Detroit Tigers,Texas Rangers,4.0,5.0,Tarik Skubal,Dane Dunning,Comerica Park,R,Regular Season,True
+MLB,746401,2024-04-17 18:10:00+00:00,Houston Astros,Atlanta Braves,4.0,5.0,J.P. France,Max Fried,Minute Maid Park,R,Regular Season,True
+MLB,746807,2024-04-17 18:10:00+00:00,Chicago White Sox,Kansas City Royals,2.0,4.0,Jonathan Cannon,Brady Singer,Guaranteed Rate Field,R,Regular Season,True
+MLB,746809,2024-04-17 18:15:00+00:00,Chicago White Sox,Kansas City Royals,2.0,1.0,Erick Fedde,Michael Wacha,Guaranteed Rate Field,R,Regular Season,True
+MLB,744948,2024-04-17 19:07:00+00:00,Toronto Blue Jays,New York Yankees,4.0,6.0,Kevin Gausman,Marcus Stroman,Rogers Centre,R,Regular Season,True
+MLB,746159,2024-04-17 19:10:00+00:00,Los Angeles Dodgers,Washington Nationals,0.0,2.0,Landon Knack,Jake Irvin,Dodger Stadium,R,Regular Season,True
+MLB,745671,2024-04-17 19:37:00+00:00,Oakland Athletics,St. Louis Cardinals,6.0,3.0,Paul Blackburn,Steven Matz,Oakland Coliseum,R,Regular Season,True
+MLB,747212,2024-04-17 19:40:00+00:00,Arizona Diamondbacks,Chicago Cubs,3.0,5.0,Brandon Pfaadt,Jordan Wicks,Chase Field,R,Regular Season,True
+MLB,745267,2024-04-17 20:10:00+00:00,Seattle Mariners,Cincinnati Reds,5.0,1.0,Bryce Miller,Andrew Abbott,T-Mobile Park,R,Regular Season,True
+MLB,745591,2024-04-17 22:05:00+00:00,Philadelphia Phillies,Colorado Rockies,7.0,6.0,Cristopher Sánchez,Ryan Feltner,Citizens Bank Park,R,Regular Season,True
+MLB,745105,2024-04-17 22:50:00+00:00,Tampa Bay Rays,Los Angeles Angels,4.0,5.0,Zack Littell,Reid Detmers,Tropicana Field,R,Regular Season,True
+MLB,746973,2024-04-17 23:10:00+00:00,Boston Red Sox,Cleveland Guardians,2.0,0.0,Tanner Houck,Ben Lively,Fenway Park,R,Regular Season,True
+MLB,745104,2024-04-18 17:10:00+00:00,Tampa Bay Rays,Los Angeles Angels,2.0,1.0,Ryan Pepiot,Griffin Canning,Tropicana Field,R,Regular Season,True
+MLB,746485,2024-04-18 17:10:00+00:00,Detroit Tigers,Texas Rangers,7.0,9.0,Kenta Maeda,Jack Leiter,Comerica Park,R,Regular Season,True
+MLB,746970,2024-04-18 17:35:00+00:00,Boston Red Sox,Cleveland Guardians,4.0,5.0,Brennan Bernardino,Carlos Carrasco,Fenway Park,R,Regular Season,True
+MLB,745356,2024-04-19 01:45:00+00:00,San Francisco Giants,Arizona Diamondbacks,5.0,0.0,Logan Webb,Ryne Nelson,Oracle Park,R,Regular Season,True
+MLB,746892,2024-04-19 18:20:00+00:00,Chicago Cubs,Miami Marlins,8.0,3.0,Jameson Taillon,A.J. Puk,Wrigley Field,R,Regular Season,True
+MLB,745518,2024-04-19 22:40:00+00:00,Pittsburgh Pirates,Boston Red Sox,1.0,8.0,Quinn Priester,Brayan Bello,PNC Park,R,Regular Season,True
+MLB,745592,2024-04-19 22:40:00+00:00,Philadelphia Phillies,Chicago White Sox,7.0,0.0,Spencer Turnbull,Garrett Crochet,Citizens Bank Park,R,Regular Season,True
+MLB,746729,2024-04-19 22:40:00+00:00,Cincinnati Reds,Los Angeles Angels,7.0,1.0,Nick Lodolo,Tyler Anderson,Great American Ball Park,R,Regular Season,True
+MLB,744872,2024-04-19 22:45:00+00:00,Washington Nationals,Houston Astros,3.0,5.0,MacKenzie Gore,Justin Verlander,Nationals Park,R,Regular Season,True
+MLB,745758,2024-04-19 23:05:00+00:00,New York Yankees,Tampa Bay Rays,5.0,3.0,Clarke Schmidt,Tyler Alexander,Yankee Stadium,R,Regular Season,True
+MLB,746650,2024-04-19 23:10:00+00:00,Cleveland Guardians,Oakland Athletics,10.0,2.0,Triston McKenzie,Joe Boyle,Progressive Field,R,Regular Season,True
+MLB,747136,2024-04-19 23:20:00+00:00,Atlanta Braves,Texas Rangers,8.0,3.0,Chris Sale,Andrew Heaney,Truist Park,R,Regular Season,True
+MLB,746325,2024-04-19 23:40:00+00:00,Kansas City Royals,Baltimore Orioles,9.0,4.0,Alec Marsh,Dean Kremer,Kauffman Stadium,R,Regular Season,True
+MLB,745922,2024-04-20 00:10:00+00:00,Minnesota Twins,Detroit Tigers,4.0,5.0,Joe Ryan,Jack Flaherty,Target Field,R,Regular Season,True
+MLB,745189,2024-04-20 00:15:00+00:00,St. Louis Cardinals,Milwaukee Brewers,1.0,2.0,Kyle Gibson,Freddy Peralta,Busch Stadium,R,Regular Season,True
+MLB,745430,2024-04-20 01:40:00+00:00,San Diego Padres,Toronto Blue Jays,1.0,5.0,Matt Waldron,Yariel Rodríguez,Petco Park,R,Regular Season,True
+MLB,746160,2024-04-20 02:10:00+00:00,Los Angeles Dodgers,New York Mets,4.0,9.0,Yoshinobu Yamamoto,Sean Manaea,Dodger Stadium,R,Regular Season,True
+MLB,745352,2024-04-20 02:15:00+00:00,San Francisco Giants,Arizona Diamondbacks,1.0,17.0,Blake Snell,Jordan Montgomery,Oracle Park,R,Regular Season,True
+MLB,745760,2024-04-20 17:05:00+00:00,New York Yankees,Tampa Bay Rays,0.0,2.0,Nestor Cortes,Zach Eflin,Yankee Stadium,R,Regular Season,True
+MLB,745921,2024-04-20 18:10:00+00:00,Minnesota Twins,Detroit Tigers,4.0,3.0,Bailey Ober,Reese Olson,Target Field,R,Regular Season,True
+MLB,745190,2024-04-20 18:15:00+00:00,St. Louis Cardinals,Milwaukee Brewers,5.0,12.0,Miles Mikolas,DL Hall,Busch Stadium,R,Regular Season,True
+MLB,746893,2024-04-20 18:20:00+00:00,Chicago Cubs,Miami Marlins,2.0,3.0,Javier Assad,Jesús Luzardo,Wrigley Field,R,Regular Season,True
+MLB,744865,2024-04-20 20:05:00+00:00,Washington Nationals,Houston Astros,5.0,4.0,Trevor Williams,Ronel Blanco,Nationals Park,R,Regular Season,True
+MLB,745354,2024-04-20 20:05:00+00:00,San Francisco Giants,Arizona Diamondbacks,7.0,3.0,Kyle Harrison,Zac Gallen,Oracle Park,R,Regular Season,True
+MLB,745515,2024-04-20 20:05:00+00:00,Pittsburgh Pirates,Boston Red Sox,2.0,4.0,Mitch Keller,Kutter Crawford,PNC Park,R,Regular Season,True
+MLB,746156,2024-04-20 20:05:00+00:00,Los Angeles Dodgers,New York Mets,4.0,6.0,Gavin Stone,José Buttó,Dodger Stadium,R,Regular Season,True
+MLB,745590,2024-04-20 22:05:00+00:00,Philadelphia Phillies,Chicago White Sox,9.0,5.0,Zack Wheeler,Michael Soroka,Citizens Bank Park,R,Regular Season,True
+MLB,746651,2024-04-20 22:10:00+00:00,Cleveland Guardians,Oakland Athletics,6.0,3.0,Logan Allen,Alex Wood,Progressive Field,R,Regular Season,True
+MLB,746726,2024-04-20 22:40:00+00:00,Cincinnati Reds,Los Angeles Angels,7.0,5.0,Graham Ashcraft,Patrick Sandoval,Great American Ball Park,R,Regular Season,True
+MLB,746324,2024-04-20 23:10:00+00:00,Kansas City Royals,Baltimore Orioles,7.0,9.0,Cole Ragans,Corbin Burnes,Kauffman Stadium,R,Regular Season,True
+MLB,747135,2024-04-20 23:20:00+00:00,Atlanta Braves,Texas Rangers,5.0,2.0,Charlie Morton,Nathan Eovaldi,Truist Park,R,Regular Season,True
+MLB,746891,2024-04-20 23:40:00+00:00,Chicago Cubs,Miami Marlins,5.0,3.0,Shota Imanaga,Roddery Muñoz,Wrigley Field,R,Regular Season,True
+MLB,746570,2024-04-21 00:10:00+00:00,Colorado Rockies,Seattle Mariners,0.0,7.0,Dakota Hudson,Luis Castillo,Coors Field,R,Regular Season,True
+MLB,745431,2024-04-21 00:40:00+00:00,San Diego Padres,Toronto Blue Jays,2.0,5.0,Randy Vásquez,José Berríos,Petco Park,R,Regular Season,True
+MLB,744866,2024-04-21 17:35:00+00:00,Washington Nationals,Houston Astros,6.0,0.0,Mitchell Parker,Hunter Brown,Nationals Park,R,Regular Season,True
+MLB,745514,2024-04-21 17:35:00+00:00,Pittsburgh Pirates,Boston Red Sox,1.0,6.0,Martín Pérez,Josh Winckowski,PNC Park,R,Regular Season,True
+MLB,745588,2024-04-21 17:35:00+00:00,Philadelphia Phillies,Chicago White Sox,8.0,2.0,Aaron Nola,Nick Nastrini,Citizens Bank Park,R,Regular Season,True
+MLB,745759,2024-04-21 17:35:00+00:00,New York Yankees,Tampa Bay Rays,5.0,4.0,Luis Gil,Aaron Civale,Yankee Stadium,R,Regular Season,True
+MLB,746652,2024-04-21 17:40:00+00:00,Cleveland Guardians,Oakland Athletics,6.0,2.0,Tanner Bibee,Ross Stripling,Progressive Field,R,Regular Season,True
+MLB,746727,2024-04-21 17:40:00+00:00,Cincinnati Reds,Los Angeles Angels,3.0,0.0,Frankie Montas,José Soriano,Great American Ball Park,R,Regular Season,True
+MLB,745920,2024-04-21 18:10:00+00:00,Minnesota Twins,Detroit Tigers,1.0,6.0,Louis Varland,Casey Mize,Target Field,R,Regular Season,True
+MLB,746316,2024-04-21 18:10:00+00:00,Kansas City Royals,Baltimore Orioles,0.0,5.0,Seth Lugo,Cole Irvin,Kauffman Stadium,R,Regular Season,True
+MLB,745192,2024-04-21 18:15:00+00:00,St. Louis Cardinals,Milwaukee Brewers,0.0,2.0,Sonny Gray,Colin Rea,Busch Stadium,R,Regular Season,True
+MLB,746894,2024-04-21 18:20:00+00:00,Chicago Cubs,Miami Marlins,3.0,6.0,Kyle Hendricks,Edward Cabrera,Wrigley Field,R,Regular Season,True
+MLB,746568,2024-04-21 19:10:00+00:00,Colorado Rockies,Seattle Mariners,2.0,1.0,Cal Quantrill,George Kirby,Coors Field,R,Regular Season,True
+MLB,745353,2024-04-21 20:05:00+00:00,San Francisco Giants,Arizona Diamondbacks,3.0,5.0,Jordan Hicks,Slade Cecconi,Oracle Park,R,Regular Season,True
+MLB,745434,2024-04-21 20:10:00+00:00,San Diego Padres,Toronto Blue Jays,6.0,3.0,Joe Musgrove,Chris Bassitt,Petco Park,R,Regular Season,True
+MLB,746154,2024-04-21 20:10:00+00:00,Los Angeles Dodgers,New York Mets,10.0,0.0,Tyler Glasnow,Adrian Houser,Dodger Stadium,R,Regular Season,True
+MLB,747133,2024-04-21 23:10:00+00:00,Atlanta Braves,Texas Rangers,4.0,6.0,Darius Vines,Michael Lorenzen,Truist Park,R,Regular Season,True
+MLB,746572,2024-04-22 00:10:00+00:00,Colorado Rockies,Seattle Mariners,2.0,10.0,Peter Lambert,Emerson Hancock,Coors Field,R,Regular Season,True
+MLB,745757,2024-04-22 17:05:00+00:00,New York Yankees,Oakland Athletics,0.0,2.0,Carlos Rodón,JP Sears,Yankee Stadium,R,Regular Season,True
+MLB,745519,2024-04-22 22:40:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,4.0,2.0,Jared Jones,Joe Ross,PNC Park,R,Regular Season,True
+MLB,746723,2024-04-22 22:40:00+00:00,Cincinnati Reds,Philadelphia Phillies,0.0,7.0,Hunter Greene,Ranger Suarez,Great American Ball Park,R,Regular Season,True
+MLB,745107,2024-04-22 22:50:00+00:00,Tampa Bay Rays,Detroit Tigers,1.0,7.0,Zack Littell,Tarik Skubal,Tropicana Field,R,Regular Season,True
+MLB,747134,2024-04-22 23:20:00+00:00,Atlanta Braves,Miami Marlins,3.0,0.0,Bryce Elder,Ryan Weathers,Truist Park,R,Regular Season,True
+MLB,745916,2024-04-22 23:40:00+00:00,Minnesota Twins,Chicago White Sox,7.0,0.0,Chris Paddack,Jonathan Cannon,Target Field,R,Regular Season,True
+MLB,746319,2024-04-22 23:40:00+00:00,Kansas City Royals,Toronto Blue Jays,3.0,5.0,Brady Singer,Yusei Kikuchi,Kauffman Stadium,R,Regular Season,True
+MLB,745191,2024-04-22 23:45:00+00:00,St. Louis Cardinals,Arizona Diamondbacks,5.0,3.0,Lance Lynn,Brandon Pfaadt,Busch Stadium,R,Regular Season,True
+MLB,746565,2024-04-23 00:40:00+00:00,Colorado Rockies,San Diego Padres,1.0,3.0,Austin Gomber,Dylan Cease,Coors Field,R,Regular Season,True
+MLB,746242,2024-04-23 01:38:00+00:00,Los Angeles Angels,Baltimore Orioles,2.0,4.0,Reid Detmers,Albert Suárez,Angel Stadium,R,Regular Season,True
+MLB,745351,2024-04-23 01:45:00+00:00,San Francisco Giants,New York Mets,5.0,2.0,Keaton Winn,Jose Quintana,Oracle Park,R,Regular Season,True
+MLB,746647,2024-04-23 22:10:00+00:00,Cleveland Guardians,Boston Red Sox,4.0,1.0,Ben Lively,Tanner Houck,Progressive Field,R,Regular Season,True
+MLB,745516,2024-04-23 22:40:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,2.0,1.0,Bailey Falter,Tobias Myers,PNC Park,R,Regular Season,True
+MLB,746722,2024-04-23 22:40:00+00:00,Cincinnati Reds,Philadelphia Phillies,8.0,1.0,Andrew Abbott,Cristopher Sánchez,Great American Ball Park,R,Regular Season,True
+MLB,744863,2024-04-23 22:45:00+00:00,Washington Nationals,Los Angeles Dodgers,1.0,4.0,Patrick Corbin,James Paxton,Nationals Park,R,Regular Season,True
+MLB,745102,2024-04-23 22:50:00+00:00,Tampa Bay Rays,Detroit Tigers,2.0,4.0,Ryan Pepiot,Kenta Maeda,Tropicana Field,R,Regular Season,True
+MLB,745754,2024-04-23 23:05:00+00:00,New York Yankees,Oakland Athletics,4.0,3.0,Marcus Stroman,Paul Blackburn,Yankee Stadium,R,Regular Season,True
+MLB,747130,2024-04-23 23:20:00+00:00,Atlanta Braves,Miami Marlins,5.0,0.0,Max Fried,Trevor Rogers,Truist Park,R,Regular Season,True
+MLB,745917,2024-04-23 23:40:00+00:00,Minnesota Twins,Chicago White Sox,6.0,5.0,Pablo López,Erick Fedde,Target Field,R,Regular Season,True
+MLB,746321,2024-04-23 23:40:00+00:00,Kansas City Royals,Toronto Blue Jays,3.0,2.0,Michael Wacha,Kevin Gausman,Kauffman Stadium,R,Regular Season,True
+MLB,746888,2024-04-23 23:40:00+00:00,Chicago Cubs,Houston Astros,7.0,2.0,Jordan Wicks,J.P. France,Wrigley Field,R,Regular Season,True
+MLB,745193,2024-04-23 23:45:00+00:00,St. Louis Cardinals,Arizona Diamondbacks,1.0,14.0,Steven Matz,Tommy Henry,Busch Stadium,R,Regular Season,True
+MLB,745026,2024-04-24 00:05:00+00:00,Texas Rangers,Seattle Mariners,0.0,4.0,Dane Dunning,Logan Gilbert,Globe Life Field,R,Regular Season,True
+MLB,746566,2024-04-24 00:40:00+00:00,Colorado Rockies,San Diego Padres,7.0,4.0,Ryan Feltner,Michael King,Coors Field,R,Regular Season,True
+MLB,746246,2024-04-24 01:38:00+00:00,Los Angeles Angels,Baltimore Orioles,7.0,4.0,Griffin Canning,Grayson Rodriguez,Angel Stadium,R,Regular Season,True
+MLB,745348,2024-04-24 01:45:00+00:00,San Francisco Giants,New York Mets,5.0,1.0,Logan Webb,Luis Severino,Oracle Park,R,Regular Season,True
+MLB,745188,2024-04-24 17:15:00+00:00,St. Louis Cardinals,Arizona Diamondbacks,5.0,1.0,Kyle Gibson,Jordan Montgomery,Busch Stadium,R,Regular Season,True
+MLB,745346,2024-04-24 19:45:00+00:00,San Francisco Giants,New York Mets,2.0,8.0,Ryan Walker,Sean Manaea,Oracle Park,R,Regular Season,True
+MLB,746244,2024-04-24 20:07:00+00:00,Los Angeles Angels,Baltimore Orioles,5.0,6.0,Tyler Anderson,Dean Kremer,Angel Stadium,R,Regular Season,True
+MLB,746649,2024-04-24 22:10:00+00:00,Cleveland Guardians,Boston Red Sox,0.0,8.0,Carlos Carrasco,Cooper Criswell,Progressive Field,R,Regular Season,True
+MLB,745513,2024-04-24 22:40:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,2.0,3.0,Josh Fleming,Bryse Wilson,PNC Park,R,Regular Season,True
+MLB,746725,2024-04-24 22:40:00+00:00,Cincinnati Reds,Philadelphia Phillies,7.0,4.0,Nick Lodolo,Spencer Turnbull,Great American Ball Park,R,Regular Season,True
+MLB,744864,2024-04-24 22:45:00+00:00,Washington Nationals,Los Angeles Dodgers,2.0,11.0,Jake Irvin,Landon Knack,Nationals Park,R,Regular Season,True
+MLB,745099,2024-04-24 22:50:00+00:00,Tampa Bay Rays,Detroit Tigers,7.0,5.0,Shawn Armstrong,Jack Flaherty,Tropicana Field,R,Regular Season,True
+MLB,745753,2024-04-24 23:05:00+00:00,New York Yankees,Oakland Athletics,7.0,3.0,Clarke Schmidt,Joe Boyle,Yankee Stadium,R,Regular Season,True
+MLB,747132,2024-04-24 23:20:00+00:00,Atlanta Braves,Miami Marlins,4.0,3.0,Reynaldo López,Sixto Sánchez,Truist Park,R,Regular Season,True
+MLB,745919,2024-04-24 23:40:00+00:00,Minnesota Twins,Chicago White Sox,6.0,3.0,Joe Ryan,Garrett Crochet,Target Field,R,Regular Season,True
+MLB,746317,2024-04-24 23:40:00+00:00,Kansas City Royals,Toronto Blue Jays,3.0,2.0,Alec Marsh,Yariel Rodríguez,Kauffman Stadium,R,Regular Season,True
+MLB,746889,2024-04-24 23:40:00+00:00,Chicago Cubs,Houston Astros,4.0,3.0,Jameson Taillon,Spencer Arrighetti,Wrigley Field,R,Regular Season,True
+MLB,745028,2024-04-25 00:05:00+00:00,Texas Rangers,Seattle Mariners,5.0,1.0,Jon Gray,Bryce Miller,Globe Life Field,R,Regular Season,True
+MLB,746567,2024-04-25 00:40:00+00:00,Colorado Rockies,San Diego Padres,2.0,5.0,Ty Blach,Matt Waldron,Coors Field,R,Regular Season,True
+MLB,745512,2024-04-25 16:35:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,5.0,7.0,Mitch Keller,Freddy Peralta,PNC Park,R,Regular Season,True
+MLB,745918,2024-04-25 17:10:00+00:00,Minnesota Twins,Chicago White Sox,6.0,3.0,Simeon Woods Richardson,Michael Soroka,Target Field,R,Regular Season,True
+MLB,746646,2024-04-25 17:10:00+00:00,Cleveland Guardians,Boston Red Sox,6.0,4.0,Triston McKenzie,Chase Anderson,Progressive Field,R,Regular Season,True
+MLB,746724,2024-04-25 17:10:00+00:00,Cincinnati Reds,Philadelphia Phillies,0.0,5.0,Nick Martinez,Zack Wheeler,Great American Ball Park,R,Regular Season,True
+MLB,746320,2024-04-25 18:10:00+00:00,Kansas City Royals,Toronto Blue Jays,2.0,1.0,Cole Ragans,José Berríos,Kauffman Stadium,R,Regular Season,True
+MLB,746887,2024-04-25 18:20:00+00:00,Chicago Cubs,Houston Astros,3.0,1.0,Javier Assad,Justin Verlander,Wrigley Field,R,Regular Season,True
+MLB,745027,2024-04-25 18:35:00+00:00,Texas Rangers,Seattle Mariners,3.0,4.0,Andrew Heaney,Luis Castillo,Globe Life Field,R,Regular Season,True
+MLB,746564,2024-04-25 19:10:00+00:00,Colorado Rockies,San Diego Padres,10.0,9.0,Dakota Hudson,Randy Vásquez,Coors Field,R,Regular Season,True
+MLB,744867,2024-04-25 20:05:00+00:00,Washington Nationals,Los Angeles Dodgers,1.0,2.0,MacKenzie Gore,Yoshinobu Yamamoto,Nationals Park,R,Regular Season,True
+MLB,745755,2024-04-25 23:05:00+00:00,New York Yankees,Oakland Athletics,1.0,3.0,Nestor Cortes,Alex Wood,Yankee Stadium,R,Regular Season,True
+MLB,746482,2024-04-26 17:10:00+00:00,Detroit Tigers,Kansas City Royals,0.0,8.0,Reese Olson,Seth Lugo,Comerica Park,R,Regular Season,True
+MLB,747050,2024-04-26 23:05:00+00:00,Baltimore Orioles,Oakland Athletics,2.0,3.0,Corbin Burnes,Ross Stripling,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,744949,2024-04-26 23:07:00+00:00,Toronto Blue Jays,Los Angeles Dodgers,2.0,12.0,Chris Bassitt,Gavin Stone,Rogers Centre,R,Regular Season,True
+MLB,745835,2024-04-26 23:10:00+00:00,New York Mets,St. Louis Cardinals,2.0,4.0,José Buttó,Miles Mikolas,Citi Field,R,Regular Season,True
+MLB,746078,2024-04-26 23:10:00+00:00,Miami Marlins,Washington Nationals,1.0,3.0,Anthony Maldonado,Trevor Williams,loanDepot park,R,Regular Season,True
+MLB,746972,2024-04-26 23:10:00+00:00,Boston Red Sox,Chicago Cubs,1.0,7.0,Kutter Crawford,Shota Imanaga,Fenway Park,R,Regular Season,True
+MLB,747129,2024-04-26 23:20:00+00:00,Atlanta Braves,Cleveland Guardians,6.0,2.0,Chris Sale,Logan Allen,Truist Park,R,Regular Season,True
+MLB,746808,2024-04-26 23:40:00+00:00,Chicago White Sox,Tampa Bay Rays,9.0,4.0,Chris Flexen,Zach Eflin,Guaranteed Rate Field,R,Regular Season,True
+MLB,745025,2024-04-27 00:05:00+00:00,Texas Rangers,Cincinnati Reds,2.0,1.0,Nathan Eovaldi,Graham Ashcraft,Globe Life Field,R,Regular Season,True
+MLB,746000,2024-04-27 00:10:00+00:00,Milwaukee Brewers,New York Yankees,7.0,6.0,Colin Rea,Luis Gil,American Family Field,R,Regular Season,True
+MLB,746243,2024-04-27 01:38:00+00:00,Los Angeles Angels,Minnesota Twins,3.0,5.0,Patrick Sandoval,Bailey Ober,Angel Stadium,R,Regular Season,True
+MLB,745269,2024-04-27 01:40:00+00:00,Seattle Mariners,Arizona Diamondbacks,6.0,1.0,Emerson Hancock,Zac Gallen,T-Mobile Park,R,Regular Season,True
+MLB,745424,2024-04-27 01:40:00+00:00,San Diego Padres,Philadelphia Phillies,3.0,9.0,Joe Musgrove,Aaron Nola,Petco Park,R,Regular Season,True
+MLB,745347,2024-04-27 02:15:00+00:00,San Francisco Giants,Pittsburgh Pirates,3.0,0.0,Kyle Harrison,Quinn Priester,Oracle Park,R,Regular Season,True
+MLB,744946,2024-04-27 19:07:00+00:00,Toronto Blue Jays,Los Angeles Dodgers,2.0,4.0,Yusei Kikuchi,Tyler Glasnow,Rogers Centre,R,Regular Season,True
+MLB,745020,2024-04-27 20:05:00+00:00,Texas Rangers,Cincinnati Reds,4.0,8.0,Michael Lorenzen,Hunter Greene,Globe Life Field,R,Regular Season,True
+MLB,745833,2024-04-27 20:05:00+00:00,New York Mets,St. Louis Cardinals,4.0,7.0,Adrian Houser,Sonny Gray,Citi Field,R,Regular Season,True
+MLB,747052,2024-04-27 20:05:00+00:00,Baltimore Orioles,Oakland Athletics,7.0,0.0,Cole Irvin,JP Sears,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,746075,2024-04-27 20:10:00+00:00,Miami Marlins,Washington Nationals,4.0,11.0,Edward Cabrera,Mitchell Parker,loanDepot park,R,Regular Season,True
+MLB,746971,2024-04-27 20:10:00+00:00,Boston Red Sox,Chicago Cubs,17.0,0.0,Josh Winckowski,Ben Brown,Fenway Park,R,Regular Season,True
+MLB,746560,2024-04-27 22:05:00+00:00,Colorado Rockies,Houston Astros,4.0,12.0,Cal Quantrill,Ronel Blanco,Estadio Alfredo Harp Helu,R,Regular Season,True
+MLB,746484,2024-04-27 22:10:00+00:00,Detroit Tigers,Kansas City Royals,6.0,5.0,Casey Mize,Brady Singer,Comerica Park,R,Regular Season,True
+MLB,745998,2024-04-27 23:10:00+00:00,Milwaukee Brewers,New York Yankees,3.0,15.0,Joe Ross,Carlos Rodón,American Family Field,R,Regular Season,True
+MLB,746803,2024-04-27 23:10:00+00:00,Chicago White Sox,Tampa Bay Rays,8.0,7.0,Jonathan Cannon,Aaron Civale,Guaranteed Rate Field,R,Regular Season,True
+MLB,747131,2024-04-27 23:20:00+00:00,Atlanta Braves,Cleveland Guardians,2.0,4.0,Charlie Morton,Tanner Bibee,Truist Park,R,Regular Season,True
+MLB,745425,2024-04-28 00:40:00+00:00,San Diego Padres,Philadelphia Phillies,1.0,5.0,Dylan Cease,Ranger Suarez,Petco Park,R,Regular Season,True
+MLB,745350,2024-04-28 01:05:00+00:00,San Francisco Giants,Pittsburgh Pirates,3.0,4.0,Jordan Hicks,Martín Pérez,Oracle Park,R,Regular Season,True
+MLB,746245,2024-04-28 01:38:00+00:00,Los Angeles Angels,Minnesota Twins,5.0,16.0,José Soriano,Chris Paddack,Angel Stadium,R,Regular Season,True
+MLB,745266,2024-04-28 01:40:00+00:00,Seattle Mariners,Arizona Diamondbacks,3.0,1.0,George Kirby,Slade Cecconi,T-Mobile Park,R,Regular Season,True
+MLB,747045,2024-04-28 17:35:00+00:00,Baltimore Orioles,Oakland Athletics,6.0,7.0,Albert Suárez,Paul Blackburn,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,747125,2024-04-28 17:35:00+00:00,Atlanta Braves,Cleveland Guardians,4.0,3.0,Bryce Elder,Ben Lively,Truist Park,R,Regular Season,True
+MLB,744947,2024-04-28 17:37:00+00:00,Toronto Blue Jays,Los Angeles Dodgers,3.0,1.0,Kevin Gausman,Michael Grove,Rogers Centre,R,Regular Season,True
+MLB,745834,2024-04-28 17:40:00+00:00,New York Mets,St. Louis Cardinals,4.0,2.0,Jose Quintana,Lance Lynn,Citi Field,R,Regular Season,True
+MLB,746077,2024-04-28 17:40:00+00:00,Miami Marlins,Washington Nationals,9.0,12.0,Ryan Weathers,Patrick Corbin,loanDepot park,R,Regular Season,True
+MLB,746483,2024-04-28 17:40:00+00:00,Detroit Tigers,Kansas City Royals,4.0,1.0,Tarik Skubal,Michael Wacha,Comerica Park,R,Regular Season,True
+MLB,746001,2024-04-28 18:10:00+00:00,Milwaukee Brewers,New York Yankees,5.0,15.0,Tobias Myers,Marcus Stroman,American Family Field,R,Regular Season,True
+MLB,746805,2024-04-28 18:10:00+00:00,Chicago White Sox,Tampa Bay Rays,4.0,2.0,Erick Fedde,Zack Littell,Guaranteed Rate Field,R,Regular Season,True
+MLB,745022,2024-04-28 18:35:00+00:00,Texas Rangers,Cincinnati Reds,4.0,3.0,Dane Dunning,Andrew Abbott,Globe Life Field,R,Regular Season,True
+MLB,745349,2024-04-28 20:05:00+00:00,San Francisco Giants,Pittsburgh Pirates,3.0,2.0,Keaton Winn,Jared Jones,Oracle Park,R,Regular Season,True
+MLB,746561,2024-04-28 20:05:00+00:00,Colorado Rockies,Houston Astros,2.0,8.0,Austin Gomber,Framber Valdez,Estadio Alfredo Harp Helu,R,Regular Season,True
+MLB,746237,2024-04-28 20:07:00+00:00,Los Angeles Angels,Minnesota Twins,5.0,11.0,Reid Detmers,Pablo López,Angel Stadium,R,Regular Season,True
+MLB,745265,2024-04-28 20:10:00+00:00,Seattle Mariners,Arizona Diamondbacks,2.0,3.0,Logan Gilbert,Brandon Pfaadt,T-Mobile Park,R,Regular Season,True
+MLB,745428,2024-04-28 20:10:00+00:00,San Diego Padres,Philadelphia Phillies,6.0,8.0,Michael King,Taijuan Walker,Petco Park,R,Regular Season,True
+MLB,746967,2024-04-28 23:10:00+00:00,Boston Red Sox,Chicago Cubs,5.0,4.0,Tanner Houck,Hayden Wesneski,Fenway Park,R,Regular Season,True
+MLB,747046,2024-04-29 22:35:00+00:00,Baltimore Orioles,New York Yankees,2.0,0.0,Grayson Rodriguez,Clarke Schmidt,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,746074,2024-04-29 22:40:00+00:00,Miami Marlins,Washington Nationals,2.0,7.0,Trevor Rogers,Jake Irvin,loanDepot park,R,Regular Season,True
+MLB,744945,2024-04-29 23:07:00+00:00,Toronto Blue Jays,Kansas City Royals,6.0,5.0,Yariel Rodríguez,Jonathan Bowlan,Rogers Centre,R,Regular Season,True
+MLB,745832,2024-04-29 23:10:00+00:00,New York Mets,Chicago Cubs,1.0,3.0,Luis Severino,Jameson Taillon,Citi Field,R,Regular Season,True
+MLB,745999,2024-04-29 23:40:00+00:00,Milwaukee Brewers,Tampa Bay Rays,0.0,1.0,Bryse Wilson,Ryan Pepiot,American Family Field,R,Regular Season,True
+MLB,746804,2024-04-29 23:40:00+00:00,Chicago White Sox,Minnesota Twins,2.0,3.0,Garrett Crochet,Joe Ryan,Guaranteed Rate Field,R,Regular Season,True
+MLB,746236,2024-04-30 01:38:00+00:00,Los Angeles Angels,Philadelphia Phillies,6.0,5.0,Griffin Canning,Cristopher Sánchez,Angel Stadium,R,Regular Season,True
+MLB,745263,2024-04-30 01:40:00+00:00,Seattle Mariners,Atlanta Braves,2.0,1.0,Bryce Miller,Max Fried,T-Mobile Park,R,Regular Season,True
+MLB,745427,2024-04-30 01:40:00+00:00,San Diego Padres,Cincinnati Reds,2.0,5.0,Matt Waldron,Nick Lodolo,Petco Park,R,Regular Season,True
+MLB,745672,2024-04-30 01:40:00+00:00,Oakland Athletics,Pittsburgh Pirates,5.0,1.0,Joe Boyle,Bailey Falter,Oakland Coliseum,R,Regular Season,True
+MLB,747211,2024-04-30 01:40:00+00:00,Arizona Diamondbacks,Los Angeles Dodgers,4.0,8.0,Tommy Henry,James Paxton,Chase Field,R,Regular Season,True
+MLB,746477,2024-04-30 19:40:00+00:00,Detroit Tigers,St. Louis Cardinals,1.0,2.0,Jack Flaherty,Kyle Gibson,Comerica Park,R,Regular Season,True
+MLB,746481,2024-04-30 19:45:00+00:00,Detroit Tigers,St. Louis Cardinals,11.0,6.0,Matt Manning,Steven Matz,Comerica Park,R,Regular Season,True
+MLB,747047,2024-04-30 22:35:00+00:00,Baltimore Orioles,New York Yankees,4.0,2.0,Dean Kremer,Nestor Cortes,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,746073,2024-04-30 22:40:00+00:00,Miami Marlins,Colorado Rockies,7.0,6.0,Sixto Sánchez,Ryan Feltner,loanDepot park,R,Regular Season,True
+MLB,744942,2024-04-30 23:07:00+00:00,Toronto Blue Jays,Kansas City Royals,1.0,4.0,José Berríos,Cole Ragans,Rogers Centre,R,Regular Season,True
+MLB,745831,2024-04-30 23:10:00+00:00,New York Mets,Chicago Cubs,4.0,2.0,Sean Manaea,Javier Assad,Citi Field,R,Regular Season,True
+MLB,746968,2024-04-30 23:10:00+00:00,Boston Red Sox,San Francisco Giants,4.0,0.0,Cooper Criswell,Logan Webb,Fenway Park,R,Regular Season,True
+MLB,745997,2024-04-30 23:40:00+00:00,Milwaukee Brewers,Tampa Bay Rays,8.0,2.0,Freddy Peralta,Tyler Alexander,American Family Field,R,Regular Season,True
+MLB,746806,2024-04-30 23:40:00+00:00,Chicago White Sox,Minnesota Twins,5.0,6.0,Michael Soroka,Simeon Woods Richardson,Guaranteed Rate Field,R,Regular Season,True
+MLB,745018,2024-05-01 00:05:00+00:00,Texas Rangers,Washington Nationals,7.0,1.0,Jon Gray,MacKenzie Gore,Globe Life Field,R,Regular Season,True
+MLB,746398,2024-05-01 00:10:00+00:00,Houston Astros,Cleveland Guardians,10.0,9.0,Hunter Brown,Carlos Carrasco,Minute Maid Park,R,Regular Season,True
+MLB,746239,2024-05-01 01:38:00+00:00,Los Angeles Angels,Philadelphia Phillies,5.0,7.0,Tyler Anderson,Spencer Turnbull,Angel Stadium,R,Regular Season,True
+MLB,745260,2024-05-01 01:40:00+00:00,Seattle Mariners,Atlanta Braves,3.0,2.0,Luis Castillo,Reynaldo López,T-Mobile Park,R,Regular Season,True
+MLB,745426,2024-05-01 01:40:00+00:00,San Diego Padres,Cincinnati Reds,6.0,4.0,Yu Darvish,Nick Martinez,Petco Park,R,Regular Season,True
+MLB,745673,2024-05-01 01:40:00+00:00,Oakland Athletics,Pittsburgh Pirates,5.0,2.0,Alex Wood,Mitch Keller,Oakland Coliseum,R,Regular Season,True
+MLB,747210,2024-05-01 01:40:00+00:00,Arizona Diamondbacks,Los Angeles Dodgers,4.0,3.0,Brandon Hughes,Landon Knack,Chase Field,R,Regular Season,True
+MLB,745996,2024-05-01 17:10:00+00:00,Milwaukee Brewers,Tampa Bay Rays,7.0,1.0,Colin Rea,Zach Eflin,American Family Field,R,Regular Season,True
+MLB,746478,2024-05-01 17:10:00+00:00,Detroit Tigers,St. Louis Cardinals,4.0,1.0,Kenta Maeda,Miles Mikolas,Comerica Park,R,Regular Season,True
+MLB,746800,2024-05-01 18:10:00+00:00,Chicago White Sox,Minnesota Twins,5.0,10.0,Chris Flexen,Bailey Ober,Guaranteed Rate Field,R,Regular Season,True
+MLB,744939,2024-05-01 19:07:00+00:00,Toronto Blue Jays,Kansas City Royals,1.0,6.0,Chris Bassitt,Seth Lugo,Rogers Centre,R,Regular Season,True
+MLB,745670,2024-05-01 19:37:00+00:00,Oakland Athletics,Pittsburgh Pirates,4.0,0.0,Ross Stripling,Quinn Priester,Oakland Coliseum,R,Regular Season,True
+MLB,745261,2024-05-01 19:40:00+00:00,Seattle Mariners,Atlanta Braves,2.0,5.0,Emerson Hancock,Chris Sale,T-Mobile Park,R,Regular Season,True
+MLB,746238,2024-05-01 20:07:00+00:00,Los Angeles Angels,Philadelphia Phillies,1.0,2.0,Patrick Sandoval,Zack Wheeler,Angel Stadium,R,Regular Season,True
+MLB,745423,2024-05-01 20:10:00+00:00,San Diego Padres,Cincinnati Reds,6.0,2.0,Joe Musgrove,Graham Ashcraft,Petco Park,R,Regular Season,True
+MLB,747048,2024-05-01 22:35:00+00:00,Baltimore Orioles,New York Yankees,0.0,2.0,Corbin Burnes,Luis Gil,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,746072,2024-05-01 22:40:00+00:00,Miami Marlins,Colorado Rockies,4.0,1.0,Roddery Muñoz,Dakota Hudson,loanDepot park,R,Regular Season,True
+MLB,745829,2024-05-01 23:10:00+00:00,New York Mets,Chicago Cubs,0.0,1.0,José Buttó,Shota Imanaga,Citi Field,R,Regular Season,True
+MLB,746966,2024-05-01 23:10:00+00:00,Boston Red Sox,San Francisco Giants,6.0,2.0,Kutter Crawford,Erik Miller,Fenway Park,R,Regular Season,True
+MLB,745023,2024-05-02 00:05:00+00:00,Texas Rangers,Washington Nationals,0.0,1.0,Andrew Heaney,Trevor Williams,Globe Life Field,R,Regular Season,True
+MLB,746399,2024-05-02 00:10:00+00:00,Houston Astros,Cleveland Guardians,2.0,3.0,Justin Verlander,Triston McKenzie,Minute Maid Park,R,Regular Season,True
+MLB,747207,2024-05-02 01:40:00+00:00,Arizona Diamondbacks,Los Angeles Dodgers,0.0,8.0,Jordan Montgomery,Yoshinobu Yamamoto,Chase Field,R,Regular Season,True
+MLB,746070,2024-05-02 16:10:00+00:00,Miami Marlins,Colorado Rockies,5.0,4.0,Edward Cabrera,Peter Lambert,loanDepot park,R,Regular Season,True
+MLB,747044,2024-05-02 17:05:00+00:00,Baltimore Orioles,New York Yankees,7.0,2.0,Kyle Bradish,Carlos Rodón,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,745830,2024-05-02 17:10:00+00:00,New York Mets,Chicago Cubs,7.0,6.0,Adrian Houser,Ben Brown,Citi Field,R,Regular Season,True
+MLB,746969,2024-05-02 17:35:00+00:00,Boston Red Sox,San Francisco Giants,1.0,3.0,Josh Winckowski,Kyle Harrison,Fenway Park,R,Regular Season,True
+MLB,745021,2024-05-02 18:35:00+00:00,Texas Rangers,Washington Nationals,6.0,0.0,Nathan Eovaldi,Mitchell Parker,Globe Life Field,R,Regular Season,True
+MLB,746403,2024-05-03 00:10:00+00:00,Houston Astros,Cleveland Guardians,8.0,2.0,Spencer Arrighetti,Logan Allen,Minute Maid Park,R,Regular Season,True
+MLB,746890,2024-05-03 18:20:00+00:00,Chicago Cubs,Milwaukee Brewers,1.0,3.0,Hayden Wesneski,Joe Ross,Wrigley Field,R,Regular Season,True
+MLB,746721,2024-05-03 22:10:00+00:00,Cincinnati Reds,Baltimore Orioles,0.0,3.0,Hunter Greene,Cole Irvin,Great American Ball Park,R,Regular Season,True
+MLB,745510,2024-05-03 22:40:00+00:00,Pittsburgh Pirates,Colorado Rockies,2.0,3.0,Martín Pérez,Cal Quantrill,PNC Park,R,Regular Season,True
+MLB,745589,2024-05-03 22:40:00+00:00,Philadelphia Phillies,San Francisco Giants,4.0,3.0,Aaron Nola,Jordan Hicks,Citizens Bank Park,R,Regular Season,True
+MLB,744868,2024-05-03 22:45:00+00:00,Washington Nationals,Toronto Blue Jays,9.0,3.0,Patrick Corbin,Yusei Kikuchi,Nationals Park,R,Regular Season,True
+MLB,745101,2024-05-03 22:50:00+00:00,Tampa Bay Rays,New York Mets,10.0,8.0,Aaron Civale,Jose Quintana,Tropicana Field,R,Regular Season,True
+MLB,745756,2024-05-03 23:05:00+00:00,New York Yankees,Detroit Tigers,2.0,1.0,Marcus Stroman,Reese Olson,Yankee Stadium,R,Regular Season,True
+MLB,746645,2024-05-03 23:10:00+00:00,Cleveland Guardians,Los Angeles Angels,0.0,6.0,Tanner Bibee,José Soriano,Progressive Field,R,Regular Season,True
+MLB,746318,2024-05-03 23:40:00+00:00,Kansas City Royals,Texas Rangers,7.0,1.0,Brady Singer,Michael Lorenzen,Kauffman Stadium,R,Regular Season,True
+MLB,745914,2024-05-04 00:10:00+00:00,Minnesota Twins,Boston Red Sox,5.0,2.0,Chris Paddack,Tanner Houck,Target Field,R,Regular Season,True
+MLB,746402,2024-05-04 00:10:00+00:00,Houston Astros,Seattle Mariners,5.0,3.0,Ronel Blanco,George Kirby,Minute Maid Park,R,Regular Season,True
+MLB,745187,2024-05-04 00:15:00+00:00,St. Louis Cardinals,Chicago White Sox,3.0,0.0,Sonny Gray,Brad Keller,Busch Stadium,R,Regular Season,True
+MLB,745665,2024-05-04 01:40:00+00:00,Oakland Athletics,Miami Marlins,3.0,1.0,JP Sears,Ryan Weathers,Oakland Coliseum,R,Regular Season,True
+MLB,747208,2024-05-04 01:40:00+00:00,Arizona Diamondbacks,San Diego Padres,1.0,7.0,Slade Cecconi,Dylan Cease,Chase Field,R,Regular Season,True
+MLB,746152,2024-05-04 02:10:00+00:00,Los Angeles Dodgers,Atlanta Braves,4.0,3.0,Gavin Stone,Charlie Morton,Dodger Stadium,R,Regular Season,True
+MLB,745750,2024-05-04 17:05:00+00:00,New York Yankees,Detroit Tigers,5.0,3.0,Clarke Schmidt,Casey Mize,Yankee Stadium,R,Regular Season,True
+MLB,745911,2024-05-04 18:10:00+00:00,Minnesota Twins,Boston Red Sox,3.0,1.0,Pablo López,Brennan Bernardino,Target Field,R,Regular Season,True
+MLB,745183,2024-05-04 18:15:00+00:00,St. Louis Cardinals,Chicago White Sox,5.0,6.0,Lance Lynn,Erick Fedde,Busch Stadium,R,Regular Season,True
+MLB,746884,2024-05-04 18:20:00+00:00,Chicago Cubs,Milwaukee Brewers,6.0,5.0,Jameson Taillon,Tobias Myers,Wrigley Field,R,Regular Season,True
+MLB,744862,2024-05-04 20:05:00+00:00,Washington Nationals,Toronto Blue Jays,3.0,6.0,Jake Irvin,Kevin Gausman,Nationals Park,R,Regular Season,True
+MLB,745511,2024-05-04 20:05:00+00:00,Pittsburgh Pirates,Colorado Rockies,1.0,0.0,Jared Jones,Austin Gomber,PNC Park,R,Regular Season,True
+MLB,745666,2024-05-04 20:07:00+00:00,Oakland Athletics,Miami Marlins,20.0,4.0,Paul Blackburn,Trevor Rogers,Oakland Coliseum,R,Regular Season,True
+MLB,745583,2024-05-04 22:05:00+00:00,Philadelphia Phillies,San Francisco Giants,14.0,3.0,Ranger Suarez,Keaton Winn,Citizens Bank Park,R,Regular Season,True
+MLB,746644,2024-05-04 22:10:00+00:00,Cleveland Guardians,Los Angeles Angels,7.0,1.0,Ben Lively,Reid Detmers,Progressive Field,R,Regular Season,True
+MLB,746720,2024-05-04 22:40:00+00:00,Cincinnati Reds,Baltimore Orioles,1.0,2.0,Andrew Abbott,John Means,Great American Ball Park,R,Regular Season,True
+MLB,746311,2024-05-04 23:10:00+00:00,Kansas City Royals,Texas Rangers,4.0,15.0,Michael Wacha,Dane Dunning,Kauffman Stadium,R,Regular Season,True
+MLB,745100,2024-05-04 23:15:00+00:00,Tampa Bay Rays,New York Mets,3.0,1.0,Zack Littell,Christian Scott,Tropicana Field,R,Regular Season,True
+MLB,746394,2024-05-04 23:15:00+00:00,Houston Astros,Seattle Mariners,0.0,5.0,Framber Valdez,Logan Gilbert,Minute Maid Park,R,Regular Season,True
+MLB,747209,2024-05-05 00:10:00+00:00,Arizona Diamondbacks,San Diego Padres,1.0,13.0,Brandon Pfaadt,Michael King,Chase Field,R,Regular Season,True
+MLB,746155,2024-05-05 01:10:00+00:00,Los Angeles Dodgers,Atlanta Braves,11.0,2.0,Tyler Glasnow,Bryce Elder,Dodger Stadium,R,Regular Season,True
+MLB,744861,2024-05-05 17:35:00+00:00,Washington Nationals,Toronto Blue Jays,11.0,8.0,MacKenzie Gore,Alek Manoah,Nationals Park,R,Regular Season,True
+MLB,745504,2024-05-05 17:35:00+00:00,Pittsburgh Pirates,Colorado Rockies,5.0,3.0,Bailey Falter,Ryan Feltner,PNC Park,R,Regular Season,True
+MLB,745751,2024-05-05 17:35:00+00:00,New York Yankees,Detroit Tigers,5.0,2.0,Nestor Cortes,Tarik Skubal,Yankee Stadium,R,Regular Season,True
+MLB,745103,2024-05-05 17:40:00+00:00,Tampa Bay Rays,New York Mets,7.0,6.0,Ryan Pepiot,Luis Severino,Tropicana Field,R,Regular Season,True
+MLB,746643,2024-05-05 17:40:00+00:00,Cleveland Guardians,Los Angeles Angels,4.0,1.0,Carlos Carrasco,Griffin Canning,Progressive Field,R,Regular Season,True
+MLB,745913,2024-05-05 18:10:00+00:00,Minnesota Twins,Boston Red Sox,2.0,9.0,Joe Ryan,Cooper Criswell,Target Field,R,Regular Season,True
+MLB,746314,2024-05-05 18:10:00+00:00,Kansas City Royals,Texas Rangers,2.0,3.0,Daniel Lynch IV,Jon Gray,Kauffman Stadium,R,Regular Season,True
+MLB,746395,2024-05-05 18:10:00+00:00,Houston Astros,Seattle Mariners,4.0,5.0,Hunter Brown,Bryce Miller,Minute Maid Park,R,Regular Season,True
+MLB,745185,2024-05-05 18:15:00+00:00,St. Louis Cardinals,Chicago White Sox,1.0,5.0,Matthew Liberatore,Garrett Crochet,Busch Stadium,R,Regular Season,True
+MLB,746883,2024-05-05 18:20:00+00:00,Chicago Cubs,Milwaukee Brewers,5.0,0.0,Javier Assad,Freddy Peralta,Wrigley Field,R,Regular Season,True
+MLB,745667,2024-05-05 20:07:00+00:00,Oakland Athletics,Miami Marlins,3.0,12.0,Joe Boyle,Sixto Sánchez,Oakland Coliseum,R,Regular Season,True
+MLB,746153,2024-05-05 20:10:00+00:00,Los Angeles Dodgers,Atlanta Braves,5.0,1.0,James Paxton,Max Fried,Dodger Stadium,R,Regular Season,True
+MLB,746719,2024-05-05 20:10:00+00:00,Cincinnati Reds,Baltimore Orioles,1.0,11.0,Nick Lodolo,Dean Kremer,Great American Ball Park,R,Regular Season,True
+MLB,747206,2024-05-05 20:10:00+00:00,Arizona Diamondbacks,San Diego Padres,11.0,4.0,Ryne Nelson,Matt Waldron,Chase Field,R,Regular Season,True
+MLB,745587,2024-05-05 23:10:00+00:00,Philadelphia Phillies,San Francisco Giants,5.0,4.0,Taijuan Walker,Logan Webb,Citizens Bank Park,R,Regular Season,True
+MLB,745585,2024-05-06 20:05:00+00:00,Philadelphia Phillies,San Francisco Giants,6.0,1.0,Zack Wheeler,Mason Black,Citizens Bank Park,R,Regular Season,True
+MLB,746639,2024-05-06 22:10:00+00:00,Cleveland Guardians,Detroit Tigers,2.0,1.0,Triston McKenzie,Jack Flaherty,Progressive Field,R,Regular Season,True
+MLB,745509,2024-05-06 22:40:00+00:00,Pittsburgh Pirates,Los Angeles Angels,4.0,1.0,Mitch Keller,Tyler Anderson,PNC Park,R,Regular Season,True
+MLB,745098,2024-05-06 22:50:00+00:00,Tampa Bay Rays,Chicago White Sox,8.0,2.0,Tyler Alexander,Mike Clevinger,Tropicana Field,R,Regular Season,True
+MLB,746313,2024-05-06 23:10:00+00:00,Kansas City Royals,Milwaukee Brewers,3.0,2.0,Cole Ragans,Bryse Wilson,Kauffman Stadium,R,Regular Season,True
+MLB,745912,2024-05-06 23:40:00+00:00,Minnesota Twins,Seattle Mariners,3.0,1.0,Simeon Woods Richardson,Luis Castillo,Target Field,R,Regular Season,True
+MLB,746886,2024-05-06 23:40:00+00:00,Chicago Cubs,San Diego Padres,3.0,6.0,Justin Steele,Yu Darvish,Wrigley Field,R,Regular Season,True
+MLB,745182,2024-05-06 23:45:00+00:00,St. Louis Cardinals,New York Mets,3.0,4.0,Kyle Gibson,Sean Manaea,Busch Stadium,R,Regular Season,True
+MLB,745669,2024-05-07 01:40:00+00:00,Oakland Athletics,Texas Rangers,2.0,4.0,Alex Wood,Andrew Heaney,Oakland Coliseum,R,Regular Season,True
+MLB,746149,2024-05-07 02:10:00+00:00,Los Angeles Dodgers,Miami Marlins,6.0,3.0,Walker Buehler,Roddery Muñoz,Dodger Stadium,R,Regular Season,True
+MLB,745668,2024-05-07 19:37:00+00:00,Oakland Athletics,Texas Rangers,8.0,15.0,Ross Stripling,José Ureña,Oakland Coliseum,R,Regular Season,True
+MLB,746638,2024-05-07 22:10:00+00:00,Cleveland Guardians,Detroit Tigers,7.0,11.0,Logan Allen,Kenta Maeda,Progressive Field,R,Regular Season,True
+MLB,745508,2024-05-07 22:40:00+00:00,Pittsburgh Pirates,Los Angeles Angels,0.0,9.0,Quinn Priester,Patrick Sandoval,PNC Park,R,Regular Season,True
+MLB,745586,2024-05-07 22:40:00+00:00,Philadelphia Phillies,Toronto Blue Jays,10.0,1.0,Cristopher Sánchez,José Berríos,Citizens Bank Park,R,Regular Season,True
+MLB,746718,2024-05-07 22:40:00+00:00,Cincinnati Reds,Arizona Diamondbacks,2.0,6.0,Frankie Montas,Zac Gallen,Great American Ball Park,R,Regular Season,True
+MLB,744859,2024-05-07 22:45:00+00:00,Washington Nationals,Baltimore Orioles,3.0,0.0,Trevor Williams,Corbin Burnes,Nationals Park,R,Regular Season,True
+MLB,745095,2024-05-07 22:50:00+00:00,Tampa Bay Rays,Chicago White Sox,5.0,1.0,Zach Eflin,Michael Soroka,Tropicana Field,R,Regular Season,True
+MLB,745752,2024-05-07 23:05:00+00:00,New York Yankees,Houston Astros,10.0,3.0,Luis Gil,Justin Verlander,Yankee Stadium,R,Regular Season,True
+MLB,747126,2024-05-07 23:20:00+00:00,Atlanta Braves,Boston Red Sox,4.0,2.0,Reynaldo López,Kutter Crawford,Truist Park,R,Regular Season,True
+MLB,745915,2024-05-07 23:40:00+00:00,Minnesota Twins,Seattle Mariners,6.0,10.0,Bailey Ober,Emerson Hancock,Target Field,R,Regular Season,True
+MLB,746315,2024-05-07 23:40:00+00:00,Kansas City Royals,Milwaukee Brewers,5.0,6.0,Seth Lugo,Colin Rea,Kauffman Stadium,R,Regular Season,True
+MLB,746885,2024-05-07 23:40:00+00:00,Chicago Cubs,San Diego Padres,3.0,2.0,Shota Imanaga,Randy Vásquez,Wrigley Field,R,Regular Season,True
+MLB,745186,2024-05-07 23:45:00+00:00,St. Louis Cardinals,New York Mets,5.0,7.0,Miles Mikolas,José Buttó,Busch Stadium,R,Regular Season,True
+MLB,746559,2024-05-08 00:40:00+00:00,Colorado Rockies,San Francisco Giants,0.0,5.0,Dakota Hudson,Kyle Harrison,Coors Field,R,Regular Season,True
+MLB,746147,2024-05-08 02:10:00+00:00,Los Angeles Dodgers,Miami Marlins,8.0,2.0,Yoshinobu Yamamoto,Edward Cabrera,Dodger Stadium,R,Regular Season,True
+MLB,745507,2024-05-08 16:35:00+00:00,Pittsburgh Pirates,Los Angeles Angels,4.0,5.0,Martín Pérez,José Soriano,PNC Park,R,Regular Season,True
+MLB,745584,2024-05-08 17:05:00+00:00,Philadelphia Phillies,Toronto Blue Jays,3.0,5.0,Aaron Nola,Chris Bassitt,Citizens Bank Park,R,Regular Season,True
+MLB,746640,2024-05-08 17:10:00+00:00,Cleveland Guardians,Detroit Tigers,5.0,4.0,Tanner Bibee,Reese Olson,Progressive Field,R,Regular Season,True
+MLB,746312,2024-05-08 18:10:00+00:00,Kansas City Royals,Milwaukee Brewers,6.0,4.0,Brady Singer,Joe Ross,Kauffman Stadium,R,Regular Season,True
+MLB,746879,2024-05-08 18:20:00+00:00,Chicago Cubs,San Diego Padres,0.0,3.0,Hayden Wesneski,Dylan Cease,Wrigley Field,R,Regular Season,True
+MLB,746151,2024-05-08 19:10:00+00:00,Los Angeles Dodgers,Miami Marlins,3.0,1.0,Gavin Stone,Ryan Weathers,Dodger Stadium,R,Regular Season,True
+MLB,745664,2024-05-08 19:37:00+00:00,Oakland Athletics,Texas Rangers,9.0,4.0,JP Sears,Michael Lorenzen,Oakland Coliseum,R,Regular Season,True
+MLB,745659,2024-05-08 19:42:00+00:00,Oakland Athletics,Texas Rangers,11.0,12.0,Osvaldo Bido,Jack Leiter,Oakland Coliseum,R,Regular Season,True
+MLB,746717,2024-05-08 22:40:00+00:00,Cincinnati Reds,Arizona Diamondbacks,3.0,4.0,Graham Ashcraft,Jordan Montgomery,Great American Ball Park,R,Regular Season,True
+MLB,744858,2024-05-08 22:45:00+00:00,Washington Nationals,Baltimore Orioles,6.0,7.0,Mitchell Parker,Kyle Bradish,Nationals Park,R,Regular Season,True
+MLB,745097,2024-05-08 22:50:00+00:00,Tampa Bay Rays,Chicago White Sox,1.0,4.0,Aaron Civale,Chris Flexen,Tropicana Field,R,Regular Season,True
+MLB,745749,2024-05-08 23:05:00+00:00,New York Yankees,Houston Astros,9.0,4.0,Carlos Rodón,Spencer Arrighetti,Yankee Stadium,R,Regular Season,True
+MLB,747127,2024-05-08 23:20:00+00:00,Atlanta Braves,Boston Red Sox,5.0,0.0,Chris Sale,Nick Pivetta,Truist Park,R,Regular Season,True
+MLB,745906,2024-05-08 23:40:00+00:00,Minnesota Twins,Seattle Mariners,6.0,3.0,Chris Paddack,George Kirby,Target Field,R,Regular Season,True
+MLB,746562,2024-05-09 00:40:00+00:00,Colorado Rockies,San Francisco Giants,6.0,8.0,Peter Lambert,Jordan Hicks,Coors Field,R,Regular Season,True

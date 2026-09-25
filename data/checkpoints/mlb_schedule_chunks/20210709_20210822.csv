@@ -1,0 +1,565 @@
+league,game_id,datetime,home,away,home_score,away_score,home_starter,away_starter,venue,game_type,series_description,confirmed_starters
+MLB,633365,2021-07-09 18:20:00+00:00,Chicago Cubs,St. Louis Cardinals,10.0,5.0,Kyle Hendricks,Wade LeBlanc,Wrigley Field,R,Regular Season,True
+MLB,633377,2021-07-09 23:05:00+00:00,Baltimore Orioles,Chicago White Sox,1.0,12.0,Jorge López,Dallas Keuchel,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,633308,2021-07-09 23:10:00+00:00,New York Mets,Pittsburgh Pirates,13.0,4.0,Taijuan Walker,JT Brubaker,Citi Field,R,Regular Season,True
+MLB,633336,2021-07-09 23:10:00+00:00,Miami Marlins,Atlanta Braves,0.0,5.0,Zach Thompson,Charlie Morton,loanDepot park,R,Regular Season,True
+MLB,633338,2021-07-09 23:10:00+00:00,Tampa Bay Rays,Toronto Blue Jays,7.0,1.0,Shane McClanahan,Alek Manoah,Tropicana Field,R,Regular Season,True
+MLB,633357,2021-07-09 23:10:00+00:00,Boston Red Sox,Philadelphia Phillies,11.0,5.0,Garrett Richards,Vince Velasquez,Fenway Park,R,Regular Season,True
+MLB,633373,2021-07-09 23:10:00+00:00,Cleveland Indians,Kansas City Royals,2.0,1.0,Triston McKenzie,Brad Keller,Progressive Field,R,Regular Season,True
+MLB,633345,2021-07-10 00:05:00+00:00,Texas Rangers,Oakland Athletics,3.0,2.0,Jordan Lyles,Cole Irvin,Globe Life Field,R,Regular Season,True
+MLB,633348,2021-07-10 00:10:00+00:00,Houston Astros,New York Yankees,0.0,4.0,Jake Odorizzi,Nestor Cortes,Minute Maid Park,R,Regular Season,True
+MLB,633366,2021-07-10 00:10:00+00:00,Minnesota Twins,Detroit Tigers,4.0,2.0,Kenta Maeda,Matt Manning,Target Field,R,Regular Season,True
+MLB,633407,2021-07-10 00:10:00+00:00,Milwaukee Brewers,Cincinnati Reds,0.0,2.0,Eric Lauer,Wade Miley,American Family Field,R,Regular Season,True
+MLB,633322,2021-07-10 01:45:00+00:00,San Francisco Giants,Washington Nationals,5.0,3.0,Logan Webb,Paolo Espino,Oracle Park,R,Regular Season,True
+MLB,633320,2021-07-10 02:10:00+00:00,Los Angeles Dodgers,Arizona Diamondbacks,2.0,5.0,David Price,Taylor Widener,Dodger Stadium,R,Regular Season,True
+MLB,633341,2021-07-10 02:10:00+00:00,Seattle Mariners,Los Angeles Angels,7.0,3.0,Marco Gonzales,Alex Cobb,T-Mobile Park,R,Regular Season,True
+MLB,633367,2021-07-10 02:10:00+00:00,San Diego Padres,Colorado Rockies,4.0,2.0,Reiss Knehr,Kyle Freeland,Petco Park,R,Regular Season,True
+MLB,633293,2021-07-10 17:10:00+00:00,Tampa Bay Rays,Toronto Blue Jays,5.0,2.0,Ryan Yarbrough,Ross Stripling,Tropicana Field,R,Regular Season,True
+MLB,633289,2021-07-10 18:10:00+00:00,Minnesota Twins,Detroit Tigers,9.0,4.0,Bailey Ober,Kyle Funkhouser,Target Field,R,Regular Season,True
+MLB,633294,2021-07-10 20:05:00+00:00,San Francisco Giants,Washington Nationals,10.0,4.0,Anthony DeSclafani,Jon Lester,Oracle Park,R,Regular Season,True
+MLB,633316,2021-07-10 20:05:00+00:00,Texas Rangers,Oakland Athletics,4.0,8.0,Mike Foltynewicz,James Kaprielian,Globe Life Field,R,Regular Season,True
+MLB,633350,2021-07-10 20:05:00+00:00,Baltimore Orioles,Chicago White Sox,3.0,8.0,Thomas Eshelman,Lucas Giolito,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,633295,2021-07-10 20:10:00+00:00,New York Mets,Pittsburgh Pirates,2.0,6.0,Marcus Stroman,Tyler Anderson,Citi Field,R,Regular Season,True
+MLB,633312,2021-07-10 20:10:00+00:00,Miami Marlins,Atlanta Braves,4.0,5.0,Trevor Rogers,Max Fried,loanDepot park,R,Regular Season,True
+MLB,633344,2021-07-10 20:10:00+00:00,Boston Red Sox,Philadelphia Phillies,2.0,11.0,Martín Pérez,Matt Moore,Fenway Park,R,Regular Season,True
+MLB,633326,2021-07-10 20:15:00+00:00,New York Mets,Pittsburgh Pirates,4.0,2.0,Tylor Megill,Max Kranick,Citi Field,R,Regular Season,True
+MLB,633317,2021-07-10 22:10:00+00:00,Cleveland Indians,Kansas City Royals,14.0,6.0,Cal Quantrill,Mike Minor,Progressive Field,R,Regular Season,True
+MLB,633304,2021-07-10 23:15:00+00:00,Houston Astros,New York Yankees,0.0,1.0,Zack Greinke,Gerrit Cole,Minute Maid Park,R,Regular Season,True
+MLB,633313,2021-07-10 23:15:00+00:00,Milwaukee Brewers,Cincinnati Reds,3.0,4.0,Freddy Peralta,Vladimir Gutierrez,American Family Field,R,Regular Season,True
+MLB,633356,2021-07-10 23:15:00+00:00,Chicago Cubs,St. Louis Cardinals,0.0,6.0,Zach Davies,Kwang Hyun Kim,Wrigley Field,R,Regular Season,True
+MLB,633288,2021-07-11 02:10:00+00:00,Seattle Mariners,Los Angeles Angels,2.0,0.0,Chris Flexen,Patrick Sandoval,T-Mobile Park,R,Regular Season,True
+MLB,633301,2021-07-11 02:10:00+00:00,San Diego Padres,Colorado Rockies,0.0,3.0,Joe Musgrove,Germán Márquez,Petco Park,R,Regular Season,True
+MLB,633311,2021-07-11 02:10:00+00:00,Los Angeles Dodgers,Arizona Diamondbacks,22.0,1.0,Walker Buehler,Caleb Smith,Dodger Stadium,R,Regular Season,True
+MLB,633282,2021-07-11 17:05:00+00:00,Baltimore Orioles,Chicago White Sox,5.0,7.0,Spenser Watkins,Dylan Cease,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,633270,2021-07-11 17:10:00+00:00,Tampa Bay Rays,Toronto Blue Jays,1.0,3.0,Rich Hill,Robbie Ray,Tropicana Field,R,Regular Season,True
+MLB,633324,2021-07-11 17:10:00+00:00,Miami Marlins,Atlanta Braves,7.0,4.0,Pablo López,Ian Anderson,loanDepot park,R,Regular Season,True
+MLB,633325,2021-07-11 17:10:00+00:00,New York Mets,Pittsburgh Pirates,5.0,6.0,Aaron Loup,Chase De Jong,Citi Field,R,Regular Season,True
+MLB,633327,2021-07-11 17:10:00+00:00,Boston Red Sox,Philadelphia Phillies,4.0,5.0,Nick Pivetta,Brandon Kintzler,Fenway Park,R,Regular Season,True
+MLB,633274,2021-07-11 18:10:00+00:00,Milwaukee Brewers,Cincinnati Reds,1.0,3.0,Brandon Woodruff,Luis Castillo,American Family Field,R,Regular Season,True
+MLB,633307,2021-07-11 18:10:00+00:00,Minnesota Twins,Detroit Tigers,12.0,9.0,José Berríos,Wily Peralta,Target Field,R,Regular Season,True
+MLB,633340,2021-07-11 18:10:00+00:00,Houston Astros,New York Yankees,8.0,7.0,Framber Valdez,Jameson Taillon,Minute Maid Park,R,Regular Season,True
+MLB,633297,2021-07-11 18:35:00+00:00,Texas Rangers,Oakland Athletics,1.0,4.0,Kolby Allard,Chris Bassitt,Globe Life Field,R,Regular Season,True
+MLB,633279,2021-07-11 20:05:00+00:00,San Francisco Giants,Washington Nationals,3.0,1.0,Kevin Gausman,Erick Fedde,Oracle Park,R,Regular Season,True
+MLB,633302,2021-07-11 20:10:00+00:00,Los Angeles Dodgers,Arizona Diamondbacks,7.0,4.0,Tony Gonsolin,Merrill Kelly,Dodger Stadium,R,Regular Season,True
+MLB,633314,2021-07-11 20:10:00+00:00,San Diego Padres,Colorado Rockies,1.0,3.0,Ryan Weathers,Jon Gray,Petco Park,R,Regular Season,True
+MLB,633318,2021-07-11 20:10:00+00:00,Seattle Mariners,Los Angeles Angels,1.0,7.0,Héctor Santiago,José Suarez,T-Mobile Park,R,Regular Season,True
+MLB,634675,2021-07-13 23:30:00+00:00,National League All-Stars,American League All-Stars,2.0,5.0,Max Scherzer,Shohei Ohtani,Coors Field,A,MLB All-Star Game,True
+MLB,633283,2021-07-16 20:05:00+00:00,Philadelphia Phillies,Miami Marlins,5.0,2.0,Matt Moore,Sandy Alcantara,Citizens Bank Park,R,Regular Season,True
+MLB,633447,2021-07-16 20:10:00+00:00,Philadelphia Phillies,Miami Marlins,0.0,7.0,Zach Eflin,Ross Detwiler,Citizens Bank Park,R,Regular Season,True
+MLB,633305,2021-07-16 23:05:00+00:00,Washington Nationals,San Diego Padres,8.0,24.0,Erick Fedde,Chris Paddack,Nationals Park,R,Regular Season,True
+MLB,633310,2021-07-16 23:05:00+00:00,New York Yankees,Boston Red Sox,0.0,4.0,Jordan Montgomery,Eduardo Rodriguez,Yankee Stadium,R,Regular Season,True
+MLB,633346,2021-07-16 23:05:00+00:00,Pittsburgh Pirates,New York Mets,4.0,1.0,Chad Kuhl,Marcus Stroman,PNC Park,R,Regular Season,True
+MLB,633266,2021-07-16 23:07:00+00:00,Toronto Blue Jays,Texas Rangers,10.0,2.0,Robbie Ray,Jordan Lyles,Sahlen Field,R,Regular Season,True
+MLB,633263,2021-07-16 23:10:00+00:00,Cincinnati Reds,Milwaukee Brewers,6.0,11.0,Tyler Mahle,Adrian Houser,Great American Ball Park,R,Regular Season,True
+MLB,633265,2021-07-16 23:20:00+00:00,Atlanta Braves,Tampa Bay Rays,6.0,7.0,Charlie Morton,Michael Wacha,Truist Park,R,Regular Season,True
+MLB,633309,2021-07-17 00:10:00+00:00,Chicago White Sox,Houston Astros,1.0,7.0,Dylan Cease,Lance McCullers Jr.,Guaranteed Rate Field,R,Regular Season,True
+MLB,633328,2021-07-17 00:10:00+00:00,Kansas City Royals,Baltimore Orioles,9.0,2.0,Danny Duffy,Keegan Akin,Kauffman Stadium,R,Regular Season,True
+MLB,633285,2021-07-17 00:15:00+00:00,St. Louis Cardinals,San Francisco Giants,2.0,7.0,Adam Wainwright,Logan Webb,Busch Stadium,R,Regular Season,True
+MLB,633321,2021-07-17 00:40:00+00:00,Colorado Rockies,Los Angeles Dodgers,4.0,10.0,Chi Chi González,Julio Urías,Coors Field,R,Regular Season,True
+MLB,633323,2021-07-17 01:38:00+00:00,Los Angeles Angels,Seattle Mariners,5.0,6.0,Andrew Heaney,Chris Flexen,Angel Stadium,R,Regular Season,True
+MLB,633264,2021-07-17 01:40:00+00:00,Oakland Athletics,Cleveland Indians,5.0,4.0,Sean Manaea,Eli Morgan,Oakland Coliseum,R,Regular Season,True
+MLB,633296,2021-07-17 01:40:00+00:00,Arizona Diamondbacks,Chicago Cubs,1.0,5.0,Madison Bumgarner,Kyle Hendricks,Chase Field,R,Regular Season,True
+MLB,634222,2021-07-17 17:10:00+00:00,Detroit Tigers,Minnesota Twins,1.0,0.0,José Ureña,Charlie Barnes,Comerica Park,R,Regular Season,True
+MLB,633306,2021-07-17 20:07:00+00:00,Oakland Athletics,Cleveland Indians,2.0,3.0,Frankie Montas,Cal Quantrill,Oakland Coliseum,R,Regular Season,True
+MLB,633319,2021-07-17 20:10:00+00:00,Arizona Diamondbacks,Chicago Cubs,2.0,4.0,Zac Gallen,Adbert Alzolay,Chase Field,R,Regular Season,True
+MLB,633275,2021-07-17 22:10:00+00:00,Detroit Tigers,Minnesota Twins,5.0,4.0,Tyler Alexander,Kenta Maeda,Comerica Park,R,Regular Season,True
+MLB,633290,2021-07-17 23:05:00+00:00,Pittsburgh Pirates,New York Mets,9.0,7.0,Wil Crowe,Tylor Megill,PNC Park,R,Regular Season,True
+MLB,633248,2021-07-17 23:10:00+00:00,Kansas City Royals,Baltimore Orioles,4.0,8.0,Brady Singer,Jorge López,Kauffman Stadium,R,Regular Season,True
+MLB,633253,2021-07-17 23:10:00+00:00,Cincinnati Reds,Milwaukee Brewers,4.0,7.0,Luis Castillo,Brandon Woodruff,Great American Ball Park,R,Regular Season,True
+MLB,633262,2021-07-17 23:15:00+00:00,Chicago White Sox,Houston Astros,10.0,1.0,Lucas Giolito,Jake Odorizzi,Guaranteed Rate Field,R,Regular Season,True
+MLB,633281,2021-07-17 23:15:00+00:00,St. Louis Cardinals,San Francisco Giants,3.0,1.0,Kwang Hyun Kim,Anthony DeSclafani,Busch Stadium,R,Regular Season,True
+MLB,633298,2021-07-17 23:15:00+00:00,New York Yankees,Boston Red Sox,3.0,1.0,Gerrit Cole,Nathan Eovaldi,Yankee Stadium,R,Regular Season,True
+MLB,633303,2021-07-17 23:20:00+00:00,Atlanta Braves,Tampa Bay Rays,9.0,0.0,Max Fried,Josh Fleming,Truist Park,R,Regular Season,True
+MLB,633261,2021-07-18 00:10:00+00:00,Colorado Rockies,Los Angeles Dodgers,2.0,9.0,Kyle Freeland,Walker Buehler,Coors Field,R,Regular Season,True
+MLB,633286,2021-07-18 01:07:00+00:00,Los Angeles Angels,Seattle Mariners,9.0,4.0,Alex Cobb,Yusei Kikuchi,Angel Stadium,R,Regular Season,True
+MLB,633235,2021-07-18 17:05:00+00:00,Pittsburgh Pirates,New York Mets,6.0,7.0,JT Brubaker,Taijuan Walker,PNC Park,R,Regular Season,True
+MLB,633267,2021-07-18 17:05:00+00:00,Washington Nationals,San Diego Padres,4.0,10.0,Patrick Corbin,Blake Snell,Nationals Park,R,Regular Season,True
+MLB,633299,2021-07-18 17:05:00+00:00,Philadelphia Phillies,Miami Marlins,4.0,2.0,Vince Velasquez,Zach Thompson,Citizens Bank Park,R,Regular Season,True
+MLB,633256,2021-07-18 17:07:00+00:00,Toronto Blue Jays,Texas Rangers,5.0,0.0,Hyun Jin Ryu,Kolby Allard,Sahlen Field,R,Regular Season,True
+MLB,633252,2021-07-18 17:10:00+00:00,Cincinnati Reds,Milwaukee Brewers,0.0,8.0,Sonny Gray,Corbin Burnes,Great American Ball Park,R,Regular Season,True
+MLB,633280,2021-07-18 17:10:00+00:00,Detroit Tigers,Minnesota Twins,7.0,0.0,Wily Peralta,J.A. Happ,Comerica Park,R,Regular Season,True
+MLB,633292,2021-07-18 17:12:00+00:00,Toronto Blue Jays,Texas Rangers,10.0,0.0,Steven Matz,Mike Foltynewicz,Sahlen Field,R,Regular Season,True
+MLB,633237,2021-07-18 17:20:00+00:00,Atlanta Braves,Tampa Bay Rays,5.0,7.0,Drew Smyly,Rich Hill,Truist Park,R,Regular Season,True
+MLB,633239,2021-07-18 18:01:00+00:00,Philadelphia Phillies,Miami Marlins,7.0,4.0,Zack Wheeler,Braxton Garrett,Citizens Bank Park,R,Regular Season,True
+MLB,633247,2021-07-18 18:10:00+00:00,Chicago White Sox,Houston Astros,4.0,0.0,Carlos Rodón,Framber Valdez,Guaranteed Rate Field,R,Regular Season,True
+MLB,633287,2021-07-18 18:10:00+00:00,Kansas City Royals,Baltimore Orioles,0.0,5.0,Carlos Hernández,Matt Harvey,Kauffman Stadium,R,Regular Season,True
+MLB,633228,2021-07-18 18:15:00+00:00,St. Louis Cardinals,San Francisco Giants,2.0,1.0,Wade LeBlanc,Johnny Cueto,Busch Stadium,R,Regular Season,True
+MLB,633300,2021-07-18 19:05:00+00:00,Washington Nationals,San Diego Padres,8.0,7.0,Max Scherzer,Joe Musgrove,Nationals Park,R,Regular Season,True
+MLB,633255,2021-07-18 19:10:00+00:00,Colorado Rockies,Los Angeles Dodgers,6.0,5.0,Jon Gray,David Price,Coors Field,R,Regular Season,True
+MLB,633238,2021-07-18 20:07:00+00:00,Oakland Athletics,Cleveland Indians,2.0,4.0,Chris Bassitt,Zach Plesac,Oakland Coliseum,R,Regular Season,True
+MLB,633284,2021-07-18 20:07:00+00:00,Los Angeles Angels,Seattle Mariners,4.0,7.0,Patrick Sandoval,Logan Gilbert,Angel Stadium,R,Regular Season,True
+MLB,633251,2021-07-18 20:10:00+00:00,Arizona Diamondbacks,Chicago Cubs,6.0,4.0,Merrill Kelly,Zach Davies,Chase Field,R,Regular Season,True
+MLB,633273,2021-07-18 23:08:00+00:00,New York Yankees,Boston Red Sox,9.0,1.0,Jameson Taillon,Martín Pérez,Yankee Stadium,R,Regular Season,True
+MLB,633278,2021-07-19 21:10:00+00:00,Chicago White Sox,Minnesota Twins,2.0,3.0,Lance Lynn,Griffin Jax,Guaranteed Rate Field,R,Regular Season,True
+MLB,633476,2021-07-19 21:15:00+00:00,Chicago White Sox,Minnesota Twins,5.0,3.0,Reynaldo López,José Berríos,Guaranteed Rate Field,R,Regular Season,True
+MLB,633233,2021-07-19 23:05:00+00:00,Washington Nationals,Miami Marlins,18.0,1.0,Jon Lester,Ross Detwiler,Nationals Park,R,Regular Season,True
+MLB,633218,2021-07-19 23:07:00+00:00,Toronto Blue Jays,Boston Red Sox,4.0,13.0,Ross Stripling,Nick Pivetta,Sahlen Field,R,Regular Season,True
+MLB,633236,2021-07-19 23:10:00+00:00,Tampa Bay Rays,Baltimore Orioles,1.0,6.0,Ryan Yarbrough,Spenser Watkins,Tropicana Field,R,Regular Season,True
+MLB,633271,2021-07-19 23:10:00+00:00,Cincinnati Reds,New York Mets,11.0,15.0,Vladimir Gutierrez,Jerad Eickhoff,Great American Ball Park,R,Regular Season,True
+MLB,633329,2021-07-19 23:10:00+00:00,Detroit Tigers,Texas Rangers,14.0,0.0,Casey Mize,Kyle Gibson,Comerica Park,R,Regular Season,True
+MLB,633277,2021-07-20 00:10:00+00:00,Houston Astros,Cleveland Indians,4.0,3.0,Zack Greinke,J.C. Mejía,Minute Maid Park,R,Regular Season,True
+MLB,633226,2021-07-20 00:15:00+00:00,St. Louis Cardinals,Chicago Cubs,8.0,3.0,Jake Woodford,Alec Mills,Busch Stadium,R,Regular Season,True
+MLB,633243,2021-07-20 01:40:00+00:00,Arizona Diamondbacks,Pittsburgh Pirates,4.0,2.0,Caleb Smith,Chase De Jong,Chase Field,R,Regular Season,True
+MLB,633249,2021-07-20 01:40:00+00:00,Oakland Athletics,Los Angeles Angels,4.0,1.0,Cole Irvin,Shohei Ohtani,Oakland Coliseum,R,Regular Season,True
+MLB,633259,2021-07-20 02:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,2.0,7.0,Tony Gonsolin,Kevin Gausman,Dodger Stadium,R,Regular Season,True
+MLB,633207,2021-07-20 19:37:00+00:00,Oakland Athletics,Los Angeles Angels,6.0,0.0,James Kaprielian,José Suarez,Oakland Coliseum,R,Regular Season,True
+MLB,633223,2021-07-20 20:10:00+00:00,Milwaukee Brewers,Kansas City Royals,2.0,5.0,Brett Anderson,Mike Minor,American Family Field,R,Regular Season,True
+MLB,633216,2021-07-20 23:05:00+00:00,New York Yankees,Philadelphia Phillies,6.0,4.0,Domingo Germán,Aaron Nola,Yankee Stadium,R,Regular Season,True
+MLB,633242,2021-07-20 23:05:00+00:00,Washington Nationals,Miami Marlins,6.0,3.0,Paolo Espino,Trevor Rogers,Nationals Park,R,Regular Season,True
+MLB,633212,2021-07-20 23:10:00+00:00,Detroit Tigers,Texas Rangers,4.0,1.0,Tarik Skubal,Dane Dunning,Comerica Park,R,Regular Season,True
+MLB,633234,2021-07-20 23:10:00+00:00,Cincinnati Reds,New York Mets,4.0,3.0,Wade Miley,Robert Stock,Great American Ball Park,R,Regular Season,True
+MLB,633257,2021-07-20 23:10:00+00:00,Tampa Bay Rays,Baltimore Orioles,9.0,3.0,Shane McClanahan,John Means,Tropicana Field,R,Regular Season,True
+MLB,633240,2021-07-20 23:20:00+00:00,Atlanta Braves,San Diego Padres,2.0,1.0,Touki Toussaint,Yu Darvish,Truist Park,R,Regular Season,True
+MLB,633200,2021-07-21 00:10:00+00:00,Houston Astros,Cleveland Indians,9.0,3.0,Luis Garcia,Triston McKenzie,Minute Maid Park,R,Regular Season,True
+MLB,633268,2021-07-21 00:10:00+00:00,Chicago White Sox,Minnesota Twins,9.0,5.0,Dallas Keuchel,Bailey Ober,Guaranteed Rate Field,R,Regular Season,True
+MLB,633230,2021-07-21 00:15:00+00:00,St. Louis Cardinals,Chicago Cubs,6.0,7.0,Johan Oviedo,Trevor Williams,Busch Stadium,R,Regular Season,True
+MLB,633245,2021-07-21 00:40:00+00:00,Colorado Rockies,Seattle Mariners,4.0,6.0,Germán Márquez,Marco Gonzales,Coors Field,R,Regular Season,True
+MLB,633254,2021-07-21 01:40:00+00:00,Arizona Diamondbacks,Pittsburgh Pirates,11.0,6.0,Taylor Widener,Tyler Anderson,Chase Field,R,Regular Season,True
+MLB,633199,2021-07-21 02:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,8.0,6.0,Darien Núñez,Alex Wood,Dodger Stadium,R,Regular Season,True
+MLB,633225,2021-07-21 16:10:00+00:00,Tampa Bay Rays,Baltimore Orioles,5.0,4.0,Michael Wacha,Alex Wells,Tropicana Field,R,Regular Season,True
+MLB,633250,2021-07-21 16:20:00+00:00,Atlanta Braves,San Diego Padres,2.0,3.0,Kyle Muller,Chris Paddack,Truist Park,R,Regular Season,True
+MLB,633196,2021-07-21 16:35:00+00:00,Cincinnati Reds,New York Mets,0.0,7.0,Jeff Hoffman,Marcus Stroman,Great American Ball Park,R,Regular Season,True
+MLB,633227,2021-07-21 18:10:00+00:00,Milwaukee Brewers,Kansas City Royals,3.0,6.0,Eric Lauer,Brad Keller,American Family Field,R,Regular Season,True
+MLB,633190,2021-07-21 19:10:00+00:00,Colorado Rockies,Seattle Mariners,6.0,3.0,Austin Gomber,Keynan Middleton,Coors Field,R,Regular Season,True
+MLB,633260,2021-07-21 19:40:00+00:00,Arizona Diamondbacks,Pittsburgh Pirates,6.0,4.0,Madison Bumgarner,Max Kranick,Chase Field,R,Regular Season,True
+MLB,633224,2021-07-21 21:20:00+00:00,Atlanta Braves,San Diego Padres,5.0,6.0,Bryse Wilson,Reiss Knehr,Truist Park,R,Regular Season,True
+MLB,633191,2021-07-21 23:05:00+00:00,Washington Nationals,Miami Marlins,1.0,3.0,Erick Fedde,Nick Neidert,Nationals Park,R,Regular Season,True
+MLB,633213,2021-07-21 23:05:00+00:00,New York Yankees,Philadelphia Phillies,6.0,5.0,Asher Wojciechowski,Spencer Howard,Yankee Stadium,R,Regular Season,True
+MLB,633187,2021-07-21 23:07:00+00:00,Toronto Blue Jays,Boston Red Sox,4.0,7.0,Robbie Ray,Garrett Richards,Sahlen Field,R,Regular Season,True
+MLB,633203,2021-07-21 23:10:00+00:00,Detroit Tigers,Texas Rangers,4.0,2.0,Matt Manning,Jordan Lyles,Comerica Park,R,Regular Season,True
+MLB,633205,2021-07-22 00:10:00+00:00,Chicago White Sox,Minnesota Twins,2.0,7.0,Dylan Cease,Michael Pineda,Guaranteed Rate Field,R,Regular Season,True
+MLB,633222,2021-07-22 00:10:00+00:00,Houston Astros,Cleveland Indians,4.0,5.0,Lance McCullers Jr.,Eli Morgan,Minute Maid Park,R,Regular Season,True
+MLB,633241,2021-07-22 00:15:00+00:00,St. Louis Cardinals,Chicago Cubs,3.0,2.0,Adam Wainwright,Kyle Hendricks,Busch Stadium,R,Regular Season,True
+MLB,633217,2021-07-22 02:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,2.0,4.0,Julio Urías,Logan Webb,Dodger Stadium,R,Regular Season,True
+MLB,633258,2021-07-22 17:10:00+00:00,Detroit Tigers,Texas Rangers,7.0,5.0,Tyler Alexander,Mike Foltynewicz,Comerica Park,R,Regular Season,True
+MLB,633276,2021-07-22 23:05:00+00:00,Philadelphia Phillies,Atlanta Braves,2.0,7.0,Matt Moore,Charlie Morton,Citizens Bank Park,R,Regular Season,True
+MLB,633180,2021-07-22 23:10:00+00:00,Cleveland Indians,Tampa Bay Rays,4.0,5.0,Cal Quantrill,Luis Patiño,Progressive Field,R,Regular Season,True
+MLB,633193,2021-07-22 23:10:00+00:00,Boston Red Sox,New York Yankees,5.0,4.0,Tanner Houck,Jordan Montgomery,Fenway Park,R,Regular Season,True
+MLB,633269,2021-07-22 23:10:00+00:00,Miami Marlins,San Diego Padres,2.0,3.0,Anthony Bender,Blake Snell,loanDepot park,R,Regular Season,True
+MLB,633178,2021-07-22 23:15:00+00:00,St. Louis Cardinals,Chicago Cubs,3.0,2.0,Kwang Hyun Kim,Adbert Alzolay,Busch Stadium,R,Regular Season,True
+MLB,633220,2021-07-23 00:10:00+00:00,Minnesota Twins,Los Angeles Angels,2.0,3.0,Kenta Maeda,Andrew Heaney,Target Field,R,Regular Season,True
+MLB,633231,2021-07-23 02:10:00+00:00,Seattle Mariners,Oakland Athletics,1.0,4.0,Chris Flexen,Sean Manaea,T-Mobile Park,R,Regular Season,True
+MLB,633244,2021-07-23 02:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,3.0,5.0,Walker Buehler,Anthony DeSclafani,Dodger Stadium,R,Regular Season,True
+MLB,633170,2021-07-23 18:20:00+00:00,Chicago Cubs,Arizona Diamondbacks,8.0,3.0,Zach Davies,Zac Gallen,Wrigley Field,R,Regular Season,True
+MLB,633176,2021-07-23 23:05:00+00:00,Baltimore Orioles,Washington Nationals,6.0,1.0,Jorge López,Patrick Corbin,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,633214,2021-07-23 23:05:00+00:00,Philadelphia Phillies,Atlanta Braves,5.0,1.0,Zack Wheeler,Max Fried,Citizens Bank Park,R,Regular Season,True
+MLB,633164,2021-07-23 23:10:00+00:00,Miami Marlins,San Diego Padres,2.0,5.0,Zach Thompson,Joe Musgrove,loanDepot park,R,Regular Season,True
+MLB,633181,2021-07-23 23:10:00+00:00,Boston Red Sox,New York Yankees,6.0,2.0,Eduardo Rodriguez,Gerrit Cole,Fenway Park,R,Regular Season,True
+MLB,633184,2021-07-23 23:10:00+00:00,Cincinnati Reds,St. Louis Cardinals,6.0,5.0,Tyler Mahle,Wade LeBlanc,Great American Ball Park,R,Regular Season,True
+MLB,633211,2021-07-23 23:10:00+00:00,Cleveland Indians,Tampa Bay Rays,5.0,10.0,Zach Plesac,Josh Fleming,Progressive Field,R,Regular Season,True
+MLB,633221,2021-07-23 23:10:00+00:00,New York Mets,Toronto Blue Jays,3.0,0.0,Tylor Megill,Steven Matz,Citi Field,R,Regular Season,True
+MLB,633159,2021-07-24 00:10:00+00:00,Minnesota Twins,Los Angeles Angels,5.0,4.0,J.A. Happ,Alex Cobb,Target Field,R,Regular Season,True
+MLB,633163,2021-07-24 00:10:00+00:00,Milwaukee Brewers,Chicago White Sox,7.0,1.0,Freddy Peralta,Lucas Giolito,American Family Field,R,Regular Season,True
+MLB,633208,2021-07-24 00:10:00+00:00,Houston Astros,Texas Rangers,7.0,3.0,Jake Odorizzi,Kolby Allard,Minute Maid Park,R,Regular Season,True
+MLB,633232,2021-07-24 00:10:00+00:00,Kansas City Royals,Detroit Tigers,5.0,3.0,Kris Bubic,Wily Peralta,Kauffman Stadium,R,Regular Season,True
+MLB,633215,2021-07-24 01:45:00+00:00,San Francisco Giants,Pittsburgh Pirates,4.0,6.0,Johnny Cueto,Chad Kuhl,Oracle Park,R,Regular Season,True
+MLB,633173,2021-07-24 02:10:00+00:00,Los Angeles Dodgers,Colorado Rockies,6.0,9.0,David Price,Chi Chi González,Dodger Stadium,R,Regular Season,True
+MLB,633229,2021-07-24 02:10:00+00:00,Seattle Mariners,Oakland Athletics,4.0,3.0,Yusei Kikuchi,Frankie Montas,T-Mobile Park,R,Regular Season,True
+MLB,633186,2021-07-24 18:20:00+00:00,Chicago Cubs,Arizona Diamondbacks,3.0,7.0,Alec Mills,Merrill Kelly,Wrigley Field,R,Regular Season,True
+MLB,633154,2021-07-24 20:05:00+00:00,Boston Red Sox,New York Yankees,3.0,4.0,Nathan Eovaldi,Jameson Taillon,Fenway Park,R,Regular Season,True
+MLB,633202,2021-07-24 22:05:00+00:00,Philadelphia Phillies,Atlanta Braves,3.0,15.0,Vince Velasquez,Drew Smyly,Citizens Bank Park,R,Regular Season,True
+MLB,633210,2021-07-24 22:10:00+00:00,Miami Marlins,San Diego Padres,3.0,2.0,Braxton Garrett,Ryan Weathers,loanDepot park,R,Regular Season,True
+MLB,633195,2021-07-24 22:35:00+00:00,Baltimore Orioles,Washington Nationals,5.0,3.0,Matt Harvey,Jon Lester,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,633167,2021-07-24 23:10:00+00:00,Milwaukee Brewers,Chicago White Sox,6.0,1.0,Corbin Burnes,Carlos Rodón,American Family Field,R,Regular Season,True
+MLB,633175,2021-07-24 23:10:00+00:00,Cincinnati Reds,St. Louis Cardinals,5.0,3.0,Luis Castillo,Jake Woodford,Great American Ball Park,R,Regular Season,True
+MLB,633185,2021-07-24 23:10:00+00:00,Cleveland Indians,Tampa Bay Rays,2.0,8.0,J.C. Mejía,Drew Rasmussen,Progressive Field,R,Regular Season,True
+MLB,633197,2021-07-24 23:10:00+00:00,Houston Astros,Texas Rangers,4.0,1.0,Framber Valdez,Kyle Gibson,Minute Maid Park,R,Regular Season,True
+MLB,633201,2021-07-24 23:10:00+00:00,Kansas City Royals,Detroit Tigers,9.0,8.0,Carlos Hernández,Casey Mize,Kauffman Stadium,R,Regular Season,True
+MLB,633209,2021-07-24 23:10:00+00:00,Minnesota Twins,Los Angeles Angels,1.0,2.0,José Berríos,Patrick Sandoval,Target Field,R,Regular Season,True
+MLB,633272,2021-07-24 23:10:00+00:00,New York Mets,Toronto Blue Jays,3.0,10.0,Taijuan Walker,Hyun Jin Ryu,Citi Field,R,Regular Season,True
+MLB,633144,2021-07-25 01:05:00+00:00,San Francisco Giants,Pittsburgh Pirates,2.0,10.0,Kevin Gausman,Wil Crowe,Oracle Park,R,Regular Season,True
+MLB,633188,2021-07-25 01:10:00+00:00,Los Angeles Dodgers,Colorado Rockies,1.0,0.0,Tony Gonsolin,Kyle Freeland,Dodger Stadium,R,Regular Season,True
+MLB,633140,2021-07-25 02:10:00+00:00,Seattle Mariners,Oakland Athletics,5.0,4.0,Logan Gilbert,Chris Bassitt,T-Mobile Park,R,Regular Season,True
+MLB,633156,2021-07-25 17:05:00+00:00,Baltimore Orioles,Washington Nationals,5.0,4.0,John Means,Paolo Espino,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,633192,2021-07-25 17:05:00+00:00,Philadelphia Phillies,Atlanta Braves,2.0,1.0,Aaron Nola,Touki Toussaint,Citizens Bank Park,R,Regular Season,True
+MLB,633135,2021-07-25 17:10:00+00:00,Miami Marlins,San Diego Padres,9.0,3.0,John Curtiss,Yu Darvish,loanDepot park,R,Regular Season,True
+MLB,633174,2021-07-25 17:10:00+00:00,New York Mets,Toronto Blue Jays,5.0,4.0,Rich Hill,Ross Stripling,Citi Field,R,Regular Season,True
+MLB,633177,2021-07-25 17:10:00+00:00,Cincinnati Reds,St. Louis Cardinals,6.0,10.0,Sonny Gray,Johan Oviedo,Great American Ball Park,R,Regular Season,True
+MLB,633194,2021-07-25 17:10:00+00:00,Cleveland Indians,Tampa Bay Rays,3.0,2.0,Triston McKenzie,Ryan Yarbrough,Progressive Field,R,Regular Season,True
+MLB,633198,2021-07-25 17:10:00+00:00,Boston Red Sox,New York Yankees,5.0,4.0,Martín Pérez,Domingo Germán,Fenway Park,R,Regular Season,True
+MLB,633136,2021-07-25 18:10:00+00:00,Houston Astros,Texas Rangers,3.0,1.0,Zack Greinke,Taylor Hearn,Minute Maid Park,R,Regular Season,True
+MLB,633179,2021-07-25 18:10:00+00:00,Minnesota Twins,Los Angeles Angels,2.0,6.0,Bailey Ober,Jaime Barria,Target Field,R,Regular Season,True
+MLB,633183,2021-07-25 18:10:00+00:00,Kansas City Royals,Detroit Tigers,6.0,1.0,Daniel Lynch IV,Tarik Skubal,Kauffman Stadium,R,Regular Season,True
+MLB,633204,2021-07-25 18:20:00+00:00,Chicago Cubs,Arizona Diamondbacks,5.0,1.0,Trevor Williams,Caleb Smith,Wrigley Field,R,Regular Season,True
+MLB,633171,2021-07-25 20:05:00+00:00,San Francisco Giants,Pittsburgh Pirates,6.0,1.0,Alex Wood,JT Brubaker,Oracle Park,R,Regular Season,True
+MLB,633169,2021-07-25 20:10:00+00:00,Seattle Mariners,Oakland Athletics,4.0,3.0,Marco Gonzales,Cole Irvin,T-Mobile Park,R,Regular Season,True
+MLB,633172,2021-07-25 20:10:00+00:00,Los Angeles Dodgers,Colorado Rockies,3.0,2.0,Josiah Gray,Jon Gray,Dodger Stadium,R,Regular Season,True
+MLB,633151,2021-07-25 23:08:00+00:00,Milwaukee Brewers,Chicago White Sox,1.0,3.0,Brandon Woodruff,Lance Lynn,American Family Field,R,Regular Season,True
+MLB,633145,2021-07-26 21:10:00+00:00,New York Mets,Atlanta Braves,0.0,2.0,Marcus Stroman,Kyle Muller,Citi Field,R,Regular Season,True
+MLB,633925,2021-07-26 21:15:00+00:00,New York Mets,Atlanta Braves,1.0,0.0,Aaron Loup,Bryse Wilson,Citi Field,R,Regular Season,True
+MLB,633168,2021-07-26 23:05:00+00:00,Philadelphia Phillies,Washington Nationals,6.0,5.0,Spencer Howard,Joe Ross,Citizens Bank Park,R,Regular Season,True
+MLB,633219,2021-07-26 23:10:00+00:00,Boston Red Sox,Toronto Blue Jays,5.0,4.0,Nick Pivetta,Thomas Hatch,Fenway Park,R,Regular Season,True
+MLB,633182,2021-07-27 00:05:00+00:00,Chicago Cubs,Cincinnati Reds,6.0,5.0,Kyle Hendricks,Wade Miley,Wrigley Field,R,Regular Season,True
+MLB,633121,2021-07-27 00:10:00+00:00,Kansas City Royals,Chicago White Sox,4.0,3.0,Mike Minor,Dallas Keuchel,Kauffman Stadium,R,Regular Season,True
+MLB,633133,2021-07-27 00:10:00+00:00,Minnesota Twins,Detroit Tigers,6.0,5.0,Michael Pineda,Matt Manning,Target Field,R,Regular Season,True
+MLB,633157,2021-07-27 01:38:00+00:00,Los Angeles Angels,Colorado Rockies,6.0,2.0,Shohei Ohtani,Germán Márquez,Angel Stadium,R,Regular Season,True
+MLB,633206,2021-07-27 02:10:00+00:00,Seattle Mariners,Houston Astros,11.0,8.0,Darren McCaughan,Luis Garcia,T-Mobile Park,R,Regular Season,True
+MLB,633152,2021-07-27 23:05:00+00:00,Philadelphia Phillies,Washington Nationals,4.0,6.0,Matt Moore,Erick Fedde,Citizens Bank Park,R,Regular Season,True
+MLB,633153,2021-07-27 23:05:00+00:00,Baltimore Orioles,Miami Marlins,3.0,7.0,Spenser Watkins,Sandy Alcantara,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,633161,2021-07-27 23:05:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,0.0,9.0,Luis Oviedo,Brett Anderson,PNC Park,R,Regular Season,True
+MLB,633143,2021-07-27 23:10:00+00:00,Tampa Bay Rays,New York Yankees,3.0,4.0,Shane McClanahan,Jordan Montgomery,Tropicana Field,R,Regular Season,True
+MLB,633147,2021-07-27 23:10:00+00:00,New York Mets,Atlanta Braves,5.0,12.0,Jerad Eickhoff,Charlie Morton,Citi Field,R,Regular Season,True
+MLB,633189,2021-07-27 23:10:00+00:00,Cleveland Indians,St. Louis Cardinals,2.0,4.0,Cal Quantrill,Adam Wainwright,Progressive Field,R,Regular Season,True
+MLB,633150,2021-07-28 00:05:00+00:00,Texas Rangers,Arizona Diamondbacks,5.0,4.0,Dane Dunning,Taylor Widener,Globe Life Field,R,Regular Season,True
+MLB,633160,2021-07-28 00:05:00+00:00,Chicago Cubs,Cincinnati Reds,4.0,7.0,Adbert Alzolay,Vladimir Gutierrez,Wrigley Field,R,Regular Season,True
+MLB,633137,2021-07-28 00:10:00+00:00,Minnesota Twins,Detroit Tigers,5.0,6.0,Kenta Maeda,Tyler Alexander,Target Field,R,Regular Season,True
+MLB,633166,2021-07-28 00:10:00+00:00,Kansas City Royals,Chicago White Sox,3.0,5.0,Brad Keller,Dylan Cease,Kauffman Stadium,R,Regular Season,True
+MLB,633139,2021-07-28 01:38:00+00:00,Los Angeles Angels,Colorado Rockies,3.0,12.0,José Suarez,Austin Gomber,Angel Stadium,R,Regular Season,True
+MLB,633149,2021-07-28 01:45:00+00:00,San Francisco Giants,Los Angeles Dodgers,2.0,1.0,Logan Webb,Julio Urías,Oracle Park,R,Regular Season,True
+MLB,633155,2021-07-28 02:10:00+00:00,San Diego Padres,Oakland Athletics,7.0,4.0,Chris Paddack,James Kaprielian,Petco Park,R,Regular Season,True
+MLB,633158,2021-07-28 02:10:00+00:00,Seattle Mariners,Houston Astros,6.0,8.0,Chris Flexen,Lance McCullers Jr.,T-Mobile Park,R,Regular Season,True
+MLB,633123,2021-07-28 17:10:00+00:00,Cleveland Indians,St. Louis Cardinals,7.0,2.0,Zach Plesac,Kwang Hyun Kim,Progressive Field,R,Regular Season,True
+MLB,633138,2021-07-28 17:10:00+00:00,Minnesota Twins,Detroit Tigers,14.0,17.0,J.A. Happ,Wily Peralta,Target Field,R,Regular Season,True
+MLB,633162,2021-07-28 18:10:00+00:00,Boston Red Sox,Toronto Blue Jays,1.0,4.0,Garrett Richards,Robbie Ray,Fenway Park,R,Regular Season,True
+MLB,633146,2021-07-28 19:40:00+00:00,Seattle Mariners,Houston Astros,4.0,11.0,Yusei Kikuchi,Jake Odorizzi,T-Mobile Park,R,Regular Season,True
+MLB,633096,2021-07-28 20:10:00+00:00,San Diego Padres,Oakland Athletics,4.0,10.0,Blake Snell,Sean Manaea,Petco Park,R,Regular Season,True
+MLB,633098,2021-07-28 23:05:00+00:00,Baltimore Orioles,Miami Marlins,8.0,7.0,Jorge López,Jordan Holloway,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,633113,2021-07-28 23:05:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,3.0,7.0,Max Kranick,Adrian Houser,PNC Park,R,Regular Season,True
+MLB,633110,2021-07-28 23:10:00+00:00,Boston Red Sox,Toronto Blue Jays,4.0,1.0,Tanner Houck,Steven Matz,Fenway Park,R,Regular Season,True
+MLB,633122,2021-07-28 23:10:00+00:00,Tampa Bay Rays,New York Yankees,1.0,3.0,Michael Wacha,Nestor Cortes,Tropicana Field,R,Regular Season,True
+MLB,633148,2021-07-28 23:10:00+00:00,New York Mets,Atlanta Braves,2.0,1.0,Tylor Megill,Max Fried,Citi Field,R,Regular Season,True
+MLB,633097,2021-07-29 00:05:00+00:00,Texas Rangers,Arizona Diamondbacks,2.0,3.0,Jordan Lyles,Madison Bumgarner,Globe Life Field,R,Regular Season,True
+MLB,633103,2021-07-29 00:05:00+00:00,Chicago Cubs,Cincinnati Reds,2.0,8.0,Zach Davies,Tyler Mahle,Wrigley Field,R,Regular Season,True
+MLB,633114,2021-07-29 00:10:00+00:00,Kansas City Royals,Chicago White Sox,3.0,2.0,Kris Bubic,Lucas Giolito,Kauffman Stadium,R,Regular Season,True
+MLB,633130,2021-07-29 01:38:00+00:00,Los Angeles Angels,Colorado Rockies,8.0,7.0,Andrew Heaney,Lucas Gilbreath,Angel Stadium,R,Regular Season,True
+MLB,633125,2021-07-29 01:45:00+00:00,San Francisco Giants,Los Angeles Dodgers,0.0,8.0,Anthony DeSclafani,Walker Buehler,Oracle Park,R,Regular Season,True
+MLB,633081,2021-07-29 16:05:00+00:00,Philadelphia Phillies,Washington Nationals,1.0,3.0,Zack Wheeler,Max Scherzer,Citizens Bank Park,R,Regular Season,True
+MLB,633083,2021-07-29 16:10:00+00:00,New York Mets,Atlanta Braves,3.0,6.0,Taijuan Walker,Drew Smyly,Citi Field,R,Regular Season,True
+MLB,633134,2021-07-29 16:10:00+00:00,Philadelphia Phillies,Washington Nationals,11.0,8.0,Cristopher Sánchez,Patrick Corbin,Citizens Bank Park,R,Regular Season,True
+MLB,633104,2021-07-29 17:10:00+00:00,Tampa Bay Rays,New York Yankees,14.0,0.0,Luis Patiño,Gerrit Cole,Tropicana Field,R,Regular Season,True
+MLB,633141,2021-07-29 18:10:00+00:00,Kansas City Royals,Chicago White Sox,5.0,0.0,Carlos Hernández,Carlos Rodón,Kauffman Stadium,R,Regular Season,True
+MLB,633124,2021-07-29 18:20:00+00:00,Chicago Cubs,Cincinnati Reds,4.0,7.0,Alec Mills,Luis Castillo,Wrigley Field,R,Regular Season,True
+MLB,633109,2021-07-29 19:45:00+00:00,San Francisco Giants,Los Angeles Dodgers,5.0,0.0,Johnny Cueto,David Price,Oracle Park,R,Regular Season,True
+MLB,633093,2021-07-29 23:05:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,0.0,12.0,Chad Kuhl,Freddy Peralta,PNC Park,R,Regular Season,True
+MLB,633115,2021-07-29 23:10:00+00:00,Detroit Tigers,Baltimore Orioles,6.0,2.0,Casey Mize,Alex Wells,Comerica Park,R,Regular Season,True
+MLB,633126,2021-07-29 23:10:00+00:00,Boston Red Sox,Toronto Blue Jays,1.0,13.0,Eduardo Rodriguez,Hyun Jin Ryu,Fenway Park,R,Regular Season,True
+MLB,633111,2021-07-30 01:38:00+00:00,Los Angeles Angels,Oakland Athletics,0.0,4.0,Dylan Bundy,Frankie Montas,Angel Stadium,R,Regular Season,True
+MLB,633065,2021-07-30 02:10:00+00:00,San Diego Padres,Colorado Rockies,3.0,0.0,Joe Musgrove,Kyle Freeland,Petco Park,R,Regular Season,True
+MLB,633094,2021-07-30 23:05:00+00:00,Washington Nationals,Chicago Cubs,4.0,3.0,Paolo Espino,Jake Arrieta,Nationals Park,R,Regular Season,True
+MLB,633108,2021-07-30 23:05:00+00:00,Pittsburgh Pirates,Philadelphia Phillies,7.0,0.0,Wil Crowe,Vince Velasquez,PNC Park,R,Regular Season,True
+MLB,633091,2021-07-30 23:07:00+00:00,Toronto Blue Jays,Kansas City Royals,6.0,4.0,Ross Stripling,Daniel Lynch IV,Rogers Centre,R,Regular Season,True
+MLB,633073,2021-07-30 23:10:00+00:00,Miami Marlins,New York Yankees,1.0,3.0,Zach Thompson,Jameson Taillon,loanDepot park,R,Regular Season,True
+MLB,633100,2021-07-30 23:10:00+00:00,New York Mets,Cincinnati Reds,2.0,6.0,Carlos Carrasco,Sonny Gray,Citi Field,R,Regular Season,True
+MLB,633107,2021-07-30 23:10:00+00:00,Detroit Tigers,Baltimore Orioles,3.0,4.0,Tarik Skubal,Matt Harvey,Comerica Park,R,Regular Season,True
+MLB,633165,2021-07-30 23:10:00+00:00,Tampa Bay Rays,Boston Red Sox,7.0,3.0,Josh Fleming,Martín Pérez,Tropicana Field,R,Regular Season,True
+MLB,633131,2021-07-30 23:20:00+00:00,Atlanta Braves,Milwaukee Brewers,5.0,9.0,Touki Toussaint,Corbin Burnes,Truist Park,R,Regular Season,True
+MLB,633116,2021-07-31 00:05:00+00:00,Texas Rangers,Seattle Mariners,5.0,9.0,Kolby Allard,Logan Gilbert,Globe Life Field,R,Regular Season,True
+MLB,633128,2021-07-31 00:10:00+00:00,Chicago White Sox,Cleveland Indians,6.0,4.0,Lance Lynn,J.C. Mejía,Guaranteed Rate Field,R,Regular Season,True
+MLB,633119,2021-07-31 00:15:00+00:00,St. Louis Cardinals,Minnesota Twins,5.0,1.0,Wade LeBlanc,Griffin Jax,Busch Stadium,R,Regular Season,True
+MLB,633118,2021-07-31 01:38:00+00:00,Los Angeles Angels,Oakland Athletics,0.0,2.0,Patrick Sandoval,Chris Bassitt,Angel Stadium,R,Regular Season,True
+MLB,633102,2021-07-31 01:40:00+00:00,Arizona Diamondbacks,Los Angeles Dodgers,6.0,5.0,Zac Gallen,Tony Gonsolin,Chase Field,R,Regular Season,True
+MLB,633120,2021-07-31 01:45:00+00:00,San Francisco Giants,Houston Astros,6.0,9.0,Kevin Gausman,Framber Valdez,Oracle Park,R,Regular Season,True
+MLB,633112,2021-07-31 02:10:00+00:00,San Diego Padres,Colorado Rockies,4.0,9.0,Ryan Weathers,Jon Gray,Petco Park,R,Regular Season,True
+MLB,633085,2021-07-31 19:07:00+00:00,Toronto Blue Jays,Kansas City Royals,4.0,0.0,Alek Manoah,Mike Minor,Rogers Centre,R,Regular Season,True
+MLB,633080,2021-07-31 20:05:00+00:00,Los Angeles Angels,Oakland Athletics,1.0,0.0,Jaime Barria,Cole Irvin,Angel Stadium,R,Regular Season,True
+MLB,633088,2021-07-31 20:05:00+00:00,San Francisco Giants,Houston Astros,8.0,6.0,Alex Wood,Zack Greinke,Oracle Park,R,Regular Season,True
+MLB,633090,2021-07-31 22:10:00+00:00,Tampa Bay Rays,Boston Red Sox,9.0,5.0,Ryan Yarbrough,Nathan Eovaldi,Tropicana Field,R,Regular Season,True
+MLB,633092,2021-07-31 22:10:00+00:00,Miami Marlins,New York Yankees,2.0,4.0,Trevor Rogers,Domingo Germán,loanDepot park,R,Regular Season,True
+MLB,633105,2021-07-31 22:10:00+00:00,Detroit Tigers,Baltimore Orioles,2.0,5.0,Matt Manning,John Means,Comerica Park,R,Regular Season,True
+MLB,633076,2021-07-31 23:05:00+00:00,Pittsburgh Pirates,Philadelphia Phillies,3.0,2.0,JT Brubaker,Aaron Nola,PNC Park,R,Regular Season,True
+MLB,633106,2021-07-31 23:05:00+00:00,Texas Rangers,Seattle Mariners,5.0,4.0,Taylor Hearn,Tyler Anderson,Globe Life Field,R,Regular Season,True
+MLB,633132,2021-07-31 23:05:00+00:00,Washington Nationals,Chicago Cubs,3.0,6.0,Joe Ross,Kyle Hendricks,Nationals Park,R,Regular Season,True
+MLB,633058,2021-07-31 23:10:00+00:00,Chicago White Sox,Cleveland Indians,11.0,12.0,Dallas Keuchel,Triston McKenzie,Guaranteed Rate Field,R,Regular Season,True
+MLB,633063,2021-07-31 23:10:00+00:00,New York Mets,Cincinnati Reds,5.0,4.0,Rich Hill,Wade Miley,Citi Field,R,Regular Season,True
+MLB,633127,2021-07-31 23:15:00+00:00,St. Louis Cardinals,Minnesota Twins,1.0,8.0,Jake Woodford,Bailey Ober,Busch Stadium,R,Regular Season,True
+MLB,633117,2021-07-31 23:20:00+00:00,Atlanta Braves,Milwaukee Brewers,8.0,1.0,Kyle Muller,Brandon Woodruff,Truist Park,R,Regular Season,True
+MLB,633099,2021-08-01 00:10:00+00:00,Arizona Diamondbacks,Los Angeles Dodgers,3.0,8.0,Merrill Kelly,Mitch White,Chase Field,R,Regular Season,True
+MLB,633142,2021-08-01 00:40:00+00:00,San Diego Padres,Colorado Rockies,3.0,5.0,Yu Darvish,Germán Márquez,Petco Park,R,Regular Season,True
+MLB,633044,2021-08-01 17:05:00+00:00,Washington Nationals,Chicago Cubs,6.0,5.0,Erick Fedde,Adbert Alzolay,Nationals Park,R,Regular Season,True
+MLB,633082,2021-08-01 17:05:00+00:00,Pittsburgh Pirates,Philadelphia Phillies,4.0,15.0,Mitch Keller,Kyle Gibson,PNC Park,R,Regular Season,True
+MLB,633067,2021-08-01 17:07:00+00:00,Toronto Blue Jays,Kansas City Royals,5.0,1.0,José Berríos,Brad Keller,Rogers Centre,R,Regular Season,True
+MLB,633050,2021-08-01 17:10:00+00:00,Detroit Tigers,Baltimore Orioles,6.0,2.0,Tyler Alexander,Spenser Watkins,Comerica Park,R,Regular Season,True
+MLB,633069,2021-08-01 17:10:00+00:00,Miami Marlins,New York Yankees,1.0,3.0,Sandy Alcantara,Jordan Montgomery,loanDepot park,R,Regular Season,True
+MLB,633129,2021-08-01 17:10:00+00:00,New York Mets,Cincinnati Reds,1.0,7.0,Marcus Stroman,Vladimir Gutierrez,Citi Field,R,Regular Season,True
+MLB,633095,2021-08-01 17:20:00+00:00,Atlanta Braves,Milwaukee Brewers,1.0,2.0,Charlie Morton,Brett Anderson,Truist Park,R,Regular Season,True
+MLB,633047,2021-08-01 18:10:00+00:00,Chicago White Sox,Cleveland Indians,2.0,1.0,Jimmy Lambert,Cal Quantrill,Guaranteed Rate Field,R,Regular Season,True
+MLB,633024,2021-08-01 18:15:00+00:00,St. Louis Cardinals,Minnesota Twins,7.0,3.0,Adam Wainwright,Michael Pineda,Busch Stadium,R,Regular Season,True
+MLB,633075,2021-08-01 18:35:00+00:00,Texas Rangers,Seattle Mariners,4.0,3.0,Mike Foltynewicz,Marco Gonzales,Globe Life Field,R,Regular Season,True
+MLB,633086,2021-08-01 20:05:00+00:00,San Francisco Giants,Houston Astros,5.0,3.0,Logan Webb,Luis Garcia,Oracle Park,R,Regular Season,True
+MLB,633048,2021-08-01 20:07:00+00:00,Los Angeles Angels,Oakland Athletics,3.0,8.0,Reid Detmers,Daulton Jefferies,Angel Stadium,R,Regular Season,True
+MLB,633084,2021-08-01 20:10:00+00:00,San Diego Padres,Colorado Rockies,8.0,1.0,Reiss Knehr,Austin Gomber,Petco Park,R,Regular Season,True
+MLB,633101,2021-08-01 20:10:00+00:00,Arizona Diamondbacks,Los Angeles Dodgers,0.0,13.0,Caleb Smith,Julio Urías,Chase Field,R,Regular Season,True
+MLB,633089,2021-08-01 23:08:00+00:00,Tampa Bay Rays,Boston Red Sox,3.0,2.0,Shane McClanahan,Nick Pivetta,Tropicana Field,R,Regular Season,True
+MLB,633041,2021-08-02 19:07:00+00:00,Toronto Blue Jays,Cleveland Indians,2.0,5.0,Robbie Ray,Eli Morgan,Rogers Centre,R,Regular Season,True
+MLB,633057,2021-08-02 23:05:00+00:00,Washington Nationals,Philadelphia Phillies,5.0,7.0,Josiah Gray,Ranger Suarez,Nationals Park,R,Regular Season,True
+MLB,633078,2021-08-02 23:05:00+00:00,New York Yankees,Baltimore Orioles,1.0,7.0,Andrew Heaney,Jorge López,Yankee Stadium,R,Regular Season,True
+MLB,633070,2021-08-02 23:10:00+00:00,Tampa Bay Rays,Seattle Mariners,2.0,8.0,Michael Wacha,Chris Flexen,Tropicana Field,R,Regular Season,True
+MLB,633079,2021-08-02 23:10:00+00:00,Miami Marlins,New York Mets,6.0,3.0,Jesús Luzardo,Tylor Megill,loanDepot park,R,Regular Season,True
+MLB,633054,2021-08-03 00:05:00+00:00,Texas Rangers,Los Angeles Angels,4.0,1.0,Dane Dunning,Chris Rodriguez,Globe Life Field,R,Regular Season,True
+MLB,633072,2021-08-03 00:10:00+00:00,Milwaukee Brewers,Pittsburgh Pirates,6.0,2.0,Eric Lauer,Bryse Wilson,American Family Field,R,Regular Season,True
+MLB,633077,2021-08-03 01:40:00+00:00,Arizona Diamondbacks,San Francisco Giants,8.0,11.0,Taylor Widener,Anthony DeSclafani,Chase Field,R,Regular Season,True
+MLB,633023,2021-08-03 23:05:00+00:00,New York Yankees,Baltimore Orioles,13.0,1.0,Luis Gil,Alex Wells,Yankee Stadium,R,Regular Season,True
+MLB,633066,2021-08-03 23:05:00+00:00,Washington Nationals,Philadelphia Phillies,4.0,5.0,Patrick Corbin,Zack Wheeler,Nationals Park,R,Regular Season,True
+MLB,633036,2021-08-03 23:07:00+00:00,Toronto Blue Jays,Cleveland Indians,7.0,2.0,Hyun Jin Ryu,Zach Plesac,Rogers Centre,R,Regular Season,True
+MLB,633005,2021-08-03 23:10:00+00:00,Tampa Bay Rays,Seattle Mariners,2.0,4.0,Luis Patiño,Yusei Kikuchi,Tropicana Field,R,Regular Season,True
+MLB,633045,2021-08-03 23:10:00+00:00,Cincinnati Reds,Minnesota Twins,5.0,7.0,Tyler Mahle,Kenta Maeda,Great American Ball Park,R,Regular Season,True
+MLB,633049,2021-08-03 23:10:00+00:00,Miami Marlins,New York Mets,5.0,4.0,Nick Neidert,Taijuan Walker,loanDepot park,R,Regular Season,True
+MLB,633087,2021-08-03 23:10:00+00:00,Detroit Tigers,Boston Red Sox,4.0,2.0,Wily Peralta,Garrett Richards,Comerica Park,R,Regular Season,True
+MLB,633056,2021-08-04 00:05:00+00:00,Texas Rangers,Los Angeles Angels,3.0,11.0,Jordan Lyles,José Suarez,Globe Life Field,R,Regular Season,True
+MLB,633030,2021-08-04 00:10:00+00:00,Chicago White Sox,Kansas City Royals,7.0,1.0,Dylan Cease,Kris Bubic,Guaranteed Rate Field,R,Regular Season,True
+MLB,633059,2021-08-04 00:10:00+00:00,Milwaukee Brewers,Pittsburgh Pirates,5.0,8.0,Adrian Houser,Max Kranick,American Family Field,R,Regular Season,True
+MLB,633032,2021-08-04 00:15:00+00:00,St. Louis Cardinals,Atlanta Braves,1.0,6.0,Jon Lester,Max Fried,Busch Stadium,R,Regular Season,True
+MLB,633038,2021-08-04 00:40:00+00:00,Colorado Rockies,Chicago Cubs,13.0,6.0,Kyle Freeland,Zach Davies,Coors Field,R,Regular Season,True
+MLB,633022,2021-08-04 01:40:00+00:00,Oakland Athletics,San Diego Padres,1.0,8.0,Sean Manaea,Blake Snell,Oakland Coliseum,R,Regular Season,True
+MLB,633025,2021-08-04 01:40:00+00:00,Arizona Diamondbacks,San Francisco Giants,3.0,1.0,Madison Bumgarner,Johnny Cueto,Chase Field,R,Regular Season,True
+MLB,633061,2021-08-04 02:10:00+00:00,Los Angeles Dodgers,Houston Astros,0.0,3.0,Walker Buehler,Lance McCullers Jr.,Dodger Stadium,R,Regular Season,True
+MLB,633071,2021-08-04 16:35:00+00:00,Cincinnati Reds,Minnesota Twins,6.0,5.0,Luis Castillo,Charlie Barnes,Great American Ball Park,R,Regular Season,True
+MLB,633027,2021-08-04 17:10:00+00:00,Tampa Bay Rays,Seattle Mariners,4.0,3.0,Josh Fleming,Logan Gilbert,Tropicana Field,R,Regular Season,True
+MLB,633068,2021-08-04 18:10:00+00:00,Milwaukee Brewers,Pittsburgh Pirates,4.0,2.0,Freddy Peralta,Steven Brault,American Family Field,R,Regular Season,True
+MLB,633010,2021-08-04 19:37:00+00:00,Oakland Athletics,San Diego Padres,5.0,4.0,Frankie Montas,Joe Musgrove,Oakland Coliseum,R,Regular Season,True
+MLB,633018,2021-08-04 23:05:00+00:00,New York Yankees,Baltimore Orioles,10.0,3.0,Jameson Taillon,Matt Harvey,Yankee Stadium,R,Regular Season,True
+MLB,633040,2021-08-04 23:05:00+00:00,Washington Nationals,Philadelphia Phillies,5.0,9.0,Paolo Espino,Chase Anderson,Nationals Park,R,Regular Season,True
+MLB,633011,2021-08-04 23:07:00+00:00,Toronto Blue Jays,Cleveland Indians,8.0,6.0,Steven Matz,J.C. Mejía,Rogers Centre,R,Regular Season,True
+MLB,633021,2021-08-04 23:10:00+00:00,Miami Marlins,New York Mets,3.0,5.0,Zach Thompson,Carlos Carrasco,loanDepot park,R,Regular Season,True
+MLB,633052,2021-08-04 23:10:00+00:00,Detroit Tigers,Boston Red Sox,1.0,4.0,Casey Mize,Eduardo Rodriguez,Comerica Park,R,Regular Season,True
+MLB,633055,2021-08-05 00:05:00+00:00,Texas Rangers,Los Angeles Angels,1.0,2.0,Kolby Allard,Shohei Ohtani,Globe Life Field,R,Regular Season,True
+MLB,633053,2021-08-05 00:10:00+00:00,Chicago White Sox,Kansas City Royals,1.0,9.0,Lucas Giolito,Carlos Hernández,Guaranteed Rate Field,R,Regular Season,True
+MLB,633037,2021-08-05 00:15:00+00:00,St. Louis Cardinals,Atlanta Braves,4.0,7.0,J.A. Happ,Drew Smyly,Busch Stadium,R,Regular Season,True
+MLB,633060,2021-08-05 00:40:00+00:00,Colorado Rockies,Chicago Cubs,2.0,3.0,Jon Gray,Alec Mills,Coors Field,R,Regular Season,True
+MLB,633019,2021-08-05 01:40:00+00:00,Los Angeles Dodgers,Houston Astros,7.0,5.0,Max Scherzer,Jake Odorizzi,Dodger Stadium,R,Regular Season,True
+MLB,633046,2021-08-05 01:40:00+00:00,Arizona Diamondbacks,San Francisco Giants,1.0,7.0,Zac Gallen,Kevin Gausman,Chase Field,R,Regular Season,True
+MLB,633033,2021-08-05 16:10:00+00:00,Miami Marlins,New York Mets,4.0,2.0,Braxton Garrett,Rich Hill,loanDepot park,R,Regular Season,True
+MLB,633026,2021-08-05 17:10:00+00:00,Detroit Tigers,Boston Red Sox,8.0,1.0,Tarik Skubal,Martín Pérez,Comerica Park,R,Regular Season,True
+MLB,633004,2021-08-05 18:05:00+00:00,Texas Rangers,Los Angeles Angels,0.0,5.0,Spencer Howard,Dylan Bundy,Globe Life Field,R,Regular Season,True
+MLB,633064,2021-08-05 19:10:00+00:00,Colorado Rockies,Chicago Cubs,6.0,5.0,Antonio Senzatela,Jake Arrieta,Coors Field,R,Regular Season,True
+MLB,633042,2021-08-05 19:40:00+00:00,Arizona Diamondbacks,San Francisco Giants,4.0,5.0,Merrill Kelly,Alex Wood,Chase Field,R,Regular Season,True
+MLB,632992,2021-08-05 20:05:00+00:00,Washington Nationals,Philadelphia Phillies,6.0,7.0,Joe Ross,Aaron Nola,Nationals Park,R,Regular Season,True
+MLB,633013,2021-08-05 23:05:00+00:00,New York Yankees,Seattle Mariners,5.0,3.0,Nestor Cortes,Tyler Anderson,Yankee Stadium,R,Regular Season,True
+MLB,633003,2021-08-05 23:07:00+00:00,Toronto Blue Jays,Cleveland Indians,3.0,0.0,Ross Stripling,Triston McKenzie,Rogers Centre,R,Regular Season,True
+MLB,633034,2021-08-05 23:10:00+00:00,Cincinnati Reds,Pittsburgh Pirates,7.0,4.0,Sonny Gray,Wil Crowe,Great American Ball Park,R,Regular Season,True
+MLB,632998,2021-08-06 00:10:00+00:00,Houston Astros,Minnesota Twins,3.0,5.0,Framber Valdez,Griffin Jax,Minute Maid Park,R,Regular Season,True
+MLB,633015,2021-08-06 00:10:00+00:00,Chicago White Sox,Kansas City Royals,2.0,3.0,Dallas Keuchel,Daniel Lynch IV,Guaranteed Rate Field,R,Regular Season,True
+MLB,633043,2021-08-06 00:15:00+00:00,St. Louis Cardinals,Atlanta Braves,4.0,8.0,Wade LeBlanc,Touki Toussaint,Busch Stadium,R,Regular Season,True
+MLB,632980,2021-08-06 18:20:00+00:00,Chicago Cubs,Chicago White Sox,6.0,8.0,Kyle Hendricks,Lance Lynn,Wrigley Field,R,Regular Season,True
+MLB,633006,2021-08-06 23:05:00+00:00,Baltimore Orioles,Tampa Bay Rays,6.0,10.0,John Means,Ryan Yarbrough,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,633062,2021-08-06 23:05:00+00:00,New York Yankees,Seattle Mariners,3.0,2.0,Wandy Peralta,Marco Gonzales,Yankee Stadium,R,Regular Season,True
+MLB,633074,2021-08-06 23:05:00+00:00,Philadelphia Phillies,New York Mets,4.0,2.0,Kyle Gibson,Marcus Stroman,Citizens Bank Park,R,Regular Season,True
+MLB,632974,2021-08-06 23:07:00+00:00,Toronto Blue Jays,Boston Red Sox,12.0,4.0,Alek Manoah,Nathan Eovaldi,Rogers Centre,R,Regular Season,True
+MLB,632990,2021-08-06 23:10:00+00:00,Cleveland Indians,Detroit Tigers,6.0,1.0,Cal Quantrill,Matt Manning,Progressive Field,R,Regular Season,True
+MLB,633002,2021-08-06 23:10:00+00:00,Cincinnati Reds,Pittsburgh Pirates,10.0,0.0,Wade Miley,JT Brubaker,Great American Ball Park,R,Regular Season,True
+MLB,633031,2021-08-06 23:20:00+00:00,Atlanta Braves,Washington Nationals,8.0,4.0,Kyle Muller,Erick Fedde,Truist Park,R,Regular Season,True
+MLB,633020,2021-08-07 00:10:00+00:00,Milwaukee Brewers,San Francisco Giants,2.0,1.0,Corbin Burnes,Logan Webb,American Family Field,R,Regular Season,True
+MLB,633029,2021-08-07 00:10:00+00:00,Houston Astros,Minnesota Twins,4.0,5.0,Zack Greinke,Bailey Ober,Minute Maid Park,R,Regular Season,True
+MLB,632982,2021-08-07 00:15:00+00:00,St. Louis Cardinals,Kansas City Royals,4.0,2.0,Adam Wainwright,Mike Minor,Busch Stadium,R,Regular Season,True
+MLB,633035,2021-08-07 00:40:00+00:00,Colorado Rockies,Miami Marlins,14.0,2.0,Germán Márquez,Sandy Alcantara,Coors Field,R,Regular Season,True
+MLB,633017,2021-08-07 01:40:00+00:00,Oakland Athletics,Texas Rangers,4.0,1.0,Chris Bassitt,Mike Foltynewicz,Oakland Coliseum,R,Regular Season,True
+MLB,633008,2021-08-07 02:10:00+00:00,San Diego Padres,Arizona Diamondbacks,5.0,8.0,Ryan Weathers,Caleb Smith,Petco Park,R,Regular Season,True
+MLB,633028,2021-08-07 02:10:00+00:00,Los Angeles Dodgers,Los Angeles Angels,3.0,4.0,David Price,Patrick Sandoval,Dodger Stadium,R,Regular Season,True
+MLB,632950,2021-08-07 17:05:00+00:00,New York Yankees,Seattle Mariners,5.0,4.0,Andrew Heaney,Chris Flexen,Yankee Stadium,R,Regular Season,True
+MLB,633012,2021-08-07 18:20:00+00:00,Chicago Cubs,Chicago White Sox,0.0,4.0,Adbert Alzolay,Carlos Rodón,Wrigley Field,R,Regular Season,True
+MLB,632963,2021-08-07 19:07:00+00:00,Toronto Blue Jays,Boston Red Sox,1.0,0.0,Robbie Ray,Nick Pivetta,Rogers Centre,R,Regular Season,True
+MLB,632962,2021-08-07 20:07:00+00:00,Oakland Athletics,Texas Rangers,12.0,3.0,Cole Irvin,Drew Anderson,Oakland Coliseum,R,Regular Season,True
+MLB,632981,2021-08-07 20:15:00+00:00,Philadelphia Phillies,New York Mets,5.0,3.0,Ranger Suarez,Tylor Megill,Citizens Bank Park,R,Regular Season,True
+MLB,633014,2021-08-07 23:05:00+00:00,Baltimore Orioles,Tampa Bay Rays,3.0,12.0,Spenser Watkins,Shane McClanahan,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,633246,2021-08-07 23:07:00+00:00,Toronto Blue Jays,Boston Red Sox,1.0,2.0,José Berríos,Tanner Houck,Rogers Centre,R,Regular Season,True
+MLB,632983,2021-08-07 23:10:00+00:00,Milwaukee Brewers,San Francisco Giants,6.0,9.0,Brandon Woodruff,Aaron Sanchez,American Family Field,R,Regular Season,True
+MLB,632993,2021-08-07 23:10:00+00:00,Cleveland Indians,Detroit Tigers,1.0,2.0,Eli Morgan,Tyler Alexander,Progressive Field,R,Regular Season,True
+MLB,632995,2021-08-07 23:10:00+00:00,Houston Astros,Minnesota Twins,4.0,0.0,Luis Garcia,Michael Pineda,Minute Maid Park,R,Regular Season,True
+MLB,632999,2021-08-07 23:10:00+00:00,Cincinnati Reds,Pittsburgh Pirates,11.0,3.0,Vladimir Gutierrez,Mitch Keller,Great American Ball Park,R,Regular Season,True
+MLB,632968,2021-08-07 23:15:00+00:00,St. Louis Cardinals,Kansas City Royals,5.0,2.0,Kwang Hyun Kim,Brad Keller,Busch Stadium,R,Regular Season,True
+MLB,632994,2021-08-07 23:20:00+00:00,Atlanta Braves,Washington Nationals,2.0,3.0,Charlie Morton,Josiah Gray,Truist Park,R,Regular Season,True
+MLB,633001,2021-08-08 00:10:00+00:00,Colorado Rockies,Miami Marlins,7.0,4.0,Austin Gomber,Jesús Luzardo,Coors Field,R,Regular Season,True
+MLB,632988,2021-08-08 00:40:00+00:00,San Diego Padres,Arizona Diamondbacks,6.0,2.0,Yu Darvish,Taylor Widener,Petco Park,R,Regular Season,True
+MLB,632986,2021-08-08 01:10:00+00:00,Los Angeles Dodgers,Los Angeles Angels,5.0,3.0,Julio Urías,Jaime Barria,Dodger Stadium,R,Regular Season,True
+MLB,632953,2021-08-08 17:05:00+00:00,New York Yankees,Seattle Mariners,0.0,2.0,Luis Gil,Yusei Kikuchi,Yankee Stadium,R,Regular Season,True
+MLB,632967,2021-08-08 17:05:00+00:00,Philadelphia Phillies,New York Mets,3.0,0.0,Zack Wheeler,Taijuan Walker,Citizens Bank Park,R,Regular Season,True
+MLB,632971,2021-08-08 17:05:00+00:00,Baltimore Orioles,Tampa Bay Rays,6.0,9.0,Jorge López,Michael Wacha,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,633007,2021-08-08 17:07:00+00:00,Toronto Blue Jays,Boston Red Sox,9.0,8.0,Hyun Jin Ryu,Garrett Richards,Rogers Centre,R,Regular Season,True
+MLB,632991,2021-08-08 17:10:00+00:00,Cleveland Indians,Detroit Tigers,7.0,5.0,Zach Plesac,Wily Peralta,Progressive Field,R,Regular Season,True
+MLB,633009,2021-08-08 17:10:00+00:00,Cincinnati Reds,Pittsburgh Pirates,3.0,2.0,Tyler Mahle,Bryse Wilson,Great American Ball Park,R,Regular Season,True
+MLB,632975,2021-08-08 17:20:00+00:00,Atlanta Braves,Washington Nationals,5.0,4.0,Max Fried,Patrick Corbin,Truist Park,R,Regular Season,True
+MLB,632945,2021-08-08 18:10:00+00:00,Milwaukee Brewers,San Francisco Giants,4.0,5.0,Brett Anderson,Johnny Cueto,American Family Field,R,Regular Season,True
+MLB,632957,2021-08-08 18:10:00+00:00,Houston Astros,Minnesota Twins,5.0,7.0,Lance McCullers Jr.,Kenta Maeda,Minute Maid Park,R,Regular Season,True
+MLB,632985,2021-08-08 18:15:00+00:00,St. Louis Cardinals,Kansas City Royals,5.0,6.0,Jon Lester,Kris Bubic,Busch Stadium,R,Regular Season,True
+MLB,632977,2021-08-08 19:10:00+00:00,Colorado Rockies,Miami Marlins,13.0,8.0,Kyle Freeland,David Hess,Coors Field,R,Regular Season,True
+MLB,633039,2021-08-08 20:07:00+00:00,Oakland Athletics,Texas Rangers,6.0,3.0,James Kaprielian,Jordan Lyles,Oakland Coliseum,R,Regular Season,True
+MLB,632956,2021-08-08 20:10:00+00:00,Los Angeles Dodgers,Los Angeles Angels,8.0,2.0,Walker Buehler,Reid Detmers,Dodger Stadium,R,Regular Season,True
+MLB,633051,2021-08-08 20:10:00+00:00,San Diego Padres,Arizona Diamondbacks,2.0,0.0,Blake Snell,Madison Bumgarner,Petco Park,R,Regular Season,True
+MLB,632970,2021-08-08 23:09:00+00:00,Chicago Cubs,Chicago White Sox,3.0,9.0,Zach Davies,Dylan Cease,Wrigley Field,R,Regular Season,True
+MLB,634173,2021-08-09 22:10:00+00:00,Cleveland Indians,Cincinnati Reds,9.0,3.0,Sam Hentges,Luis Castillo,Progressive Field,R,Regular Season,True
+MLB,632964,2021-08-10 00:10:00+00:00,Minnesota Twins,Chicago White Sox,1.0,11.0,Beau Burrows,Lucas Giolito,Target Field,R,Regular Season,True
+MLB,632979,2021-08-10 00:10:00+00:00,Kansas City Royals,New York Yankees,6.0,8.0,Carlos Hernández,Jameson Taillon,Kauffman Stadium,R,Regular Season,True
+MLB,632942,2021-08-10 02:10:00+00:00,San Diego Padres,Miami Marlins,8.0,3.0,Joe Musgrove,Zach Thompson,Petco Park,R,Regular Season,True
+MLB,632997,2021-08-10 18:20:00+00:00,Chicago Cubs,Milwaukee Brewers,2.0,4.0,Justin Steele,Freddy Peralta,Wrigley Field,R,Regular Season,True
+MLB,632208,2021-08-10 22:07:00+00:00,Toronto Blue Jays,Los Angeles Angels,3.0,6.0,Steven Matz,Chris Rodriguez,Angel Stadium,R,Regular Season,True
+MLB,632948,2021-08-10 23:05:00+00:00,Pittsburgh Pirates,St. Louis Cardinals,1.0,4.0,Steven Brault,J.A. Happ,PNC Park,R,Regular Season,True
+MLB,632960,2021-08-10 23:05:00+00:00,Baltimore Orioles,Detroit Tigers,4.0,9.0,Keegan Akin,Casey Mize,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,632984,2021-08-10 23:05:00+00:00,Philadelphia Phillies,Los Angeles Dodgers,0.0,5.0,Aaron Nola,Max Scherzer,Citizens Bank Park,R,Regular Season,True
+MLB,632978,2021-08-10 23:10:00+00:00,Cleveland Indians,Oakland Athletics,3.0,4.0,Triston McKenzie,Sean Manaea,Progressive Field,R,Regular Season,True
+MLB,632996,2021-08-10 23:10:00+00:00,Boston Red Sox,Tampa Bay Rays,4.0,8.0,Eduardo Rodriguez,Luis Patiño,Fenway Park,R,Regular Season,True
+MLB,632989,2021-08-10 23:20:00+00:00,Atlanta Braves,Cincinnati Reds,3.0,2.0,Drew Smyly,Sonny Gray,Truist Park,R,Regular Season,True
+MLB,633000,2021-08-11 00:05:00+00:00,Chicago Cubs,Milwaukee Brewers,3.0,6.0,Alec Mills,Aaron Ashby,Wrigley Field,R,Regular Season,True
+MLB,632934,2021-08-11 00:10:00+00:00,Minnesota Twins,Chicago White Sox,4.0,3.0,Griffin Jax,Dallas Keuchel,Target Field,R,Regular Season,True
+MLB,632973,2021-08-11 00:10:00+00:00,Houston Astros,Colorado Rockies,5.0,0.0,Jake Odorizzi,Jon Gray,Minute Maid Park,R,Regular Season,True
+MLB,632987,2021-08-11 00:10:00+00:00,Kansas City Royals,New York Yankees,8.0,4.0,Daniel Lynch IV,Nestor Cortes,Kauffman Stadium,R,Regular Season,True
+MLB,632933,2021-08-11 01:45:00+00:00,San Francisco Giants,Arizona Diamondbacks,8.0,7.0,Alex Wood,Zac Gallen,Oracle Park,R,Regular Season,True
+MLB,632940,2021-08-11 02:07:00+00:00,Los Angeles Angels,Toronto Blue Jays,0.0,4.0,José Suarez,Ross Stripling,Angel Stadium,R,Regular Season,True
+MLB,632955,2021-08-11 02:10:00+00:00,Seattle Mariners,Texas Rangers,4.0,5.0,Logan Gilbert,Kolby Allard,T-Mobile Park,R,Regular Season,True
+MLB,632976,2021-08-11 02:10:00+00:00,San Diego Padres,Miami Marlins,6.0,5.0,Craig Stammen,Braxton Garrett,Petco Park,R,Regular Season,True
+MLB,632927,2021-08-11 17:10:00+00:00,Minnesota Twins,Chicago White Sox,1.0,0.0,Bailey Ober,Reynaldo López,Target Field,R,Regular Season,True
+MLB,632904,2021-08-11 18:10:00+00:00,Houston Astros,Colorado Rockies,5.0,1.0,Framber Valdez,Antonio Senzatela,Minute Maid Park,R,Regular Season,True
+MLB,632935,2021-08-11 18:10:00+00:00,Kansas City Royals,New York Yankees,2.0,5.0,Brady Singer,Lucas Luetge,Kauffman Stadium,R,Regular Season,True
+MLB,632959,2021-08-11 20:10:00+00:00,San Diego Padres,Miami Marlins,0.0,7.0,Ryan Weathers,Sandy Alcantara,Petco Park,R,Regular Season,True
+MLB,632966,2021-08-11 20:10:00+00:00,New York Mets,Washington Nationals,8.0,7.0,Carlos Carrasco,Paolo Espino,Citi Field,R,Regular Season,True
+MLB,632915,2021-08-11 23:05:00+00:00,Philadelphia Phillies,Los Angeles Dodgers,2.0,8.0,Kyle Gibson,David Price,Citizens Bank Park,R,Regular Season,True
+MLB,632922,2021-08-11 23:05:00+00:00,Baltimore Orioles,Detroit Tigers,2.0,5.0,Matt Harvey,Tarik Skubal,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,632928,2021-08-11 23:05:00+00:00,Pittsburgh Pirates,St. Louis Cardinals,0.0,4.0,Wil Crowe,Adam Wainwright,PNC Park,R,Regular Season,True
+MLB,632931,2021-08-11 23:10:00+00:00,Boston Red Sox,Tampa Bay Rays,20.0,8.0,Nathan Eovaldi,Josh Fleming,Fenway Park,R,Regular Season,True
+MLB,632937,2021-08-11 23:10:00+00:00,Cleveland Indians,Oakland Athletics,3.0,6.0,Cal Quantrill,Frankie Montas,Progressive Field,R,Regular Season,True
+MLB,632923,2021-08-11 23:20:00+00:00,Atlanta Braves,Cincinnati Reds,8.0,6.0,Touki Toussaint,Wade Miley,Truist Park,R,Regular Season,True
+MLB,632946,2021-08-12 00:05:00+00:00,Chicago Cubs,Milwaukee Brewers,0.0,10.0,Jake Arrieta,Corbin Burnes,Wrigley Field,R,Regular Season,True
+MLB,632965,2021-08-12 01:38:00+00:00,Los Angeles Angels,Toronto Blue Jays,2.0,10.0,Dylan Bundy,Alek Manoah,Angel Stadium,R,Regular Season,True
+MLB,632951,2021-08-12 01:45:00+00:00,San Francisco Giants,Arizona Diamondbacks,7.0,2.0,Kevin Gausman,Merrill Kelly,Oracle Park,R,Regular Season,True
+MLB,632952,2021-08-12 02:10:00+00:00,Seattle Mariners,Texas Rangers,2.0,1.0,Tyler Anderson,Spencer Howard,T-Mobile Park,R,Regular Season,True
+MLB,632949,2021-08-12 16:10:00+00:00,New York Mets,Washington Nationals,4.0,1.0,Marcus Stroman,Sean Nolin,Citi Field,R,Regular Season,True
+MLB,632912,2021-08-12 16:15:00+00:00,New York Mets,Washington Nationals,5.0,4.0,Trevor Williams,Erick Fedde,Citi Field,R,Regular Season,True
+MLB,632944,2021-08-12 16:35:00+00:00,Pittsburgh Pirates,St. Louis Cardinals,6.0,7.0,JT Brubaker,Wade LeBlanc,PNC Park,R,Regular Season,True
+MLB,632969,2021-08-12 17:05:00+00:00,Philadelphia Phillies,Los Angeles Dodgers,2.0,1.0,Ranger Suarez,Mitch White,Citizens Bank Park,R,Regular Season,True
+MLB,632900,2021-08-12 17:10:00+00:00,Cleveland Indians,Oakland Athletics,0.0,17.0,Eli Morgan,Chris Bassitt,Progressive Field,R,Regular Season,True
+MLB,633016,2021-08-12 18:20:00+00:00,Chicago Cubs,Milwaukee Brewers,4.0,17.0,Kyle Hendricks,Brandon Woodruff,Wrigley Field,R,Regular Season,True
+MLB,632938,2021-08-12 20:05:00+00:00,Baltimore Orioles,Detroit Tigers,4.0,6.0,John Means,Matt Manning,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,632903,2021-08-12 20:10:00+00:00,Boston Red Sox,Tampa Bay Rays,1.0,8.0,Tanner Houck,Drew Rasmussen,Fenway Park,R,Regular Season,True
+MLB,632947,2021-08-12 20:10:00+00:00,Seattle Mariners,Texas Rangers,3.0,1.0,Marco Gonzales,Mike Foltynewicz,T-Mobile Park,R,Regular Season,True
+MLB,632929,2021-08-12 21:10:00+00:00,Atlanta Braves,Cincinnati Reds,3.0,12.0,Kyle Muller,Vladimir Gutierrez,Truist Park,R,Regular Season,True
+MLB,632924,2021-08-12 23:00:00+00:00,Chicago White Sox,New York Yankees,9.0,8.0,Lance Lynn,Andrew Heaney,Field of Dreams,R,Regular Season,True
+MLB,632918,2021-08-13 01:38:00+00:00,Los Angeles Angels,Toronto Blue Jays,6.0,3.0,Shohei Ohtani,José Berríos,Angel Stadium,R,Regular Season,True
+MLB,632914,2021-08-13 01:40:00+00:00,Arizona Diamondbacks,San Diego Padres,12.0,3.0,Matt Peacock,Yu Darvish,Chase Field,R,Regular Season,True
+MLB,632939,2021-08-13 01:45:00+00:00,San Francisco Giants,Colorado Rockies,7.0,0.0,Logan Webb,Germán Márquez,Oracle Park,R,Regular Season,True
+MLB,632901,2021-08-13 23:05:00+00:00,Philadelphia Phillies,Cincinnati Reds,1.0,6.0,Zack Wheeler,Tyler Mahle,Citizens Bank Park,R,Regular Season,True
+MLB,632921,2021-08-13 23:05:00+00:00,Washington Nationals,Atlanta Braves,2.0,4.0,Josiah Gray,Charlie Morton,Nationals Park,R,Regular Season,True
+MLB,632902,2021-08-13 23:10:00+00:00,Boston Red Sox,Baltimore Orioles,8.0,1.0,Nick Pivetta,Spenser Watkins,Fenway Park,R,Regular Season,True
+MLB,632911,2021-08-13 23:10:00+00:00,New York Mets,Los Angeles Dodgers,5.0,6.0,Tylor Megill,Julio Urías,Citi Field,R,Regular Season,True
+MLB,632920,2021-08-13 23:10:00+00:00,Detroit Tigers,Cleveland Indians,4.0,7.0,Tyler Alexander,Zach Plesac,Comerica Park,R,Regular Season,True
+MLB,632930,2021-08-13 23:10:00+00:00,Miami Marlins,Chicago Cubs,14.0,10.0,Jesús Luzardo,Adbert Alzolay,loanDepot park,R,Regular Season,True
+MLB,632936,2021-08-14 00:05:00+00:00,Texas Rangers,Oakland Athletics,8.0,6.0,Dane Dunning,Cole Irvin,Globe Life Field,R,Regular Season,True
+MLB,632926,2021-08-14 00:10:00+00:00,Minnesota Twins,Tampa Bay Rays,4.0,10.0,Michael Pineda,Shane McClanahan,Target Field,R,Regular Season,True
+MLB,632943,2021-08-14 00:10:00+00:00,Kansas City Royals,St. Louis Cardinals,0.0,6.0,Mike Minor,Jack Flaherty,Kauffman Stadium,R,Regular Season,True
+MLB,632972,2021-08-14 01:38:00+00:00,Los Angeles Angels,Houston Astros,1.0,4.0,Patrick Sandoval,Zack Greinke,Angel Stadium,R,Regular Season,True
+MLB,632932,2021-08-14 01:40:00+00:00,Arizona Diamondbacks,San Diego Padres,3.0,2.0,Madison Bumgarner,Blake Snell,Chase Field,R,Regular Season,True
+MLB,632906,2021-08-14 01:45:00+00:00,San Francisco Giants,Colorado Rockies,5.0,4.0,Anthony DeSclafani,Austin Gomber,Oracle Park,R,Regular Season,True
+MLB,632954,2021-08-14 02:10:00+00:00,Seattle Mariners,Toronto Blue Jays,3.0,2.0,Chris Flexen,Robbie Ray,T-Mobile Park,R,Regular Season,True
+MLB,632820,2021-08-14 18:30:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,14.0,4.0,Bryse Wilson,Brett Anderson,PNC Park,R,Regular Season,True
+MLB,632916,2021-08-14 20:05:00+00:00,Philadelphia Phillies,Cincinnati Reds,6.0,1.0,Matt Moore,Luis Castillo,Citizens Bank Park,R,Regular Season,True
+MLB,632905,2021-08-14 20:10:00+00:00,Boston Red Sox,Baltimore Orioles,16.0,2.0,Chris Sale,Jorge López,Fenway Park,R,Regular Season,True
+MLB,632885,2021-08-14 22:05:00+00:00,Washington Nationals,Atlanta Braves,2.0,12.0,Patrick Corbin,Max Fried,Nationals Park,R,Regular Season,True
+MLB,632819,2021-08-14 22:10:00+00:00,Detroit Tigers,Cleveland Indians,6.0,4.0,Wily Peralta,Sam Hentges,Comerica Park,R,Regular Season,True
+MLB,632941,2021-08-14 22:10:00+00:00,Miami Marlins,Chicago Cubs,5.0,4.0,Zach Thompson,Zach Davies,loanDepot park,R,Regular Season,True
+MLB,632894,2021-08-14 23:05:00+00:00,Texas Rangers,Oakland Athletics,3.0,8.0,Jordan Lyles,James Kaprielian,Globe Life Field,R,Regular Season,True
+MLB,632897,2021-08-14 23:05:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,0.0,6.0,Mitch Keller,Aaron Ashby,PNC Park,R,Regular Season,True
+MLB,632818,2021-08-14 23:10:00+00:00,Kansas City Royals,St. Louis Cardinals,4.0,9.0,Brad Keller,Jon Lester,Kauffman Stadium,R,Regular Season,True
+MLB,632898,2021-08-14 23:10:00+00:00,Chicago White Sox,New York Yankees,5.0,7.0,Dylan Cease,Jameson Taillon,Guaranteed Rate Field,R,Regular Season,True
+MLB,632913,2021-08-14 23:10:00+00:00,Minnesota Twins,Tampa Bay Rays,12.0,0.0,Kenta Maeda,Michael Wacha,Target Field,R,Regular Season,True
+MLB,632958,2021-08-14 23:10:00+00:00,New York Mets,Los Angeles Dodgers,1.0,2.0,Taijuan Walker,Walker Buehler,Citi Field,R,Regular Season,True
+MLB,632877,2021-08-15 00:10:00+00:00,Arizona Diamondbacks,San Diego Padres,7.0,0.0,Tyler Gilbert,Joe Musgrove,Chase Field,R,Regular Season,True
+MLB,632889,2021-08-15 01:05:00+00:00,San Francisco Giants,Colorado Rockies,1.0,4.0,Sam Long,Kyle Freeland,Oracle Park,R,Regular Season,True
+MLB,632925,2021-08-15 01:07:00+00:00,Los Angeles Angels,Houston Astros,2.0,8.0,Jaime Barria,Luis Garcia,Angel Stadium,R,Regular Season,True
+MLB,632907,2021-08-15 02:10:00+00:00,Seattle Mariners,Toronto Blue Jays,9.0,3.0,Yusei Kikuchi,Hyun Jin Ryu,T-Mobile Park,R,Regular Season,True
+MLB,632867,2021-08-15 17:05:00+00:00,Washington Nationals,Atlanta Braves,5.0,6.0,Paolo Espino,Drew Smyly,Nationals Park,R,Regular Season,True
+MLB,632876,2021-08-15 17:05:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,1.0,2.0,Dillon Peters,Eric Lauer,PNC Park,R,Regular Season,True
+MLB,632891,2021-08-15 17:05:00+00:00,Philadelphia Phillies,Cincinnati Reds,4.0,7.0,Aaron Nola,Sonny Gray,Citizens Bank Park,R,Regular Season,True
+MLB,632874,2021-08-15 17:10:00+00:00,Miami Marlins,Chicago Cubs,4.0,1.0,Elieser Hernández,Alec Mills,loanDepot park,R,Regular Season,True
+MLB,632910,2021-08-15 17:10:00+00:00,Detroit Tigers,Cleveland Indians,0.0,11.0,Drew Hutchison,Triston McKenzie,Comerica Park,R,Regular Season,True
+MLB,632961,2021-08-15 17:10:00+00:00,Boston Red Sox,Baltimore Orioles,6.0,2.0,Eduardo Rodriguez,Keegan Akin,Fenway Park,R,Regular Season,True
+MLB,632860,2021-08-15 18:10:00+00:00,Kansas City Royals,St. Louis Cardinals,2.0,7.0,Kris Bubic,J.A. Happ,Kauffman Stadium,R,Regular Season,True
+MLB,632866,2021-08-15 18:10:00+00:00,Minnesota Twins,Tampa Bay Rays,5.0,4.0,Charlie Barnes,Luis Patiño,Target Field,R,Regular Season,True
+MLB,632899,2021-08-15 18:10:00+00:00,Chicago White Sox,New York Yankees,3.0,5.0,Lucas Giolito,Nestor Cortes,Guaranteed Rate Field,R,Regular Season,True
+MLB,632847,2021-08-15 18:35:00+00:00,Texas Rangers,Oakland Athletics,7.0,4.0,Kolby Allard,Sean Manaea,Globe Life Field,R,Regular Season,True
+MLB,632863,2021-08-15 20:05:00+00:00,San Francisco Giants,Colorado Rockies,5.0,2.0,Alex Wood,Jon Gray,Oracle Park,R,Regular Season,True
+MLB,632881,2021-08-15 20:07:00+00:00,Los Angeles Angels,Houston Astros,3.0,1.0,Reid Detmers,Lance McCullers Jr.,Angel Stadium,R,Regular Season,True
+MLB,632857,2021-08-15 20:10:00+00:00,Seattle Mariners,Toronto Blue Jays,3.0,8.0,Logan Gilbert,Steven Matz,T-Mobile Park,R,Regular Season,True
+MLB,632917,2021-08-15 20:10:00+00:00,Arizona Diamondbacks,San Diego Padres,2.0,8.0,Zac Gallen,Craig Stammen,Chase Field,R,Regular Season,True
+MLB,632895,2021-08-15 23:08:00+00:00,New York Mets,Los Angeles Dodgers,4.0,14.0,Carlos Carrasco,Max Scherzer,Citi Field,R,Regular Season,True
+MLB,633421,2021-08-16 23:05:00+00:00,New York Yankees,Los Angeles Angels,2.0,1.0,Gerrit Cole,José Suarez,Yankee Stadium,R,Regular Season,True
+MLB,632858,2021-08-16 23:10:00+00:00,Miami Marlins,Atlanta Braves,2.0,12.0,Braxton Garrett,Touki Toussaint,loanDepot park,R,Regular Season,True
+MLB,632878,2021-08-16 23:10:00+00:00,Cincinnati Reds,Chicago Cubs,14.0,5.0,Wade Miley,Justin Steele,Great American Ball Park,R,Regular Season,True
+MLB,632890,2021-08-16 23:10:00+00:00,Tampa Bay Rays,Baltimore Orioles,9.0,2.0,Collin McHugh,Matt Harvey,Tropicana Field,R,Regular Season,True
+MLB,632873,2021-08-17 00:10:00+00:00,Minnesota Twins,Cleveland Indians,5.0,4.0,Griffin Jax,Cal Quantrill,Target Field,R,Regular Season,True
+MLB,632883,2021-08-17 00:10:00+00:00,Kansas City Royals,Houston Astros,7.0,6.0,Carlos Hernández,Jake Odorizzi,Kauffman Stadium,R,Regular Season,True
+MLB,632892,2021-08-17 00:10:00+00:00,Chicago White Sox,Oakland Athletics,5.0,2.0,Dallas Keuchel,Frankie Montas,Guaranteed Rate Field,R,Regular Season,True
+MLB,632813,2021-08-17 00:40:00+00:00,Colorado Rockies,San Diego Padres,6.0,5.0,Antonio Senzatela,Ryan Weathers,Coors Field,R,Regular Season,True
+MLB,632886,2021-08-17 01:45:00+00:00,San Francisco Giants,New York Mets,7.0,5.0,Kevin Gausman,Rich Hill,Oracle Park,R,Regular Season,True
+MLB,632882,2021-08-17 02:10:00+00:00,Los Angeles Dodgers,Pittsburgh Pirates,2.0,1.0,Justin Bruihl,Steven Brault,Dodger Stadium,R,Regular Season,True
+MLB,633291,2021-08-17 17:05:00+00:00,New York Yankees,Boston Red Sox,5.0,3.0,Jordan Montgomery,Tanner Houck,Yankee Stadium,R,Regular Season,True
+MLB,632825,2021-08-17 23:05:00+00:00,Washington Nationals,Toronto Blue Jays,12.0,6.0,Erick Fedde,Alek Manoah,Nationals Park,R,Regular Season,True
+MLB,632893,2021-08-17 23:05:00+00:00,New York Yankees,Boston Red Sox,2.0,0.0,Luis Gil,Nathan Eovaldi,Yankee Stadium,R,Regular Season,True
+MLB,632864,2021-08-17 23:10:00+00:00,Tampa Bay Rays,Baltimore Orioles,10.0,0.0,Drew Rasmussen,John Means,Tropicana Field,R,Regular Season,True
+MLB,632868,2021-08-17 23:10:00+00:00,Detroit Tigers,Los Angeles Angels,2.0,8.0,Casey Mize,Dylan Bundy,Comerica Park,R,Regular Season,True
+MLB,632871,2021-08-17 23:10:00+00:00,Cincinnati Reds,Chicago Cubs,1.0,2.0,Vladimir Gutierrez,Kyle Hendricks,Great American Ball Park,R,Regular Season,True
+MLB,632872,2021-08-17 23:10:00+00:00,Miami Marlins,Atlanta Braves,0.0,2.0,Sandy Alcantara,Huascar Ynoa,loanDepot park,R,Regular Season,True
+MLB,632884,2021-08-17 23:45:00+00:00,St. Louis Cardinals,Milwaukee Brewers,0.0,2.0,Adam Wainwright,Corbin Burnes,Busch Stadium,R,Regular Season,True
+MLB,632853,2021-08-18 00:05:00+00:00,Texas Rangers,Seattle Mariners,1.0,3.0,Taylor Hearn,Tyler Anderson,Globe Life Field,R,Regular Season,True
+MLB,632875,2021-08-18 00:10:00+00:00,Kansas City Royals,Houston Astros,3.0,1.0,Daniel Lynch IV,Framber Valdez,Kauffman Stadium,R,Regular Season,True
+MLB,632880,2021-08-18 00:10:00+00:00,Minnesota Twins,Cleveland Indians,1.0,3.0,Bailey Ober,Eli Morgan,Target Field,R,Regular Season,True
+MLB,632908,2021-08-18 00:10:00+00:00,Chicago White Sox,Oakland Athletics,9.0,0.0,Reynaldo López,Chris Bassitt,Guaranteed Rate Field,R,Regular Season,True
+MLB,632851,2021-08-18 00:40:00+00:00,Colorado Rockies,San Diego Padres,7.0,3.0,Germán Márquez,Matt Strahm,Coors Field,R,Regular Season,True
+MLB,632869,2021-08-18 01:40:00+00:00,Arizona Diamondbacks,Philadelphia Phillies,3.0,2.0,Taylor Widener,Kyle Gibson,Chase Field,R,Regular Season,True
+MLB,632919,2021-08-18 01:45:00+00:00,San Francisco Giants,New York Mets,3.0,2.0,Logan Webb,Marcus Stroman,Oracle Park,R,Regular Season,True
+MLB,632909,2021-08-18 02:10:00+00:00,Los Angeles Dodgers,Pittsburgh Pirates,4.0,3.0,David Price,Wil Crowe,Dodger Stadium,R,Regular Season,True
+MLB,632839,2021-08-18 16:35:00+00:00,Cincinnati Reds,Chicago Cubs,1.0,7.0,Tyler Mahle,Adrian Sampson,Great American Ball Park,R,Regular Season,True
+MLB,632831,2021-08-18 17:10:00+00:00,Minnesota Twins,Cleveland Indians,8.0,7.0,Lewis Thorpe,Zach Plesac,Target Field,R,Regular Season,True
+MLB,632862,2021-08-18 19:10:00+00:00,Colorado Rockies,San Diego Padres,7.0,5.0,Chi Chi González,Jake Arrieta,Coors Field,R,Regular Season,True
+MLB,632850,2021-08-18 19:45:00+00:00,San Francisco Giants,New York Mets,2.0,6.0,Anthony DeSclafani,Tylor Megill,Oracle Park,R,Regular Season,True
+MLB,632856,2021-08-18 20:05:00+00:00,Washington Nationals,Toronto Blue Jays,8.0,5.0,Josiah Gray,José Berríos,Nationals Park,R,Regular Season,True
+MLB,632852,2021-08-18 23:05:00+00:00,New York Yankees,Boston Red Sox,5.0,2.0,Andrew Heaney,Nick Pivetta,Yankee Stadium,R,Regular Season,True
+MLB,632849,2021-08-18 23:10:00+00:00,Tampa Bay Rays,Baltimore Orioles,8.0,4.0,Louis Head,Spenser Watkins,Tropicana Field,R,Regular Season,True
+MLB,632861,2021-08-18 23:10:00+00:00,Detroit Tigers,Los Angeles Angels,1.0,3.0,Tarik Skubal,Shohei Ohtani,Comerica Park,R,Regular Season,True
+MLB,632865,2021-08-18 23:10:00+00:00,Miami Marlins,Atlanta Braves,9.0,11.0,Jesús Luzardo,Charlie Morton,loanDepot park,R,Regular Season,True
+MLB,632844,2021-08-18 23:45:00+00:00,St. Louis Cardinals,Milwaukee Brewers,4.0,6.0,Jack Flaherty,Freddy Peralta,Busch Stadium,R,Regular Season,True
+MLB,632855,2021-08-19 00:05:00+00:00,Texas Rangers,Seattle Mariners,1.0,3.0,Mike Foltynewicz,Marco Gonzales,Globe Life Field,R,Regular Season,True
+MLB,632854,2021-08-19 00:10:00+00:00,Chicago White Sox,Oakland Athletics,3.0,2.0,Lance Lynn,Cole Irvin,Guaranteed Rate Field,R,Regular Season,True
+MLB,632859,2021-08-19 00:10:00+00:00,Kansas City Royals,Houston Astros,3.0,2.0,Brady Singer,Zack Greinke,Kauffman Stadium,R,Regular Season,True
+MLB,632848,2021-08-19 01:40:00+00:00,Arizona Diamondbacks,Philadelphia Phillies,4.0,2.0,Humberto Castellanos,Ranger Suarez,Chase Field,R,Regular Season,True
+MLB,632887,2021-08-19 02:10:00+00:00,Los Angeles Dodgers,Pittsburgh Pirates,9.0,0.0,Justin Bruihl,JT Brubaker,Dodger Stadium,R,Regular Season,True
+MLB,632833,2021-08-19 17:10:00+00:00,Tampa Bay Rays,Baltimore Orioles,7.0,2.0,Shane McClanahan,Jorge López,Tropicana Field,R,Regular Season,True
+MLB,632846,2021-08-19 17:10:00+00:00,Detroit Tigers,Los Angeles Angels,10.0,13.0,Matt Manning,Jose Quintana,Comerica Park,R,Regular Season,True
+MLB,632838,2021-08-19 18:05:00+00:00,Texas Rangers,Seattle Mariners,8.0,9.0,Spencer Howard,Chris Flexen,Globe Life Field,R,Regular Season,True
+MLB,632823,2021-08-19 18:10:00+00:00,Chicago White Sox,Oakland Athletics,4.0,5.0,Dylan Cease,Cole Irvin,Guaranteed Rate Field,R,Regular Season,True
+MLB,632843,2021-08-19 18:10:00+00:00,Kansas City Royals,Houston Astros,3.0,6.0,Mike Minor,Luis Garcia,Kauffman Stadium,R,Regular Season,True
+MLB,632841,2021-08-19 19:40:00+00:00,Arizona Diamondbacks,Philadelphia Phillies,6.0,2.0,Madison Bumgarner,Zack Wheeler,Chase Field,R,Regular Season,True
+MLB,632840,2021-08-19 23:05:00+00:00,New York Yankees,Minnesota Twins,7.0,5.0,Jameson Taillon,John Gant,Yankee Stadium,R,Regular Season,True
+MLB,632816,2021-08-19 23:10:00+00:00,Cincinnati Reds,Miami Marlins,6.0,1.0,Luis Castillo,Nick Neidert,Great American Ball Park,R,Regular Season,True
+MLB,632845,2021-08-19 23:45:00+00:00,St. Louis Cardinals,Milwaukee Brewers,8.0,4.0,Jon Lester,Brandon Woodruff,Busch Stadium,R,Regular Season,True
+MLB,632835,2021-08-20 02:10:00+00:00,Los Angeles Dodgers,New York Mets,4.0,1.0,Corey Knebel,Taijuan Walker,Dodger Stadium,R,Regular Season,True
+MLB,632826,2021-08-20 18:20:00+00:00,Chicago Cubs,Kansas City Royals,2.0,6.0,Zach Davies,Brad Keller,Wrigley Field,R,Regular Season,True
+MLB,632799,2021-08-20 23:05:00+00:00,New York Yankees,Minnesota Twins,10.0,2.0,Nestor Cortes,Charlie Barnes,Yankee Stadium,R,Regular Season,True
+MLB,632814,2021-08-20 23:05:00+00:00,Baltimore Orioles,Atlanta Braves,0.0,3.0,Keegan Akin,Max Fried,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,632888,2021-08-20 23:07:00+00:00,Toronto Blue Jays,Detroit Tigers,1.0,4.0,Robbie Ray,Tyler Alexander,Rogers Centre,R,Regular Season,True
+MLB,632827,2021-08-20 23:10:00+00:00,Boston Red Sox,Texas Rangers,6.0,0.0,Chris Sale,Dane Dunning,Fenway Park,R,Regular Season,True
+MLB,632832,2021-08-20 23:10:00+00:00,Cincinnati Reds,Miami Marlins,5.0,3.0,Sonny Gray,Elieser Hernández,Great American Ball Park,R,Regular Season,True
+MLB,632836,2021-08-20 23:10:00+00:00,Tampa Bay Rays,Chicago White Sox,5.0,7.0,Michael Wacha,Lucas Giolito,Tropicana Field,R,Regular Season,True
+MLB,632837,2021-08-20 23:10:00+00:00,Cleveland Indians,Los Angeles Angels,9.0,1.0,Sam Hentges,Jaime Barria,Progressive Field,R,Regular Season,True
+MLB,632774,2021-08-21 00:10:00+00:00,Houston Astros,Seattle Mariners,12.0,3.0,Lance McCullers Jr.,Yusei Kikuchi,Minute Maid Park,R,Regular Season,True
+MLB,632896,2021-08-21 00:10:00+00:00,Milwaukee Brewers,Washington Nationals,1.0,4.0,Brett Anderson,Patrick Corbin,American Family Field,R,Regular Season,True
+MLB,632815,2021-08-21 00:15:00+00:00,St. Louis Cardinals,Pittsburgh Pirates,0.0,4.0,Miles Mikolas,Mitch Keller,Busch Stadium,R,Regular Season,True
+MLB,632828,2021-08-21 00:40:00+00:00,Colorado Rockies,Arizona Diamondbacks,9.0,4.0,Austin Gomber,Tyler Gilbert,Coors Field,R,Regular Season,True
+MLB,632809,2021-08-21 01:40:00+00:00,Oakland Athletics,San Francisco Giants,4.0,1.0,James Kaprielian,Alex Wood,Oakland Coliseum,R,Regular Season,True
+MLB,632811,2021-08-21 02:10:00+00:00,Los Angeles Dodgers,New York Mets,3.0,2.0,Walker Buehler,Carlos Carrasco,Dodger Stadium,R,Regular Season,True
+MLB,632817,2021-08-21 02:10:00+00:00,San Diego Padres,Philadelphia Phillies,3.0,4.0,Blake Snell,Matt Moore,Petco Park,R,Regular Season,True
+MLB,632821,2021-08-21 17:05:00+00:00,New York Yankees,Minnesota Twins,7.0,1.0,Gerrit Cole,Kenta Maeda,Yankee Stadium,R,Regular Season,True
+MLB,632804,2021-08-21 17:10:00+00:00,Tampa Bay Rays,Chicago White Sox,8.0,4.0,Luis Patiño,Dallas Keuchel,Tropicana Field,R,Regular Season,True
+MLB,632824,2021-08-21 18:20:00+00:00,Chicago Cubs,Kansas City Royals,2.0,4.0,Keegan Thompson,Kris Bubic,Wrigley Field,R,Regular Season,True
+MLB,632775,2021-08-21 19:07:00+00:00,Toronto Blue Jays,Detroit Tigers,3.0,0.0,Hyun Jin Ryu,Wily Peralta,Rogers Centre,R,Regular Season,True
+MLB,632795,2021-08-21 20:05:00+00:00,Los Angeles Dodgers,New York Mets,4.0,3.0,Max Scherzer,Rich Hill,Dodger Stadium,R,Regular Season,True
+MLB,632829,2021-08-21 20:05:00+00:00,Milwaukee Brewers,Washington Nationals,9.0,6.0,Eric Lauer,Paolo Espino,American Family Field,R,Regular Season,True
+MLB,632842,2021-08-21 20:07:00+00:00,Oakland Athletics,San Francisco Giants,5.0,6.0,Sean Manaea,Kevin Gausman,Oakland Coliseum,R,Regular Season,True
+MLB,632780,2021-08-21 20:10:00+00:00,Cleveland Indians,Los Angeles Angels,5.0,1.0,Triston McKenzie,Reid Detmers,Progressive Field,R,Regular Season,True
+MLB,632834,2021-08-21 20:10:00+00:00,Houston Astros,Seattle Mariners,15.0,1.0,Jake Odorizzi,Logan Gilbert,Minute Maid Park,R,Regular Season,True
+MLB,632797,2021-08-21 22:40:00+00:00,Cincinnati Reds,Miami Marlins,7.0,4.0,Wade Miley,Zach Thompson,Great American Ball Park,R,Regular Season,True
+MLB,632879,2021-08-21 23:05:00+00:00,Baltimore Orioles,Atlanta Braves,4.0,5.0,Matt Harvey,Drew Smyly,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,632870,2021-08-21 23:10:00+00:00,Boston Red Sox,Texas Rangers,1.0,10.0,Eduardo Rodriguez,Jordan Lyles,Fenway Park,R,Regular Season,True
+MLB,632810,2021-08-21 23:15:00+00:00,St. Louis Cardinals,Pittsburgh Pirates,4.0,5.0,J.A. Happ,Dillon Peters,Busch Stadium,R,Regular Season,True
+MLB,632790,2021-08-22 00:10:00+00:00,Colorado Rockies,Arizona Diamondbacks,5.0,2.0,Kyle Freeland,Zac Gallen,Coors Field,R,Regular Season,True
+MLB,632806,2021-08-22 00:40:00+00:00,San Diego Padres,Philadelphia Phillies,4.0,3.0,Joe Musgrove,Aaron Nola,Petco Park,R,Regular Season,True
+MLB,632772,2021-08-22 17:05:00+00:00,Baltimore Orioles,Atlanta Braves,1.0,3.0,John Means,Touki Toussaint,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,632784,2021-08-22 17:07:00+00:00,Toronto Blue Jays,Detroit Tigers,3.0,5.0,Steven Matz,Drew Hutchison,Rogers Centre,R,Regular Season,True
+MLB,632785,2021-08-22 17:10:00+00:00,Tampa Bay Rays,Chicago White Sox,9.0,0.0,Chris Archer,Reynaldo López,Tropicana Field,R,Regular Season,True
+MLB,632801,2021-08-22 17:10:00+00:00,Cincinnati Reds,Miami Marlins,3.0,1.0,Vladimir Gutierrez,Sandy Alcantara,Great American Ball Park,R,Regular Season,True
+MLB,632786,2021-08-22 18:10:00+00:00,Milwaukee Brewers,Washington Nationals,7.0,3.0,Adrian Houser,Sean Nolin,American Family Field,R,Regular Season,True
+MLB,632793,2021-08-22 18:10:00+00:00,Houston Astros,Seattle Mariners,3.0,6.0,Framber Valdez,Tyler Anderson,Minute Maid Park,R,Regular Season,True
+MLB,632794,2021-08-22 18:15:00+00:00,St. Louis Cardinals,Pittsburgh Pirates,3.0,0.0,Adam Wainwright,Steven Brault,Busch Stadium,R,Regular Season,True
+MLB,632771,2021-08-22 18:20:00+00:00,Chicago Cubs,Kansas City Royals,1.0,9.0,Alec Mills,Carlos Hernández,Wrigley Field,R,Regular Season,True
+MLB,632803,2021-08-22 19:10:00+00:00,Colorado Rockies,Arizona Diamondbacks,4.0,8.0,Jon Gray,Taylor Widener,Coors Field,R,Regular Season,True
+MLB,632830,2021-08-22 19:40:00+00:00,San Diego Padres,Philadelphia Phillies,4.0,7.0,Craig Stammen,Kyle Gibson,Petco Park,R,Regular Season,True
+MLB,632791,2021-08-22 20:07:00+00:00,Oakland Athletics,San Francisco Giants,1.0,2.0,Frankie Montas,Logan Webb,Oakland Coliseum,R,Regular Season,True
+MLB,632796,2021-08-22 20:10:00+00:00,Los Angeles Dodgers,New York Mets,2.0,7.0,David Price,Marcus Stroman,Dodger Stadium,R,Regular Season,True
+MLB,632812,2021-08-22 23:10:00+00:00,Cleveland Indians,Los Angeles Angels,3.0,0.0,Cal Quantrill,José Suarez,BB&T Ballpark,R,Regular Season,True

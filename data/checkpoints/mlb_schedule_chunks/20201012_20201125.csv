@@ -1,0 +1,20 @@
+league,game_id,datetime,home,away,home_score,away_score,home_starter,away_starter,venue,game_type,series_description,confirmed_starters
+MLB,635937,2020-10-12 20:07:00+00:00,Tampa Bay Rays,Houston Astros,4,2,Charlie Morton,Lance McCullers Jr.,Petco Park,L,AL Championship Series,True
+MLB,635881,2020-10-13 00:08:00+00:00,Los Angeles Dodgers,Atlanta Braves,1,5,Walker Buehler,Max Fried,Globe Life Field,L,NL Championship Series,True
+MLB,635931,2020-10-13 22:05:00+00:00,Los Angeles Dodgers,Atlanta Braves,7,8,Tony Gonsolin,Ian Anderson,Globe Life Field,L,NL Championship Series,True
+MLB,635915,2020-10-14 00:40:00+00:00,Houston Astros,Tampa Bay Rays,2,5,José Urquidy,Ryan Yarbrough,Petco Park,L,AL Championship Series,True
+MLB,635880,2020-10-14 22:05:00+00:00,Atlanta Braves,Los Angeles Dodgers,3,15,Kyle Wright,Julio Urías,Globe Life Field,L,NL Championship Series,True
+MLB,635939,2020-10-15 00:40:00+00:00,Houston Astros,Tampa Bay Rays,4,3,Zack Greinke,Tyler Glasnow,Petco Park,L,AL Championship Series,True
+MLB,635930,2020-10-15 21:07:00+00:00,Houston Astros,Tampa Bay Rays,4,3,Luis Garcia,John Curtiss,Petco Park,L,AL Championship Series,True
+MLB,635928,2020-10-16 00:08:00+00:00,Atlanta Braves,Los Angeles Dodgers,10,2,Bryse Wilson,Clayton Kershaw,Globe Life Field,L,NL Championship Series,True
+MLB,635929,2020-10-16 22:07:00+00:00,Tampa Bay Rays,Houston Astros,4,7,Blake Snell,Framber Valdez,Petco Park,L,AL Championship Series,True
+MLB,635879,2020-10-17 01:08:00+00:00,Atlanta Braves,Los Angeles Dodgers,3,7,A.J. Minter,Dustin May,Globe Life Field,L,NL Championship Series,True
+MLB,635924,2020-10-17 20:38:00+00:00,Los Angeles Dodgers,Atlanta Braves,3,1,Walker Buehler,Max Fried,Globe Life Field,L,NL Championship Series,True
+MLB,635895,2020-10-18 00:37:00+00:00,Tampa Bay Rays,Houston Astros,4,2,Charlie Morton,Lance McCullers Jr.,Petco Park,L,AL Championship Series,True
+MLB,635888,2020-10-19 00:15:00+00:00,Los Angeles Dodgers,Atlanta Braves,4,3,Dustin May,Ian Anderson,Globe Life Field,L,NL Championship Series,True
+MLB,635925,2020-10-21 00:11:00+00:00,Los Angeles Dodgers,Tampa Bay Rays,8,3,Clayton Kershaw,Tyler Glasnow,Globe Life Field,W,World Series,True
+MLB,635896,2020-10-22 00:08:00+00:00,Los Angeles Dodgers,Tampa Bay Rays,4,6,Tony Gonsolin,Blake Snell,Globe Life Field,W,World Series,True
+MLB,635923,2020-10-24 00:08:00+00:00,Tampa Bay Rays,Los Angeles Dodgers,2,6,Charlie Morton,Walker Buehler,Globe Life Field,W,World Series,True
+MLB,635897,2020-10-25 00:08:00+00:00,Tampa Bay Rays,Los Angeles Dodgers,8,7,Ryan Yarbrough,Julio Urías,Globe Life Field,W,World Series,True
+MLB,635887,2020-10-26 00:08:00+00:00,Tampa Bay Rays,Los Angeles Dodgers,2,4,Tyler Glasnow,Clayton Kershaw,Globe Life Field,W,World Series,True
+MLB,635886,2020-10-28 00:08:00+00:00,Los Angeles Dodgers,Tampa Bay Rays,3,1,Tony Gonsolin,Blake Snell,Globe Life Field,W,World Series,True

@@ -1,0 +1,173 @@
+league,game_id,datetime,home,away,home_score,away_score,home_starter,away_starter,venue,game_type,series_description,confirmed_starters
+MLB,604059,2020-03-01 18:05:00+00:00,Boston Red Sox,Atlanta Braves,4.0,2.0,Nathan Eovaldi,Mike Foltynewicz,JetBlue Park,S,Spring Training,True
+MLB,604638,2020-03-01 18:05:00+00:00,Detroit Tigers,New York Yankees,10.0,4.0,Spencer Turnbull,David Hale,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,604736,2020-03-01 18:05:00+00:00,Houston Astros,St. Louis Cardinals,5.0,4.0,Lance McCullers Jr.,Austin Gomber,FITTEAM Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,605121,2020-03-01 18:05:00+00:00,Miami Marlins,New York Mets,7.0,1.0,José Ureña,Michael Wacha,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,605702,2020-03-01 18:05:00+00:00,Philadelphia Phillies,Baltimore Orioles,2.0,3.0,Ranger Suarez,John Means,Spectrum Field,S,Spring Training,True
+MLB,605800,2020-03-01 18:05:00+00:00,Pittsburgh Pirates,Toronto Blue Jays,13.0,9.0,Joe Musgrove,Chase Anderson,LECOM Park,S,Spring Training,True
+MLB,606282,2020-03-01 18:05:00+00:00,Tampa Bay Rays,Minnesota Twins,8.0,2.0,Joe Ryan,Kenta Maeda,Charlotte Sports Park,S,Spring Training,True
+MLB,605410,2020-03-01 18:10:00+00:00,New York Mets,Washington Nationals,3.0,1.0,Jacob deGrom,Aníbal Sánchez,Clover Park,S,Spring Training,True
+MLB,604157,2020-03-01 20:05:00+00:00,Chicago Cubs,Seattle Mariners,7.0,3.0,Jon Lester,Kendall Graveman,Sloan Park,S,Spring Training,True
+MLB,604445,2020-03-01 20:05:00+00:00,Cleveland Indians,Arizona Diamondbacks,10.0,6.0,Shane Bieber,Zac Gallen,Goodyear Ballpark,S,Spring Training,True
+MLB,604834,2020-03-01 20:05:00+00:00,Kansas City Royals,Oakland Athletics,6.0,10.0,Danny Duffy,Matt Milburn,Surprise Stadium,S,Spring Training,True
+MLB,605025,2020-03-01 20:05:00+00:00,Los Angeles Dodgers,Texas Rangers,6.0,8.0,Victor González,Corey Kluber,Camelback Ranch,S,Spring Training,True
+MLB,605218,2020-03-01 20:05:00+00:00,Milwaukee Brewers,Cincinnati Reds,5.0,4.0,Eric Lauer,Wade Miley,American Family Fields of Phoenix,S,Spring Training,True
+MLB,604542,2020-03-01 20:10:00+00:00,Colorado Rockies,Los Angeles Angels,6.0,3.0,Germán Márquez,José Suarez,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,604930,2020-03-01 20:10:00+00:00,Los Angeles Angels,Chicago White Sox,7.0,8.0,Patrick Sandoval,Ross Detwiler,Tempe Diablo Stadium,S,Spring Training,True
+MLB,605896,2020-03-01 20:10:00+00:00,San Diego Padres,San Francisco Giants,7.0,5.0,Joey Lucchesi,Kevin Gausman,Peoria Stadium,S,Spring Training,True
+MLB,616620,2020-03-01 21:05:00+00:00,Cleveland Indians,Oakland Athletics,5.0,8.0,Adam Plutko,Jesús Luzardo,Las Vegas Ballpark,S,Spring Training,True
+MLB,603963,2020-03-02 18:05:00+00:00,Baltimore Orioles,Tampa Bay Rays,3.0,3.0,Asher Wojciechowski,Charlie Morton,Ed Smith Stadium,S,Spring Training,True
+MLB,604639,2020-03-02 18:05:00+00:00,Detroit Tigers,Boston Red Sox,11.0,11.0,Daniel Norris,Ryan Weber,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,606185,2020-03-02 18:05:00+00:00,St. Louis Cardinals,Minnesota Twins,6.0,1.0,Génesis Cabrera,Devin Smeltzer,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,606572,2020-03-02 18:05:00+00:00,Washington Nationals,Miami Marlins,3.0,2.0,Joe Ross,Pablo López,FITTEAM Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,606477,2020-03-02 18:07:00+00:00,Toronto Blue Jays,Pittsburgh Pirates,4.0,0.0,Matt Shoemaker,Mitch Keller,TD Ballpark,S,Spring Training,True
+MLB,604158,2020-03-02 20:05:00+00:00,Chicago Cubs,Los Angeles Angels,9.0,4.0,Kyle Hendricks,Julio Teheran,Sloan Park,S,Spring Training,True
+MLB,604254,2020-03-02 20:05:00+00:00,Chicago White Sox,San Diego Padres,1.0,3.0,Dallas Keuchel,Chris Paddack,Camelback Ranch,S,Spring Training,True
+MLB,604351,2020-03-02 20:05:00+00:00,Cincinnati Reds,Los Angeles Dodgers,6.0,2.0,Sonny Gray,David Price,Goodyear Ballpark,S,Spring Training,True
+MLB,606378,2020-03-02 20:05:00+00:00,Texas Rangers,Cleveland Indians,3.0,2.0,Kyle Gibson,Eli Morgan,Surprise Stadium,S,Spring Training,True
+MLB,603768,2020-03-02 20:10:00+00:00,Arizona Diamondbacks,San Francisco Giants,1.0,8.0,Merrill Kelly,Jeff Samardzija,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,606089,2020-03-02 20:10:00+00:00,Seattle Mariners,Colorado Rockies,6.0,9.0,Justus Sheffield,Jon Gray,Peoria Stadium,S,Spring Training,True
+MLB,603865,2020-03-02 23:05:00+00:00,Atlanta Braves,Philadelphia Phillies,4.0,6.0,Sean Newcomb,Zach Eflin,CoolToday Park,S,Spring Training,True
+MLB,605606,2020-03-03 02:05:00+00:00,Oakland Athletics,Chicago Cubs,5.0,2.0,Frankie Montas,Alec Mills,Hohokam Stadium,S,Spring Training,True
+MLB,603866,2020-03-03 18:05:00+00:00,Atlanta Braves,Tampa Bay Rays,2.0,5.0,Félix Hernández,Josh Fleming,CoolToday Park,S,Spring Training,True
+MLB,605315,2020-03-03 18:05:00+00:00,Minnesota Twins,Detroit Tigers,5.0,1.0,Randy Dobnak,Dario Agrazal,CenturyLink Sports Complex,S,Spring Training,True
+MLB,605508,2020-03-03 18:05:00+00:00,New York Yankees,Boston Red Sox,9.0,1.0,Masahiro Tanaka,Martín Pérez,George M. Steinbrenner Field,S,Spring Training,True
+MLB,606186,2020-03-03 18:05:00+00:00,St. Louis Cardinals,Houston Astros,6.0,3.0,Dakota Hudson,Justin Verlander,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,606573,2020-03-03 18:05:00+00:00,Washington Nationals,Baltimore Orioles,5.0,3.0,Max Scherzer,Ty Blach,FITTEAM Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,605411,2020-03-03 18:10:00+00:00,New York Mets,Miami Marlins,1.0,6.0,Noah Syndergaard,Jordan Yamamoto,Clover Park,S,Spring Training,True
+MLB,604255,2020-03-03 20:05:00+00:00,Chicago White Sox,Oakland Athletics,5.0,6.0,Reynaldo López,Chris Bassitt,Camelback Ranch,S,Spring Training,True
+MLB,604446,2020-03-03 20:05:00+00:00,Cleveland Indians,Los Angeles Angels,7.0,11.0,Carlos Carrasco,Andrew Heaney,Goodyear Ballpark,S,Spring Training,True
+MLB,605993,2020-03-03 20:05:00+00:00,San Francisco Giants,Texas Rangers,5.0,6.0,Logan Webb,Jordan Lyles,Scottsdale Stadium,S,Spring Training,True
+MLB,604543,2020-03-03 20:10:00+00:00,Colorado Rockies,Chicago Cubs,11.0,10.0,Ashton Goudeau,Jose Quintana,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,605897,2020-03-03 20:10:00+00:00,San Diego Padres,Milwaukee Brewers,9.0,0.0,Garrett Richards,Shelby Miller,Peoria Stadium,S,Spring Training,True
+MLB,604835,2020-03-04 01:05:00+00:00,Kansas City Royals,Arizona Diamondbacks,6.0,4.0,Kyle Zimmer,Luke Weaver,Surprise Stadium,S,Spring Training,True
+MLB,604060,2020-03-04 18:05:00+00:00,Boston Red Sox,Detroit Tigers,9.0,13.0,Jeffrey Springs,Iván Nova,JetBlue Park,S,Spring Training,True
+MLB,604737,2020-03-04 18:05:00+00:00,Houston Astros,Miami Marlins,1.0,2.0,Zack Greinke,Elieser Hernández,FITTEAM Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,605122,2020-03-04 18:05:00+00:00,Miami Marlins,Baltimore Orioles,3.0,5.0,Caleb Smith,Wade LeBlanc,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,605703,2020-03-04 18:05:00+00:00,Philadelphia Phillies,Pittsburgh Pirates,9.0,7.0,Aaron Nola,Hector Noesí,Spectrum Field,S,Spring Training,True
+MLB,605801,2020-03-04 18:05:00+00:00,Pittsburgh Pirates,Atlanta Braves,7.0,9.0,Trevor Williams,Michael Soroka,LECOM Park,S,Spring Training,True
+MLB,606283,2020-03-04 18:05:00+00:00,Tampa Bay Rays,Toronto Blue Jays,9.0,5.0,Tyler Glasnow,Anthony Kay,Charlotte Sports Park,S,Spring Training,True
+MLB,605412,2020-03-04 18:10:00+00:00,New York Mets,St. Louis Cardinals,4.0,1.0,Marcus Stroman,Jack Flaherty,Clover Park,S,Spring Training,True
+MLB,604352,2020-03-04 20:05:00+00:00,Cincinnati Reds,Chicago Cubs,6.0,6.0,Tejay Antone,Tyler Chatwood,Goodyear Ballpark,S,Spring Training,True
+MLB,605219,2020-03-04 20:05:00+00:00,Milwaukee Brewers,Chicago White Sox,1.0,5.0,Brandon Woodruff,Dylan Cease,American Family Fields of Phoenix,S,Spring Training,True
+MLB,606379,2020-03-04 20:05:00+00:00,Texas Rangers,Colorado Rockies,7.0,4.0,Lance Lynn,Antonio Senzatela,Surprise Stadium,S,Spring Training,True
+MLB,603769,2020-03-04 20:10:00+00:00,Arizona Diamondbacks,Cleveland Indians,2.0,6.0,Madison Bumgarner,Aaron Civale,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,604931,2020-03-04 20:10:00+00:00,Los Angeles Angels,Seattle Mariners,2.0,0.0,Dylan Bundy,Justin Dunn,Tempe Diablo Stadium,S,Spring Training,True
+MLB,605898,2020-03-04 20:10:00+00:00,San Diego Padres,Kansas City Royals,7.0,9.0,Adrian Morejon,Mike Montgomery,Peoria Stadium,S,Spring Training,True
+MLB,605509,2020-03-04 23:35:00+00:00,New York Yankees,Philadelphia Phillies,3.0,2.0,J.A. Happ,Nick Pivetta,George M. Steinbrenner Field,S,Spring Training,True
+MLB,605026,2020-03-05 01:05:00+00:00,Los Angeles Dodgers,San Francisco Giants,4.0,0.0,Clayton Kershaw,Johnny Cueto,Camelback Ranch,S,Spring Training,True
+MLB,604061,2020-03-05 18:05:00+00:00,Boston Red Sox,Houston Astros,0.0,5.0,Kyle Hart,Josh James,JetBlue Park,S,Spring Training,True
+MLB,604640,2020-03-05 18:05:00+00:00,Detroit Tigers,New York Yankees,15.0,11.0,Casey Mize,Gerrit Cole,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,605704,2020-03-05 18:05:00+00:00,Philadelphia Phillies,Toronto Blue Jays,5.0,3.0,Zack Wheeler,Tanner Roark,Spectrum Field,S,Spring Training,True
+MLB,606187,2020-03-05 18:05:00+00:00,St. Louis Cardinals,New York Mets,7.0,7.0,Adam Wainwright,Rick Porcello,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,606284,2020-03-05 18:05:00+00:00,Tampa Bay Rays,Pittsburgh Pirates,2.0,1.0,Ryan Yarbrough,Derek Holland,Charlotte Sports Park,S,Spring Training,True
+MLB,603964,2020-03-05 20:05:00+00:00,Baltimore Orioles,Minnesota Twins,3.0,3.0,Keegan Akin,Homer Bailey,Ed Smith Stadium,S,Spring Training,True
+MLB,604159,2020-03-05 20:05:00+00:00,Chicago Cubs,Texas Rangers,0.0,5.0,James Norwood,Jonathan Hernández,Sloan Park,S,Spring Training,True
+MLB,604256,2020-03-05 20:05:00+00:00,Chicago White Sox,Colorado Rockies,7.0,6.0,Drew Anderson,Peter Lambert,Camelback Ranch,S,Spring Training,True
+MLB,604353,2020-03-05 20:05:00+00:00,Cincinnati Reds,Milwaukee Brewers,4.0,6.0,Luis Castillo,Freddy Peralta,Goodyear Ballpark,S,Spring Training,True
+MLB,605607,2020-03-05 20:05:00+00:00,Oakland Athletics,Los Angeles Dodgers,5.0,1.0,Mike Fiers,Walker Buehler,Hohokam Stadium,S,Spring Training,True
+MLB,605994,2020-03-05 20:05:00+00:00,San Francisco Giants,Cleveland Indians,1.0,7.0,Drew Smyly,Zach Plesac,Scottsdale Stadium,S,Spring Training,True
+MLB,606380,2020-03-05 20:05:00+00:00,Texas Rangers,Arizona Diamondbacks,9.0,11.0,Mike Minor,Robbie Ray,Surprise Stadium,S,Spring Training,True
+MLB,604544,2020-03-05 20:10:00+00:00,Colorado Rockies,Kansas City Royals,9.0,1.0,Chi Chi González,Brad Keller,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,606090,2020-03-05 20:10:00+00:00,Seattle Mariners,San Diego Padres,0.0,3.0,Yusei Kikuchi,Dinelson Lamet,Peoria Stadium,S,Spring Training,True
+MLB,606574,2020-03-05 23:05:00+00:00,Washington Nationals,St. Louis Cardinals,0.0,11.0,Patrick Corbin,Carlos Martinez,FITTEAM Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,603867,2020-03-06 18:05:00+00:00,Atlanta Braves,Boston Red Sox,7.0,5.0,Kyle Wright,Eduardo Rodriguez,CoolToday Park,S,Spring Training,True
+MLB,604641,2020-03-06 18:05:00+00:00,Detroit Tigers,Philadelphia Phillies,0.0,9.0,Spencer Turnbull,Jake Arrieta,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,605316,2020-03-06 18:05:00+00:00,Minnesota Twins,Tampa Bay Rays,5.0,3.0,Jhoulys Chacín,Yonny Chirinos,CenturyLink Sports Complex,S,Spring Training,True
+MLB,606478,2020-03-06 18:07:00+00:00,Toronto Blue Jays,Pittsburgh Pirates,13.0,19.0,Chase Anderson,Chris Archer,TD Ballpark,S,Spring Training,True
+MLB,604160,2020-03-06 20:05:00+00:00,Chicago Cubs,Chicago White Sox,3.0,6.0,Jon Lester,Lucas Giolito,Sloan Park,S,Spring Training,True
+MLB,604447,2020-03-06 20:05:00+00:00,Cleveland Indians,Oakland Athletics,6.0,7.0,Shane Bieber,Paul Blackburn,Goodyear Ballpark,S,Spring Training,True
+MLB,604836,2020-03-06 20:05:00+00:00,Kansas City Royals,Los Angeles Angels,4.0,3.0,Daniel Lynch IV,Dillon Peters,Surprise Stadium,S,Spring Training,True
+MLB,605220,2020-03-06 20:05:00+00:00,Milwaukee Brewers,San Francisco Giants,5.0,5.0,Josh Lindblom,Kevin Gausman,American Family Fields of Phoenix,S,Spring Training,True
+MLB,605608,2020-03-06 20:05:00+00:00,Oakland Athletics,Cincinnati Reds,5.0,11.0,Sean Manaea,Wade Miley,Hohokam Stadium,S,Spring Training,True
+MLB,603770,2020-03-06 20:10:00+00:00,Arizona Diamondbacks,Colorado Rockies,6.0,6.0,Miguel Aguilar,Germán Márquez,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,604925,2020-03-06 20:10:00+00:00,Los Angeles Angels,Kansas City Royals,4.0,4.0,José Suarez,Brady Singer,Tempe Diablo Stadium,S,Spring Training,True
+MLB,604738,2020-03-06 23:05:00+00:00,Houston Astros,New York Mets,3.0,2.0,Lance McCullers Jr.,Michael Wacha,FITTEAM Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,605510,2020-03-06 23:35:00+00:00,New York Yankees,Baltimore Orioles,1.0,5.0,Deivi García,Thomas Eshelman,George M. Steinbrenner Field,S,Spring Training,True
+MLB,605123,2020-03-07 00:05:00+00:00,Miami Marlins,Washington Nationals,7.0,3.0,Sandy Alcantara,Aníbal Sánchez,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,605027,2020-03-07 01:05:00+00:00,Los Angeles Dodgers,Seattle Mariners,3.0,9.0,Ross Stripling,Nick Margevicius,Camelback Ranch,S,Spring Training,True
+MLB,605899,2020-03-07 01:40:00+00:00,San Diego Padres,Texas Rangers,4.0,3.0,Zach Davies,Corey Kluber,Peoria Stadium,S,Spring Training,True
+MLB,604642,2020-03-07 16:35:00+00:00,Detroit Tigers,Minnesota Twins,6.0,7.0,Iván Nova,Devin Smeltzer,Estadio Quisqueya Juan Marichal,S,Spring Training,True
+MLB,603868,2020-03-07 18:05:00+00:00,Atlanta Braves,Tampa Bay Rays,1.0,1.0,Mike Foltynewicz,Joe Ryan,CoolToday Park,S,Spring Training,True
+MLB,604062,2020-03-07 18:05:00+00:00,Boston Red Sox,Toronto Blue Jays,5.0,2.0,Nathan Eovaldi,Trent Thornton,JetBlue Park,S,Spring Training,True
+MLB,605705,2020-03-07 18:05:00+00:00,Philadelphia Phillies,Boston Red Sox,10.0,2.0,Ranger Suarez,Tanner Houck,Spectrum Field,S,Spring Training,True
+MLB,605802,2020-03-07 18:05:00+00:00,Pittsburgh Pirates,New York Yankees,4.0,7.0,Chris Stratton,Jonathan Loáisiga,LECOM Park,S,Spring Training,True
+MLB,606188,2020-03-07 18:05:00+00:00,St. Louis Cardinals,Houston Astros,5.0,1.0,John Gant,Brandon Bielak,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,606285,2020-03-07 18:05:00+00:00,Tampa Bay Rays,Baltimore Orioles,1.0,0.0,Sean Gilmartin,Bruce Zimmermann,Charlotte Sports Park,S,Spring Training,True
+MLB,606575,2020-03-07 18:05:00+00:00,Washington Nationals,Miami Marlins,2.0,2.0,Joe Ross,José Ureña,FITTEAM Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,605413,2020-03-07 18:10:00+00:00,New York Mets,Washington Nationals,0.0,5.0,Steven Matz,Austin Voth,Clover Park,S,Spring Training,True
+MLB,604448,2020-03-07 20:05:00+00:00,Cleveland Indians,Chicago Cubs,5.0,8.0,Adam Plutko,Kyle Hendricks,Goodyear Ballpark,S,Spring Training,True
+MLB,604837,2020-03-07 20:05:00+00:00,Kansas City Royals,Cincinnati Reds,7.0,2.0,Danny Duffy,Sonny Gray,Surprise Stadium,S,Spring Training,True
+MLB,605028,2020-03-07 20:05:00+00:00,Los Angeles Dodgers,Colorado Rockies,7.0,1.0,David Price,Ubaldo Jiménez,Camelback Ranch,S,Spring Training,True
+MLB,605221,2020-03-07 20:05:00+00:00,Milwaukee Brewers,Texas Rangers,2.0,11.0,Brett Anderson,Kyle Gibson,American Family Fields of Phoenix,S,Spring Training,True
+MLB,605995,2020-03-07 20:05:00+00:00,San Francisco Giants,Chicago White Sox,12.0,7.0,Trevor Cahill,Dallas Keuchel,Scottsdale Stadium,S,Spring Training,True
+MLB,603771,2020-03-07 20:10:00+00:00,Arizona Diamondbacks,San Diego Padres,10.0,5.0,Merrill Kelly,Joey Lucchesi,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,604932,2020-03-07 20:10:00+00:00,Los Angeles Angels,Arizona Diamondbacks,6.0,6.0,Julio Teheran,Zac Gallen,Tempe Diablo Stadium,S,Spring Training,True
+MLB,606091,2020-03-07 20:10:00+00:00,Seattle Mariners,Oakland Athletics,4.0,8.0,Zac Grotz,Jesús Luzardo,Peoria Stadium,S,Spring Training,True
+MLB,616618,2020-03-07 21:05:00+00:00,Chicago Cubs,Cincinnati Reds,5.0,8.0,Alec Mills,Tejay Antone,Las Vegas Ballpark,S,Spring Training,True
+MLB,603965,2020-03-08 17:05:00+00:00,Baltimore Orioles,New York Yankees,5.0,5.0,Kohl Stewart,Clarke Schmidt,Ed Smith Stadium,S,Spring Training,True
+MLB,604063,2020-03-08 17:05:00+00:00,Boston Red Sox,Minnesota Twins,7.0,6.0,Martín Pérez,Kenta Maeda,JetBlue Park,S,Spring Training,True
+MLB,605511,2020-03-08 17:05:00+00:00,New York Yankees,Atlanta Braves,1.0,0.0,Masahiro Tanaka,Sean Newcomb,George M. Steinbrenner Field,S,Spring Training,True
+MLB,606189,2020-03-08 17:05:00+00:00,St. Louis Cardinals,Miami Marlins,7.0,3.0,Dakota Hudson,Pablo López,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,606286,2020-03-08 17:05:00+00:00,Tampa Bay Rays,Pittsburgh Pirates,2.0,2.0,Josh Fleming,Mitch Keller,Charlotte Sports Park,S,Spring Training,True
+MLB,606576,2020-03-08 17:05:00+00:00,Washington Nationals,Detroit Tigers,5.0,7.0,Erick Fedde,Jordan Zimmermann,FITTEAM Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,606479,2020-03-08 17:07:00+00:00,Toronto Blue Jays,Philadelphia Phillies,9.0,0.0,Matt Shoemaker,Vince Velasquez,TD Ballpark,S,Spring Training,True
+MLB,605414,2020-03-08 17:10:00+00:00,New York Mets,Houston Astros,3.0,1.0,Noah Syndergaard,Justin Verlander,Clover Park,S,Spring Training,True
+MLB,604161,2020-03-08 20:05:00+00:00,Chicago Cubs,Arizona Diamondbacks,1.0,8.0,Jose Quintana,Jon Duplantier,Sloan Park,S,Spring Training,True
+MLB,604257,2020-03-08 20:05:00+00:00,Chicago White Sox,Kansas City Royals,5.0,4.0,Alex McRae,Kris Bubic,Camelback Ranch,S,Spring Training,True
+MLB,604354,2020-03-08 20:05:00+00:00,Cincinnati Reds,Los Angeles Angels,8.0,8.0,Trevor Bauer,JC Ramírez,Goodyear Ballpark,S,Spring Training,True
+MLB,605609,2020-03-08 20:05:00+00:00,Oakland Athletics,Milwaukee Brewers,11.0,3.0,Frankie Montas,Adrian Houser,Hohokam Stadium,S,Spring Training,True
+MLB,605996,2020-03-08 20:05:00+00:00,San Francisco Giants,Seattle Mariners,8.0,4.0,Jeff Samardzija,Justus Sheffield,Scottsdale Stadium,S,Spring Training,True
+MLB,606381,2020-03-08 20:05:00+00:00,Texas Rangers,Los Angeles Dodgers,9.0,8.0,Jordan Lyles,Julio Urías,Surprise Stadium,S,Spring Training,True
+MLB,607098,2020-03-08 20:05:00+00:00,Milwaukee Brewers,Los Angeles Angels,7.0,3.0,Shelby Miller,Matt Andriese,American Family Fields of Phoenix,S,Spring Training,True
+MLB,616615,2020-03-08 20:05:00+00:00,Chicago Cubs,Cincinnati Reds,9.0,11.0,Colin Rea,Vladimir Gutierrez,Las Vegas Ballpark,S,Spring Training,True
+MLB,604545,2020-03-08 20:10:00+00:00,Colorado Rockies,Cleveland Indians,3.0,1.0,Kyle Freeland,Jefry Rodriguez,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,605900,2020-03-08 20:10:00+00:00,San Diego Padres,Chicago White Sox,0.0,6.0,Chris Paddack,Reynaldo López,Peoria Stadium,S,Spring Training,True
+MLB,604739,2020-03-09 17:05:00+00:00,Houston Astros,Detroit Tigers,2.0,1.0,Zack Greinke,Tarik Skubal,FITTEAM Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,605124,2020-03-09 17:05:00+00:00,Miami Marlins,New York Mets,1.0,1.0,Elieser Hernández,Walker Lockett,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,605317,2020-03-09 17:05:00+00:00,Minnesota Twins,St. Louis Cardinals,0.0,3.0,Randy Dobnak,Kwang Hyun Kim,CenturyLink Sports Complex,S,Spring Training,True
+MLB,605706,2020-03-09 17:05:00+00:00,Philadelphia Phillies,New York Yankees,3.0,1.0,Ramón Rosso,J.A. Happ,Spectrum Field,S,Spring Training,True
+MLB,605803,2020-03-09 17:05:00+00:00,Pittsburgh Pirates,Toronto Blue Jays,1.0,3.0,Trevor Williams,Anthony Kay,LECOM Park,S,Spring Training,True
+MLB,606480,2020-03-09 17:07:00+00:00,Toronto Blue Jays,Tampa Bay Rays,8.0,3.0,Hyun Jin Ryu,Blake Snell,TD Ballpark,S,Spring Training,True
+MLB,604258,2020-03-09 20:05:00+00:00,Chicago White Sox,Cincinnati Reds,3.0,3.0,Dylan Cease,Anthony DeSclafani,Camelback Ranch,S,Spring Training,True
+MLB,604449,2020-03-09 20:05:00+00:00,Cleveland Indians,San Francisco Giants,11.0,7.0,Aaron Civale,Trevor Oaks,Goodyear Ballpark,S,Spring Training,True
+MLB,603772,2020-03-09 20:10:00+00:00,Arizona Diamondbacks,Kansas City Royals,4.0,4.0,Madison Bumgarner,Mike Montgomery,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,604933,2020-03-09 20:10:00+00:00,Los Angeles Angels,Cleveland Indians,10.0,11.0,Andrew Heaney,Logan Allen,Tempe Diablo Stadium,S,Spring Training,True
+MLB,605901,2020-03-09 20:10:00+00:00,San Diego Padres,Los Angeles Dodgers,2.0,14.0,Garrett Richards,Alex Wood,Peoria Stadium,S,Spring Training,True
+MLB,603869,2020-03-09 22:05:00+00:00,Atlanta Braves,Boston Red Sox,1.0,2.0,Félix Hernández,Ryan Weber,CoolToday Park,S,Spring Training,True
+MLB,606382,2020-03-10 01:05:00+00:00,Texas Rangers,Oakland Athletics,0.0,5.0,Jonathan Hernández,Chris Bassitt,Surprise Stadium,S,Spring Training,True
+MLB,605222,2020-03-10 02:05:00+00:00,Milwaukee Brewers,Seattle Mariners,2.0,1.0,Corbin Burnes,Taijuan Walker,American Family Fields of Phoenix,S,Spring Training,True
+MLB,603870,2020-03-10 17:05:00+00:00,Atlanta Braves,Houston Astros,3.0,0.0,Michael Soroka,Josh James,CoolToday Park,S,Spring Training,True
+MLB,604064,2020-03-10 17:05:00+00:00,Boston Red Sox,St. Louis Cardinals,3.0,2.0,Brian Johnson,Jack Flaherty,JetBlue Park,S,Spring Training,True
+MLB,604643,2020-03-10 17:05:00+00:00,Detroit Tigers,Pittsburgh Pirates,4.0,1.0,Matthew Boyd,Derek Holland,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,604740,2020-03-10 17:05:00+00:00,Houston Astros,New York Mets,4.0,7.0,Framber Valdez,Rick Porcello,FITTEAM Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,605125,2020-03-10 17:05:00+00:00,Miami Marlins,Washington Nationals,3.0,2.0,Caleb Smith,Ben Braymer,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,605512,2020-03-10 17:05:00+00:00,New York Yankees,Toronto Blue Jays,2.0,4.0,Gerrit Cole,Tanner Roark,George M. Steinbrenner Field,S,Spring Training,True
+MLB,605707,2020-03-10 17:05:00+00:00,Philadelphia Phillies,Minnesota Twins,5.0,1.0,Zack Wheeler,Sean Poppen,Spectrum Field,S,Spring Training,True
+MLB,604259,2020-03-10 20:05:00+00:00,Chicago White Sox,Texas Rangers,2.0,9.0,Michael Kopech,Mike Minor,Camelback Ranch,S,Spring Training,True
+MLB,604355,2020-03-10 20:05:00+00:00,Cincinnati Reds,Arizona Diamondbacks,2.0,10.0,Luis Castillo,Taylor Clarke,Goodyear Ballpark,S,Spring Training,True
+MLB,604838,2020-03-10 20:05:00+00:00,Kansas City Royals,Milwaukee Brewers,2.0,5.0,Brad Keller,Brandon Woodruff,Surprise Stadium,S,Spring Training,True
+MLB,605610,2020-03-10 20:05:00+00:00,Oakland Athletics,Kansas City Royals,2.0,4.0,Mike Fiers,Jorge López,Hohokam Stadium,S,Spring Training,True
+MLB,605997,2020-03-10 20:05:00+00:00,San Francisco Giants,Chicago Cubs,3.0,16.0,Johnny Cueto,Tyler Chatwood,Scottsdale Stadium,S,Spring Training,True
+MLB,604546,2020-03-10 20:10:00+00:00,Colorado Rockies,Cincinnati Reds,5.0,5.0,Chi Chi González,Tyler Mahle,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,606092,2020-03-10 20:10:00+00:00,Seattle Mariners,Los Angeles Angels,3.0,1.0,Logan Gilbert,Dylan Bundy,Peoria Stadium,S,Spring Training,True
+MLB,603966,2020-03-10 22:05:00+00:00,Baltimore Orioles,Atlanta Braves,6.0,3.0,Keegan Akin,Ian Anderson,Ed Smith Stadium,S,Spring Training,True
+MLB,604741,2020-03-11 17:05:00+00:00,Houston Astros,Washington Nationals,2.0,6.0,Lance McCullers Jr.,Stephen Strasburg,FITTEAM Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,605126,2020-03-11 17:05:00+00:00,Miami Marlins,New York Yankees,3.0,1.0,Sandy Alcantara,Deivi García,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,605318,2020-03-11 17:05:00+00:00,Minnesota Twins,Atlanta Braves,2.0,3.0,José Berríos,Max Fried,CenturyLink Sports Complex,S,Spring Training,True
+MLB,606481,2020-03-11 17:07:00+00:00,Toronto Blue Jays,Baltimore Orioles,14.0,2.0,Chase Anderson,Thomas Eshelman,TD Ballpark,S,Spring Training,True
+MLB,605415,2020-03-11 17:10:00+00:00,New York Mets,St. Louis Cardinals,7.0,3.0,Jacob deGrom,Carlos Martinez,Clover Park,S,Spring Training,True
+MLB,604450,2020-03-11 20:05:00+00:00,Cleveland Indians,Kansas City Royals,0.0,0.0,Shane Bieber,Brady Singer,Goodyear Ballpark,S,Spring Training,True
+MLB,606383,2020-03-11 20:05:00+00:00,Texas Rangers,San Francisco Giants,4.0,6.0,Luke Farrell,Kevin Gausman,Surprise Stadium,S,Spring Training,True
+MLB,606287,2020-03-11 22:35:00+00:00,Tampa Bay Rays,Boston Red Sox,1.0,3.0,Shane McClanahan,Eduardo Rodriguez,Charlotte Sports Park,S,Spring Training,True
+MLB,604162,2020-03-12 01:05:00+00:00,Chicago Cubs,San Diego Padres,3.0,2.0,Yu Darvish,Cal Quantrill,Sloan Park,S,Spring Training,True
+MLB,605029,2020-03-12 01:05:00+00:00,Los Angeles Dodgers,Milwaukee Brewers,4.0,1.0,Walker Buehler,Freddy Peralta,Camelback Ranch,S,Spring Training,True
+MLB,605902,2020-03-12 01:40:00+00:00,San Diego Padres,Seattle Mariners,2.0,4.0,Dinelson Lamet,Marco Gonzales,Peoria Stadium,S,Spring Training,True
+MLB,604644,2020-03-12 17:05:00+00:00,Detroit Tigers,Atlanta Braves,3.0,5.0,Spencer Turnbull,Kyle Wright,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,605804,2020-03-12 17:05:00+00:00,Pittsburgh Pirates,Toronto Blue Jays,5.0,7.0,Joe Musgrove,Trent Thornton,LECOM Park,S,Spring Training,True
+MLB,606190,2020-03-12 17:05:00+00:00,St. Louis Cardinals,Miami Marlins,3.0,0.0,Adam Wainwright,José Ureña,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,606288,2020-03-12 17:05:00+00:00,Tampa Bay Rays,Philadelphia Phillies,4.0,8.0,Brendan McKay,Jake Arrieta,Charlotte Sports Park,S,Spring Training,True
+MLB,606577,2020-03-12 17:05:00+00:00,Washington Nationals,New York Yankees,3.0,6.0,Patrick Corbin,Jonathan Loáisiga,FITTEAM Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,622758,2020-03-12 17:07:00+00:00,Toronto Blue Jays,Canada,22.0,6.0,Jordan Romano,,TD Ballpark,E,Exhibition Game,False
+MLB,605030,2020-03-12 20:05:00+00:00,Los Angeles Dodgers,Oakland Athletics,0.0,0.0,David Price,Jesús Luzardo,Camelback Ranch,S,Spring Training,True
+MLB,603773,2020-03-12 20:10:00+00:00,Arizona Diamondbacks,Milwaukee Brewers,0.0,0.0,Zac Gallen,Freddy Peralta,Salt River Fields at Talking Stick,S,Spring Training,True

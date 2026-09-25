@@ -1,0 +1,3 @@
+league,game_id,datetime,home,away,home_score,away_score,home_starter,away_starter,venue,game_type,series_description,confirmed_starters
+MLB,813025,2025-11-01 00:00:00+00:00,Toronto Blue Jays,Los Angeles Dodgers,1,3,Kevin Gausman,Yoshinobu Yamamoto,Rogers Centre,W,World Series,True
+MLB,813024,2025-11-02 00:00:00+00:00,Toronto Blue Jays,Los Angeles Dodgers,4,5,Max Scherzer,Shohei Ohtani,Rogers Centre,W,World Series,True

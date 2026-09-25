@@ -1,0 +1,597 @@
+league,game_id,datetime,home,away,home_score,away_score,home_starter,away_starter,venue,game_type,series_description,confirmed_starters
+MLB,717014,2023-08-13 16:05:00+00:00,Boston Red Sox,Detroit Tigers,6.0,3.0,Kutter Crawford,Eduardo Rodriguez,Fenway Park,R,Regular Season,True
+MLB,717009,2023-08-13 17:35:00+00:00,Philadelphia Phillies,Minnesota Twins,0.0,3.0,Ranger Suarez,Sonny Gray,Citizens Bank Park,R,Regular Season,True
+MLB,717015,2023-08-13 17:35:00+00:00,Pittsburgh Pirates,Cincinnati Reds,4.0,2.0,Mitch Keller,Brandon Williamson,PNC Park,R,Regular Season,True
+MLB,717016,2023-08-13 17:35:00+00:00,Washington Nationals,Oakland Athletics,8.0,7.0,Trevor Williams,Ken Waldichuk,Nationals Park,R,Regular Season,True
+MLB,717012,2023-08-13 17:37:00+00:00,Toronto Blue Jays,Chicago Cubs,11.0,4.0,Hyun Jin Ryu,Jameson Taillon,Rogers Centre,R,Regular Season,True
+MLB,717010,2023-08-13 17:40:00+00:00,Tampa Bay Rays,Cleveland Guardians,2.0,9.0,Zach Eflin,Tanner Bibee,Tropicana Field,R,Regular Season,True
+MLB,717011,2023-08-13 17:40:00+00:00,Miami Marlins,New York Yankees,8.0,7.0,Eury Pérez,Gerrit Cole,loanDepot park,R,Regular Season,True
+MLB,717004,2023-08-13 18:10:00+00:00,Houston Astros,Los Angeles Angels,1.0,2.0,José Urquidy,Chase Silseth,Minute Maid Park,R,Regular Season,True
+MLB,717006,2023-08-13 18:10:00+00:00,Chicago White Sox,Milwaukee Brewers,3.0,7.0,Dylan Cease,Freddy Peralta,Guaranteed Rate Field,R,Regular Season,True
+MLB,717008,2023-08-13 20:05:00+00:00,San Francisco Giants,Texas Rangers,3.0,2.0,Logan Webb,Dane Dunning,Oracle Park,R,Regular Season,True
+MLB,717003,2023-08-13 20:10:00+00:00,Arizona Diamondbacks,San Diego Padres,5.0,4.0,Brandon Pfaadt,Seth Lugo,Chase Field,R,Regular Season,True
+MLB,717005,2023-08-13 20:10:00+00:00,Seattle Mariners,Baltimore Orioles,3.0,5.0,Bryce Miller,Kyle Bradish,T-Mobile Park,R,Regular Season,True
+MLB,717007,2023-08-13 20:10:00+00:00,Los Angeles Dodgers,Colorado Rockies,8.0,3.0,Julio Urías,Kyle Freeland,Dodger Stadium,R,Regular Season,True
+MLB,717027,2023-08-13 22:05:00+00:00,Pittsburgh Pirates,Cincinnati Reds,5.0,6.0,Andre Jackson,Luke Weaver,PNC Park,R,Regular Season,True
+MLB,717013,2023-08-13 23:10:00+00:00,New York Mets,Atlanta Braves,7.0,6.0,Kodai Senga,Yonny Chirinos,Citi Field,R,Regular Season,True
+MLB,717000,2023-08-14 22:40:00+00:00,Miami Marlins,Houston Astros,5.0,1.0,Braxton Garrett,Framber Valdez,loanDepot park,R,Regular Season,True
+MLB,717002,2023-08-14 23:10:00+00:00,New York Mets,Pittsburgh Pirates,7.0,2.0,Carlos Carrasco,Quinn Priester,Citi Field,R,Regular Season,True
+MLB,717001,2023-08-14 23:20:00+00:00,Atlanta Braves,New York Yankees,11.0,3.0,Max Fried,Clarke Schmidt,Truist Park,R,Regular Season,True
+MLB,716995,2023-08-14 23:45:00+00:00,St. Louis Cardinals,Oakland Athletics,7.0,5.0,Miles Mikolas,JP Sears,Busch Stadium,R,Regular Season,True
+MLB,716997,2023-08-15 00:05:00+00:00,Texas Rangers,Los Angeles Angels,12.0,0.0,Max Scherzer,Patrick Sandoval,Globe Life Field,R,Regular Season,True
+MLB,716994,2023-08-15 00:10:00+00:00,Kansas City Royals,Seattle Mariners,7.0,6.0,Brady Singer,Logan Gilbert,Kauffman Stadium,R,Regular Season,True
+MLB,716998,2023-08-15 00:40:00+00:00,Colorado Rockies,Arizona Diamondbacks,6.0,4.0,Chris Flexen,Merrill Kelly,Coors Field,R,Regular Season,True
+MLB,716996,2023-08-15 01:40:00+00:00,San Diego Padres,Baltimore Orioles,1.0,4.0,Yu Darvish,Grayson Rodriguez,Petco Park,R,Regular Season,True
+MLB,716999,2023-08-15 01:45:00+00:00,San Francisco Giants,Tampa Bay Rays,2.0,10.0,Ryan Walker,Tyler Glasnow,Oracle Park,R,Regular Season,True
+MLB,716991,2023-08-15 22:40:00+00:00,Miami Marlins,Houston Astros,5.0,6.0,Johnny Cueto,Cristian Javier,loanDepot park,R,Regular Season,True
+MLB,716992,2023-08-15 22:40:00+00:00,Cincinnati Reds,Cleveland Guardians,0.0,3.0,Graham Ashcraft,Logan Allen,Great American Ball Park,R,Regular Season,True
+MLB,716993,2023-08-15 23:05:00+00:00,Washington Nationals,Boston Red Sox,4.0,5.0,Josiah Gray,Nick Pivetta,Nationals Park,R,Regular Season,True
+MLB,716990,2023-08-15 23:07:00+00:00,Toronto Blue Jays,Philadelphia Phillies,2.0,1.0,Yusei Kikuchi,Zack Wheeler,Rogers Centre,R,Regular Season,True
+MLB,716988,2023-08-15 23:10:00+00:00,New York Mets,Pittsburgh Pirates,4.0,7.0,David Peterson,Bailey Falter,Citi Field,R,Regular Season,True
+MLB,716987,2023-08-15 23:20:00+00:00,Atlanta Braves,New York Yankees,5.0,0.0,Bryce Elder,Luis Severino,Truist Park,R,Regular Season,True
+MLB,716983,2023-08-15 23:40:00+00:00,Minnesota Twins,Detroit Tigers,5.0,3.0,Bailey Ober,Alex Faedo,Target Field,R,Regular Season,True
+MLB,716984,2023-08-15 23:45:00+00:00,St. Louis Cardinals,Oakland Athletics,6.0,2.0,Dakota Hudson,Spenser Watkins,Busch Stadium,R,Regular Season,True
+MLB,716985,2023-08-16 00:05:00+00:00,Texas Rangers,Los Angeles Angels,7.0,3.0,Jordan Montgomery,Lucas Giolito,Globe Life Field,R,Regular Season,True
+MLB,716986,2023-08-16 00:05:00+00:00,Chicago Cubs,Chicago White Sox,3.0,5.0,Kyle Hendricks,Touki Toussaint,Wrigley Field,R,Regular Season,True
+MLB,716981,2023-08-16 00:10:00+00:00,Kansas City Royals,Seattle Mariners,8.0,10.0,Jordan Lyles,Emerson Hancock,Kauffman Stadium,R,Regular Season,True
+MLB,716978,2023-08-16 00:40:00+00:00,Colorado Rockies,Arizona Diamondbacks,5.0,8.0,Ty Blach,Joe Mantiply,Coors Field,R,Regular Season,True
+MLB,716980,2023-08-16 01:40:00+00:00,San Diego Padres,Baltimore Orioles,10.0,3.0,Michael Wacha,Jack Flaherty,Petco Park,R,Regular Season,True
+MLB,716989,2023-08-16 01:45:00+00:00,San Francisco Giants,Tampa Bay Rays,7.0,0.0,Jakob Junis,Zack Littell,Oracle Park,R,Regular Season,True
+MLB,716979,2023-08-16 02:10:00+00:00,Los Angeles Dodgers,Milwaukee Brewers,6.0,2.0,Bobby Miller,Adrian Houser,Dodger Stadium,R,Regular Season,True
+MLB,716974,2023-08-16 17:10:00+00:00,New York Mets,Pittsburgh Pirates,8.0,3.0,Tylor Megill,Johan Oviedo,Citi Field,R,Regular Season,True
+MLB,716976,2023-08-16 17:10:00+00:00,Minnesota Twins,Detroit Tigers,7.0,8.0,Kenta Maeda,Reese Olson,Target Field,R,Regular Season,True
+MLB,716977,2023-08-16 19:10:00+00:00,Colorado Rockies,Arizona Diamondbacks,7.0,9.0,Austin Gomber,Slade Cecconi,Coors Field,R,Regular Season,True
+MLB,716975,2023-08-16 19:45:00+00:00,San Francisco Giants,Tampa Bay Rays,1.0,6.0,Ryan Walker,Aaron Civale,Oracle Park,R,Regular Season,True
+MLB,716972,2023-08-16 22:40:00+00:00,Miami Marlins,Houston Astros,5.0,12.0,Jesús Luzardo,Justin Verlander,loanDepot park,R,Regular Season,True
+MLB,716973,2023-08-16 22:40:00+00:00,Cincinnati Reds,Cleveland Guardians,7.0,2.0,Andrew Abbott,Noah Syndergaard,Great American Ball Park,R,Regular Season,True
+MLB,716969,2023-08-16 22:45:00+00:00,St. Louis Cardinals,Oakland Athletics,0.0,8.0,Matthew Liberatore,Paul Blackburn,Busch Stadium,R,Regular Season,True
+MLB,716982,2023-08-16 23:05:00+00:00,Washington Nationals,Boston Red Sox,6.0,2.0,MacKenzie Gore,James Paxton,Nationals Park,R,Regular Season,True
+MLB,716967,2023-08-16 23:07:00+00:00,Toronto Blue Jays,Philadelphia Phillies,4.0,9.0,Kevin Gausman,Aaron Nola,Rogers Centre,R,Regular Season,True
+MLB,716970,2023-08-16 23:20:00+00:00,Atlanta Braves,New York Yankees,2.0,0.0,Charlie Morton,Randy Vásquez,Truist Park,R,Regular Season,True
+MLB,716968,2023-08-17 00:05:00+00:00,Chicago Cubs,Chicago White Sox,4.0,3.0,Javier Assad,Mike Clevinger,Wrigley Field,R,Regular Season,True
+MLB,716971,2023-08-17 00:05:00+00:00,Texas Rangers,Los Angeles Angels,0.0,2.0,Jon Gray,Reid Detmers,Globe Life Field,R,Regular Season,True
+MLB,716963,2023-08-17 00:10:00+00:00,Kansas City Royals,Seattle Mariners,5.0,6.0,James McArthur,Luis Castillo,Kauffman Stadium,R,Regular Season,True
+MLB,716965,2023-08-17 00:40:00+00:00,San Diego Padres,Baltimore Orioles,5.0,2.0,Blake Snell,Dean Kremer,Petco Park,R,Regular Season,True
+MLB,716962,2023-08-17 02:10:00+00:00,Los Angeles Dodgers,Milwaukee Brewers,7.0,1.0,Clayton Kershaw,Wade Miley,Dodger Stadium,R,Regular Season,True
+MLB,716964,2023-08-17 18:10:00+00:00,Kansas City Royals,Seattle Mariners,4.0,6.0,Angel Zerpa,George Kirby,Kauffman Stadium,R,Regular Season,True
+MLB,716966,2023-08-17 20:05:00+00:00,Washington Nationals,Boston Red Sox,10.0,7.0,Patrick Corbin,Chris Sale,Nationals Park,R,Regular Season,True
+MLB,716958,2023-08-17 23:15:00+00:00,St. Louis Cardinals,New York Mets,2.0,4.0,Adam Wainwright,Jose Quintana,Busch Stadium,R,Regular Season,True
+MLB,716957,2023-08-18 01:40:00+00:00,San Diego Padres,Arizona Diamondbacks,1.0,3.0,Rich Hill,Zac Gallen,Petco Park,R,Regular Season,True
+MLB,716961,2023-08-18 02:10:00+00:00,Los Angeles Dodgers,Milwaukee Brewers,1.0,0.0,Lance Lynn,Corbin Burnes,Dodger Stadium,R,Regular Season,True
+MLB,716955,2023-08-18 18:20:00+00:00,Chicago Cubs,Kansas City Royals,3.0,4.0,Jameson Taillon,Cole Ragans,Wrigley Field,R,Regular Season,True
+MLB,716956,2023-08-18 20:10:00+00:00,Cleveland Guardians,Detroit Tigers,2.0,4.0,Gavin Williams,Tarik Skubal,Progressive Field,R,Regular Season,True
+MLB,716959,2023-08-18 20:15:00+00:00,Cleveland Guardians,Detroit Tigers,4.0,1.0,Xzavion Curry,Joey Wentz,Progressive Field,R,Regular Season,True
+MLB,716954,2023-08-18 22:40:00+00:00,Cincinnati Reds,Toronto Blue Jays,1.0,0.0,Brett Kennedy,José Berríos,Great American Ball Park,R,Regular Season,True
+MLB,716953,2023-08-18 23:05:00+00:00,New York Yankees,Boston Red Sox,3.0,8.0,Jhony Brito,Brayan Bello,Yankee Stadium,R,Regular Season,True
+MLB,716960,2023-08-18 23:05:00+00:00,Washington Nationals,Philadelphia Phillies,8.0,7.0,Joan Adon,Michael Lorenzen,Nationals Park,R,Regular Season,True
+MLB,716949,2023-08-18 23:20:00+00:00,Atlanta Braves,San Francisco Giants,4.0,0.0,Spencer Strider,Alex Cobb,Truist Park,R,Regular Season,True
+MLB,716950,2023-08-19 00:05:00+00:00,Texas Rangers,Milwaukee Brewers,8.0,9.0,Andrew Heaney,Brandon Woodruff,Globe Life Field,R,Regular Season,True
+MLB,716948,2023-08-19 00:10:00+00:00,Houston Astros,Seattle Mariners,0.0,2.0,J.P. France,Bryce Miller,Minute Maid Park,R,Regular Season,True
+MLB,716951,2023-08-19 00:10:00+00:00,Minnesota Twins,Pittsburgh Pirates,5.0,1.0,Pablo López,Andre Jackson,Target Field,R,Regular Season,True
+MLB,716952,2023-08-19 00:15:00+00:00,St. Louis Cardinals,New York Mets,1.0,7.0,Zack Thompson,Joey Lucchesi,Busch Stadium,R,Regular Season,True
+MLB,716947,2023-08-19 00:40:00+00:00,Colorado Rockies,Chicago White Sox,14.0,1.0,Peter Lambert,Michael Kopech,Coors Field,R,Regular Season,True
+MLB,716945,2023-08-19 01:38:00+00:00,Los Angeles Angels,Tampa Bay Rays,6.0,9.0,Tyler Anderson,Erasmo Ramírez,Angel Stadium,R,Regular Season,True
+MLB,716942,2023-08-19 01:40:00+00:00,San Diego Padres,Arizona Diamondbacks,4.0,0.0,Seth Lugo,Brandon Pfaadt,Petco Park,R,Regular Season,True
+MLB,716944,2023-08-19 01:40:00+00:00,Oakland Athletics,Baltimore Orioles,4.0,9.0,Francisco Pérez,Kyle Gibson,Oakland Coliseum,R,Regular Season,True
+MLB,716946,2023-08-19 02:10:00+00:00,Los Angeles Dodgers,Miami Marlins,3.0,11.0,Tony Gonsolin,Sandy Alcantara,Dodger Stadium,R,Regular Season,True
+MLB,716943,2023-08-19 17:05:00+00:00,New York Yankees,Boston Red Sox,1.0,8.0,Gerrit Cole,Kutter Crawford,Yankee Stadium,R,Regular Season,True
+MLB,716937,2023-08-19 18:20:00+00:00,Chicago Cubs,Kansas City Royals,6.0,4.0,Justin Steele,Brady Singer,Wrigley Field,R,Regular Season,True
+MLB,716909,2023-08-19 19:00:00+00:00,Los Angeles Dodgers,Miami Marlins,3.0,1.0,Caleb Ferguson,Eury Pérez,Dodger Stadium,R,Regular Season,True
+MLB,716919,2023-08-19 19:10:00+00:00,San Diego Padres,Arizona Diamondbacks,4.0,6.0,Matt Waldron,Merrill Kelly,Petco Park,R,Regular Season,True
+MLB,716938,2023-08-19 20:05:00+00:00,Texas Rangers,Milwaukee Brewers,1.0,6.0,Dane Dunning,Freddy Peralta,Globe Life Field,R,Regular Season,True
+MLB,716941,2023-08-19 20:05:00+00:00,Washington Nationals,Philadelphia Phillies,3.0,12.0,Jake Irvin,Cristopher Sánchez,Nationals Park,R,Regular Season,True
+MLB,716915,2023-08-19 20:07:00+00:00,Los Angeles Angels,Tampa Bay Rays,7.0,6.0,Chase Silseth,Tyler Glasnow,Angel Stadium,R,Regular Season,True
+MLB,716935,2023-08-19 22:40:00+00:00,Cincinnati Reds,Toronto Blue Jays,3.0,4.0,Brandon Williamson,Chris Bassitt,Great American Ball Park,R,Regular Season,True
+MLB,716932,2023-08-19 23:10:00+00:00,Houston Astros,Seattle Mariners,3.0,10.0,Framber Valdez,Logan Gilbert,Minute Maid Park,R,Regular Season,True
+MLB,716936,2023-08-19 23:10:00+00:00,Minnesota Twins,Pittsburgh Pirates,4.0,7.0,Sonny Gray,Mitch Keller,Target Field,R,Regular Season,True
+MLB,716939,2023-08-19 23:10:00+00:00,Cleveland Guardians,Detroit Tigers,3.0,4.0,Tanner Bibee,Matt Manning,Progressive Field,R,Regular Season,True
+MLB,716940,2023-08-19 23:15:00+00:00,St. Louis Cardinals,New York Mets,2.0,13.0,Miles Mikolas,Kodai Senga,Busch Stadium,R,Regular Season,True
+MLB,716934,2023-08-19 23:20:00+00:00,Atlanta Braves,San Francisco Giants,6.0,5.0,Yonny Chirinos,Logan Webb,Truist Park,R,Regular Season,True
+MLB,716933,2023-08-20 00:10:00+00:00,Colorado Rockies,Chicago White Sox,11.0,5.0,Kyle Freeland,Jesse Scholtens,Coors Field,R,Regular Season,True
+MLB,716931,2023-08-20 00:40:00+00:00,San Diego Padres,Arizona Diamondbacks,1.0,8.0,Yu Darvish,Scott McGough,Petco Park,R,Regular Season,True
+MLB,716925,2023-08-20 01:07:00+00:00,Los Angeles Angels,Tampa Bay Rays,4.0,18.0,Patrick Sandoval,Zach Eflin,Angel Stadium,R,Regular Season,True
+MLB,716930,2023-08-20 01:07:00+00:00,Oakland Athletics,Baltimore Orioles,2.0,7.0,Ken Waldichuk,Cole Irvin,Oakland Coliseum,R,Regular Season,True
+MLB,716926,2023-08-20 01:10:00+00:00,Los Angeles Dodgers,Miami Marlins,3.0,1.0,Julio Urías,Braxton Garrett,Dodger Stadium,R,Regular Season,True
+MLB,716920,2023-08-20 17:05:00+00:00,Houston Astros,Seattle Mariners,6.0,7.0,Hunter Brown,Emerson Hancock,Minute Maid Park,R,Regular Season,True
+MLB,716927,2023-08-20 17:35:00+00:00,Atlanta Braves,San Francisco Giants,3.0,4.0,Max Fried,Jakob Junis,Truist Park,R,Regular Season,True
+MLB,716928,2023-08-20 17:35:00+00:00,New York Yankees,Boston Red Sox,5.0,6.0,Clarke Schmidt,Josh Winckowski,Yankee Stadium,R,Regular Season,True
+MLB,716922,2023-08-20 17:40:00+00:00,Cleveland Guardians,Detroit Tigers,1.0,4.0,Logan Allen,Eduardo Rodriguez,Progressive Field,R,Regular Season,True
+MLB,716924,2023-08-20 17:40:00+00:00,Cincinnati Reds,Toronto Blue Jays,3.0,10.0,Hunter Greene,Hyun Jin Ryu,Great American Ball Park,R,Regular Season,True
+MLB,716923,2023-08-20 18:10:00+00:00,Minnesota Twins,Pittsburgh Pirates,2.0,0.0,Dallas Keuchel,Ryan Borucki,Target Field,R,Regular Season,True
+MLB,716921,2023-08-20 18:15:00+00:00,St. Louis Cardinals,New York Mets,7.0,3.0,Dakota Hudson,Carlos Carrasco,Busch Stadium,R,Regular Season,True
+MLB,716917,2023-08-20 18:20:00+00:00,Chicago Cubs,Kansas City Royals,4.0,3.0,Kyle Hendricks,Jordan Lyles,Wrigley Field,R,Regular Season,True
+MLB,716918,2023-08-20 18:35:00+00:00,Texas Rangers,Milwaukee Brewers,2.0,6.0,Max Scherzer,Adrian Houser,Globe Life Field,R,Regular Season,True
+MLB,716916,2023-08-20 19:10:00+00:00,Colorado Rockies,Chicago White Sox,5.0,10.0,Chris Flexen,Dylan Cease,Coors Field,R,Regular Season,True
+MLB,716914,2023-08-20 20:07:00+00:00,Oakland Athletics,Baltimore Orioles,1.0,12.0,JP Sears,Kyle Bradish,Oakland Coliseum,R,Regular Season,True
+MLB,716929,2023-08-20 23:10:00+00:00,Washington Nationals,Philadelphia Phillies,4.0,3.0,Trevor Williams,Zack Wheeler,Muncy Bank Ballpark,R,Regular Season,True
+MLB,716911,2023-08-21 22:40:00+00:00,Philadelphia Phillies,San Francisco Giants,10.0,4.0,Aaron Nola,Scott Alexander,Citizens Bank Park,R,Regular Season,True
+MLB,716913,2023-08-21 22:40:00+00:00,Detroit Tigers,Chicago Cubs,6.0,7.0,Alex Faedo,Javier Assad,Comerica Park,R,Regular Season,True
+MLB,716912,2023-08-21 23:05:00+00:00,Pittsburgh Pirates,St. Louis Cardinals,11.0,1.0,Thomas Hatch,Drew Rom,PNC Park,R,Regular Season,True
+MLB,716910,2023-08-21 23:20:00+00:00,Atlanta Braves,New York Mets,4.0,10.0,Allan Winans,David Peterson,Truist Park,R,Regular Season,True
+MLB,716905,2023-08-22 00:10:00+00:00,Chicago White Sox,Seattle Mariners,2.0,14.0,Touki Toussaint,Luis Castillo,Guaranteed Rate Field,R,Regular Season,True
+MLB,716908,2023-08-22 00:10:00+00:00,Houston Astros,Boston Red Sox,9.0,4.0,Cristian Javier,James Paxton,Minute Maid Park,R,Regular Season,True
+MLB,716904,2023-08-22 01:40:00+00:00,Oakland Athletics,Kansas City Royals,6.0,4.0,Paul Blackburn,Tucker Davidson,Oakland Coliseum,R,Regular Season,True
+MLB,716906,2023-08-22 01:40:00+00:00,Arizona Diamondbacks,Texas Rangers,4.0,3.0,Joe Mantiply,Jordan Montgomery,Chase Field,R,Regular Season,True
+MLB,716907,2023-08-22 01:40:00+00:00,San Diego Padres,Miami Marlins,6.0,2.0,Michael Wacha,Ryan Weathers,Petco Park,R,Regular Season,True
+MLB,716896,2023-08-22 22:40:00+00:00,Detroit Tigers,Chicago Cubs,8.0,6.0,Reese Olson,Drew Smyly,Comerica Park,R,Regular Season,True
+MLB,716898,2023-08-22 22:40:00+00:00,Tampa Bay Rays,Colorado Rockies,12.0,4.0,Zack Littell,Ty Blach,Tropicana Field,R,Regular Season,True
+MLB,716899,2023-08-22 22:40:00+00:00,Philadelphia Phillies,San Francisco Giants,4.0,3.0,Taijuan Walker,Kyle Harrison,Citizens Bank Park,R,Regular Season,True
+MLB,716900,2023-08-22 23:05:00+00:00,New York Yankees,Washington Nationals,1.0,2.0,Carlos Rodón,Josiah Gray,Yankee Stadium,R,Regular Season,True
+MLB,716901,2023-08-22 23:05:00+00:00,Pittsburgh Pirates,St. Louis Cardinals,6.0,3.0,Johan Oviedo,Adam Wainwright,PNC Park,R,Regular Season,True
+MLB,716902,2023-08-22 23:05:00+00:00,Baltimore Orioles,Toronto Blue Jays,3.0,6.0,Grayson Rodriguez,Yusei Kikuchi,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716897,2023-08-22 23:10:00+00:00,Cleveland Guardians,Los Angeles Dodgers,8.0,3.0,Noah Syndergaard,Bobby Miller,Progressive Field,R,Regular Season,True
+MLB,716891,2023-08-22 23:20:00+00:00,Atlanta Braves,New York Mets,3.0,2.0,Bryce Elder,Tylor Megill,Truist Park,R,Regular Season,True
+MLB,716893,2023-08-23 00:10:00+00:00,Chicago White Sox,Seattle Mariners,3.0,6.0,Mike Clevinger,Bryan Woo,Guaranteed Rate Field,R,Regular Season,True
+MLB,716894,2023-08-23 00:10:00+00:00,Milwaukee Brewers,Minnesota Twins,7.0,3.0,Wade Miley,Bailey Ober,American Family Field,R,Regular Season,True
+MLB,716895,2023-08-23 00:10:00+00:00,Houston Astros,Boston Red Sox,7.0,3.0,Justin Verlander,Tanner Houck,Minute Maid Park,R,Regular Season,True
+MLB,716892,2023-08-23 01:38:00+00:00,Los Angeles Angels,Cincinnati Reds,3.0,4.0,Lucas Giolito,Graham Ashcraft,Angel Stadium,R,Regular Season,True
+MLB,716887,2023-08-23 01:40:00+00:00,San Diego Padres,Miami Marlins,0.0,3.0,Blake Snell,Jesús Luzardo,Petco Park,R,Regular Season,True
+MLB,716888,2023-08-23 01:40:00+00:00,Oakland Athletics,Kansas City Royals,5.0,4.0,Dany Jiménez,Angel Zerpa,Oakland Coliseum,R,Regular Season,True
+MLB,716889,2023-08-23 01:40:00+00:00,Arizona Diamondbacks,Texas Rangers,6.0,3.0,Zac Gallen,Jon Gray,Chase Field,R,Regular Season,True
+MLB,716886,2023-08-23 16:35:00+00:00,Pittsburgh Pirates,St. Louis Cardinals,4.0,6.0,Luis Ortiz,Zack Thompson,PNC Park,R,Regular Season,True
+MLB,716885,2023-08-23 17:10:00+00:00,Detroit Tigers,Chicago Cubs,4.0,6.0,Tarik Skubal,Jameson Taillon,Comerica Park,R,Regular Season,True
+MLB,716881,2023-08-23 18:10:00+00:00,Chicago White Sox,Seattle Mariners,5.0,4.0,Michael Kopech,George Kirby,Guaranteed Rate Field,R,Regular Season,True
+MLB,716882,2023-08-23 18:10:00+00:00,Milwaukee Brewers,Minnesota Twins,8.0,7.0,Corbin Burnes,Kenta Maeda,American Family Field,R,Regular Season,True
+MLB,716884,2023-08-23 19:37:00+00:00,Oakland Athletics,Kansas City Royals,0.0,4.0,Adrián Martinez,Cole Ragans,Oakland Coliseum,R,Regular Season,True
+MLB,716879,2023-08-23 20:05:00+00:00,Philadelphia Phillies,San Francisco Giants,6.0,8.0,Michael Lorenzen,Alex Cobb,Citizens Bank Park,R,Regular Season,True
+MLB,716890,2023-08-23 20:07:00+00:00,Los Angeles Angels,Cincinnati Reds,4.0,9.0,Shohei Ohtani,Andrew Abbott,Angel Stadium,R,Regular Season,True
+MLB,716883,2023-08-23 20:10:00+00:00,San Diego Padres,Miami Marlins,4.0,0.0,Seth Lugo,Sandy Alcantara,Petco Park,R,Regular Season,True
+MLB,716880,2023-08-23 22:40:00+00:00,Tampa Bay Rays,Colorado Rockies,6.0,5.0,Aaron Civale,Austin Gomber,Tropicana Field,R,Regular Season,True
+MLB,716874,2023-08-23 23:05:00+00:00,Baltimore Orioles,Toronto Blue Jays,7.0,0.0,Dean Kremer,Kevin Gausman,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716877,2023-08-23 23:05:00+00:00,New York Yankees,Washington Nationals,9.0,1.0,Luis Severino,MacKenzie Gore,Yankee Stadium,R,Regular Season,True
+MLB,716876,2023-08-23 23:20:00+00:00,Atlanta Braves,New York Mets,7.0,0.0,Charlie Morton,Jose Quintana,Truist Park,R,Regular Season,True
+MLB,716878,2023-08-24 00:10:00+00:00,Houston Astros,Boston Red Sox,5.0,7.0,José Urquidy,Chris Sale,Minute Maid Park,R,Regular Season,True
+MLB,716903,2023-08-24 01:38:00+00:00,Los Angeles Angels,Cincinnati Reds,3.0,7.0,Reid Detmers,Lyon Richardson,Angel Stadium,R,Regular Season,True
+MLB,716875,2023-08-24 16:10:00+00:00,Cleveland Guardians,Los Angeles Dodgers,1.0,6.0,Xzavion Curry,Clayton Kershaw,Progressive Field,R,Regular Season,True
+MLB,716872,2023-08-24 17:05:00+00:00,New York Yankees,Washington Nationals,5.0,6.0,Michael King,Patrick Corbin,Yankee Stadium,R,Regular Season,True
+MLB,716869,2023-08-24 17:10:00+00:00,Tampa Bay Rays,Colorado Rockies,5.0,3.0,Shawn Armstrong,Peter Lambert,Tropicana Field,R,Regular Season,True
+MLB,716873,2023-08-24 18:10:00+00:00,Houston Astros,Boston Red Sox,1.0,17.0,J.P. France,Brayan Bello,Minute Maid Park,R,Regular Season,True
+MLB,716871,2023-08-24 20:20:00+00:00,Cleveland Guardians,Los Angeles Dodgers,3.0,9.0,Gavin Williams,Caleb Ferguson,Progressive Field,R,Regular Season,True
+MLB,716865,2023-08-24 23:05:00+00:00,Baltimore Orioles,Toronto Blue Jays,5.0,3.0,Kyle Gibson,José Berríos,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716870,2023-08-24 23:05:00+00:00,Pittsburgh Pirates,Chicago Cubs,4.0,5.0,Rob Zastryzny,Justin Steele,PNC Park,R,Regular Season,True
+MLB,716867,2023-08-24 23:10:00+00:00,Minnesota Twins,Texas Rangers,7.0,5.0,Pablo López,Andrew Heaney,Target Field,R,Regular Season,True
+MLB,716864,2023-08-25 00:10:00+00:00,Chicago White Sox,Oakland Athletics,5.0,8.0,Jesse Scholtens,Ken Waldichuk,Guaranteed Rate Field,R,Regular Season,True
+MLB,716868,2023-08-25 01:40:00+00:00,Arizona Diamondbacks,Cincinnati Reds,3.0,2.0,Merrill Kelly,Brandon Williamson,Chase Field,R,Regular Season,True
+MLB,716854,2023-08-25 22:40:00+00:00,Tampa Bay Rays,New York Yankees,2.0,6.0,Zach Eflin,Gerrit Cole,Tropicana Field,R,Regular Season,True
+MLB,716858,2023-08-25 22:40:00+00:00,Detroit Tigers,Houston Astros,4.0,1.0,Matt Manning,Framber Valdez,Comerica Park,R,Regular Season,True
+MLB,716863,2023-08-25 22:40:00+00:00,Miami Marlins,Washington Nationals,4.0,7.0,Braxton Garrett,Joan Adon,loanDepot park,R,Regular Season,True
+MLB,716859,2023-08-25 23:05:00+00:00,Baltimore Orioles,Colorado Rockies,5.0,4.0,Cole Irvin,Kyle Freeland,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716861,2023-08-25 23:05:00+00:00,Philadelphia Phillies,St. Louis Cardinals,7.0,2.0,Cristopher Sánchez,Miles Mikolas,Citizens Bank Park,R,Regular Season,True
+MLB,716862,2023-08-25 23:05:00+00:00,Pittsburgh Pirates,Chicago Cubs,2.0,1.0,Mitch Keller,Kyle Hendricks,PNC Park,R,Regular Season,True
+MLB,716860,2023-08-25 23:07:00+00:00,Toronto Blue Jays,Cleveland Guardians,2.0,5.0,Chris Bassitt,Tanner Bibee,Rogers Centre,R,Regular Season,True
+MLB,716855,2023-08-25 23:10:00+00:00,New York Mets,Los Angeles Angels,1.0,3.0,Kodai Senga,Patrick Sandoval,Citi Field,R,Regular Season,True
+MLB,716856,2023-08-25 23:10:00+00:00,Chicago White Sox,Oakland Athletics,4.0,12.0,Dylan Cease,Zach Neal,Guaranteed Rate Field,R,Regular Season,True
+MLB,716866,2023-08-25 23:10:00+00:00,Boston Red Sox,Los Angeles Dodgers,4.0,7.0,Kutter Crawford,Lance Lynn,Fenway Park,R,Regular Season,True
+MLB,716850,2023-08-26 00:10:00+00:00,Minnesota Twins,Texas Rangers,12.0,2.0,Sonny Gray,Dane Dunning,Target Field,R,Regular Season,True
+MLB,716857,2023-08-26 00:10:00+00:00,Milwaukee Brewers,San Diego Padres,7.0,3.0,Brandon Woodruff,Yu Darvish,American Family Field,R,Regular Season,True
+MLB,716851,2023-08-26 01:40:00+00:00,Arizona Diamondbacks,Cincinnati Reds,10.0,8.0,Brandon Pfaadt,Hunter Greene,Chase Field,R,Regular Season,True
+MLB,716853,2023-08-26 02:10:00+00:00,Seattle Mariners,Kansas City Royals,7.0,5.0,Bryce Miller,Brady Singer,T-Mobile Park,R,Regular Season,True
+MLB,716852,2023-08-26 02:15:00+00:00,San Francisco Giants,Atlanta Braves,1.0,5.0,Logan Webb,Spencer Strider,Oracle Park,R,Regular Season,True
+MLB,716846,2023-08-26 19:07:00+00:00,Toronto Blue Jays,Cleveland Guardians,8.0,3.0,Hyun Jin Ryu,Logan Allen,Rogers Centre,R,Regular Season,True
+MLB,716848,2023-08-26 20:05:00+00:00,San Francisco Giants,Atlanta Braves,3.0,7.0,Ryan Walker,Max Fried,Oracle Park,R,Regular Season,True
+MLB,716832,2023-08-26 20:10:00+00:00,Seattle Mariners,Kansas City Royals,15.0,2.0,Logan Gilbert,Jordan Lyles,T-Mobile Park,R,Regular Season,True
+MLB,716844,2023-08-26 20:10:00+00:00,Miami Marlins,Washington Nationals,2.0,3.0,Eury Pérez,Jake Irvin,loanDepot park,R,Regular Season,True
+MLB,716845,2023-08-26 20:10:00+00:00,Tampa Bay Rays,New York Yankees,3.0,0.0,Tyler Glasnow,Clarke Schmidt,Tropicana Field,R,Regular Season,True
+MLB,716849,2023-08-26 20:10:00+00:00,Boston Red Sox,Los Angeles Dodgers,8.0,5.0,James Paxton,Julio Urías,Fenway Park,R,Regular Season,True
+MLB,716843,2023-08-26 22:10:00+00:00,Detroit Tigers,Houston Astros,2.0,9.0,Eduardo Rodriguez,Hunter Brown,Comerica Park,R,Regular Season,True
+MLB,716837,2023-08-26 23:05:00+00:00,Baltimore Orioles,Colorado Rockies,5.0,4.0,Kyle Bradish,Chris Flexen,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716838,2023-08-26 23:10:00+00:00,Milwaukee Brewers,San Diego Padres,5.0,4.0,Freddy Peralta,Pedro Avila,American Family Field,R,Regular Season,True
+MLB,716840,2023-08-26 23:10:00+00:00,New York Mets,Los Angeles Angels,3.0,5.0,Carlos Carrasco,Chase Silseth,Citi Field,R,Regular Season,True
+MLB,716841,2023-08-26 23:10:00+00:00,Chicago White Sox,Oakland Athletics,6.0,2.0,Touki Toussaint,JP Sears,Guaranteed Rate Field,R,Regular Season,True
+MLB,716839,2023-08-26 23:15:00+00:00,Minnesota Twins,Texas Rangers,2.0,6.0,Joe Ryan,Max Scherzer,Target Field,R,Regular Season,True
+MLB,716842,2023-08-26 23:15:00+00:00,Pittsburgh Pirates,Chicago Cubs,6.0,10.0,Colin Selby,Jordan Wicks,PNC Park,R,Regular Season,True
+MLB,716847,2023-08-26 23:15:00+00:00,Philadelphia Phillies,St. Louis Cardinals,12.0,1.0,Zack Wheeler,Dakota Hudson,Citizens Bank Park,R,Regular Season,True
+MLB,716833,2023-08-27 00:10:00+00:00,Arizona Diamondbacks,Cincinnati Reds,7.0,8.0,Zach Davies,Fernando Cruz,Chase Field,R,Regular Season,True
+MLB,716829,2023-08-27 16:05:00+00:00,New York Mets,Los Angeles Angels,3.0,2.0,David Peterson,Griffin Canning,Citi Field,R,Regular Season,True
+MLB,716831,2023-08-27 17:35:00+00:00,Boston Red Sox,Los Angeles Dodgers,4.0,7.0,Tanner Houck,Caleb Ferguson,Fenway Park,R,Regular Season,True
+MLB,716834,2023-08-27 17:35:00+00:00,Pittsburgh Pirates,Chicago Cubs,1.0,10.0,Bailey Falter,Javier Assad,PNC Park,R,Regular Season,True
+MLB,716835,2023-08-27 17:35:00+00:00,Philadelphia Phillies,St. Louis Cardinals,3.0,0.0,Aaron Nola,Drew Rom,Citizens Bank Park,R,Regular Season,True
+MLB,716836,2023-08-27 17:35:00+00:00,Baltimore Orioles,Colorado Rockies,3.0,4.0,Jack Flaherty,Ty Blach,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716825,2023-08-27 17:37:00+00:00,Toronto Blue Jays,Cleveland Guardians,7.0,10.0,Yusei Kikuchi,Noah Syndergaard,Rogers Centre,R,Regular Season,True
+MLB,716827,2023-08-27 17:40:00+00:00,Miami Marlins,Washington Nationals,2.0,1.0,JT Chargois,Trevor Williams,loanDepot park,R,Regular Season,True
+MLB,716828,2023-08-27 17:40:00+00:00,Tampa Bay Rays,New York Yankees,7.0,4.0,Zack Littell,Carlos Rodón,Tropicana Field,R,Regular Season,True
+MLB,716830,2023-08-27 17:40:00+00:00,Detroit Tigers,Houston Astros,4.0,17.0,Alex Faedo,Justin Verlander,Comerica Park,R,Regular Season,True
+MLB,716822,2023-08-27 18:10:00+00:00,Milwaukee Brewers,San Diego Padres,10.0,6.0,Adrian Houser,Michael Wacha,American Family Field,R,Regular Season,True
+MLB,716824,2023-08-27 18:10:00+00:00,Minnesota Twins,Texas Rangers,7.0,6.0,Bailey Ober,Jordan Montgomery,Target Field,R,Regular Season,True
+MLB,716826,2023-08-27 18:10:00+00:00,Chicago White Sox,Oakland Athletics,6.0,1.0,Mike Clevinger,Paul Blackburn,Guaranteed Rate Field,R,Regular Season,True
+MLB,716820,2023-08-27 20:10:00+00:00,Seattle Mariners,Kansas City Royals,3.0,2.0,Luis Castillo,Alec Marsh,T-Mobile Park,R,Regular Season,True
+MLB,716821,2023-08-27 20:10:00+00:00,Arizona Diamondbacks,Cincinnati Reds,5.0,2.0,Slade Cecconi,Graham Ashcraft,Chase Field,R,Regular Season,True
+MLB,716819,2023-08-27 23:10:00+00:00,San Francisco Giants,Atlanta Braves,8.0,5.0,Tristan Beck,Jared Shuster,Oracle Park,R,Regular Season,True
+MLB,716808,2023-08-28 22:40:00+00:00,Detroit Tigers,New York Yankees,1.0,4.0,Reese Olson,Luis Severino,Comerica Park,R,Regular Season,True
+MLB,716817,2023-08-28 22:40:00+00:00,Philadelphia Phillies,Los Angeles Angels,6.0,4.0,Taijuan Walker,Lucas Giolito,Citizens Bank Park,R,Regular Season,True
+MLB,716815,2023-08-28 23:05:00+00:00,Baltimore Orioles,Chicago White Sox,9.0,0.0,Grayson Rodriguez,Michael Kopech,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716816,2023-08-28 23:07:00+00:00,Toronto Blue Jays,Washington Nationals,6.0,3.0,Kevin Gausman,Josiah Gray,Rogers Centre,R,Regular Season,True
+MLB,716814,2023-08-28 23:10:00+00:00,Boston Red Sox,Houston Astros,5.0,13.0,Chris Sale,Cristian Javier,Fenway Park,R,Regular Season,True
+MLB,716818,2023-08-28 23:10:00+00:00,New York Mets,Texas Rangers,3.0,4.0,Tylor Megill,Jon Gray,Citi Field,R,Regular Season,True
+MLB,716813,2023-08-28 23:40:00+00:00,Minnesota Twins,Cleveland Guardians,10.0,6.0,Kenta Maeda,Xzavion Curry,Target Field,R,Regular Season,True
+MLB,716809,2023-08-28 23:45:00+00:00,St. Louis Cardinals,San Diego Padres,1.0,4.0,Adam Wainwright,Blake Snell,Busch Stadium,R,Regular Season,True
+MLB,716810,2023-08-29 00:05:00+00:00,Chicago Cubs,Milwaukee Brewers,2.0,6.0,Jameson Taillon,Wade Miley,Wrigley Field,R,Regular Season,True
+MLB,716811,2023-08-29 00:10:00+00:00,Kansas City Royals,Pittsburgh Pirates,0.0,5.0,Zack Greinke,Johan Oviedo,Kauffman Stadium,R,Regular Season,True
+MLB,716812,2023-08-29 00:40:00+00:00,Colorado Rockies,Atlanta Braves,4.0,14.0,Austin Gomber,Bryce Elder,Coors Field,R,Regular Season,True
+MLB,716804,2023-08-29 01:40:00+00:00,Seattle Mariners,Oakland Athletics,7.0,0.0,Bryan Woo,Kyle Muller,T-Mobile Park,R,Regular Season,True
+MLB,716823,2023-08-29 01:45:00+00:00,San Francisco Giants,Cincinnati Reds,4.0,1.0,Kyle Harrison,Andrew Abbott,Oracle Park,R,Regular Season,True
+MLB,716805,2023-08-29 02:10:00+00:00,Los Angeles Dodgers,Arizona Diamondbacks,7.0,4.0,Bobby Miller,Zac Gallen,Dodger Stadium,R,Regular Season,True
+MLB,716795,2023-08-29 22:40:00+00:00,Detroit Tigers,New York Yankees,2.0,4.0,Tarik Skubal,Michael King,Comerica Park,R,Regular Season,True
+MLB,716806,2023-08-29 22:40:00+00:00,Philadelphia Phillies,Los Angeles Angels,12.0,7.0,Michael Lorenzen,Tyler Anderson,Citizens Bank Park,R,Regular Season,True
+MLB,716807,2023-08-29 22:40:00+00:00,Miami Marlins,Tampa Bay Rays,2.0,11.0,Sandy Alcantara,Aaron Civale,loanDepot park,R,Regular Season,True
+MLB,716800,2023-08-29 23:05:00+00:00,Baltimore Orioles,Chicago White Sox,9.0,3.0,Dean Kremer,Jesse Scholtens,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716801,2023-08-29 23:07:00+00:00,Toronto Blue Jays,Washington Nationals,4.0,5.0,José Berríos,MacKenzie Gore,Rogers Centre,R,Regular Season,True
+MLB,716799,2023-08-29 23:10:00+00:00,New York Mets,Texas Rangers,1.0,2.0,Jose Quintana,Andrew Heaney,Citi Field,R,Regular Season,True
+MLB,716802,2023-08-29 23:10:00+00:00,Boston Red Sox,Houston Astros,2.0,6.0,Brayan Bello,J.P. France,Fenway Park,R,Regular Season,True
+MLB,716796,2023-08-29 23:40:00+00:00,Minnesota Twins,Cleveland Guardians,2.0,4.0,Pablo López,Gavin Williams,Target Field,R,Regular Season,True
+MLB,716797,2023-08-29 23:45:00+00:00,St. Louis Cardinals,San Diego Padres,6.0,5.0,Zack Thompson,Seth Lugo,Busch Stadium,R,Regular Season,True
+MLB,716798,2023-08-30 00:05:00+00:00,Chicago Cubs,Milwaukee Brewers,1.0,0.0,Justin Steele,Corbin Burnes,Wrigley Field,R,Regular Season,True
+MLB,716793,2023-08-30 00:10:00+00:00,Kansas City Royals,Pittsburgh Pirates,3.0,6.0,Cole Ragans,Colin Selby,Kauffman Stadium,R,Regular Season,True
+MLB,716791,2023-08-30 00:40:00+00:00,Colorado Rockies,Atlanta Braves,1.0,3.0,Peter Lambert,Charlie Morton,Coors Field,R,Regular Season,True
+MLB,716790,2023-08-30 01:40:00+00:00,Seattle Mariners,Oakland Athletics,1.0,3.0,Luke Weaver,Ken Waldichuk,T-Mobile Park,R,Regular Season,True
+MLB,716803,2023-08-30 01:45:00+00:00,San Francisco Giants,Cincinnati Reds,6.0,1.0,Alex Cobb,Brandon Williamson,Oracle Park,R,Regular Season,True
+MLB,716792,2023-08-30 02:10:00+00:00,Los Angeles Dodgers,Arizona Diamondbacks,9.0,1.0,Clayton Kershaw,Merrill Kelly,Dodger Stadium,R,Regular Season,True
+MLB,716786,2023-08-30 17:05:00+00:00,Baltimore Orioles,Chicago White Sox,5.0,10.0,Kyle Gibson,Dylan Cease,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716787,2023-08-30 17:05:00+00:00,Philadelphia Phillies,Los Angeles Angels,8.0,10.0,Cristopher Sánchez,Reid Detmers,Citizens Bank Park,R,Regular Season,True
+MLB,716784,2023-08-30 17:10:00+00:00,Minnesota Twins,Cleveland Guardians,2.0,5.0,Sonny Gray,Tanner Bibee,Target Field,R,Regular Season,True
+MLB,716782,2023-08-30 18:15:00+00:00,St. Louis Cardinals,San Diego Padres,5.0,4.0,Miles Mikolas,Rich Hill,Busch Stadium,R,Regular Season,True
+MLB,716779,2023-08-30 18:20:00+00:00,Chicago Cubs,Milwaukee Brewers,3.0,2.0,Kyle Hendricks,Brandon Woodruff,Wrigley Field,R,Regular Season,True
+MLB,716785,2023-08-30 19:07:00+00:00,Toronto Blue Jays,Washington Nationals,7.0,0.0,Chris Bassitt,Patrick Corbin,Rogers Centre,R,Regular Season,True
+MLB,716789,2023-08-30 19:45:00+00:00,San Francisco Giants,Cincinnati Reds,1.0,4.0,Logan Webb,Hunter Greene,Oracle Park,R,Regular Season,True
+MLB,716788,2023-08-30 20:10:00+00:00,Seattle Mariners,Oakland Athletics,5.0,4.0,Bryce Miller,Zach Neal,T-Mobile Park,R,Regular Season,True
+MLB,716794,2023-08-30 20:10:00+00:00,Boston Red Sox,Houston Astros,4.0,7.0,Kutter Crawford,Framber Valdez,Fenway Park,R,Regular Season,True
+MLB,716778,2023-08-30 22:40:00+00:00,Miami Marlins,Tampa Bay Rays,0.0,3.0,Jesús Luzardo,Zach Eflin,loanDepot park,R,Regular Season,True
+MLB,716781,2023-08-30 22:40:00+00:00,Detroit Tigers,New York Yankees,2.0,6.0,Brendan White,Gerrit Cole,Comerica Park,R,Regular Season,True
+MLB,716783,2023-08-30 22:40:00+00:00,New York Mets,Texas Rangers,6.0,5.0,Denyi Reyes,Dane Dunning,Citi Field,R,Regular Season,True
+MLB,716780,2023-08-31 00:10:00+00:00,Kansas City Royals,Pittsburgh Pirates,1.0,4.0,Angel Zerpa,Andre Jackson,Kauffman Stadium,R,Regular Season,True
+MLB,716773,2023-08-31 00:40:00+00:00,Colorado Rockies,Atlanta Braves,3.0,7.0,Kyle Freeland,Darius Vines,Coors Field,R,Regular Season,True
+MLB,716774,2023-08-31 02:10:00+00:00,Los Angeles Dodgers,Arizona Diamondbacks,7.0,0.0,Ryan Pepiot,Brandon Pfaadt,Dodger Stadium,R,Regular Season,True
+MLB,716775,2023-08-31 17:10:00+00:00,Detroit Tigers,New York Yankees,4.0,3.0,Matt Manning,Clarke Schmidt,Comerica Park,R,Regular Season,True
+MLB,716776,2023-08-31 23:05:00+00:00,Washington Nationals,Miami Marlins,1.0,6.0,Joan Adon,Braxton Garrett,Nationals Park,R,Regular Season,True
+MLB,716777,2023-09-01 01:40:00+00:00,San Diego Padres,San Francisco Giants,2.0,7.0,Pedro Avila,Jakob Junis,Petco Park,R,Regular Season,True
+MLB,716768,2023-09-01 02:10:00+00:00,Los Angeles Dodgers,Atlanta Braves,7.0,8.0,Lance Lynn,Spencer Strider,Dodger Stadium,R,Regular Season,True
+MLB,718700,2023-09-01 17:10:00+00:00,Cincinnati Reds,Chicago Cubs,2.0,6.0,Graham Ashcraft,Jordan Wicks,Great American Ball Park,R,Regular Season,True
+MLB,716770,2023-09-01 22:40:00+00:00,Cincinnati Reds,Chicago Cubs,3.0,2.0,Lyon Richardson,Jose Cuas,Great American Ball Park,R,Regular Season,True
+MLB,716771,2023-09-01 23:05:00+00:00,Washington Nationals,Miami Marlins,5.0,8.0,Jake Irvin,Eury Pérez,Nationals Park,R,Regular Season,True
+MLB,716767,2023-09-01 23:10:00+00:00,Cleveland Guardians,Tampa Bay Rays,3.0,2.0,Cal Quantrill,Tyler Glasnow,Progressive Field,R,Regular Season,True
+MLB,716769,2023-09-01 23:10:00+00:00,New York Mets,Seattle Mariners,2.0,1.0,Kodai Senga,Logan Gilbert,Citi Field,R,Regular Season,True
+MLB,716772,2023-09-02 00:05:00+00:00,Texas Rangers,Minnesota Twins,1.0,5.0,Max Scherzer,Joe Ryan,Globe Life Field,R,Regular Season,True
+MLB,716762,2023-09-02 00:10:00+00:00,Chicago White Sox,Detroit Tigers,2.0,4.0,Touki Toussaint,Eduardo Rodriguez,Guaranteed Rate Field,R,Regular Season,True
+MLB,716763,2023-09-02 00:10:00+00:00,Houston Astros,New York Yankees,2.0,6.0,Justin Verlander,Carlos Rodón,Minute Maid Park,R,Regular Season,True
+MLB,716764,2023-09-02 00:10:00+00:00,Kansas City Royals,Boston Red Sox,13.0,2.0,Jordan Lyles,James Paxton,Kauffman Stadium,R,Regular Season,True
+MLB,716765,2023-09-02 00:10:00+00:00,Milwaukee Brewers,Philadelphia Phillies,7.0,5.0,Freddy Peralta,Zack Wheeler,American Family Field,R,Regular Season,True
+MLB,716766,2023-09-02 00:15:00+00:00,St. Louis Cardinals,Pittsburgh Pirates,2.0,4.0,Dakota Hudson,Mitch Keller,Busch Stadium,R,Regular Season,True
+MLB,716759,2023-09-02 00:40:00+00:00,Colorado Rockies,Toronto Blue Jays,9.0,13.0,Chris Flexen,Hyun Jin Ryu,Coors Field,R,Regular Season,True
+MLB,716756,2023-09-02 01:40:00+00:00,Arizona Diamondbacks,Baltimore Orioles,4.0,2.0,Zach Davies,Cole Irvin,Chase Field,R,Regular Season,True
+MLB,716758,2023-09-02 01:40:00+00:00,Oakland Athletics,Los Angeles Angels,9.0,2.0,JP Sears,Patrick Sandoval,Oakland Coliseum,R,Regular Season,True
+MLB,716761,2023-09-02 01:40:00+00:00,San Diego Padres,San Francisco Giants,7.0,3.0,Michael Wacha,Tristan Beck,Petco Park,R,Regular Season,True
+MLB,716757,2023-09-02 02:10:00+00:00,Los Angeles Dodgers,Atlanta Braves,3.0,6.0,Julio Urías,Max Fried,Dodger Stadium,R,Regular Season,True
+MLB,716760,2023-09-02 20:05:00+00:00,Washington Nationals,Miami Marlins,5.0,11.0,Trevor Williams,Johnny Cueto,Nationals Park,R,Regular Season,True
+MLB,716755,2023-09-02 20:07:00+00:00,Oakland Athletics,Los Angeles Angels,2.0,1.0,Paul Blackburn,Griffin Canning,Oakland Coliseum,R,Regular Season,True
+MLB,716754,2023-09-02 22:10:00+00:00,Cleveland Guardians,Tampa Bay Rays,7.0,6.0,Logan Allen,Zack Littell,Progressive Field,R,Regular Season,True
+MLB,716753,2023-09-02 22:40:00+00:00,Cincinnati Reds,Chicago Cubs,2.0,1.0,Andrew Abbott,Javier Assad,Great American Ball Park,R,Regular Season,True
+MLB,716746,2023-09-02 23:10:00+00:00,Houston Astros,New York Yankees,4.0,5.0,Hunter Brown,Luis Severino,Minute Maid Park,R,Regular Season,True
+MLB,716749,2023-09-02 23:10:00+00:00,Chicago White Sox,Detroit Tigers,0.0,10.0,Mike Clevinger,Reese Olson,Guaranteed Rate Field,R,Regular Season,True
+MLB,716750,2023-09-02 23:10:00+00:00,Kansas City Royals,Boston Red Sox,5.0,9.0,Alec Marsh,Tanner Houck,Kauffman Stadium,R,Regular Season,True
+MLB,716751,2023-09-02 23:10:00+00:00,New York Mets,Seattle Mariners,7.0,8.0,David Peterson,Luis Castillo,Citi Field,R,Regular Season,True
+MLB,716744,2023-09-02 23:15:00+00:00,St. Louis Cardinals,Pittsburgh Pirates,6.0,7.0,Drew Rom,Thomas Hatch,Busch Stadium,R,Regular Season,True
+MLB,716745,2023-09-02 23:15:00+00:00,Milwaukee Brewers,Philadelphia Phillies,7.0,5.0,Colin Rea,Aaron Nola,American Family Field,R,Regular Season,True
+MLB,716752,2023-09-02 23:15:00+00:00,Texas Rangers,Minnesota Twins,7.0,9.0,Jordan Montgomery,Dallas Keuchel,Globe Life Field,R,Regular Season,True
+MLB,716747,2023-09-03 00:10:00+00:00,Arizona Diamondbacks,Baltimore Orioles,3.0,7.0,Slade Cecconi,Kyle Bradish,Chase Field,R,Regular Season,True
+MLB,716748,2023-09-03 00:10:00+00:00,Colorado Rockies,Toronto Blue Jays,8.0,7.0,Ty Blach,Yusei Kikuchi,Coors Field,R,Regular Season,True
+MLB,716743,2023-09-03 00:40:00+00:00,San Diego Padres,San Francisco Giants,6.0,1.0,Blake Snell,Kyle Harrison,Petco Park,R,Regular Season,True
+MLB,716741,2023-09-03 01:10:00+00:00,Los Angeles Dodgers,Atlanta Braves,2.0,4.0,Emmet Sheehan,Bryce Elder,Dodger Stadium,R,Regular Season,True
+MLB,716738,2023-09-03 16:10:00+00:00,Cincinnati Reds,Chicago Cubs,7.0,15.0,Carson Spiers,Jameson Taillon,Great American Ball Park,R,Regular Season,True
+MLB,716736,2023-09-03 17:05:00+00:00,Milwaukee Brewers,Philadelphia Phillies,2.0,4.0,Wade Miley,Ranger Suarez,American Family Field,R,Regular Season,True
+MLB,716740,2023-09-03 17:35:00+00:00,Washington Nationals,Miami Marlins,4.0,6.0,Josiah Gray,Sandy Alcantara,Nationals Park,R,Regular Season,True
+MLB,716742,2023-09-03 17:40:00+00:00,New York Mets,Seattle Mariners,6.0,3.0,Tylor Megill,George Kirby,Citi Field,R,Regular Season,True
+MLB,716734,2023-09-03 18:10:00+00:00,Chicago White Sox,Detroit Tigers,2.0,3.0,Michael Kopech,Tarik Skubal,Guaranteed Rate Field,R,Regular Season,True
+MLB,716739,2023-09-03 18:10:00+00:00,Kansas City Royals,Boston Red Sox,3.0,7.0,Taylor Clarke,Chris Sale,Kauffman Stadium,R,Regular Season,True
+MLB,716733,2023-09-03 18:15:00+00:00,St. Louis Cardinals,Pittsburgh Pirates,6.0,4.0,Zack Thompson,Johan Oviedo,Busch Stadium,R,Regular Season,True
+MLB,716737,2023-09-03 18:35:00+00:00,Texas Rangers,Minnesota Twins,6.0,5.0,Jon Gray,Kenta Maeda,Globe Life Field,R,Regular Season,True
+MLB,716730,2023-09-03 19:10:00+00:00,Colorado Rockies,Toronto Blue Jays,5.0,7.0,Chase Anderson,Kevin Gausman,Coors Field,R,Regular Season,True
+MLB,716731,2023-09-03 20:07:00+00:00,Oakland Athletics,Los Angeles Angels,10.0,6.0,Kyle Muller,Tyler Anderson,Oakland Coliseum,R,Regular Season,True
+MLB,716725,2023-09-03 20:10:00+00:00,Los Angeles Dodgers,Atlanta Braves,3.0,1.0,Bobby Miller,Charlie Morton,Dodger Stadium,R,Regular Season,True
+MLB,716728,2023-09-03 20:10:00+00:00,San Diego Padres,San Francisco Giants,4.0,0.0,Seth Lugo,Alex Cobb,Petco Park,R,Regular Season,True
+MLB,716729,2023-09-03 20:10:00+00:00,Cleveland Guardians,Tampa Bay Rays,2.0,6.0,Xzavion Curry,Taj Bradley,Progressive Field,R,Regular Season,True
+MLB,716732,2023-09-03 20:10:00+00:00,Arizona Diamondbacks,Baltimore Orioles,5.0,8.0,Zac Gallen,Jack Flaherty,Chase Field,R,Regular Season,True
+MLB,716735,2023-09-03 23:10:00+00:00,Houston Astros,New York Yankees,1.0,6.0,Cristian Javier,Michael King,Minute Maid Park,R,Regular Season,True
+MLB,716681,2023-09-04 18:10:00+00:00,Kansas City Royals,Chicago White Sox,12.0,1.0,Cole Ragans,Jesse Scholtens,Kauffman Stadium,R,Regular Season,True
+MLB,716723,2023-09-04 18:20:00+00:00,Chicago Cubs,San Francisco Giants,5.0,0.0,Justin Steele,Logan Webb,Wrigley Field,R,Regular Season,True
+MLB,716724,2023-09-04 20:05:00+00:00,Texas Rangers,Houston Astros,6.0,13.0,Andrew Heaney,J.P. France,Globe Life Field,R,Regular Season,True
+MLB,716726,2023-09-04 20:07:00+00:00,Oakland Athletics,Toronto Blue Jays,5.0,6.0,Luis Medina,José Berríos,Oakland Coliseum,R,Regular Season,True
+MLB,716721,2023-09-04 20:10:00+00:00,Arizona Diamondbacks,Colorado Rockies,4.0,2.0,Merrill Kelly,Peter Lambert,Chase Field,R,Regular Season,True
+MLB,716722,2023-09-04 20:10:00+00:00,Tampa Bay Rays,Boston Red Sox,3.0,7.0,Aaron Civale,Brayan Bello,Tropicana Field,R,Regular Season,True
+MLB,716727,2023-09-04 20:10:00+00:00,Cincinnati Reds,Seattle Mariners,6.0,3.0,Tejay Antone,Bryan Woo,Great American Ball Park,R,Regular Season,True
+MLB,716719,2023-09-04 22:10:00+00:00,Cleveland Guardians,Minnesota Twins,6.0,20.0,Lucas Giolito,Pablo López,Progressive Field,R,Regular Season,True
+MLB,716718,2023-09-04 22:35:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,4.0,2.0,Luis Ortiz,Corbin Burnes,PNC Park,R,Regular Season,True
+MLB,716720,2023-09-04 22:40:00+00:00,San Diego Padres,Philadelphia Phillies,7.0,9.0,Rich Hill,Taijuan Walker,Petco Park,R,Regular Season,True
+MLB,716713,2023-09-05 01:38:00+00:00,Los Angeles Angels,Baltimore Orioles,3.0,6.0,Kenny Rosenberg,Grayson Rodriguez,Angel Stadium,R,Regular Season,True
+MLB,716717,2023-09-05 22:10:00+00:00,Cleveland Guardians,Minnesota Twins,3.0,8.0,Tanner Bibee,Sonny Gray,Progressive Field,R,Regular Season,True
+MLB,716714,2023-09-05 22:35:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,3.0,7.0,Andre Jackson,Brandon Woodruff,PNC Park,R,Regular Season,True
+MLB,716710,2023-09-05 22:40:00+00:00,Miami Marlins,Los Angeles Dodgers,6.0,3.0,Jesús Luzardo,Clayton Kershaw,loanDepot park,R,Regular Season,True
+MLB,716712,2023-09-05 22:40:00+00:00,Cincinnati Reds,Seattle Mariners,7.0,6.0,Connor Phillips,Bryce Miller,Great American Ball Park,R,Regular Season,True
+MLB,716716,2023-09-05 22:40:00+00:00,Tampa Bay Rays,Boston Red Sox,8.0,6.0,Zach Eflin,Kutter Crawford,Tropicana Field,R,Regular Season,True
+MLB,716711,2023-09-05 23:05:00+00:00,New York Yankees,Detroit Tigers,5.0,1.0,Gerrit Cole,Alex Faedo,Yankee Stadium,R,Regular Season,True
+MLB,716715,2023-09-05 23:05:00+00:00,Washington Nationals,New York Mets,5.0,11.0,Patrick Corbin,Jose Quintana,Nationals Park,R,Regular Season,True
+MLB,716709,2023-09-05 23:20:00+00:00,Atlanta Braves,St. Louis Cardinals,6.0,10.0,Michael Soroka,Miles Mikolas,Truist Park,R,Regular Season,True
+MLB,716704,2023-09-05 23:40:00+00:00,Kansas City Royals,Chicago White Sox,7.0,6.0,Brady Singer,Dylan Cease,Kauffman Stadium,R,Regular Season,True
+MLB,716708,2023-09-05 23:40:00+00:00,Chicago Cubs,San Francisco Giants,11.0,8.0,Kyle Hendricks,Ryan Walker,Wrigley Field,R,Regular Season,True
+MLB,716705,2023-09-06 00:05:00+00:00,Texas Rangers,Houston Astros,1.0,14.0,Nathan Eovaldi,Framber Valdez,Globe Life Field,R,Regular Season,True
+MLB,716706,2023-09-06 01:38:00+00:00,Los Angeles Angels,Baltimore Orioles,4.0,5.0,Reid Detmers,Dean Kremer,Angel Stadium,R,Regular Season,True
+MLB,716702,2023-09-06 01:40:00+00:00,Arizona Diamondbacks,Colorado Rockies,2.0,3.0,Brandon Pfaadt,Kyle Freeland,Chase Field,R,Regular Season,True
+MLB,716703,2023-09-06 01:40:00+00:00,San Diego Padres,Philadelphia Phillies,8.0,0.0,Pedro Avila,Michael Lorenzen,Petco Park,R,Regular Season,True
+MLB,716707,2023-09-06 01:40:00+00:00,Oakland Athletics,Toronto Blue Jays,1.0,7.0,Ken Waldichuk,Chris Bassitt,Oakland Coliseum,R,Regular Season,True
+MLB,716697,2023-09-06 16:35:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,5.0,4.0,Colin Selby,Freddy Peralta,PNC Park,R,Regular Season,True
+MLB,716700,2023-09-06 17:10:00+00:00,Cleveland Guardians,Minnesota Twins,2.0,1.0,Gavin Williams,Joe Ryan,Progressive Field,R,Regular Season,True
+MLB,716699,2023-09-06 18:20:00+00:00,Chicago Cubs,San Francisco Giants,8.0,2.0,Jordan Wicks,Alex Wood,Wrigley Field,R,Regular Season,True
+MLB,716698,2023-09-06 19:37:00+00:00,Oakland Athletics,Toronto Blue Jays,5.0,2.0,JP Sears,Hyun Jin Ryu,Oakland Coliseum,R,Regular Season,True
+MLB,716692,2023-09-06 19:40:00+00:00,Arizona Diamondbacks,Colorado Rockies,12.0,5.0,Zach Davies,Chris Flexen,Chase Field,R,Regular Season,True
+MLB,716691,2023-09-06 20:10:00+00:00,San Diego Padres,Philadelphia Phillies,1.0,5.0,Michael Wacha,Zack Wheeler,Petco Park,R,Regular Season,True
+MLB,716693,2023-09-06 22:40:00+00:00,Cincinnati Reds,Seattle Mariners,4.0,8.0,Lyon Richardson,Logan Gilbert,Great American Ball Park,R,Regular Season,True
+MLB,716695,2023-09-06 22:40:00+00:00,Miami Marlins,Los Angeles Dodgers,11.0,4.0,JT Chargois,Lance Lynn,loanDepot park,R,Regular Season,True
+MLB,716696,2023-09-06 22:40:00+00:00,Tampa Bay Rays,Boston Red Sox,3.0,1.0,Tyler Glasnow,Nick Pivetta,Tropicana Field,R,Regular Season,True
+MLB,716694,2023-09-06 23:05:00+00:00,New York Yankees,Detroit Tigers,4.0,3.0,Clarke Schmidt,Matt Manning,Yankee Stadium,R,Regular Season,True
+MLB,716701,2023-09-06 23:05:00+00:00,Washington Nationals,New York Mets,3.0,2.0,Joan Adon,José Buttó,Nationals Park,R,Regular Season,True
+MLB,716689,2023-09-06 23:20:00+00:00,Atlanta Braves,St. Louis Cardinals,6.0,11.0,Spencer Strider,Dakota Hudson,Truist Park,R,Regular Season,True
+MLB,716688,2023-09-06 23:40:00+00:00,Kansas City Royals,Chicago White Sox,4.0,6.0,Jordan Lyles,Touki Toussaint,Kauffman Stadium,R,Regular Season,True
+MLB,716687,2023-09-07 00:05:00+00:00,Texas Rangers,Houston Astros,3.0,12.0,Max Scherzer,Justin Verlander,Globe Life Field,R,Regular Season,True
+MLB,716690,2023-09-07 01:38:00+00:00,Los Angeles Angels,Baltimore Orioles,3.0,10.0,Patrick Sandoval,Kyle Gibson,Angel Stadium,R,Regular Season,True
+MLB,716682,2023-09-07 22:40:00+00:00,Miami Marlins,Los Angeles Dodgers,0.0,10.0,Braxton Garrett,Ryan Pepiot,loanDepot park,R,Regular Season,True
+MLB,716683,2023-09-07 22:40:00+00:00,Tampa Bay Rays,Seattle Mariners,0.0,1.0,Zack Littell,Luis Castillo,Tropicana Field,R,Regular Season,True
+MLB,716686,2023-09-07 23:05:00+00:00,New York Yankees,Detroit Tigers,3.0,10.0,Carlos Rodón,Eduardo Rodriguez,Yankee Stadium,R,Regular Season,True
+MLB,716680,2023-09-07 23:20:00+00:00,Atlanta Braves,St. Louis Cardinals,8.0,5.0,Max Fried,Adam Wainwright,Truist Park,R,Regular Season,True
+MLB,716685,2023-09-07 23:40:00+00:00,Chicago Cubs,Arizona Diamondbacks,2.0,6.0,Javier Assad,Ryne Nelson,Wrigley Field,R,Regular Season,True
+MLB,716684,2023-09-08 01:38:00+00:00,Los Angeles Angels,Cleveland Guardians,3.0,2.0,Jhonathan Díaz,Cal Quantrill,Angel Stadium,R,Regular Season,True
+MLB,716678,2023-09-08 18:20:00+00:00,Chicago Cubs,Arizona Diamondbacks,0.0,1.0,Jameson Taillon,Zac Gallen,Wrigley Field,R,Regular Season,True
+MLB,716671,2023-09-08 22:40:00+00:00,Tampa Bay Rays,Seattle Mariners,7.0,4.0,Taj Bradley,George Kirby,Tropicana Field,R,Regular Season,True
+MLB,716675,2023-09-08 22:40:00+00:00,Detroit Tigers,Chicago White Sox,0.0,6.0,Reese Olson,Mike Clevinger,Comerica Park,R,Regular Season,True
+MLB,716677,2023-09-08 22:40:00+00:00,Cincinnati Reds,St. Louis Cardinals,4.0,9.0,Andrew Abbott,Drew Rom,Great American Ball Park,R,Regular Season,True
+MLB,716670,2023-09-08 23:05:00+00:00,New York Yankees,Milwaukee Brewers,2.0,8.0,Luis Severino,Colin Rea,Yankee Stadium,R,Regular Season,True
+MLB,716676,2023-09-08 23:05:00+00:00,Washington Nationals,Los Angeles Dodgers,5.0,8.0,MacKenzie Gore,Emmet Sheehan,Nationals Park,R,Regular Season,True
+MLB,716679,2023-09-08 23:05:00+00:00,Philadelphia Phillies,Miami Marlins,2.0,3.0,Cristopher Sánchez,Eury Pérez,Citizens Bank Park,R,Regular Season,True
+MLB,716673,2023-09-08 23:07:00+00:00,Toronto Blue Jays,Kansas City Royals,5.0,4.0,Yusei Kikuchi,Collin Snider,Rogers Centre,R,Regular Season,True
+MLB,716672,2023-09-08 23:10:00+00:00,Boston Red Sox,Baltimore Orioles,2.0,11.0,Tanner Houck,Kyle Bradish,Fenway Park,R,Regular Season,True
+MLB,716674,2023-09-08 23:20:00+00:00,Atlanta Braves,Pittsburgh Pirates,8.0,2.0,Bryce Elder,Mitch Keller,Truist Park,R,Regular Season,True
+MLB,716665,2023-09-09 00:05:00+00:00,Texas Rangers,Oakland Athletics,3.0,6.0,Jordan Montgomery,Paul Blackburn,Globe Life Field,R,Regular Season,True
+MLB,716666,2023-09-09 00:10:00+00:00,Minnesota Twins,New York Mets,5.0,2.0,Dallas Keuchel,Kodai Senga,Target Field,R,Regular Season,True
+MLB,716669,2023-09-09 00:10:00+00:00,Houston Astros,San Diego Padres,2.0,11.0,Hunter Brown,Blake Snell,Minute Maid Park,R,Regular Season,True
+MLB,716667,2023-09-09 01:38:00+00:00,Los Angeles Angels,Cleveland Guardians,3.0,6.0,Griffin Canning,Logan Allen,Angel Stadium,R,Regular Season,True
+MLB,716668,2023-09-09 02:15:00+00:00,San Francisco Giants,Colorado Rockies,9.0,8.0,Kyle Harrison,Ty Blach,Oracle Park,R,Regular Season,True
+MLB,716659,2023-09-09 18:05:00+00:00,New York Yankees,Milwaukee Brewers,2.0,9.0,Michael King,Wade Miley,Yankee Stadium,R,Regular Season,True
+MLB,716654,2023-09-09 18:10:00+00:00,Minnesota Twins,New York Mets,8.0,4.0,Kenta Maeda,David Peterson,Target Field,R,Regular Season,True
+MLB,716660,2023-09-09 18:20:00+00:00,Chicago Cubs,Arizona Diamondbacks,2.0,3.0,Justin Steele,Merrill Kelly,Wrigley Field,R,Regular Season,True
+MLB,716661,2023-09-09 19:07:00+00:00,Toronto Blue Jays,Kansas City Royals,5.0,1.0,Kevin Gausman,James McArthur,Rogers Centre,R,Regular Season,True
+MLB,716656,2023-09-09 20:05:00+00:00,Tampa Bay Rays,Seattle Mariners,7.0,5.0,Aaron Civale,Trent Thornton,Tropicana Field,R,Regular Season,True
+MLB,716662,2023-09-09 20:05:00+00:00,Washington Nationals,Los Angeles Dodgers,7.0,6.0,Jake Irvin,Bobby Miller,Nationals Park,R,Regular Season,True
+MLB,716664,2023-09-09 20:10:00+00:00,Boston Red Sox,Baltimore Orioles,12.0,13.0,Chris Sale,Jack Flaherty,Fenway Park,R,Regular Season,True
+MLB,716653,2023-09-09 22:05:00+00:00,Philadelphia Phillies,Miami Marlins,8.0,4.0,Aaron Nola,Johnny Cueto,Citizens Bank Park,R,Regular Season,True
+MLB,716658,2023-09-09 22:10:00+00:00,Detroit Tigers,Chicago White Sox,3.0,1.0,Tarik Skubal,José Ureña,Comerica Park,R,Regular Season,True
+MLB,716655,2023-09-09 22:40:00+00:00,Cincinnati Reds,St. Louis Cardinals,3.0,4.0,Carson Spiers,Zack Thompson,Great American Ball Park,R,Regular Season,True
+MLB,716657,2023-09-09 23:05:00+00:00,Texas Rangers,Oakland Athletics,3.0,2.0,Nathan Eovaldi,Sean Newcomb,Globe Life Field,R,Regular Season,True
+MLB,716649,2023-09-09 23:10:00+00:00,Houston Astros,San Diego Padres,7.0,5.0,Cristian Javier,Seth Lugo,Minute Maid Park,R,Regular Season,True
+MLB,716651,2023-09-09 23:20:00+00:00,Atlanta Braves,Pittsburgh Pirates,4.0,8.0,Dylan Dodd,Johan Oviedo,Truist Park,R,Regular Season,True
+MLB,716663,2023-09-10 01:05:00+00:00,San Francisco Giants,Colorado Rockies,9.0,1.0,Logan Webb,Chase Anderson,Oracle Park,R,Regular Season,True
+MLB,716650,2023-09-10 01:07:00+00:00,Los Angeles Angels,Cleveland Guardians,6.0,2.0,Tyler Anderson,Lucas Giolito,Angel Stadium,R,Regular Season,True
+MLB,716643,2023-09-10 17:05:00+00:00,Philadelphia Phillies,Miami Marlins,4.0,5.0,Ranger Suarez,Steven Okert,Citizens Bank Park,R,Regular Season,True
+MLB,716645,2023-09-10 17:10:00+00:00,Tampa Bay Rays,Seattle Mariners,6.0,3.0,Zach Eflin,Bryce Miller,Tropicana Field,R,Regular Season,True
+MLB,716648,2023-09-10 17:10:00+00:00,Detroit Tigers,Chicago White Sox,3.0,2.0,Sawyer Gipson-Long,Jesse Scholtens,Comerica Park,R,Regular Season,True
+MLB,716644,2023-09-10 17:35:00+00:00,Atlanta Braves,Pittsburgh Pirates,5.0,2.0,Allan Winans,Luis Ortiz,Truist Park,R,Regular Season,True
+MLB,716646,2023-09-10 17:35:00+00:00,New York Yankees,Milwaukee Brewers,4.0,3.0,Gerrit Cole,Corbin Burnes,Yankee Stadium,R,Regular Season,True
+MLB,716647,2023-09-10 17:35:00+00:00,Washington Nationals,Los Angeles Dodgers,3.0,7.0,Trevor Williams,Ryan Yarbrough,Nationals Park,R,Regular Season,True
+MLB,716652,2023-09-10 17:35:00+00:00,Boston Red Sox,Baltimore Orioles,7.0,3.0,Brayan Bello,Grayson Rodriguez,Fenway Park,R,Regular Season,True
+MLB,716641,2023-09-10 17:37:00+00:00,Toronto Blue Jays,Kansas City Royals,5.0,2.0,José Berríos,Cole Ragans,Rogers Centre,R,Regular Season,True
+MLB,716642,2023-09-10 17:40:00+00:00,Cincinnati Reds,St. Louis Cardinals,7.0,1.0,Hunter Greene,Miles Mikolas,Great American Ball Park,R,Regular Season,True
+MLB,716639,2023-09-10 18:10:00+00:00,Minnesota Twins,New York Mets,0.0,2.0,Pablo López,Tylor Megill,Target Field,R,Regular Season,True
+MLB,716640,2023-09-10 18:10:00+00:00,Houston Astros,San Diego Padres,12.0,2.0,J.P. France,Matt Waldron,Minute Maid Park,R,Regular Season,True
+MLB,716638,2023-09-10 18:20:00+00:00,Chicago Cubs,Arizona Diamondbacks,5.0,2.0,Kyle Hendricks,Brandon Pfaadt,Wrigley Field,R,Regular Season,True
+MLB,716637,2023-09-10 18:35:00+00:00,Texas Rangers,Oakland Athletics,9.0,4.0,Jon Gray,Luis Medina,Globe Life Field,R,Regular Season,True
+MLB,716633,2023-09-10 20:07:00+00:00,Los Angeles Angels,Cleveland Guardians,2.0,1.0,Kenny Rosenberg,Tanner Bibee,Angel Stadium,R,Regular Season,True
+MLB,716634,2023-09-11 00:10:00+00:00,San Francisco Giants,Colorado Rockies,6.0,3.0,Keaton Winn,Peter Lambert,Oracle Park,R,Regular Season,True
+MLB,717664,2023-09-11 17:05:00+00:00,Philadelphia Phillies,Atlanta Braves,8.0,10.0,Taijuan Walker,Charlie Morton,Citizens Bank Park,R,Regular Season,True
+MLB,716635,2023-09-11 22:35:00+00:00,Pittsburgh Pirates,Washington Nationals,2.0,6.0,Andre Jackson,Patrick Corbin,PNC Park,R,Regular Season,True
+MLB,716636,2023-09-11 22:35:00+00:00,Baltimore Orioles,St. Louis Cardinals,11.0,5.0,Dean Kremer,Dakota Hudson,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716590,2023-09-11 22:40:00+00:00,Philadelphia Phillies,Atlanta Braves,7.0,5.0,Michael Lorenzen,Kyle Wright,Citizens Bank Park,R,Regular Season,True
+MLB,716630,2023-09-11 23:07:00+00:00,Toronto Blue Jays,Texas Rangers,4.0,10.0,Chris Bassitt,Dane Dunning,Rogers Centre,R,Regular Season,True
+MLB,716627,2023-09-11 23:10:00+00:00,New York Mets,Arizona Diamondbacks,3.0,4.0,Jose Quintana,Zach Davies,Citi Field,R,Regular Season,True
+MLB,716626,2023-09-11 23:40:00+00:00,Milwaukee Brewers,Miami Marlins,12.0,0.0,Brandon Woodruff,Jesús Luzardo,American Family Field,R,Regular Season,True
+MLB,716629,2023-09-11 23:40:00+00:00,Minnesota Twins,Tampa Bay Rays,4.0,7.0,Sonny Gray,Tyler Glasnow,Target Field,R,Regular Season,True
+MLB,716624,2023-09-12 00:10:00+00:00,Houston Astros,Oakland Athletics,0.0,4.0,Framber Valdez,Mason Miller,Minute Maid Park,R,Regular Season,True
+MLB,716625,2023-09-12 00:40:00+00:00,Colorado Rockies,Chicago Cubs,4.0,5.0,Kyle Freeland,Jordan Wicks,Coors Field,R,Regular Season,True
+MLB,716623,2023-09-12 01:40:00+00:00,Seattle Mariners,Los Angeles Angels,5.0,8.0,Logan Gilbert,Reid Detmers,T-Mobile Park,R,Regular Season,True
+MLB,716632,2023-09-12 01:45:00+00:00,San Francisco Giants,Cleveland Guardians,5.0,4.0,Alex Cobb,Gavin Williams,Oracle Park,R,Regular Season,True
+MLB,716622,2023-09-12 02:10:00+00:00,Los Angeles Dodgers,San Diego Padres,8.0,11.0,Gavin Stone,Pedro Avila,Dodger Stadium,R,Regular Season,True
+MLB,716628,2023-09-12 17:35:00+00:00,Boston Red Sox,New York Yankees,2.0,3.0,Nick Pivetta,Randy Vásquez,Fenway Park,R,Regular Season,True
+MLB,716611,2023-09-12 20:40:00+00:00,Chicago White Sox,Kansas City Royals,6.0,2.0,Dylan Cease,Brady Singer,Guaranteed Rate Field,R,Regular Season,True
+MLB,716631,2023-09-12 20:45:00+00:00,Chicago White Sox,Kansas City Royals,10.0,11.0,Touki Toussaint,Jordan Lyles,Guaranteed Rate Field,R,Regular Season,True
+MLB,716620,2023-09-12 22:35:00+00:00,Pittsburgh Pirates,Washington Nationals,5.0,1.0,Bailey Falter,Joan Adon,PNC Park,R,Regular Season,True
+MLB,716621,2023-09-12 22:35:00+00:00,Baltimore Orioles,St. Louis Cardinals,2.0,5.0,John Means,Adam Wainwright,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716617,2023-09-12 22:40:00+00:00,Detroit Tigers,Cincinnati Reds,5.0,6.0,Joey Wentz,Brandon Williamson,Comerica Park,R,Regular Season,True
+MLB,716618,2023-09-12 22:40:00+00:00,Philadelphia Phillies,Atlanta Braves,6.0,7.0,Zack Wheeler,Max Fried,Citizens Bank Park,R,Regular Season,True
+MLB,716616,2023-09-12 23:07:00+00:00,Toronto Blue Jays,Texas Rangers,3.0,6.0,Hyun Jin Ryu,Max Scherzer,Rogers Centre,R,Regular Season,True
+MLB,716612,2023-09-12 23:10:00+00:00,Boston Red Sox,New York Yankees,1.0,4.0,Kutter Crawford,Carlos Rodón,Fenway Park,R,Regular Season,True
+MLB,716615,2023-09-12 23:10:00+00:00,New York Mets,Arizona Diamondbacks,7.0,4.0,José Buttó,Ryne Nelson,Citi Field,R,Regular Season,True
+MLB,716610,2023-09-12 23:40:00+00:00,Milwaukee Brewers,Miami Marlins,3.0,1.0,Freddy Peralta,JT Chargois,American Family Field,R,Regular Season,True
+MLB,716613,2023-09-12 23:40:00+00:00,Minnesota Twins,Tampa Bay Rays,3.0,2.0,Joe Ryan,Zack Littell,Target Field,R,Regular Season,True
+MLB,716614,2023-09-13 00:10:00+00:00,Houston Astros,Oakland Athletics,2.0,6.0,Justin Verlander,JP Sears,Minute Maid Park,R,Regular Season,True
+MLB,716609,2023-09-13 00:40:00+00:00,Colorado Rockies,Chicago Cubs,6.0,4.0,Chris Flexen,Javier Assad,Coors Field,R,Regular Season,True
+MLB,716606,2023-09-13 01:40:00+00:00,Seattle Mariners,Los Angeles Angels,8.0,0.0,Bryan Woo,Patrick Sandoval,T-Mobile Park,R,Regular Season,True
+MLB,716619,2023-09-13 01:45:00+00:00,San Francisco Giants,Cleveland Guardians,1.0,3.0,Sean Manaea,Cal Quantrill,Oracle Park,R,Regular Season,True
+MLB,716608,2023-09-13 02:10:00+00:00,Los Angeles Dodgers,San Diego Padres,11.0,2.0,Lance Lynn,Michael Wacha,Dodger Stadium,R,Regular Season,True
+MLB,716607,2023-09-13 17:10:00+00:00,Minnesota Twins,Tampa Bay Rays,4.0,5.0,Dallas Keuchel,Taj Bradley,Target Field,R,Regular Season,True
+MLB,716599,2023-09-13 19:10:00+00:00,Colorado Rockies,Chicago Cubs,7.0,3.0,Ty Blach,Jameson Taillon,Coors Field,R,Regular Season,True
+MLB,716605,2023-09-13 19:45:00+00:00,San Francisco Giants,Cleveland Guardians,6.0,5.0,Kyle Harrison,Logan Allen,Oracle Park,R,Regular Season,True
+MLB,716602,2023-09-13 20:10:00+00:00,Seattle Mariners,Los Angeles Angels,3.0,2.0,Luis Castillo,Andrew Wantz,T-Mobile Park,R,Regular Season,True
+MLB,716600,2023-09-13 22:35:00+00:00,Pittsburgh Pirates,Washington Nationals,7.0,6.0,Colin Selby,Jackson Rutledge,PNC Park,R,Regular Season,True
+MLB,716604,2023-09-13 22:35:00+00:00,Baltimore Orioles,St. Louis Cardinals,0.0,1.0,Kyle Gibson,Drew Rom,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716601,2023-09-13 22:40:00+00:00,Detroit Tigers,Cincinnati Reds,3.0,4.0,Eduardo Rodriguez,Connor Phillips,Comerica Park,R,Regular Season,True
+MLB,716603,2023-09-13 22:40:00+00:00,Philadelphia Phillies,Atlanta Braves,1.0,4.0,Cristopher Sánchez,Spencer Strider,Citizens Bank Park,R,Regular Season,True
+MLB,716594,2023-09-13 23:07:00+00:00,Toronto Blue Jays,Texas Rangers,0.0,10.0,Yusei Kikuchi,Jordan Montgomery,Rogers Centre,R,Regular Season,True
+MLB,716595,2023-09-13 23:10:00+00:00,New York Mets,Arizona Diamondbacks,7.0,1.0,Joey Lucchesi,Zac Gallen,Citi Field,R,Regular Season,True
+MLB,716596,2023-09-13 23:10:00+00:00,Houston Astros,Oakland Athletics,6.0,2.0,Hunter Brown,Paul Blackburn,Minute Maid Park,R,Regular Season,True
+MLB,716592,2023-09-13 23:40:00+00:00,Milwaukee Brewers,Miami Marlins,0.0,2.0,Trevor Megill,Braxton Garrett,American Family Field,R,Regular Season,True
+MLB,716598,2023-09-13 23:40:00+00:00,Chicago White Sox,Kansas City Royals,1.0,7.0,Mike Clevinger,Steven Cruz,Guaranteed Rate Field,R,Regular Season,True
+MLB,716589,2023-09-14 02:10:00+00:00,Los Angeles Dodgers,San Diego Padres,1.0,6.0,Ryan Pepiot,Blake Snell,Dodger Stadium,R,Regular Season,True
+MLB,716591,2023-09-14 16:35:00+00:00,Pittsburgh Pirates,Washington Nationals,2.0,0.0,Mitch Keller,Josiah Gray,PNC Park,R,Regular Season,True
+MLB,716584,2023-09-14 17:10:00+00:00,Detroit Tigers,Cincinnati Reds,8.0,2.0,Reese Olson,Derek Law,Comerica Park,R,Regular Season,True
+MLB,716597,2023-09-14 17:35:00+00:00,Boston Red Sox,New York Yankees,5.0,0.0,Tanner Houck,Michael King,Fenway Park,R,Regular Season,True
+MLB,716585,2023-09-14 18:10:00+00:00,Milwaukee Brewers,Miami Marlins,4.0,2.0,Adrian Houser,Eury Pérez,American Family Field,R,Regular Season,True
+MLB,716588,2023-09-14 20:10:00+00:00,New York Mets,Arizona Diamondbacks,11.0,1.0,Kodai Senga,Merrill Kelly,Citi Field,R,Regular Season,True
+MLB,716587,2023-09-14 23:07:00+00:00,Toronto Blue Jays,Texas Rangers,2.0,9.0,Kevin Gausman,Nathan Eovaldi,Rogers Centre,R,Regular Season,True
+MLB,716586,2023-09-14 23:15:00+00:00,Baltimore Orioles,Tampa Bay Rays,3.0,4.0,Kyle Bradish,Aaron Civale,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716593,2023-09-14 23:15:00+00:00,Boston Red Sox,New York Yankees,5.0,8.0,Nick Robertson,Clarke Schmidt,Fenway Park,R,Regular Season,True
+MLB,716580,2023-09-14 23:40:00+00:00,Chicago White Sox,Minnesota Twins,2.0,10.0,José Ureña,Kenta Maeda,Guaranteed Rate Field,R,Regular Season,True
+MLB,716579,2023-09-15 22:35:00+00:00,Pittsburgh Pirates,New York Yankees,5.0,7.0,Johan Oviedo,Gerrit Cole,PNC Park,R,Regular Season,True
+MLB,716582,2023-09-15 22:40:00+00:00,Miami Marlins,Atlanta Braves,9.0,6.0,Johnny Cueto,Bryce Elder,loanDepot park,R,Regular Season,True
+MLB,716583,2023-09-15 23:05:00+00:00,Baltimore Orioles,Tampa Bay Rays,1.0,7.0,Jack Flaherty,Zach Eflin,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716576,2023-09-15 23:07:00+00:00,Toronto Blue Jays,Boston Red Sox,3.0,0.0,José Berríos,Brayan Bello,Rogers Centre,R,Regular Season,True
+MLB,716574,2023-09-15 23:10:00+00:00,New York Mets,Cincinnati Reds,3.0,5.0,David Peterson,Hunter Greene,Citi Field,R,Regular Season,True
+MLB,716575,2023-09-15 23:10:00+00:00,Cleveland Guardians,Texas Rangers,12.0,3.0,Lucas Giolito,Jon Gray,Progressive Field,R,Regular Season,True
+MLB,716573,2023-09-15 23:40:00+00:00,Chicago White Sox,Minnesota Twins,2.0,10.0,Jesse Scholtens,Bailey Ober,Guaranteed Rate Field,R,Regular Season,True
+MLB,716577,2023-09-16 00:10:00+00:00,Kansas City Royals,Houston Astros,4.0,2.0,Zack Greinke,Cristian Javier,Kauffman Stadium,R,Regular Season,True
+MLB,716578,2023-09-16 00:10:00+00:00,Milwaukee Brewers,Washington Nationals,5.0,3.0,Wade Miley,Jake Irvin,American Family Field,R,Regular Season,True
+MLB,716572,2023-09-16 00:15:00+00:00,St. Louis Cardinals,Philadelphia Phillies,4.0,5.0,Zack Thompson,Aaron Nola,Busch Stadium,R,Regular Season,True
+MLB,716571,2023-09-16 00:40:00+00:00,Colorado Rockies,San Francisco Giants,3.0,2.0,Chase Anderson,Logan Webb,Coors Field,R,Regular Season,True
+MLB,716570,2023-09-16 01:38:00+00:00,Los Angeles Angels,Detroit Tigers,2.0,11.0,Griffin Canning,Tarik Skubal,Angel Stadium,R,Regular Season,True
+MLB,716567,2023-09-16 01:40:00+00:00,Arizona Diamondbacks,Chicago Cubs,6.0,4.0,Brandon Pfaadt,Justin Steele,Chase Field,R,Regular Season,True
+MLB,716569,2023-09-16 01:40:00+00:00,Oakland Athletics,San Diego Padres,3.0,8.0,Sean Newcomb,Seth Lugo,Oakland Coliseum,R,Regular Season,True
+MLB,716568,2023-09-16 02:10:00+00:00,Seattle Mariners,Los Angeles Dodgers,3.0,6.0,George Kirby,Bobby Miller,T-Mobile Park,R,Regular Season,True
+MLB,716581,2023-09-16 18:10:00+00:00,Colorado Rockies,San Francisco Giants,9.0,5.0,Brent Suter,Keaton Winn,Coors Field,R,Regular Season,True
+MLB,716566,2023-09-16 19:07:00+00:00,Toronto Blue Jays,Boston Red Sox,4.0,3.0,Chris Bassitt,Chris Sale,Rogers Centre,R,Regular Season,True
+MLB,716564,2023-09-16 20:07:00+00:00,Oakland Athletics,San Diego Padres,2.0,5.0,Mason Miller,Matt Waldron,Oakland Coliseum,R,Regular Season,True
+MLB,716565,2023-09-16 20:10:00+00:00,Miami Marlins,Atlanta Braves,11.0,5.0,Bryan Hoeing,Jared Shuster,loanDepot park,R,Regular Season,True
+MLB,716562,2023-09-16 22:10:00+00:00,Cleveland Guardians,Texas Rangers,2.0,1.0,Tanner Bibee,Dane Dunning,Progressive Field,R,Regular Season,True
+MLB,716563,2023-09-16 22:35:00+00:00,Pittsburgh Pirates,New York Yankees,3.0,6.0,Luis Ortiz,Luke Weaver,PNC Park,R,Regular Season,True
+MLB,716561,2023-09-16 23:05:00+00:00,Baltimore Orioles,Tampa Bay Rays,8.0,0.0,Grayson Rodriguez,Tyler Glasnow,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716555,2023-09-16 23:10:00+00:00,New York Mets,Cincinnati Reds,2.0,3.0,Tylor Megill,Andrew Abbott,Citi Field,R,Regular Season,True
+MLB,716556,2023-09-16 23:10:00+00:00,Chicago White Sox,Minnesota Twins,7.0,6.0,Touki Toussaint,Pablo López,Guaranteed Rate Field,R,Regular Season,True
+MLB,716559,2023-09-16 23:10:00+00:00,Milwaukee Brewers,Washington Nationals,9.0,5.0,Corbin Burnes,Trevor Williams,American Family Field,R,Regular Season,True
+MLB,716560,2023-09-16 23:10:00+00:00,Kansas City Royals,Houston Astros,10.0,8.0,Cole Ragans,J.P. France,Kauffman Stadium,R,Regular Season,True
+MLB,716557,2023-09-16 23:15:00+00:00,St. Louis Cardinals,Philadelphia Phillies,1.0,6.0,Miles Mikolas,Ranger Suarez,Busch Stadium,R,Regular Season,True
+MLB,716550,2023-09-17 00:10:00+00:00,Colorado Rockies,San Francisco Giants,5.0,2.0,Kyle Freeland,Scott Alexander,Coors Field,R,Regular Season,True
+MLB,716558,2023-09-17 00:10:00+00:00,Arizona Diamondbacks,Chicago Cubs,7.0,6.0,Zach Davies,Kyle Hendricks,Chase Field,R,Regular Season,True
+MLB,716554,2023-09-17 01:07:00+00:00,Los Angeles Angels,Detroit Tigers,4.0,5.0,Tyler Anderson,Sawyer Gipson-Long,Angel Stadium,R,Regular Season,True
+MLB,716552,2023-09-17 01:40:00+00:00,Seattle Mariners,Los Angeles Dodgers,2.0,6.0,Bryce Miller,Clayton Kershaw,T-Mobile Park,R,Regular Season,True
+MLB,716551,2023-09-17 17:35:00+00:00,Pittsburgh Pirates,New York Yankees,3.0,2.0,Colin Selby,Carlos Rodón,PNC Park,R,Regular Season,True
+MLB,716553,2023-09-17 17:35:00+00:00,Baltimore Orioles,Tampa Bay Rays,5.0,4.0,Dean Kremer,Zack Littell,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716548,2023-09-17 17:37:00+00:00,Toronto Blue Jays,Boston Red Sox,3.0,2.0,Hyun Jin Ryu,Nick Pivetta,Rogers Centre,R,Regular Season,True
+MLB,716545,2023-09-17 17:40:00+00:00,New York Mets,Cincinnati Reds,8.0,4.0,Jose Quintana,Brandon Williamson,Citi Field,R,Regular Season,True
+MLB,716546,2023-09-17 17:40:00+00:00,Miami Marlins,Atlanta Braves,16.0,2.0,Jesús Luzardo,Charlie Morton,loanDepot park,R,Regular Season,True
+MLB,716549,2023-09-17 17:40:00+00:00,Cleveland Guardians,Texas Rangers,9.0,2.0,Gavin Williams,Cody Bradford,Progressive Field,R,Regular Season,True
+MLB,716542,2023-09-17 18:10:00+00:00,Chicago White Sox,Minnesota Twins,0.0,4.0,Dylan Cease,Sonny Gray,Guaranteed Rate Field,R,Regular Season,True
+MLB,716543,2023-09-17 18:10:00+00:00,Milwaukee Brewers,Washington Nationals,1.0,2.0,Brandon Woodruff,Patrick Corbin,American Family Field,R,Regular Season,True
+MLB,716547,2023-09-17 18:10:00+00:00,Kansas City Royals,Houston Astros,1.0,7.0,Jordan Lyles,Framber Valdez,Kauffman Stadium,R,Regular Season,True
+MLB,716541,2023-09-17 18:15:00+00:00,St. Louis Cardinals,Philadelphia Phillies,6.0,5.0,Dakota Hudson,Taijuan Walker,Busch Stadium,R,Regular Season,True
+MLB,716540,2023-09-17 19:10:00+00:00,Colorado Rockies,San Francisco Giants,10.0,11.0,Chris Flexen,Sean Manaea,Coors Field,R,Regular Season,True
+MLB,716538,2023-09-17 20:07:00+00:00,Oakland Athletics,San Diego Padres,1.0,10.0,Joe Boyle,Nick Martinez,Oakland Coliseum,R,Regular Season,True
+MLB,716544,2023-09-17 20:07:00+00:00,Los Angeles Angels,Detroit Tigers,3.0,5.0,Jimmy Herget,Miguel Díaz,Angel Stadium,R,Regular Season,True
+MLB,716537,2023-09-17 20:10:00+00:00,Seattle Mariners,Los Angeles Dodgers,1.0,6.0,Logan Gilbert,Shelby Miller,T-Mobile Park,R,Regular Season,True
+MLB,716536,2023-09-17 23:10:00+00:00,Arizona Diamondbacks,Chicago Cubs,6.0,2.0,Ryne Nelson,Jordan Wicks,Chase Field,R,Regular Season,True
+MLB,716529,2023-09-18 18:10:00+00:00,Kansas City Royals,Cleveland Guardians,6.0,4.0,Brady Singer,Cal Quantrill,Kauffman Stadium,R,Regular Season,True
+MLB,716534,2023-09-18 22:40:00+00:00,Cincinnati Reds,Minnesota Twins,7.0,3.0,Connor Phillips,Joe Ryan,Great American Ball Park,R,Regular Season,True
+MLB,716535,2023-09-18 22:40:00+00:00,Miami Marlins,New York Mets,1.0,2.0,Edward Cabrera,José Buttó,loanDepot park,R,Regular Season,True
+MLB,716539,2023-09-18 23:05:00+00:00,Washington Nationals,Chicago White Sox,1.0,6.0,Joan Adon,Mike Clevinger,Nationals Park,R,Regular Season,True
+MLB,716532,2023-09-18 23:20:00+00:00,Atlanta Braves,Philadelphia Phillies,1.0,7.0,Kyle Wright,Zack Wheeler,Truist Park,R,Regular Season,True
+MLB,716531,2023-09-18 23:45:00+00:00,St. Louis Cardinals,Milwaukee Brewers,1.0,0.0,Adam Wainwright,Freddy Peralta,Busch Stadium,R,Regular Season,True
+MLB,716533,2023-09-19 00:05:00+00:00,Texas Rangers,Boston Red Sox,2.0,4.0,Jordan Montgomery,Kutter Crawford,Globe Life Field,R,Regular Season,True
+MLB,716530,2023-09-19 00:10:00+00:00,Houston Astros,Baltimore Orioles,7.0,8.0,Justin Verlander,John Means,Minute Maid Park,R,Regular Season,True
+MLB,716526,2023-09-19 01:40:00+00:00,San Diego Padres,Colorado Rockies,11.0,9.0,Michael Wacha,Ty Blach,Petco Park,R,Regular Season,True
+MLB,716527,2023-09-19 01:40:00+00:00,Oakland Athletics,Seattle Mariners,0.0,5.0,JP Sears,Bryan Woo,Oakland Coliseum,R,Regular Season,True
+MLB,716528,2023-09-19 02:10:00+00:00,Los Angeles Dodgers,Detroit Tigers,8.0,3.0,Lance Lynn,Eduardo Rodriguez,Dodger Stadium,R,Regular Season,True
+MLB,716522,2023-09-19 22:40:00+00:00,Cincinnati Reds,Minnesota Twins,0.0,7.0,Fernando Cruz,Kenta Maeda,Great American Ball Park,R,Regular Season,True
+MLB,716523,2023-09-19 22:40:00+00:00,Miami Marlins,New York Mets,4.0,3.0,Braxton Garrett,Joey Lucchesi,loanDepot park,R,Regular Season,True
+MLB,716524,2023-09-19 22:40:00+00:00,Tampa Bay Rays,Los Angeles Angels,6.0,2.0,Taj Bradley,Patrick Sandoval,Tropicana Field,R,Regular Season,True
+MLB,716520,2023-09-19 23:05:00+00:00,New York Yankees,Toronto Blue Jays,1.0,7.0,Clarke Schmidt,Yusei Kikuchi,Yankee Stadium,R,Regular Season,True
+MLB,716525,2023-09-19 23:05:00+00:00,Washington Nationals,Chicago White Sox,4.0,3.0,Jackson Rutledge,José Ureña,Nationals Park,R,Regular Season,True
+MLB,716521,2023-09-19 23:20:00+00:00,Atlanta Braves,Philadelphia Phillies,9.0,3.0,Spencer Strider,Cristopher Sánchez,Truist Park,R,Regular Season,True
+MLB,716517,2023-09-19 23:40:00+00:00,Kansas City Royals,Cleveland Guardians,7.0,6.0,Steven Cruz,Logan Allen,Kauffman Stadium,R,Regular Season,True
+MLB,716518,2023-09-19 23:40:00+00:00,Chicago Cubs,Pittsburgh Pirates,14.0,1.0,Javier Assad,Bailey Falter,Wrigley Field,R,Regular Season,True
+MLB,716515,2023-09-19 23:45:00+00:00,St. Louis Cardinals,Milwaukee Brewers,3.0,7.0,Drew Rom,Trevor Megill,Busch Stadium,R,Regular Season,True
+MLB,716519,2023-09-20 00:05:00+00:00,Texas Rangers,Boston Red Sox,6.0,4.0,Nathan Eovaldi,Tanner Houck,Globe Life Field,R,Regular Season,True
+MLB,716514,2023-09-20 00:10:00+00:00,Houston Astros,Baltimore Orioles,5.0,9.0,Hunter Brown,Kyle Gibson,Minute Maid Park,R,Regular Season,True
+MLB,716511,2023-09-20 01:40:00+00:00,Arizona Diamondbacks,San Francisco Giants,8.0,4.0,Zac Gallen,Alex Cobb,Chase Field,R,Regular Season,True
+MLB,716512,2023-09-20 01:40:00+00:00,Oakland Athletics,Seattle Mariners,2.0,7.0,Paul Blackburn,Luis Castillo,Oakland Coliseum,R,Regular Season,True
+MLB,716516,2023-09-20 01:40:00+00:00,San Diego Padres,Colorado Rockies,2.0,0.0,Blake Snell,Ryan Feltner,Petco Park,R,Regular Season,True
+MLB,716510,2023-09-20 02:10:00+00:00,Los Angeles Dodgers,Detroit Tigers,3.0,2.0,Caleb Ferguson,Miguel Díaz,Dodger Stadium,R,Regular Season,True
+MLB,716509,2023-09-20 16:20:00+00:00,Atlanta Braves,Philadelphia Phillies,5.0,6.0,Bryce Elder,Aaron Nola,Truist Park,R,Regular Season,True
+MLB,716506,2023-09-20 16:35:00+00:00,Cincinnati Reds,Minnesota Twins,3.0,5.0,Hunter Greene,Bailey Ober,Great American Ball Park,R,Regular Season,True
+MLB,716513,2023-09-20 17:05:00+00:00,Washington Nationals,Chicago White Sox,13.0,3.0,Josiah Gray,Michael Kopech,Nationals Park,R,Regular Season,True
+MLB,716507,2023-09-20 18:05:00+00:00,Texas Rangers,Boston Red Sox,15.0,5.0,Jon Gray,Brayan Bello,Globe Life Field,R,Regular Season,True
+MLB,716505,2023-09-20 18:10:00+00:00,Kansas City Royals,Cleveland Guardians,6.0,2.0,Zack Greinke,Lucas Giolito,Kauffman Stadium,R,Regular Season,True
+MLB,716508,2023-09-20 18:10:00+00:00,Houston Astros,Baltimore Orioles,2.0,1.0,Cristian Javier,Kyle Bradish,Minute Maid Park,R,Regular Season,True
+MLB,716504,2023-09-20 19:37:00+00:00,Oakland Athletics,Seattle Mariners,3.0,6.0,Joey Estes,George Kirby,Oakland Coliseum,R,Regular Season,True
+MLB,716499,2023-09-20 19:40:00+00:00,Arizona Diamondbacks,San Francisco Giants,7.0,1.0,Merrill Kelly,Logan Webb,Chase Field,R,Regular Season,True
+MLB,716500,2023-09-20 20:10:00+00:00,San Diego Padres,Colorado Rockies,3.0,2.0,Seth Lugo,Chase Anderson,Petco Park,R,Regular Season,True
+MLB,716501,2023-09-20 22:40:00+00:00,Tampa Bay Rays,Los Angeles Angels,3.0,8.0,Aaron Civale,Reid Detmers,Tropicana Field,R,Regular Season,True
+MLB,716503,2023-09-20 22:40:00+00:00,Miami Marlins,New York Mets,3.0,8.0,Eury Pérez,Kodai Senga,loanDepot park,R,Regular Season,True
+MLB,716502,2023-09-20 23:05:00+00:00,New York Yankees,Toronto Blue Jays,1.0,6.0,Michael King,Kevin Gausman,Yankee Stadium,R,Regular Season,True
+MLB,716497,2023-09-20 23:40:00+00:00,Chicago Cubs,Pittsburgh Pirates,7.0,13.0,Justin Steele,Mitch Keller,Wrigley Field,R,Regular Season,True
+MLB,716495,2023-09-20 23:45:00+00:00,St. Louis Cardinals,Milwaukee Brewers,2.0,8.0,Zack Thompson,Adrian Houser,Busch Stadium,R,Regular Season,True
+MLB,716494,2023-09-21 02:10:00+00:00,Los Angeles Dodgers,Detroit Tigers,2.0,4.0,Bobby Miller,Reese Olson,Dodger Stadium,R,Regular Season,True
+MLB,716498,2023-09-21 17:10:00+00:00,Tampa Bay Rays,Los Angeles Angels,5.0,4.0,Zach Eflin,Griffin Canning,Tropicana Field,R,Regular Season,True
+MLB,716491,2023-09-21 17:15:00+00:00,St. Louis Cardinals,Milwaukee Brewers,0.0,6.0,Miles Mikolas,Wade Miley,Busch Stadium,R,Regular Season,True
+MLB,716492,2023-09-21 23:05:00+00:00,New York Yankees,Toronto Blue Jays,5.0,3.0,Gerrit Cole,José Berríos,Yankee Stadium,R,Regular Season,True
+MLB,716496,2023-09-21 23:05:00+00:00,Washington Nationals,Atlanta Braves,3.0,10.0,Jake Irvin,Max Fried,Nationals Park,R,Regular Season,True
+MLB,716489,2023-09-21 23:15:00+00:00,Cleveland Guardians,Baltimore Orioles,5.0,2.0,Hunter Gaddis,Grayson Rodriguez,Progressive Field,R,Regular Season,True
+MLB,716490,2023-09-21 23:15:00+00:00,Philadelphia Phillies,New York Mets,5.0,4.0,Ranger Suarez,David Peterson,Citizens Bank Park,R,Regular Season,True
+MLB,716493,2023-09-21 23:40:00+00:00,Chicago Cubs,Pittsburgh Pirates,6.0,8.0,Kyle Hendricks,Johan Oviedo,Wrigley Field,R,Regular Season,True
+MLB,716488,2023-09-22 01:40:00+00:00,Oakland Athletics,Detroit Tigers,3.0,7.0,Luis Medina,Tarik Skubal,Oakland Coliseum,R,Regular Season,True
+MLB,716484,2023-09-22 02:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,7.0,2.0,Emmet Sheehan,Kyle Harrison,Dodger Stadium,R,Regular Season,True
+MLB,716486,2023-09-22 18:20:00+00:00,Chicago Cubs,Colorado Rockies,6.0,0.0,Jameson Taillon,Noah Davis,Wrigley Field,R,Regular Season,True
+MLB,716479,2023-09-22 22:40:00+00:00,Tampa Bay Rays,Toronto Blue Jays,2.0,6.0,Tyler Glasnow,Chris Bassitt,Tropicana Field,R,Regular Season,True
+MLB,716482,2023-09-22 22:40:00+00:00,Miami Marlins,Milwaukee Brewers,1.0,16.0,JT Chargois,Corbin Burnes,loanDepot park,R,Regular Season,True
+MLB,716487,2023-09-22 22:40:00+00:00,Cincinnati Reds,Pittsburgh Pirates,5.0,7.0,Andrew Abbott,Andre Jackson,Great American Ball Park,R,Regular Season,True
+MLB,716480,2023-09-22 23:05:00+00:00,New York Yankees,Arizona Diamondbacks,7.0,1.0,Luke Weaver,Brandon Pfaadt,Yankee Stadium,R,Regular Season,True
+MLB,716481,2023-09-22 23:05:00+00:00,Philadelphia Phillies,New York Mets,5.0,4.0,Taijuan Walker,Tylor Megill,Citizens Bank Park,R,Regular Season,True
+MLB,716485,2023-09-22 23:05:00+00:00,Washington Nationals,Atlanta Braves,6.0,9.0,Patrick Corbin,Charlie Morton,Nationals Park,R,Regular Season,True
+MLB,716478,2023-09-22 23:10:00+00:00,Boston Red Sox,Chicago White Sox,3.0,2.0,Chris Sale,Touki Toussaint,Fenway Park,R,Regular Season,True
+MLB,716483,2023-09-22 23:10:00+00:00,Cleveland Guardians,Baltimore Orioles,9.0,8.0,Shane Bieber,Dean Kremer,Progressive Field,R,Regular Season,True
+MLB,716477,2023-09-23 00:05:00+00:00,Texas Rangers,Seattle Mariners,8.0,5.0,Dane Dunning,Bryce Miller,Globe Life Field,R,Regular Season,True
+MLB,716473,2023-09-23 00:10:00+00:00,Houston Astros,Kansas City Royals,5.0,7.0,Framber Valdez,Cole Ragans,Minute Maid Park,R,Regular Season,True
+MLB,716475,2023-09-23 00:10:00+00:00,Minnesota Twins,Los Angeles Angels,8.0,6.0,Pablo López,José Suarez,Target Field,R,Regular Season,True
+MLB,716472,2023-09-23 01:40:00+00:00,Oakland Athletics,Detroit Tigers,8.0,2.0,Ken Waldichuk,Sawyer Gipson-Long,Oakland Coliseum,R,Regular Season,True
+MLB,716476,2023-09-23 01:40:00+00:00,San Diego Padres,St. Louis Cardinals,4.0,2.0,Matt Waldron,Dakota Hudson,Petco Park,R,Regular Season,True
+MLB,716474,2023-09-23 02:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,1.0,5.0,Caleb Ferguson,Sean Manaea,Dodger Stadium,R,Regular Season,True
+MLB,716465,2023-09-23 18:10:00+00:00,Minnesota Twins,Los Angeles Angels,0.0,1.0,Sonny Gray,Kenny Rosenberg,Target Field,R,Regular Season,True
+MLB,716469,2023-09-23 18:20:00+00:00,Chicago Cubs,Colorado Rockies,6.0,3.0,Marcus Stroman,Chris Flexen,Wrigley Field,R,Regular Season,True
+MLB,716466,2023-09-23 20:05:00+00:00,Philadelphia Phillies,New York Mets,7.0,5.0,Zack Wheeler,Jose Quintana,Citizens Bank Park,R,Regular Season,True
+MLB,716470,2023-09-23 20:07:00+00:00,Oakland Athletics,Detroit Tigers,4.0,1.0,Joe Boyle,Miguel Díaz,Oakland Coliseum,R,Regular Season,True
+MLB,716460,2023-09-23 20:10:00+00:00,Miami Marlins,Milwaukee Brewers,5.0,4.0,Jesús Luzardo,Brandon Woodruff,loanDepot park,R,Regular Season,True
+MLB,716463,2023-09-23 20:10:00+00:00,Tampa Bay Rays,Toronto Blue Jays,7.0,6.0,Zack Littell,Hyun Jin Ryu,Tropicana Field,R,Regular Season,True
+MLB,716468,2023-09-23 20:10:00+00:00,Boston Red Sox,Chicago White Sox,0.0,1.0,Nick Pivetta,Dylan Cease,Fenway Park,R,Regular Season,True
+MLB,716464,2023-09-23 22:10:00+00:00,Cleveland Guardians,Baltimore Orioles,1.0,2.0,Cal Quantrill,John Means,Progressive Field,R,Regular Season,True
+MLB,716462,2023-09-23 22:40:00+00:00,Cincinnati Reds,Pittsburgh Pirates,12.0,13.0,Connor Phillips,Bailey Falter,Great American Ball Park,R,Regular Season,True
+MLB,716461,2023-09-23 23:05:00+00:00,Texas Rangers,Seattle Mariners,2.0,0.0,Jordan Montgomery,Logan Gilbert,Globe Life Field,R,Regular Season,True
+MLB,716455,2023-09-23 23:10:00+00:00,Houston Astros,Kansas City Royals,2.0,3.0,J.P. France,Jordan Lyles,Minute Maid Park,R,Regular Season,True
+MLB,716457,2023-09-24 00:40:00+00:00,San Diego Padres,St. Louis Cardinals,2.0,5.0,Nick Martinez,Jake Woodford,Petco Park,R,Regular Season,True
+MLB,716456,2023-09-24 01:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,7.0,0.0,Clayton Kershaw,John Brebbia,Dodger Stadium,R,Regular Season,True
+MLB,716452,2023-09-24 17:10:00+00:00,Tampa Bay Rays,Toronto Blue Jays,5.0,9.0,Taj Bradley,Yusei Kikuchi,Tropicana Field,R,Regular Season,True
+MLB,716453,2023-09-24 17:35:00+00:00,Boston Red Sox,Chicago White Sox,2.0,3.0,Kutter Crawford,Mike Clevinger,Fenway Park,R,Regular Season,True
+MLB,716458,2023-09-24 17:35:00+00:00,New York Yankees,Arizona Diamondbacks,1.0,7.0,Carlos Rodón,Zac Gallen,Yankee Stadium,R,Regular Season,True
+MLB,716459,2023-09-24 17:35:00+00:00,Washington Nationals,Atlanta Braves,3.0,2.0,Jackson Rutledge,Allan Winans,Nationals Park,R,Regular Season,True
+MLB,716447,2023-09-24 17:40:00+00:00,Miami Marlins,Milwaukee Brewers,6.0,1.0,Edward Cabrera,Freddy Peralta,loanDepot park,R,Regular Season,True
+MLB,716450,2023-09-24 17:40:00+00:00,Cleveland Guardians,Baltimore Orioles,1.0,5.0,Triston McKenzie,Kyle Gibson,Progressive Field,R,Regular Season,True
+MLB,716451,2023-09-24 17:40:00+00:00,Cincinnati Reds,Pittsburgh Pirates,4.0,2.0,Brandon Williamson,Quinn Priester,Great American Ball Park,R,Regular Season,True
+MLB,716445,2023-09-24 18:10:00+00:00,Minnesota Twins,Los Angeles Angels,9.0,3.0,Joe Ryan,Andrew Wantz,Target Field,R,Regular Season,True
+MLB,716448,2023-09-24 18:10:00+00:00,Houston Astros,Kansas City Royals,5.0,6.0,Hunter Brown,Steven Cruz,Minute Maid Park,R,Regular Season,True
+MLB,716449,2023-09-24 18:20:00+00:00,Chicago Cubs,Colorado Rockies,4.0,3.0,Jordan Wicks,Ty Blach,Wrigley Field,R,Regular Season,True
+MLB,716446,2023-09-24 18:35:00+00:00,Texas Rangers,Seattle Mariners,9.0,8.0,Nathan Eovaldi,Bryan Woo,Globe Life Field,R,Regular Season,True
+MLB,716442,2023-09-24 20:07:00+00:00,Oakland Athletics,Detroit Tigers,0.0,2.0,JP Sears,Eduardo Rodriguez,Oakland Coliseum,R,Regular Season,True
+MLB,716444,2023-09-24 20:10:00+00:00,San Diego Padres,St. Louis Cardinals,12.0,2.0,Michael Wacha,Drew Rom,Petco Park,R,Regular Season,True
+MLB,716454,2023-09-24 22:05:00+00:00,Philadelphia Phillies,New York Mets,5.0,2.0,Cristopher Sánchez,José Buttó,Citizens Bank Park,R,Regular Season,True
+MLB,716467,2023-09-24 22:35:00+00:00,Washington Nationals,Atlanta Braves,5.0,8.0,Joan Adon,Spencer Strider,Nationals Park,R,Regular Season,True
+MLB,716439,2023-09-24 23:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,3.0,2.0,Lance Lynn,Ryan Walker,Dodger Stadium,R,Regular Season,True
+MLB,716471,2023-09-25 17:05:00+00:00,New York Yankees,Arizona Diamondbacks,6.0,4.0,Clarke Schmidt,Merrill Kelly,Yankee Stadium,R,Regular Season,True
+MLB,716440,2023-09-26 01:38:00+00:00,Los Angeles Angels,Texas Rangers,1.0,5.0,Patrick Sandoval,Jon Gray,Angel Stadium,R,Regular Season,True
+MLB,716436,2023-09-26 01:40:00+00:00,Seattle Mariners,Houston Astros,1.0,5.0,Luis Castillo,Justin Verlander,T-Mobile Park,R,Regular Season,True
+MLB,716441,2023-09-26 01:45:00+00:00,San Francisco Giants,San Diego Padres,2.0,1.0,Logan Webb,Blake Snell,Oracle Park,R,Regular Season,True
+MLB,716438,2023-09-26 19:10:00+00:00,Colorado Rockies,Los Angeles Dodgers,4.0,1.0,Chase Anderson,Caleb Ferguson,Coors Field,R,Regular Season,True
+MLB,716435,2023-09-26 22:10:00+00:00,Cleveland Guardians,Cincinnati Reds,7.0,11.0,Lucas Giolito,Hunter Greene,Progressive Field,R,Regular Season,True
+MLB,716434,2023-09-26 22:35:00+00:00,Baltimore Orioles,Washington Nationals,1.0,0.0,Kyle Bradish,Josiah Gray,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,716432,2023-09-26 22:40:00+00:00,Philadelphia Phillies,Pittsburgh Pirates,3.0,2.0,Aaron Nola,Mitch Keller,Citizens Bank Park,R,Regular Season,True
+MLB,716433,2023-09-26 22:40:00+00:00,Detroit Tigers,Kansas City Royals,6.0,3.0,Reese Olson,Zack Greinke,Comerica Park,R,Regular Season,True
+MLB,716431,2023-09-26 23:07:00+00:00,Toronto Blue Jays,New York Yankees,0.0,2.0,Kevin Gausman,Michael King,Rogers Centre,R,Regular Season,True
+MLB,716428,2023-09-26 23:10:00+00:00,Boston Red Sox,Tampa Bay Rays,7.0,9.0,Tanner Houck,Zach Eflin,Fenway Park,R,Regular Season,True
+MLB,716429,2023-09-26 23:20:00+00:00,Atlanta Braves,Chicago Cubs,7.0,6.0,Bryce Elder,Justin Steele,Truist Park,R,Regular Season,True
+MLB,716421,2023-09-26 23:40:00+00:00,Minnesota Twins,Oakland Athletics,11.0,3.0,Bailey Ober,Paul Blackburn,Target Field,R,Regular Season,True
+MLB,716423,2023-09-26 23:40:00+00:00,Milwaukee Brewers,St. Louis Cardinals,1.0,4.0,Adrian Houser,Miles Mikolas,American Family Field,R,Regular Season,True
+MLB,716427,2023-09-26 23:40:00+00:00,Chicago White Sox,Arizona Diamondbacks,4.0,15.0,José Ureña,Zach Davies,Guaranteed Rate Field,R,Regular Season,True
+MLB,716424,2023-09-27 00:40:00+00:00,Colorado Rockies,Los Angeles Dodgers,2.0,11.0,Ryan Feltner,Bobby Miller,Coors Field,R,Regular Season,True
+MLB,716422,2023-09-27 01:38:00+00:00,Los Angeles Angels,Texas Rangers,9.0,3.0,Reid Detmers,Cody Bradford,Angel Stadium,R,Regular Season,True
+MLB,716437,2023-09-27 01:45:00+00:00,San Francisco Giants,San Diego Padres,0.0,4.0,John Brebbia,Seth Lugo,Oracle Park,R,Regular Season,True
+MLB,716425,2023-09-27 02:05:00+00:00,Seattle Mariners,Houston Astros,6.0,2.0,George Kirby,Cristian Javier,T-Mobile Park,R,Regular Season,True

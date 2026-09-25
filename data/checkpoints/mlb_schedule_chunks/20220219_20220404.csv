@@ -1,0 +1,253 @@
+league,game_id,datetime,home,away,home_score,away_score,home_starter,away_starter,venue,game_type,series_description,confirmed_starters
+MLB,707019,2022-03-17 17:05:00+00:00,Boston Red Sox,Minnesota Twins,14.0,1.0,Michael Feliz,Cole Sands,JetBlue Park,S,Spring Training,True
+MLB,707077,2022-03-17 20:05:00+00:00,Chicago White Sox,Chicago Cubs,5.0,2.0,Wes Benjamin,Ben Holmes,Camelback Ranch,S,Spring Training,True
+MLB,707078,2022-03-17 20:05:00+00:00,Chicago Cubs,Chicago White Sox,3.0,4.0,Kyle Hendricks,Kyle Kubat,Sloan Park,S,Spring Training,True
+MLB,706975,2022-03-17 20:10:00+00:00,Colorado Rockies,Arizona Diamondbacks,5.0,3.0,Ty Blach,Tommy Henry,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706825,2022-03-18 17:05:00+00:00,St. Louis Cardinals,Houston Astros,4.0,2.0,Adam Wainwright,Justin Verlander,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,706863,2022-03-18 17:05:00+00:00,Pittsburgh Pirates,New York Yankees,4.0,3.0,Wil Crowe,Hayden Wesneski,LECOM Park,S,Spring Training,True
+MLB,706967,2022-03-18 17:05:00+00:00,Detroit Tigers,Philadelphia Phillies,6.0,6.0,Eduardo Rodriguez,Michael Kelly,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,707020,2022-03-18 17:05:00+00:00,Boston Red Sox,Tampa Bay Rays,7.0,6.0,Nathan Eovaldi,Chris Mazza,JetBlue Park,S,Spring Training,True
+MLB,707027,2022-03-18 17:05:00+00:00,Baltimore Orioles,Toronto Blue Jays,5.0,9.0,Spenser Watkins,José Berríos,Ed Smith Stadium,S,Spring Training,True
+MLB,707037,2022-03-18 17:05:00+00:00,Atlanta Braves,Minnesota Twins,3.0,1.0,Bryce Elder,Devin Smeltzer,CoolToday Park,S,Spring Training,True
+MLB,706813,2022-03-18 20:05:00+00:00,Texas Rangers,Kansas City Royals,5.0,5.0,Jacob Latz,Jonathan Heasley,Surprise Stadium,S,Spring Training,True
+MLB,706882,2022-03-18 20:05:00+00:00,Oakland Athletics,Los Angeles Angels,10.0,8.0,Brent Honeywell,Michael Lorenzen,Hohokam Stadium,S,Spring Training,True
+MLB,706934,2022-03-18 20:05:00+00:00,Los Angeles Dodgers,Milwaukee Brewers,3.0,3.0,Clayton Kershaw,Ethan Small,Camelback Ranch,S,Spring Training,True
+MLB,706984,2022-03-18 20:05:00+00:00,Cleveland Guardians,Cincinnati Reds,3.0,2.0,Tanner Tully,Nick Lodolo,Goodyear Ballpark,S,Spring Training,True
+MLB,706855,2022-03-18 20:10:00+00:00,San Diego Padres,Seattle Mariners,6.0,4.0,MacKenzie Gore,Marco Gonzales,Peoria Stadium,S,Spring Training,True
+MLB,707051,2022-03-18 20:10:00+00:00,Arizona Diamondbacks,Colorado Rockies,3.0,5.0,Kyle Nelson,Zach Neal,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706791,2022-03-18 22:05:00+00:00,Washington Nationals,Miami Marlins,3.0,8.0,Josh Rogers,Sandy Alcantara,The Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,706846,2022-03-19 02:05:00+00:00,San Francisco Giants,Chicago Cubs,3.0,7.0,Logan Webb,Marcus Stroman,Scottsdale Stadium,S,Spring Training,True
+MLB,706820,2022-03-19 17:05:00+00:00,Tampa Bay Rays,Atlanta Braves,4.0,4.0,Phoenix Sanders,Jackson Stephens,Charlotte Sports Park,S,Spring Training,True
+MLB,706859,2022-03-19 17:05:00+00:00,Pittsburgh Pirates,Detroit Tigers,6.0,3.0,Mitch Keller,Casey Mize,LECOM Park,S,Spring Training,True
+MLB,706872,2022-03-19 17:05:00+00:00,Philadelphia Phillies,Toronto Blue Jays,3.0,2.0,Aaron Nola,Nick Allgeyer,BayCare Ballpark,S,Spring Training,True
+MLB,706907,2022-03-19 17:05:00+00:00,Minnesota Twins,Boston Red Sox,0.0,1.0,Bailey Ober,Nick Pivetta,Hammond Stadium,S,Spring Training,True
+MLB,706922,2022-03-19 17:05:00+00:00,Miami Marlins,Houston Astros,10.0,2.0,Pablo López,Jimmy Endersby,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,707028,2022-03-19 17:05:00+00:00,Baltimore Orioles,New York Yankees,3.0,3.0,Ryan Hartman,Ken Waldichuk,Ed Smith Stadium,S,Spring Training,True
+MLB,706806,2022-03-19 20:05:00+00:00,Texas Rangers,Milwaukee Brewers,0.0,11.0,Dane Dunning,Luis Perdomo,Surprise Stadium,S,Spring Training,True
+MLB,707003,2022-03-19 20:05:00+00:00,Chicago White Sox,Cleveland Guardians,2.0,11.0,Brandon Finnegan,Adam Scott,Camelback Ranch,S,Spring Training,True
+MLB,707009,2022-03-19 20:05:00+00:00,Chicago Cubs,San Diego Padres,5.0,4.0,Justin Steele,Reiss Knehr,Sloan Park,S,Spring Training,True
+MLB,706836,2022-03-19 20:10:00+00:00,Seattle Mariners,Los Angeles Dodgers,7.0,6.0,Levi Stoudt,Ryan Pepiot,Peoria Stadium,S,Spring Training,True
+MLB,706942,2022-03-19 20:10:00+00:00,Los Angeles Angels,Arizona Diamondbacks,12.0,5.0,Daniel Ponce de Leon,Dan Straily,Tempe Diablo Stadium,S,Spring Training,True
+MLB,706978,2022-03-19 20:10:00+00:00,Colorado Rockies,San Francisco Giants,5.0,8.0,Matt Dennis,Tyler Beede,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706792,2022-03-19 22:05:00+00:00,Washington Nationals,New York Mets,2.0,6.0,Josiah Gray,Josh Walker,The Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,706993,2022-03-20 01:05:00+00:00,Cincinnati Reds,Oakland Athletics,9.0,3.0,Tyler Mahle,Sean Manaea,Goodyear Ballpark,S,Spring Training,True
+MLB,706886,2022-03-20 17:05:00+00:00,New York Yankees,Detroit Tigers,7.0,8.0,Luis Severino,Tarik Skubal,George M. Steinbrenner Field,S,Spring Training,True
+MLB,706905,2022-03-20 17:05:00+00:00,Minnesota Twins,Tampa Bay Rays,3.0,0.0,Dylan Bundy,Colby White,Hammond Stadium,S,Spring Training,True
+MLB,706958,2022-03-20 17:05:00+00:00,Houston Astros,Washington Nationals,2.0,3.0,Hunter Brown,Aníbal Sánchez,The Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,707021,2022-03-20 17:05:00+00:00,Boston Red Sox,Baltimore Orioles,3.0,2.0,Tanner Houck,Denyi Reyes,JetBlue Park,S,Spring Training,True
+MLB,707040,2022-03-20 17:05:00+00:00,Atlanta Braves,Philadelphia Phillies,5.0,1.0,Kyle Muller,Kyle Gibson,CoolToday Park,S,Spring Training,True
+MLB,706801,2022-03-20 17:07:00+00:00,Toronto Blue Jays,Pittsburgh Pirates,10.0,4.0,Anthony Kay,Dillon Peters,TD Ballpark,S,Spring Training,True
+MLB,706899,2022-03-20 17:10:00+00:00,New York Mets,St. Louis Cardinals,4.0,6.0,David Peterson,Miles Mikolas,Clover Park,S,Spring Training,True
+MLB,706877,2022-03-20 20:05:00+00:00,Oakland Athletics,Cleveland Guardians,9.0,9.0,Cole Irvin,Kirk McCarty,Hohokam Stadium,S,Spring Training,True
+MLB,706932,2022-03-20 20:05:00+00:00,Los Angeles Dodgers,Chicago Cubs,2.0,2.0,Robbie Erlin,Alec Mills,Camelback Ranch,S,Spring Training,True
+MLB,706950,2022-03-20 20:05:00+00:00,Kansas City Royals,Arizona Diamondbacks,11.0,10.0,Jackson Kowar,Brandon Pfaadt,Surprise Stadium,S,Spring Training,True
+MLB,706995,2022-03-20 20:05:00+00:00,Cincinnati Reds,San Francisco Giants,9.0,4.0,Tony Santillan,Sam Long,Goodyear Ballpark,S,Spring Training,True
+MLB,706835,2022-03-20 20:10:00+00:00,Seattle Mariners,Los Angeles Angels,3.0,7.0,Chris Flexen,Reid Detmers,Peoria Stadium,S,Spring Training,True
+MLB,706914,2022-03-20 20:10:00+00:00,Milwaukee Brewers,San Diego Padres,6.0,3.0,Freddy Peralta,Chris Paddack,American Family Fields of Phoenix,S,Spring Training,True
+MLB,706976,2022-03-20 20:10:00+00:00,Colorado Rockies,Chicago White Sox,2.0,4.0,Ryan Feltner,Vince Velasquez,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706819,2022-03-21 17:05:00+00:00,Tampa Bay Rays,Pittsburgh Pirates,1.0,5.0,Jalen Beeks,Zach Thompson,Charlotte Sports Park,S,Spring Training,True
+MLB,706889,2022-03-21 17:05:00+00:00,New York Yankees,Philadelphia Phillies,5.0,2.0,Jameson Taillon,Hans Crouse,George M. Steinbrenner Field,S,Spring Training,True
+MLB,706923,2022-03-21 17:05:00+00:00,Miami Marlins,New York Mets,3.0,0.0,Elieser Hernández,Max Scherzer,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,706963,2022-03-21 17:05:00+00:00,Detroit Tigers,Toronto Blue Jays,1.0,3.0,Matt Manning,Alek Manoah,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,707022,2022-03-21 17:05:00+00:00,Boston Red Sox,Atlanta Braves,5.0,0.0,Michael Wacha,Touki Toussaint,JetBlue Park,S,Spring Training,True
+MLB,707031,2022-03-21 17:05:00+00:00,Baltimore Orioles,Minnesota Twins,10.0,8.0,Tyler Wells,Chi Chi González,Ed Smith Stadium,S,Spring Training,True
+MLB,706988,2022-03-21 20:05:00+00:00,Cleveland Guardians,Texas Rangers,12.0,25.0,Logan Allen,Taylor Hearn,Goodyear Ballpark,S,Spring Training,True
+MLB,707002,2022-03-21 20:05:00+00:00,Chicago White Sox,Los Angeles Dodgers,8.0,6.0,Tanner Banks,Andre Jackson,Camelback Ranch,S,Spring Training,True
+MLB,707013,2022-03-21 20:05:00+00:00,Chicago Cubs,Cincinnati Reds,3.0,2.0,Keegan Thompson,Graham Ashcraft,Sloan Park,S,Spring Training,True
+MLB,706849,2022-03-21 20:10:00+00:00,San Diego Padres,Colorado Rockies,4.0,8.0,Yu Darvish,Ryan Rolison,Peoria Stadium,S,Spring Training,True
+MLB,706941,2022-03-21 20:10:00+00:00,Los Angeles Angels,Kansas City Royals,5.0,8.0,Shohei Ohtani,Brady Singer,Tempe Diablo Stadium,S,Spring Training,True
+MLB,707050,2022-03-21 20:10:00+00:00,Arizona Diamondbacks,Seattle Mariners,9.0,1.0,Humberto Castellanos,George Kirby,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706793,2022-03-21 22:05:00+00:00,Washington Nationals,St. Louis Cardinals,3.0,7.0,Erick Fedde,Steven Matz,The Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,706845,2022-03-22 02:05:00+00:00,San Francisco Giants,Milwaukee Brewers,6.0,13.0,Alex Wood,Adrian Houser,Scottsdale Stadium,S,Spring Training,True
+MLB,706817,2022-03-22 17:05:00+00:00,Tampa Bay Rays,Boston Red Sox,2.0,4.0,Chris Mazza,Rich Hill,Charlotte Sports Park,S,Spring Training,True
+MLB,706826,2022-03-22 17:05:00+00:00,St. Louis Cardinals,Miami Marlins,4.0,3.0,Dakota Hudson,Jesús Luzardo,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,706858,2022-03-22 17:05:00+00:00,Pittsburgh Pirates,Baltimore Orioles,9.0,10.0,Jose Quintana,John Means,LECOM Park,S,Spring Training,True
+MLB,706866,2022-03-22 17:05:00+00:00,Philadelphia Phillies,Detroit Tigers,7.0,2.0,Bailey Falter,Tyler Alexander,BayCare Ballpark,S,Spring Training,True
+MLB,706906,2022-03-22 17:05:00+00:00,Minnesota Twins,Atlanta Braves,0.0,4.0,Joe Ryan,Max Fried,Hammond Stadium,S,Spring Training,True
+MLB,706800,2022-03-22 17:07:00+00:00,Toronto Blue Jays,New York Yankees,9.0,2.0,Yusei Kikuchi,Jordan Montgomery,TD Ballpark,S,Spring Training,True
+MLB,706931,2022-03-22 20:05:00+00:00,Los Angeles Dodgers,Cincinnati Reds,8.0,10.0,Walker Buehler,Vladimir Gutierrez,Camelback Ranch,S,Spring Training,True
+MLB,706948,2022-03-22 20:05:00+00:00,Kansas City Royals,Oakland Athletics,5.0,3.0,Angel Zerpa,Frankie Montas,Surprise Stadium,S,Spring Training,True
+MLB,706985,2022-03-22 20:05:00+00:00,Cleveland Guardians,San Diego Padres,6.0,1.0,Zach Plesac,Joe Musgrove,Goodyear Ballpark,S,Spring Training,True
+MLB,706838,2022-03-22 20:10:00+00:00,Seattle Mariners,Chicago Cubs,5.0,5.0,Robbie Ray,Kyle Hendricks,Peoria Stadium,S,Spring Training,True
+MLB,706916,2022-03-22 20:10:00+00:00,Milwaukee Brewers,Chicago White Sox,3.0,4.0,Jason Alexander,Lucas Giolito,American Family Fields of Phoenix,S,Spring Training,True
+MLB,706939,2022-03-22 20:10:00+00:00,Los Angeles Angels,Colorado Rockies,7.0,4.0,César Valdez,Kyle Freeland,Tempe Diablo Stadium,S,Spring Training,True
+MLB,707049,2022-03-22 20:10:00+00:00,Arizona Diamondbacks,Texas Rangers,1.0,4.0,Madison Bumgarner,Kolby Allard,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706897,2022-03-22 22:10:00+00:00,New York Mets,Houston Astros,2.0,0.0,Jacob deGrom,Jake Odorizzi,Clover Park,S,Spring Training,True
+MLB,706867,2022-03-23 17:05:00+00:00,Philadelphia Phillies,Toronto Blue Jays,8.0,7.0,Cristopher Sánchez,José Berríos,BayCare Ballpark,S,Spring Training,True
+MLB,706924,2022-03-23 17:05:00+00:00,Miami Marlins,Washington Nationals,3.0,2.0,Sandy Alcantara,Patrick Corbin,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,706955,2022-03-23 17:05:00+00:00,Houston Astros,St. Louis Cardinals,10.0,3.0,Justin Verlander,Adam Wainwright,The Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,706964,2022-03-23 17:05:00+00:00,Detroit Tigers,Pittsburgh Pirates,6.0,6.0,Eduardo Rodriguez,Wil Crowe,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,707018,2022-03-23 17:05:00+00:00,Boston Red Sox,Minnesota Twins,4.0,10.0,Nathan Eovaldi,Josh Winder,JetBlue Park,S,Spring Training,True
+MLB,707039,2022-03-23 17:05:00+00:00,Atlanta Braves,Tampa Bay Rays,7.0,7.0,Kyle Wright,Shane McClanahan,CoolToday Park,S,Spring Training,True
+MLB,706807,2022-03-23 20:05:00+00:00,Texas Rangers,Chicago White Sox,14.0,5.0,Glenn Otto Jr.,Lance Lynn,Surprise Stadium,S,Spring Training,True
+MLB,706847,2022-03-23 20:05:00+00:00,San Francisco Giants,Arizona Diamondbacks,3.0,5.0,Logan Webb,Merrill Kelly,Scottsdale Stadium,S,Spring Training,True
+MLB,706933,2022-03-23 20:05:00+00:00,Los Angeles Dodgers,Cleveland Guardians,6.0,2.0,Clayton Kershaw,Shane Bieber,Camelback Ranch,S,Spring Training,True
+MLB,707012,2022-03-23 20:05:00+00:00,Chicago Cubs,Oakland Athletics,5.0,4.0,Marcus Stroman,Adam Oller,Sloan Park,S,Spring Training,True
+MLB,706848,2022-03-23 20:10:00+00:00,San Diego Padres,Los Angeles Angels,3.0,0.0,MacKenzie Gore,José Suarez,Peoria Stadium,S,Spring Training,True
+MLB,706971,2022-03-23 20:10:00+00:00,Colorado Rockies,Kansas City Royals,4.0,8.0,Ty Blach,Zack Greinke,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706890,2022-03-23 22:35:00+00:00,New York Yankees,Baltimore Orioles,7.0,1.0,Deivi García,Kyle Bradish,George M. Steinbrenner Field,S,Spring Training,True
+MLB,706994,2022-03-24 01:05:00+00:00,Cincinnati Reds,Milwaukee Brewers,12.0,8.0,Tyler Mahle,Corbin Burnes,Goodyear Ballpark,S,Spring Training,True
+MLB,706857,2022-03-24 17:05:00+00:00,Pittsburgh Pirates,Philadelphia Phillies,3.0,3.0,Mitch Keller,Aaron Nola,LECOM Park,S,Spring Training,True
+MLB,706904,2022-03-24 17:05:00+00:00,Minnesota Twins,Tampa Bay Rays,7.0,1.0,Bailey Ober,Drew Rasmussen,Hammond Stadium,S,Spring Training,True
+MLB,706965,2022-03-24 17:05:00+00:00,Detroit Tigers,New York Yankees,5.0,3.0,Casey Mize,Clarke Schmidt,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,706879,2022-03-24 20:05:00+00:00,Oakland Athletics,Texas Rangers,3.0,5.0,Sean Manaea,Jon Gray,Hohokam Stadium,S,Spring Training,True
+MLB,706949,2022-03-24 20:05:00+00:00,Kansas City Royals,Cincinnati Reds,5.0,4.0,Daniel Lynch IV,Nick Lodolo,Surprise Stadium,S,Spring Training,True
+MLB,706979,2022-03-24 20:05:00+00:00,Cleveland Guardians,Seattle Mariners,2.0,3.0,Cal Quantrill,Logan Gilbert,Goodyear Ballpark,S,Spring Training,True
+MLB,707001,2022-03-24 20:05:00+00:00,Chicago White Sox,San Francisco Giants,6.0,9.0,Reynaldo López,Carlos Rodón,Camelback Ranch,S,Spring Training,True
+MLB,706912,2022-03-24 20:10:00+00:00,Milwaukee Brewers,Arizona Diamondbacks,3.0,10.0,Brandon Woodruff,Taylor Widener,American Family Fields of Phoenix,S,Spring Training,True
+MLB,706940,2022-03-24 20:10:00+00:00,Los Angeles Angels,Chicago Cubs,5.0,4.0,Michael Lorenzen,Justin Steele,Tempe Diablo Stadium,S,Spring Training,True
+MLB,706972,2022-03-24 20:10:00+00:00,Colorado Rockies,Los Angeles Dodgers,6.0,6.0,Zach Neal,Tony Gonsolin,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706789,2022-03-24 22:05:00+00:00,Washington Nationals,Houston Astros,8.0,10.0,Josiah Gray,Brandon Bielak,The Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,707030,2022-03-24 22:05:00+00:00,Baltimore Orioles,Boston Red Sox,8.0,5.0,Bruce Zimmermann,Nick Pivetta,Ed Smith Stadium,S,Spring Training,True
+MLB,706896,2022-03-24 22:10:00+00:00,New York Mets,Miami Marlins,9.0,3.0,Sean Reid-Foley,Will Stewart,Clover Park,S,Spring Training,True
+MLB,706818,2022-03-25 17:05:00+00:00,Tampa Bay Rays,Baltimore Orioles,9.0,4.0,Josh Fleming,Chris Ellis,Charlotte Sports Park,S,Spring Training,True
+MLB,706829,2022-03-25 17:05:00+00:00,St. Louis Cardinals,Washington Nationals,5.0,4.0,Drew VerHagen,Cade Cavalli,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,706860,2022-03-25 17:05:00+00:00,Pittsburgh Pirates,Minnesota Twins,2.0,1.0,Bryse Wilson,Dylan Bundy,LECOM Park,S,Spring Training,True
+MLB,706870,2022-03-25 17:05:00+00:00,Philadelphia Phillies,New York Yankees,6.0,5.0,Kyle Gibson,Luis Severino,BayCare Ballpark,S,Spring Training,True
+MLB,707038,2022-03-25 17:05:00+00:00,Atlanta Braves,Boston Red Sox,6.0,3.0,Ian Anderson,Tanner Houck,CoolToday Park,S,Spring Training,True
+MLB,706799,2022-03-25 17:07:00+00:00,Toronto Blue Jays,Detroit Tigers,4.0,8.0,Hyun Jin Ryu,Tarik Skubal,TD Ballpark,S,Spring Training,True
+MLB,706839,2022-03-25 20:05:00+00:00,San Francisco Giants,Cleveland Guardians,2.0,10.0,Anthony DeSclafani,Aaron Civale,Scottsdale Stadium,S,Spring Training,True
+MLB,706880,2022-03-25 20:05:00+00:00,Oakland Athletics,Milwaukee Brewers,6.0,3.0,Cole Irvin,Freddy Peralta,Hohokam Stadium,S,Spring Training,True
+MLB,706944,2022-03-25 20:05:00+00:00,Kansas City Royals,Texas Rangers,4.0,8.0,Carlos Hernández,Dane Dunning,Surprise Stadium,S,Spring Training,True
+MLB,707011,2022-03-25 20:05:00+00:00,Chicago Cubs,Colorado Rockies,1.0,17.0,Alec Mills,Germán Márquez,Sloan Park,S,Spring Training,True
+MLB,707048,2022-03-25 20:10:00+00:00,Arizona Diamondbacks,Los Angeles Angels,5.0,5.0,Luke Weaver,Janson Junk,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706954,2022-03-25 22:05:00+00:00,Houston Astros,New York Mets,2.0,1.0,Hunter Brown,Tylor Megill,The Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,706930,2022-03-26 01:05:00+00:00,Los Angeles Dodgers,San Diego Padres,5.0,5.0,Julio Urías,Nick Martinez,Camelback Ranch,S,Spring Training,True
+MLB,706832,2022-03-26 01:40:00+00:00,Seattle Mariners,Chicago White Sox,3.0,0.0,Marco Gonzales,Dylan Cease,Peoria Stadium,S,Spring Training,True
+MLB,706824,2022-03-26 17:05:00+00:00,St. Louis Cardinals,Miami Marlins,2.0,9.0,Steven Matz,Trevor Rogers,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,706888,2022-03-26 17:05:00+00:00,New York Yankees,Toronto Blue Jays,9.0,10.0,Michael King,Alek Manoah,George M. Steinbrenner Field,S,Spring Training,True
+MLB,706959,2022-03-26 17:05:00+00:00,Detroit Tigers,Philadelphia Phillies,14.0,8.0,Matt Manning,Zach Eflin,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,707017,2022-03-26 17:05:00+00:00,Boston Red Sox,Tampa Bay Rays,5.0,3.0,Michael Wacha,Corey Kluber,JetBlue Park,S,Spring Training,True
+MLB,707036,2022-03-26 17:05:00+00:00,Atlanta Braves,Minnesota Twins,8.0,6.0,Tucker Davidson,Chi Chi González,CoolToday Park,S,Spring Training,True
+MLB,706895,2022-03-26 17:10:00+00:00,New York Mets,Washington Nationals,4.0,2.0,Taijuan Walker,Erick Fedde,Clover Park,S,Spring Training,True
+MLB,706842,2022-03-26 20:05:00+00:00,San Francisco Giants,Cincinnati Reds,1.0,2.0,Alex Wood,Hunter Greene,Scottsdale Stadium,S,Spring Training,True
+MLB,706980,2022-03-26 20:05:00+00:00,Cleveland Guardians,Oakland Athletics,9.0,2.0,Logan Allen,Daulton Jefferies,Goodyear Ballpark,S,Spring Training,True
+MLB,707000,2022-03-26 20:05:00+00:00,Chicago White Sox,Los Angeles Angels,3.0,12.0,Vince Velasquez,César Valdez,Camelback Ranch,S,Spring Training,True
+MLB,706852,2022-03-26 20:10:00+00:00,San Diego Padres,Chicago Cubs,2.0,2.0,Ryan Weathers,Drew Smyly,Peoria Stadium,S,Spring Training,True
+MLB,706915,2022-03-26 20:10:00+00:00,Milwaukee Brewers,Seattle Mariners,7.0,7.0,Adrian Houser,Chris Flexen,American Family Fields of Phoenix,S,Spring Training,True
+MLB,706974,2022-03-26 20:10:00+00:00,Colorado Rockies,Texas Rangers,8.0,7.0,Austin Gomber,Taylor Hearn,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,707029,2022-03-26 22:05:00+00:00,Baltimore Orioles,Pittsburgh Pirates,14.0,5.0,Tyler Wells,Zach Thompson,Ed Smith Stadium,S,Spring Training,True
+MLB,706947,2022-03-27 01:05:00+00:00,Kansas City Royals,Los Angeles Dodgers,5.0,10.0,Brady Singer,Andre Jackson,Surprise Stadium,S,Spring Training,True
+MLB,706816,2022-03-27 17:05:00+00:00,Tampa Bay Rays,Atlanta Braves,4.0,1.0,Ryan Yarbrough,Charlie Morton,Charlotte Sports Park,S,Spring Training,True
+MLB,706887,2022-03-27 17:05:00+00:00,New York Yankees,Pittsburgh Pirates,7.0,4.0,Gerrit Cole,Jose Quintana,George M. Steinbrenner Field,S,Spring Training,True
+MLB,706903,2022-03-27 17:05:00+00:00,Minnesota Twins,Boston Red Sox,6.0,3.0,Joe Ryan,Garrett Whitlock,Hammond Stadium,S,Spring Training,True
+MLB,706925,2022-03-27 17:05:00+00:00,Miami Marlins,Houston Astros,3.0,4.0,Jesús Luzardo,Luis Garcia,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,707026,2022-03-27 17:05:00+00:00,Baltimore Orioles,Detroit Tigers,5.0,4.0,John Means,Tyler Alexander,Ed Smith Stadium,S,Spring Training,True
+MLB,706796,2022-03-27 17:07:00+00:00,Toronto Blue Jays,Philadelphia Phillies,5.0,10.0,Yusei Kikuchi,Bailey Falter,TD Ballpark,S,Spring Training,True
+MLB,706894,2022-03-27 17:10:00+00:00,New York Mets,St. Louis Cardinals,7.0,3.0,Jacob deGrom,Dakota Hudson,Clover Park,S,Spring Training,True
+MLB,706808,2022-03-27 20:05:00+00:00,Texas Rangers,Arizona Diamondbacks,13.0,0.0,A.J. Alexy,Tyler Gilbert,Surprise Stadium,S,Spring Training,True
+MLB,706876,2022-03-27 20:05:00+00:00,Oakland Athletics,Seattle Mariners,1.0,7.0,Frankie Montas,Matt Brash,Hohokam Stadium,S,Spring Training,True
+MLB,706926,2022-03-27 20:05:00+00:00,Los Angeles Dodgers,Chicago White Sox,0.0,9.0,Andrew Heaney,Dallas Keuchel,Camelback Ranch,S,Spring Training,True
+MLB,706992,2022-03-27 20:05:00+00:00,Cincinnati Reds,Colorado Rockies,4.0,4.0,James Marinan,Kyle Freeland,Goodyear Ballpark,S,Spring Training,True
+MLB,707007,2022-03-27 20:05:00+00:00,Chicago Cubs,Kansas City Royals,13.0,12.0,Kyle Hendricks,Angel Zerpa,Sloan Park,S,Spring Training,True
+MLB,706851,2022-03-27 20:10:00+00:00,San Diego Padres,Cleveland Guardians,5.0,1.0,Yu Darvish,Zach Plesac,Peoria Stadium,S,Spring Training,True
+MLB,706938,2022-03-27 20:10:00+00:00,Los Angeles Angels,San Francisco Giants,1.0,6.0,Patrick Sandoval,Alex Cobb,Tempe Diablo Stadium,S,Spring Training,True
+MLB,707117,2022-03-27 20:10:00+00:00,Arizona Diamondbacks,Colorado Rockies,5.0,2.0,Madison Bumgarner,Ryan Rolison,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706788,2022-03-28 17:05:00+00:00,Washington Nationals,Miami Marlins,1.0,8.0,Patrick Corbin,Edward Cabrera,The Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,706822,2022-03-28 17:05:00+00:00,St. Louis Cardinals,Houston Astros,1.0,2.0,Adam Wainwright,Framber Valdez,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,706869,2022-03-28 17:05:00+00:00,Philadelphia Phillies,Baltimore Orioles,7.0,1.0,Cristopher Sánchez,Dean Kremer,BayCare Ballpark,S,Spring Training,True
+MLB,706960,2022-03-28 17:05:00+00:00,Detroit Tigers,New York Yankees,7.0,11.0,Eduardo Rodriguez,Deivi García,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,707032,2022-03-28 17:05:00+00:00,Atlanta Braves,Toronto Blue Jays,5.0,4.0,Spencer Strider,Shaun Anderson,CoolToday Park,S,Spring Training,True
+MLB,706945,2022-03-28 20:05:00+00:00,Kansas City Royals,Cleveland Guardians,19.0,9.0,Zack Greinke,Adam Scott,Surprise Stadium,S,Spring Training,True
+MLB,706999,2022-03-28 20:05:00+00:00,Chicago White Sox,San Diego Padres,8.0,9.0,Lucas Giolito,Joe Musgrove,Camelback Ranch,S,Spring Training,True
+MLB,706830,2022-03-28 20:10:00+00:00,Seattle Mariners,Texas Rangers,6.0,5.0,Robbie Ray,Glenn Otto Jr.,Peoria Stadium,S,Spring Training,True
+MLB,706913,2022-03-28 20:10:00+00:00,Milwaukee Brewers,San Francisco Giants,5.0,2.0,Corbin Burnes,Logan Webb,American Family Fields of Phoenix,S,Spring Training,True
+MLB,706935,2022-03-28 20:10:00+00:00,Los Angeles Angels,Oakland Athletics,7.0,2.0,Noah Syndergaard,Paul Blackburn,Tempe Diablo Stadium,S,Spring Training,True
+MLB,707045,2022-03-28 20:10:00+00:00,Arizona Diamondbacks,Los Angeles Dodgers,5.0,3.0,Corbin Martin,Clayton Kershaw,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706989,2022-03-29 01:05:00+00:00,Cincinnati Reds,Chicago Cubs,2.0,4.0,Tyler Mahle,Marcus Stroman,Goodyear Ballpark,S,Spring Training,True
+MLB,706815,2022-03-29 17:05:00+00:00,Tampa Bay Rays,Minnesota Twins,4.0,2.0,Drew Rasmussen,Bailey Ober,Charlotte Sports Park,S,Spring Training,True
+MLB,706861,2022-03-29 17:05:00+00:00,Pittsburgh Pirates,Boston Red Sox,6.0,2.0,Mitch Keller,Nick Pivetta,LECOM Park,S,Spring Training,True
+MLB,706952,2022-03-29 17:05:00+00:00,Houston Astros,Washington Nationals,3.0,1.0,Justin Verlander,Carl Edwards Jr.,The Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,707065,2022-03-29 17:05:00+00:00,New York Yankees,Philadelphia Phillies,14.0,2.0,Clarke Schmidt,Aaron Nola,George M. Steinbrenner Field,S,Spring Training,True
+MLB,706809,2022-03-29 20:05:00+00:00,Texas Rangers,Cincinnati Reds,1.0,7.0,Spencer Howard,Reiver Sanmartin,Surprise Stadium,S,Spring Training,True
+MLB,706840,2022-03-29 20:05:00+00:00,San Francisco Giants,San Diego Padres,11.0,6.0,Carlos Rodón,Mike Clevinger,Scottsdale Stadium,S,Spring Training,True
+MLB,706983,2022-03-29 20:05:00+00:00,Cleveland Guardians,Milwaukee Brewers,10.0,3.0,Cal Quantrill,Brandon Woodruff,Goodyear Ballpark,S,Spring Training,True
+MLB,707005,2022-03-29 20:05:00+00:00,Chicago Cubs,Arizona Diamondbacks,3.0,2.0,Justin Steele,Zach Davies,Sloan Park,S,Spring Training,True
+MLB,706833,2022-03-29 20:10:00+00:00,Seattle Mariners,Kansas City Royals,4.0,11.0,Logan Gilbert,Daniel Lynch IV,Peoria Stadium,S,Spring Training,True
+MLB,706973,2022-03-29 20:10:00+00:00,Colorado Rockies,Los Angeles Angels,2.0,8.0,Antonio Senzatela,José Suarez,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706918,2022-03-29 22:40:00+00:00,Miami Marlins,New York Mets,0.0,10.0,Pablo López,Chris Bassitt,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,706929,2022-03-30 01:05:00+00:00,Los Angeles Dodgers,Oakland Athletics,6.0,4.0,Tony Gonsolin,Sean Manaea,Camelback Ranch,S,Spring Training,True
+MLB,706786,2022-03-30 17:05:00+00:00,Washington Nationals,St. Louis Cardinals,8.0,29.0,Aníbal Sánchez,Miles Mikolas,The Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,706868,2022-03-30 17:05:00+00:00,Philadelphia Phillies,Detroit Tigers,1.0,7.0,Kyle Gibson,Tarik Skubal,BayCare Ballpark,S,Spring Training,True
+MLB,706902,2022-03-30 17:05:00+00:00,Minnesota Twins,Pittsburgh Pirates,9.0,4.0,Josh Winder,Bryse Wilson,Hammond Stadium,S,Spring Training,True
+MLB,707014,2022-03-30 17:05:00+00:00,Boston Red Sox,Atlanta Braves,10.0,7.0,Tanner Houck,Ian Anderson,JetBlue Park,S,Spring Training,True
+MLB,707025,2022-03-30 17:05:00+00:00,Baltimore Orioles,Tampa Bay Rays,7.0,6.0,Bruce Zimmermann,Josh Fleming,Ed Smith Stadium,S,Spring Training,True
+MLB,706878,2022-03-30 20:05:00+00:00,Oakland Athletics,Cincinnati Reds,5.0,4.0,Cole Irvin,Vladimir Gutierrez,Hohokam Stadium,S,Spring Training,True
+MLB,706943,2022-03-30 20:05:00+00:00,Kansas City Royals,San Francisco Giants,5.0,9.0,Carlos Hernández,Anthony DeSclafani,Surprise Stadium,S,Spring Training,True
+MLB,706997,2022-03-30 20:05:00+00:00,Chicago White Sox,Texas Rangers,7.0,0.0,Dylan Cease,Martín Pérez,Camelback Ranch,S,Spring Training,True
+MLB,707006,2022-03-30 20:05:00+00:00,Chicago Cubs,Seattle Mariners,8.0,5.0,Drew Smyly,Marco Gonzales,Sloan Park,S,Spring Training,True
+MLB,706850,2022-03-30 20:10:00+00:00,San Diego Padres,Milwaukee Brewers,4.0,2.0,Nick Martinez,Freddy Peralta,Peoria Stadium,S,Spring Training,True
+MLB,706968,2022-03-30 20:10:00+00:00,Colorado Rockies,Arizona Diamondbacks,2.0,9.0,Germán Márquez,Zac Gallen,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706893,2022-03-30 22:10:00+00:00,New York Mets,Houston Astros,3.0,5.0,Carlos Carrasco,José Urquidy,Clover Park,S,Spring Training,True
+MLB,706881,2022-03-30 22:35:00+00:00,New York Yankees,Toronto Blue Jays,3.0,11.0,Manny Banuelos,Nick Allgeyer,George M. Steinbrenner Field,S,Spring Training,True
+MLB,706981,2022-03-31 01:05:00+00:00,Cleveland Guardians,Los Angeles Dodgers,1.0,12.0,Konnor Pilkington,Julio Urías,Goodyear Ballpark,S,Spring Training,True
+MLB,706856,2022-03-31 17:05:00+00:00,Pittsburgh Pirates,Baltimore Orioles,4.0,4.0,Zach Thompson,Tyler Wells,LECOM Park,S,Spring Training,True
+MLB,706864,2022-03-31 17:05:00+00:00,Philadelphia Phillies,New York Yankees,5.0,3.0,Zach Eflin,Jameson Taillon,BayCare Ballpark,S,Spring Training,True
+MLB,707016,2022-03-31 17:05:00+00:00,Boston Red Sox,Minnesota Twins,4.0,3.0,Michael Wacha,Dylan Bundy,JetBlue Park,S,Spring Training,True
+MLB,707035,2022-03-31 17:05:00+00:00,Atlanta Braves,Tampa Bay Rays,1.0,5.0,Kyle Muller,Luis Patiño,CoolToday Park,S,Spring Training,True
+MLB,706795,2022-03-31 17:07:00+00:00,Toronto Blue Jays,Detroit Tigers,5.0,3.0,Alek Manoah,Matt Manning,TD Ballpark,S,Spring Training,True
+MLB,706802,2022-03-31 20:05:00+00:00,Texas Rangers,Los Angeles Dodgers,8.0,2.0,Taylor Hearn,Ryan Pepiot,Surprise Stadium,S,Spring Training,True
+MLB,706841,2022-03-31 20:05:00+00:00,San Francisco Giants,Colorado Rockies,13.0,2.0,Alex Wood,Chad Kuhl,Scottsdale Stadium,S,Spring Training,True
+MLB,706871,2022-03-31 20:05:00+00:00,Oakland Athletics,Kansas City Royals,4.0,5.0,Daulton Jefferies,Kris Bubic,Hohokam Stadium,S,Spring Training,True
+MLB,706909,2022-03-31 20:10:00+00:00,Milwaukee Brewers,Los Angeles Angels,5.0,10.0,Eric Lauer,Shohei Ohtani,American Family Fields of Phoenix,S,Spring Training,True
+MLB,707047,2022-03-31 20:10:00+00:00,Arizona Diamondbacks,San Diego Padres,8.0,2.0,Luke Weaver,Blake Snell,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706892,2022-03-31 22:10:00+00:00,New York Mets,Washington Nationals,3.0,7.0,Taijuan Walker,Josh Rogers,Clover Park,S,Spring Training,True
+MLB,706917,2022-03-31 22:40:00+00:00,Miami Marlins,St. Louis Cardinals,7.0,4.0,Trevor Rogers,Drew VerHagen,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,706991,2022-04-01 01:05:00+00:00,Cincinnati Reds,Chicago White Sox,2.0,8.0,Hunter Greene,Michael Kopech,Goodyear Ballpark,S,Spring Training,True
+MLB,706831,2022-04-01 01:40:00+00:00,Seattle Mariners,Cleveland Guardians,3.0,2.0,Chris Flexen,Aaron Civale,Peoria Stadium,S,Spring Training,True
+MLB,706814,2022-04-01 17:05:00+00:00,Tampa Bay Rays,Boston Red Sox,9.0,3.0,Ryan Yarbrough,Rich Hill,Charlotte Sports Park,S,Spring Training,True
+MLB,706821,2022-04-01 17:05:00+00:00,St. Louis Cardinals,New York Mets,7.0,2.0,Connor Thomas,Félix Peña,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,706853,2022-04-01 17:05:00+00:00,Pittsburgh Pirates,Toronto Blue Jays,6.0,6.0,Jose Quintana,Yusei Kikuchi,LECOM Park,S,Spring Training,True
+MLB,706901,2022-04-01 17:05:00+00:00,Minnesota Twins,Atlanta Braves,8.0,7.0,Chris Archer,Max Fried,Hammond Stadium,S,Spring Training,True
+MLB,706956,2022-04-01 17:05:00+00:00,Houston Astros,Miami Marlins,2.0,1.0,Luis Garcia,Jesús Luzardo,The Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,706961,2022-04-01 17:05:00+00:00,Detroit Tigers,New York Yankees,2.0,6.0,Tyler Alexander,Gerrit Cole,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,707024,2022-04-01 17:05:00+00:00,Baltimore Orioles,Philadelphia Phillies,3.0,2.0,Jordan Lyles,Ranger Suarez,Ed Smith Stadium,S,Spring Training,True
+MLB,706837,2022-04-01 19:05:00+00:00,San Francisco Giants,Texas Rangers,7.0,7.0,Alex Cobb,Kolby Allard,Scottsdale Stadium,S,Spring Training,True
+MLB,706998,2022-04-01 20:05:00+00:00,Chicago White Sox,Oakland Athletics,4.0,12.0,Dallas Keuchel,Adam Oller,Camelback Ranch,S,Spring Training,True
+MLB,706910,2022-04-01 20:10:00+00:00,Milwaukee Brewers,Chicago Cubs,5.0,3.0,Luis Perdomo,Keegan Thompson,American Family Fields of Phoenix,S,Spring Training,True
+MLB,706936,2022-04-01 20:10:00+00:00,Los Angeles Angels,Cincinnati Reds,7.0,6.0,Reid Detmers,Riley O'Brien,Tempe Diablo Stadium,S,Spring Training,True
+MLB,707046,2022-04-01 20:10:00+00:00,Arizona Diamondbacks,Chicago Cubs,6.0,0.0,Madison Bumgarner,Kyle Hendricks,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706982,2022-04-02 01:05:00+00:00,Cleveland Guardians,Arizona Diamondbacks,5.0,1.0,Zach Plesac,Tyler Gilbert,Goodyear Ballpark,S,Spring Training,True
+MLB,706844,2022-04-02 01:40:00+00:00,San Diego Padres,Kansas City Royals,4.0,2.0,Yu Darvish,Jonathan Heasley,Peoria Stadium,S,Spring Training,True
+MLB,706970,2022-04-02 01:40:00+00:00,Colorado Rockies,Seattle Mariners,2.0,1.0,Kyle Freeland,Matt Brash,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706811,2022-04-02 17:05:00+00:00,Tampa Bay Rays,Minnesota Twins,2.0,8.0,Shane McClanahan,Devin Smeltzer,Charlotte Sports Park,S,Spring Training,True
+MLB,706885,2022-04-02 17:05:00+00:00,New York Yankees,Atlanta Braves,10.0,0.0,Luis Severino,Spencer Strider,George M. Steinbrenner Field,S,Spring Training,True
+MLB,706962,2022-04-02 17:05:00+00:00,Detroit Tigers,Baltimore Orioles,0.0,2.0,Eduardo Rodriguez,John Means,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,707015,2022-04-02 17:05:00+00:00,Boston Red Sox,Pittsburgh Pirates,2.0,7.0,Nathan Eovaldi,JT Brubaker,JetBlue Park,S,Spring Training,True
+MLB,706794,2022-04-02 17:07:00+00:00,Toronto Blue Jays,Philadelphia Phillies,2.0,2.0,José Berríos,Andrew Bellatti,TD Ballpark,S,Spring Training,True
+MLB,706927,2022-04-02 19:05:00+00:00,Los Angeles Dodgers,San Francisco Giants,2.0,10.0,Clayton Kershaw,Kervin Castro,Camelback Ranch,S,Spring Training,True
+MLB,707004,2022-04-02 19:05:00+00:00,Chicago Cubs,Los Angeles Angels,5.0,4.0,Mark Leiter Jr.,Patrick Sandoval,Sloan Park,S,Spring Training,True
+MLB,706875,2022-04-02 20:05:00+00:00,Oakland Athletics,Colorado Rockies,11.0,11.0,Paul Blackburn,Matt Dennis,Hohokam Stadium,S,Spring Training,True
+MLB,706804,2022-04-03 01:05:00+00:00,Texas Rangers,Cleveland Guardians,3.0,1.0,Matt Bush,Shane Bieber,Surprise Stadium,S,Spring Training,True
+MLB,706990,2022-04-03 01:05:00+00:00,Cincinnati Reds,San Diego Padres,6.0,3.0,Tyler Mahle,Joe Musgrove,Goodyear Ballpark,S,Spring Training,True
+MLB,707042,2022-04-03 01:10:00+00:00,Arizona Diamondbacks,Chicago White Sox,8.0,4.0,Merrill Kelly,Lance Lynn,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706828,2022-04-03 01:40:00+00:00,Seattle Mariners,Milwaukee Brewers,4.0,3.0,Robbie Ray,Corbin Burnes,Peoria Stadium,S,Spring Training,True
+MLB,706785,2022-04-03 17:05:00+00:00,Washington Nationals,Houston Astros,9.0,6.0,Josiah Gray,Justin Verlander,The Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,706854,2022-04-03 17:05:00+00:00,Pittsburgh Pirates,Tampa Bay Rays,2.0,9.0,Mitch Keller,Drew Rasmussen,LECOM Park,S,Spring Training,True
+MLB,706865,2022-04-03 17:05:00+00:00,Philadelphia Phillies,Detroit Tigers,8.0,7.0,Aaron Nola,Casey Mize,BayCare Ballpark,S,Spring Training,True
+MLB,706900,2022-04-03 17:05:00+00:00,Minnesota Twins,Baltimore Orioles,8.0,2.0,Sonny Gray,Dean Kremer,Hammond Stadium,S,Spring Training,True
+MLB,707034,2022-04-03 17:05:00+00:00,Atlanta Braves,Boston Red Sox,3.0,6.0,Huascar Ynoa,Nick Pivetta,CoolToday Park,S,Spring Training,True
+MLB,706797,2022-04-03 17:07:00+00:00,Toronto Blue Jays,New York Yankees,7.0,5.0,Shaun Anderson,Luis Gil,TD Ballpark,S,Spring Training,True
+MLB,706891,2022-04-03 17:10:00+00:00,New York Mets,Miami Marlins,8.0,4.0,Chris Bassitt,Pablo López,Clover Park,S,Spring Training,True
+MLB,706873,2022-04-03 20:05:00+00:00,Oakland Athletics,San Diego Padres,8.0,2.0,Domingo Acevedo,Sean Manaea,Hohokam Stadium,S,Spring Training,True
+MLB,706946,2022-04-03 20:05:00+00:00,Kansas City Royals,Seattle Mariners,8.0,10.0,Daniel Lynch IV,Logan Gilbert,Surprise Stadium,S,Spring Training,True
+MLB,706996,2022-04-03 20:05:00+00:00,Chicago White Sox,Colorado Rockies,4.0,13.0,Lucas Giolito,Brandon Gold,Camelback Ranch,S,Spring Training,True
+MLB,706911,2022-04-03 20:10:00+00:00,Milwaukee Brewers,Texas Rangers,2.0,13.0,Brandon Woodruff,Jon Gray,American Family Fields of Phoenix,S,Spring Training,True
+MLB,707041,2022-04-03 20:10:00+00:00,Arizona Diamondbacks,Cincinnati Reds,4.0,15.0,Corbin Martin,Nick Lodolo,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,706937,2022-04-04 01:05:00+00:00,Los Angeles Angels,Los Angeles Dodgers,5.0,1.0,Noah Syndergaard,Walker Buehler,Angel Stadium,S,Spring Training,True
+MLB,706977,2022-04-04 01:05:00+00:00,Cleveland Guardians,Chicago Cubs,3.0,7.0,Cal Quantrill,Jesse Chavez,Goodyear Ballpark,S,Spring Training,True
+MLB,706951,2022-04-04 16:05:00+00:00,Houston Astros,New York Mets,3.0,3.0,José Urquidy,Carlos Carrasco,The Ballpark of the Palm Beaches,S,Spring Training,True
+MLB,706812,2022-04-04 17:05:00+00:00,Tampa Bay Rays,Atlanta Braves,2.0,8.0,Josh Fleming,Ian Anderson,Charlotte Sports Park,S,Spring Training,True
+MLB,706823,2022-04-04 17:05:00+00:00,St. Louis Cardinals,Washington Nationals,4.0,3.0,Miles Mikolas,Joan Adon,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,706884,2022-04-04 17:05:00+00:00,New York Yankees,Philadelphia Phillies,5.0,2.0,JP Sears,Kyle Gibson,George M. Steinbrenner Field,S,Spring Training,True
+MLB,706898,2022-04-04 17:05:00+00:00,Minnesota Twins,Boston Red Sox,2.0,0.0,Bailey Ober,Tanner Houck,Hammond Stadium,S,Spring Training,True
+MLB,706957,2022-04-04 17:05:00+00:00,Detroit Tigers,Toronto Blue Jays,4.0,2.0,Tarik Skubal,Kevin Gausman,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,707023,2022-04-04 17:05:00+00:00,Baltimore Orioles,Pittsburgh Pirates,3.0,9.0,Bruce Zimmermann,Bryse Wilson,Ed Smith Stadium,S,Spring Training,True
+MLB,706803,2022-04-04 20:05:00+00:00,Texas Rangers,San Diego Padres,5.0,11.0,Dane Dunning,Nick Martinez,Surprise Stadium,S,Spring Training,True
+MLB,706874,2022-04-04 20:05:00+00:00,Oakland Athletics,San Francisco Giants,3.0,5.0,Cole Irvin,Anthony DeSclafani,Hohokam Stadium,S,Spring Training,True
+MLB,706986,2022-04-04 20:05:00+00:00,Cincinnati Reds,Kansas City Royals,10.0,6.0,Vladimir Gutierrez,Brad Keller,Goodyear Ballpark,S,Spring Training,True
+MLB,707008,2022-04-04 20:05:00+00:00,Chicago Cubs,Chicago White Sox,15.0,9.0,Drew Smyly,Vince Velasquez,Sloan Park,S,Spring Training,True
+MLB,706827,2022-04-04 20:10:00+00:00,Seattle Mariners,Arizona Diamondbacks,6.0,3.0,Marco Gonzales,Caleb Smith,Peoria Stadium,S,Spring Training,True
+MLB,706928,2022-04-05 01:10:00+00:00,Los Angeles Dodgers,Los Angeles Angels,4.0,10.0,Julio Urías,José Suarez,Dodger Stadium,S,Spring Training,True
+MLB,706969,2022-04-05 01:40:00+00:00,Colorado Rockies,Milwaukee Brewers,7.0,8.0,,Freddy Peralta,Salt River Fields at Talking Stick,S,Spring Training,False
+MLB,707043,2022-04-05 01:40:00+00:00,Arizona Diamondbacks,Cleveland Guardians,3.0,1.0,Zach Davies,Konnor Pilkington,Chase Field,S,Spring Training,True

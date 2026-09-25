@@ -1,0 +1,596 @@
+league,game_id,datetime,home,away,home_score,away_score,home_starter,away_starter,venue,game_type,series_description,confirmed_starters
+MLB,824445,2026-04-29 17:10:00+00:00,Cleveland Guardians,Tampa Bay Rays,3.0,1.0,Gavin Williams,Drew Rasmussen,Progressive Field,R,Regular Season,True
+MLB,824608,2026-04-29 17:10:00+00:00,Chicago White Sox,Los Angeles Angels,3.0,2.0,Erick Fedde,Yusei Kikuchi,Rate Field,R,Regular Season,True
+MLB,823717,2026-04-29 17:40:00+00:00,Minnesota Twins,Seattle Mariners,3.0,5.0,Taj Bradley,George Kirby,Target Field,R,Regular Season,True
+MLB,822907,2026-04-29 18:35:00+00:00,Texas Rangers,New York Yankees,3.0,0.0,Nathan Eovaldi,Elmer Rodríguez,Globe Life Field,R,Regular Season,True
+MLB,822821,2026-04-29 19:07:00+00:00,Toronto Blue Jays,Boston Red Sox,8.0,1.0,Eric Lauer,Brayan Bello,Rogers Centre,R,Regular Season,True
+MLB,823958,2026-04-29 19:10:00+00:00,Los Angeles Dodgers,Miami Marlins,2.0,3.0,Tyler Glasnow,Sandy Alcantara,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,823312,2026-04-29 20:10:00+00:00,San Diego Padres,Chicago Cubs,4.0,5.0,Matt Waldron,Jameson Taillon,Petco Park,R,Regular Season,True
+MLB,823392,2026-04-29 22:40:00+00:00,Pittsburgh Pirates,St. Louis Cardinals,4.0,5.0,Bubba Chandler,Andre Pallante,PNC Park,R,Regular Season,True
+MLB,824525,2026-04-29 22:40:00+00:00,Cincinnati Reds,Colorado Rockies,2.0,13.0,Brandon Williamson,Tomoyuki Sugano,Great American Ball Park,R,Regular Season,True
+MLB,823633,2026-04-29 23:10:00+00:00,New York Mets,Washington Nationals,2.0,14.0,David Peterson,Cade Cavalli,Citi Field,R,Regular Season,True
+MLB,824930,2026-04-29 23:15:00+00:00,Atlanta Braves,Detroit Tigers,4.0,3.0,JR Ritchie,Tarik Skubal,Truist Park,R,Regular Season,True
+MLB,823796,2026-04-29 23:40:00+00:00,Milwaukee Brewers,Arizona Diamondbacks,2.0,6.0,Brandon Sproat,Eduardo Rodriguez,American Family Field,R,Regular Season,True
+MLB,825015,2026-04-30 01:40:00+00:00,Athletics,Kansas City Royals,5.0,2.0,Luis Severino,Michael Wacha,Sutter Health Park,R,Regular Season,True
+MLB,824929,2026-04-30 16:15:00+00:00,Atlanta Braves,Detroit Tigers,2.0,5.0,Bryce Elder,Framber Valdez,Truist Park,R,Regular Season,True
+MLB,823391,2026-04-30 16:35:00+00:00,Pittsburgh Pirates,St. Louis Cardinals,5.0,10.0,Paul Skenes,Hunter Dobbins,PNC Park,R,Regular Season,True
+MLB,823472,2026-04-30 16:35:00+00:00,Philadelphia Phillies,San Francisco Giants,3.0,2.0,Cristopher Sánchez,Logan Webb,Citizens Bank Park,R,Regular Season,True
+MLB,824848,2026-04-30 16:35:00+00:00,Baltimore Orioles,Houston Astros,10.0,3.0,Chris Bassitt,Peter Lambert,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,824524,2026-04-30 16:40:00+00:00,Cincinnati Reds,Colorado Rockies,6.0,4.0,Andrew Abbott,Michael Lorenzen,Great American Ball Park,R,Regular Season,True
+MLB,824850,2026-04-30 16:40:00+00:00,Baltimore Orioles,Houston Astros,5.0,11.0,Brandon Young,Lance McCullers Jr.,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,823634,2026-04-30 17:10:00+00:00,New York Mets,Washington Nationals,4.0,5.0,Freddy Peralta,Miles Mikolas,Citi Field,R,Regular Season,True
+MLB,823795,2026-04-30 17:40:00+00:00,Milwaukee Brewers,Arizona Diamondbacks,13.0,1.0,Brandon Woodruff,Michael Soroka,American Family Field,R,Regular Season,True
+MLB,825016,2026-04-30 19:05:00+00:00,Athletics,Kansas City Royals,6.0,3.0,Jeffrey Springs,Noah Cameron,Sutter Health Park,R,Regular Season,True
+MLB,823471,2026-04-30 21:35:00+00:00,Philadelphia Phillies,San Francisco Giants,6.0,5.0,Tim Mayza,Adrian Houser,Citizens Bank Park,R,Regular Season,True
+MLB,823714,2026-04-30 23:40:00+00:00,Minnesota Twins,Toronto Blue Jays,7.0,1.0,Bailey Ober,Kevin Gausman,Target Field,R,Regular Season,True
+MLB,824686,2026-05-01 18:20:00+00:00,Chicago Cubs,Arizona Diamondbacks,6.0,5.0,Colin Rea,Zac Gallen,Wrigley Field,R,Regular Season,True
+MLB,824287,2026-05-01 22:40:00+00:00,Detroit Tigers,Texas Rangers,4.0,5.0,Jack Flaherty,MacKenzie Gore,Comerica Park,R,Regular Season,True
+MLB,822744,2026-05-01 22:45:00+00:00,Washington Nationals,Milwaukee Brewers,1.0,6.0,Jake Irvin,Jacob Misiorowski,Nationals Park,R,Regular Season,True
+MLB,823389,2026-05-01 22:45:00+00:00,Pittsburgh Pirates,Cincinnati Reds,9.0,1.0,Mitch Keller,Brady Singer,PNC Park,R,Regular Season,True
+MLB,823557,2026-05-01 23:05:00+00:00,New York Yankees,Baltimore Orioles,7.0,2.0,Will Warren,Cade Povich,Yankee Stadium,R,Regular Season,True
+MLB,822990,2026-05-01 23:10:00+00:00,Tampa Bay Rays,San Francisco Giants,3.0,0.0,Shane McClanahan,Robbie Ray,Tropicana Field,R,Regular Season,True
+MLB,823877,2026-05-01 23:10:00+00:00,Miami Marlins,Philadelphia Phillies,5.0,6.0,Eury Pérez,Zack Wheeler,loanDepot park,R,Regular Season,True
+MLB,824772,2026-05-01 23:10:00+00:00,Boston Red Sox,Houston Astros,3.0,1.0,Jake Bennett,Mike Burrows,Fenway Park,R,Regular Season,True
+MLB,823713,2026-05-02 00:10:00+00:00,Minnesota Twins,Toronto Blue Jays,3.0,7.0,Simeon Woods Richardson,Patrick Corbin,Target Field,R,Regular Season,True
+MLB,823066,2026-05-02 00:15:00+00:00,St. Louis Cardinals,Los Angeles Dodgers,7.0,2.0,Matthew Liberatore,Emmet Sheehan,Busch Stadium,R,Regular Season,True
+MLB,824366,2026-05-02 00:40:00+00:00,Colorado Rockies,Atlanta Braves,6.0,8.0,Jose Quintana,Grant Holmes,Coors Field,R,Regular Season,True
+MLB,824041,2026-05-02 01:38:00+00:00,Los Angeles Angels,New York Mets,3.0,4.0,Walbert Ureña,Christian Scott,Angel Stadium,R,Regular Season,True
+MLB,823309,2026-05-02 01:40:00+00:00,San Diego Padres,Chicago White Sox,2.0,8.0,Germán Márquez,Noah Schultz,Petco Park,R,Regular Season,True
+MLB,825012,2026-05-02 01:40:00+00:00,Athletics,Cleveland Guardians,5.0,8.0,J.T. Ginn,Joey Cantillo,Sutter Health Park,R,Regular Season,True
+MLB,823146,2026-05-02 01:45:00+00:00,Seattle Mariners,Kansas City Royals,6.0,7.0,Bryan Woo,Cole Ragans,T-Mobile Park,R,Regular Season,True
+MLB,823554,2026-05-02 17:35:00+00:00,New York Yankees,Baltimore Orioles,9.0,4.0,Ryan Weathers,Kyle Bradish,Yankee Stadium,R,Regular Season,True
+MLB,823715,2026-05-02 18:10:00+00:00,Minnesota Twins,Toronto Blue Jays,4.0,11.0,Connor Prielipp,Dylan Cease,Target Field,R,Regular Season,True
+MLB,824685,2026-05-02 18:20:00+00:00,Chicago Cubs,Arizona Diamondbacks,2.0,0.0,Shota Imanaga,Ryne Nelson,Wrigley Field,R,Regular Season,True
+MLB,822746,2026-05-02 20:05:00+00:00,Washington Nationals,Milwaukee Brewers,1.0,4.0,Foster Griffin,Kyle Harrison,Nationals Park,R,Regular Season,True
+MLB,823388,2026-05-02 20:05:00+00:00,Pittsburgh Pirates,Cincinnati Reds,17.0,7.0,Carmen Mlodzinski,Rhett Lowder,PNC Park,R,Regular Season,True
+MLB,825014,2026-05-02 20:05:00+00:00,Athletics,Cleveland Guardians,6.0,14.0,Jacob Lopez,Slade Cecconi,Sutter Health Park,R,Regular Season,True
+MLB,823876,2026-05-02 20:10:00+00:00,Miami Marlins,Philadelphia Phillies,4.0,0.0,Max Meyer,Andrew Painter,loanDepot park,R,Regular Season,True
+MLB,824771,2026-05-02 20:10:00+00:00,Boston Red Sox,Houston Astros,3.0,6.0,Connelly Early,Spencer Arrighetti,Fenway Park,R,Regular Season,True
+MLB,822988,2026-05-02 22:10:00+00:00,Tampa Bay Rays,San Francisco Giants,5.0,1.0,Griffin Jax,Landen Roupp,Tropicana Field,R,Regular Season,True
+MLB,823067,2026-05-02 23:15:00+00:00,St. Louis Cardinals,Los Angeles Dodgers,3.0,2.0,Michael McGreevy,Roki Sasaki,Busch Stadium,R,Regular Season,True
+MLB,824284,2026-05-02 23:15:00+00:00,Detroit Tigers,Texas Rangers,5.0,1.0,Keider Montero,Kumar Rocker,Comerica Park,R,Regular Season,True
+MLB,824365,2026-05-03 00:10:00+00:00,Colorado Rockies,Atlanta Braves,1.0,9.0,Brennan Bernardino,Chris Sale,Coors Field,R,Regular Season,True
+MLB,823308,2026-05-03 00:40:00+00:00,San Diego Padres,Chicago White Sox,0.0,4.0,Michael King,Sean Burke,Petco Park,R,Regular Season,True
+MLB,824042,2026-05-03 01:38:00+00:00,Los Angeles Angels,New York Mets,4.0,3.0,Reid Detmers,Nolan McLean,Angel Stadium,R,Regular Season,True
+MLB,823144,2026-05-03 01:40:00+00:00,Seattle Mariners,Kansas City Royals,2.0,3.0,Emerson Hancock,Seth Lugo,T-Mobile Park,R,Regular Season,True
+MLB,823711,2026-05-03 16:45:00+00:00,Minnesota Twins,Toronto Blue Jays,4.0,3.0,Joe Ryan,Trey Yesavage,Target Field,R,Regular Season,True
+MLB,822742,2026-05-03 17:35:00+00:00,Washington Nationals,Milwaukee Brewers,3.0,2.0,PJ Poulin,Logan Henderson,Nationals Park,R,Regular Season,True
+MLB,823387,2026-05-03 17:35:00+00:00,Pittsburgh Pirates,Cincinnati Reds,1.0,0.0,Braxton Ashcraft,Chase Burns,PNC Park,R,Regular Season,True
+MLB,823555,2026-05-03 17:35:00+00:00,New York Yankees,Baltimore Orioles,11.0,3.0,Max Fried,Trey Gibson,Yankee Stadium,R,Regular Season,True
+MLB,824769,2026-05-03 17:35:00+00:00,Boston Red Sox,Houston Astros,1.0,3.0,Ranger Suarez,Cody Bolton,Fenway Park,R,Regular Season,True
+MLB,822987,2026-05-03 17:40:00+00:00,Tampa Bay Rays,San Francisco Giants,2.0,1.0,Steven Matz,Tyler Mahle,Tropicana Field,R,Regular Season,True
+MLB,823875,2026-05-03 17:40:00+00:00,Miami Marlins,Philadelphia Phillies,2.0,7.0,Chris Paddack,Jesús Luzardo,loanDepot park,R,Regular Season,True
+MLB,823065,2026-05-03 18:15:00+00:00,St. Louis Cardinals,Los Angeles Dodgers,1.0,4.0,Dustin May,Justin Wrobleski,Busch Stadium,R,Regular Season,True
+MLB,824687,2026-05-03 18:20:00+00:00,Chicago Cubs,Arizona Diamondbacks,8.0,4.0,Matthew Boyd,Merrill Kelly,Wrigley Field,R,Regular Season,True
+MLB,824364,2026-05-03 19:10:00+00:00,Colorado Rockies,Atlanta Braves,6.0,11.0,Kyle Freeland,Spencer Strider,Coors Field,R,Regular Season,True
+MLB,825013,2026-05-03 20:05:00+00:00,Athletics,Cleveland Guardians,7.0,1.0,Aaron Civale,Parker Messick,Sutter Health Park,R,Regular Season,True
+MLB,824043,2026-05-03 20:07:00+00:00,Los Angeles Angels,New York Mets,1.0,5.0,Jack Kochanowicz,Clay Holmes,Angel Stadium,R,Regular Season,True
+MLB,823145,2026-05-03 20:10:00+00:00,Seattle Mariners,Kansas City Royals,1.0,4.0,Luis Castillo,Kris Bubic,T-Mobile Park,R,Regular Season,True
+MLB,823307,2026-05-03 20:10:00+00:00,San Diego Padres,Chicago White Sox,4.0,3.0,Griffin Canning,Anthony Kay,Petco Park,R,Regular Season,True
+MLB,824285,2026-05-03 23:20:00+00:00,Detroit Tigers,Texas Rangers,7.0,1.0,Tyler Holton,Jack Leiter,Comerica Park,R,Regular Season,True
+MLB,824363,2026-05-04 21:40:00+00:00,Colorado Rockies,New York Mets,2.0,4.0,Tomoyuki Sugano,Huascar Brazobán,Coors Field,R,Regular Season,True
+MLB,824283,2026-05-04 22:10:00+00:00,Detroit Tigers,Boston Red Sox,4.0,5.0,Tyler Holton,Payton Tolle,Comerica Park,R,Regular Season,True
+MLB,822984,2026-05-04 22:40:00+00:00,Tampa Bay Rays,Toronto Blue Jays,5.0,1.0,Nick Martinez,Eric Lauer,Tropicana Field,R,Regular Season,True
+MLB,823874,2026-05-04 22:40:00+00:00,Miami Marlins,Philadelphia Phillies,0.0,1.0,Janson Junk,Aaron Nola,loanDepot park,R,Regular Season,True
+MLB,823552,2026-05-04 23:05:00+00:00,New York Yankees,Baltimore Orioles,12.0,1.0,Cam Schlittler,Shane Baz,Yankee Stadium,R,Regular Season,True
+MLB,824684,2026-05-04 23:10:00+00:00,Chicago Cubs,Cincinnati Reds,5.0,4.0,Edward Cabrera,Chase Petty,Wrigley Field,R,Regular Season,True
+MLB,824120,2026-05-04 23:40:00+00:00,Kansas City Royals,Cleveland Guardians,6.0,2.0,Michael Wacha,Tanner Bibee,Kauffman Stadium,R,Regular Season,True
+MLB,823064,2026-05-04 23:45:00+00:00,St. Louis Cardinals,Milwaukee Brewers,6.0,3.0,Kyle Leahy,Chad Patrick,Busch Stadium,R,Regular Season,True
+MLB,824201,2026-05-05 00:10:00+00:00,Houston Astros,Los Angeles Dodgers,3.0,8.0,Steven Okert,Yoshinobu Yamamoto,Daikin Park,R,Regular Season,True
+MLB,824039,2026-05-05 01:38:00+00:00,Los Angeles Angels,Chicago White Sox,0.0,6.0,José Soriano,Davis Martin,Angel Stadium,R,Regular Season,True
+MLB,823143,2026-05-05 01:40:00+00:00,Seattle Mariners,Atlanta Braves,5.0,4.0,Logan Gilbert,JR Ritchie,T-Mobile Park,R,Regular Season,True
+MLB,823228,2026-05-05 01:45:00+00:00,San Francisco Giants,San Diego Padres,3.0,2.0,Trevor McDonald,Randy Vásquez,Oracle Park,R,Regular Season,True
+MLB,822986,2026-05-05 22:40:00+00:00,Tampa Bay Rays,Toronto Blue Jays,4.0,3.0,Drew Rasmussen,Kevin Gausman,Tropicana Field,R,Regular Season,True
+MLB,823469,2026-05-05 22:40:00+00:00,Philadelphia Phillies,Athletics,9.0,1.0,Cristopher Sánchez,Luis Severino,Citizens Bank Park,R,Regular Season,True
+MLB,823873,2026-05-05 22:40:00+00:00,Miami Marlins,Baltimore Orioles,7.0,9.0,Sandy Alcantara,Chris Bassitt,loanDepot park,R,Regular Season,True
+MLB,824281,2026-05-05 22:40:00+00:00,Detroit Tigers,Boston Red Sox,3.0,10.0,Framber Valdez,Jovani Morán,Comerica Park,R,Regular Season,True
+MLB,822743,2026-05-05 22:45:00+00:00,Washington Nationals,Minnesota Twins,3.0,11.0,Cade Cavalli,Taj Bradley,Nationals Park,R,Regular Season,True
+MLB,823553,2026-05-05 23:05:00+00:00,New York Yankees,Texas Rangers,7.0,4.0,Elmer Rodríguez,Jacob deGrom,Yankee Stadium,R,Regular Season,True
+MLB,824119,2026-05-05 23:40:00+00:00,Kansas City Royals,Cleveland Guardians,5.0,3.0,Stephen Kolek,Gavin Williams,Kauffman Stadium,R,Regular Season,True
+MLB,824682,2026-05-05 23:40:00+00:00,Chicago Cubs,Cincinnati Reds,3.0,2.0,Jameson Taillon,Andrew Abbott,Wrigley Field,R,Regular Season,True
+MLB,824200,2026-05-06 00:10:00+00:00,Houston Astros,Los Angeles Dodgers,2.0,1.0,Peter Lambert,Shohei Ohtani,Daikin Park,R,Regular Season,True
+MLB,824040,2026-05-06 01:38:00+00:00,Los Angeles Angels,Chicago White Sox,4.0,3.0,Sam Aldegheri,Erick Fedde,Angel Stadium,R,Regular Season,True
+MLB,823142,2026-05-06 01:40:00+00:00,Seattle Mariners,Atlanta Braves,2.0,3.0,George Kirby,Bryce Elder,T-Mobile Park,R,Regular Season,True
+MLB,825092,2026-05-06 01:40:00+00:00,Arizona Diamondbacks,Pittsburgh Pirates,9.0,0.0,Eduardo Rodriguez,Bubba Chandler,Chase Field,R,Regular Season,True
+MLB,823227,2026-05-06 01:45:00+00:00,San Francisco Giants,San Diego Padres,5.0,10.0,Logan Webb,Walker Buehler,Oracle Park,R,Regular Season,True
+MLB,822985,2026-05-06 17:10:00+00:00,Tampa Bay Rays,Toronto Blue Jays,3.0,0.0,Shane McClanahan,Patrick Corbin,Tropicana Field,R,Regular Season,True
+MLB,823063,2026-05-06 17:15:00+00:00,St. Louis Cardinals,Milwaukee Brewers,2.0,6.0,Andre Pallante,Brandon Sproat,Busch Stadium,R,Regular Season,True
+MLB,824198,2026-05-06 18:10:00+00:00,Houston Astros,Los Angeles Dodgers,2.0,12.0,Lance McCullers Jr.,Tyler Glasnow,Daikin Park,R,Regular Season,True
+MLB,823226,2026-05-06 19:45:00+00:00,San Francisco Giants,San Diego Padres,1.0,5.0,Adrian Houser,Bradgley Rodriguez,Oracle Park,R,Regular Season,True
+MLB,824036,2026-05-06 20:07:00+00:00,Los Angeles Angels,Chicago White Sox,8.0,2.0,Walbert Ureña,Noah Schultz,Angel Stadium,R,Regular Season,True
+MLB,823141,2026-05-06 20:10:00+00:00,Seattle Mariners,Atlanta Braves,3.0,1.0,Bryan Woo,Martín Pérez,T-Mobile Park,R,Regular Season,True
+MLB,823470,2026-05-06 22:40:00+00:00,Philadelphia Phillies,Athletics,6.0,3.0,Zack Wheeler,Jeffrey Springs,Citizens Bank Park,R,Regular Season,True
+MLB,823872,2026-05-06 22:40:00+00:00,Miami Marlins,Baltimore Orioles,4.0,7.0,Eury Pérez,Brandon Young,loanDepot park,R,Regular Season,True
+MLB,824282,2026-05-06 22:40:00+00:00,Detroit Tigers,Boston Red Sox,0.0,4.0,Jack Flaherty,Sonny Gray,Comerica Park,R,Regular Season,True
+MLB,822740,2026-05-06 22:45:00+00:00,Washington Nationals,Minnesota Twins,15.0,2.0,Miles Mikolas,Bailey Ober,Nationals Park,R,Regular Season,True
+MLB,823550,2026-05-06 23:05:00+00:00,New York Yankees,Texas Rangers,1.0,6.0,Will Warren,Nathan Eovaldi,Yankee Stadium,R,Regular Season,True
+MLB,824118,2026-05-06 23:40:00+00:00,Kansas City Royals,Cleveland Guardians,1.0,3.0,Cole Ragans,Joey Cantillo,Kauffman Stadium,R,Regular Season,True
+MLB,824683,2026-05-06 23:40:00+00:00,Chicago Cubs,Cincinnati Reds,7.0,6.0,Colin Rea,Brady Singer,Wrigley Field,R,Regular Season,True
+MLB,824361,2026-05-07 01:20:00+00:00,Colorado Rockies,New York Mets,5.0,10.0,Michael Lorenzen,Freddy Peralta,Coors Field,R,Regular Season,True
+MLB,825091,2026-05-07 01:40:00+00:00,Arizona Diamondbacks,Pittsburgh Pirates,0.0,1.0,Michael Soroka,Paul Skenes,Chase Field,R,Regular Season,True
+MLB,823551,2026-05-07 16:35:00+00:00,New York Yankees,Texas Rangers,9.0,2.0,Paul Blackburn,MacKenzie Gore,Yankee Stadium,R,Regular Season,True
+MLB,822741,2026-05-07 17:05:00+00:00,Washington Nationals,Minnesota Twins,7.0,5.0,Jake Irvin,Simeon Woods Richardson,Nationals Park,R,Regular Season,True
+MLB,824117,2026-05-07 18:10:00+00:00,Kansas City Royals,Cleveland Guardians,5.0,8.0,Seth Lugo,Slade Cecconi,Kauffman Stadium,R,Regular Season,True
+MLB,824681,2026-05-07 18:20:00+00:00,Chicago Cubs,Cincinnati Reds,8.0,3.0,Shota Imanaga,Rhett Lowder,Wrigley Field,R,Regular Season,True
+MLB,824362,2026-05-07 19:10:00+00:00,Colorado Rockies,New York Mets,6.0,2.0,Jose Quintana,Christian Scott,Coors Field,R,Regular Season,True
+MLB,825090,2026-05-07 19:40:00+00:00,Arizona Diamondbacks,Pittsburgh Pirates,2.0,4.0,Zac Gallen,Mitch Keller,Chase Field,R,Regular Season,True
+MLB,823467,2026-05-07 22:40:00+00:00,Philadelphia Phillies,Athletics,1.0,12.0,Andrew Painter,J.T. Ginn,Citizens Bank Park,R,Regular Season,True
+MLB,823870,2026-05-07 22:40:00+00:00,Miami Marlins,Baltimore Orioles,4.0,3.0,Max Meyer,Cade Povich,loanDepot park,R,Regular Season,True
+MLB,824767,2026-05-07 23:10:00+00:00,Boston Red Sox,Tampa Bay Rays,4.0,8.0,Jake Bennett,Griffin Jax,Fenway Park,R,Regular Season,True
+MLB,823306,2026-05-08 02:10:00+00:00,San Diego Padres,St. Louis Cardinals,1.0,2.0,Michael King,Matthew Liberatore,Petco Park,R,Regular Season,True
+MLB,824522,2026-05-08 22:10:00+00:00,Cincinnati Reds,Houston Astros,0.0,10.0,Nick Lodolo,Mike Burrows,Great American Ball Park,R,Regular Season,True
+MLB,823466,2026-05-08 22:40:00+00:00,Philadelphia Phillies,Colorado Rockies,7.0,9.0,Jesús Luzardo,Chase Dollander,Citizens Bank Park,R,Regular Season,True
+MLB,824846,2026-05-08 23:05:00+00:00,Baltimore Orioles,Athletics,3.0,4.0,Kyle Bradish,Jacob Lopez,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,822822,2026-05-08 23:07:00+00:00,Toronto Blue Jays,Los Angeles Angels,2.0,0.0,Dylan Cease,Reid Detmers,Rogers Centre,R,Regular Season,True
+MLB,823871,2026-05-08 23:10:00+00:00,Miami Marlins,Washington Nationals,2.0,3.0,Robby Snelling,Foster Griffin,loanDepot park,R,Regular Season,True
+MLB,824768,2026-05-08 23:10:00+00:00,Boston Red Sox,Tampa Bay Rays,2.0,0.0,Connelly Early,Jesse Scholtens,Fenway Park,R,Regular Season,True
+MLB,824443,2026-05-08 23:15:00+00:00,Cleveland Guardians,Minnesota Twins,6.0,4.0,Parker Messick,Connor Prielipp,Progressive Field,R,Regular Season,True
+MLB,823794,2026-05-08 23:40:00+00:00,Milwaukee Brewers,New York Yankees,6.0,0.0,Jacob Misiorowski,Max Fried,American Family Field,R,Regular Season,True
+MLB,824116,2026-05-08 23:40:00+00:00,Kansas City Royals,Detroit Tigers,4.0,3.0,Kris Bubic,Keider Montero,Kauffman Stadium,R,Regular Season,True
+MLB,824607,2026-05-08 23:40:00+00:00,Chicago White Sox,Seattle Mariners,8.0,12.0,Sean Burke,Emerson Hancock,Rate Field,R,Regular Season,True
+MLB,822904,2026-05-09 00:05:00+00:00,Texas Rangers,Chicago Cubs,1.0,7.0,Kumar Rocker,Ben Brown,Globe Life Field,R,Regular Season,True
+MLB,825088,2026-05-09 01:40:00+00:00,Arizona Diamondbacks,New York Mets,1.0,3.0,Ryne Nelson,Nolan McLean,Chase Field,R,Regular Season,True
+MLB,823303,2026-05-09 01:45:00+00:00,San Diego Padres,St. Louis Cardinals,0.0,6.0,Griffin Canning,Michael McGreevy,Petco Park,R,Regular Season,True
+MLB,823957,2026-05-09 02:10:00+00:00,Los Angeles Dodgers,Atlanta Braves,3.0,1.0,Emmet Sheehan,Chris Sale,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,823225,2026-05-09 02:15:00+00:00,San Francisco Giants,Pittsburgh Pirates,5.0,2.0,Robbie Ray,Carmen Mlodzinski,Oracle Park,R,Regular Season,True
+MLB,822820,2026-05-09 19:07:00+00:00,Toronto Blue Jays,Los Angeles Angels,14.0,1.0,Trey Yesavage,Jack Kochanowicz,Rogers Centre,R,Regular Season,True
+MLB,824847,2026-05-09 20:05:00+00:00,Baltimore Orioles,Athletics,2.0,6.0,Shane Baz,Aaron Civale,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,823869,2026-05-09 20:10:00+00:00,Miami Marlins,Washington Nationals,8.0,7.0,Janson Junk,Richard Lovelady,loanDepot park,R,Regular Season,True
+MLB,824523,2026-05-09 20:10:00+00:00,Cincinnati Reds,Houston Astros,3.0,1.0,Chase Burns,Spencer Arrighetti,Great American Ball Park,R,Regular Season,True
+MLB,823468,2026-05-09 22:05:00+00:00,Philadelphia Phillies,Colorado Rockies,9.0,3.0,Aaron Nola,Kyle Freeland,Citizens Bank Park,R,Regular Season,True
+MLB,824444,2026-05-09 22:10:00+00:00,Cleveland Guardians,Minnesota Twins,1.0,2.0,Tanner Bibee,Joe Ryan,Progressive Field,R,Regular Season,True
+MLB,822905,2026-05-09 23:05:00+00:00,Texas Rangers,Chicago Cubs,6.0,0.0,Jack Leiter,Edward Cabrera,Globe Life Field,R,Regular Season,True
+MLB,823792,2026-05-09 23:10:00+00:00,Milwaukee Brewers,New York Yankees,4.0,3.0,Kyle Harrison,Cam Schlittler,American Family Field,R,Regular Season,True
+MLB,824115,2026-05-09 23:10:00+00:00,Kansas City Royals,Detroit Tigers,5.0,1.0,Michael Wacha,Burch Smith,Kauffman Stadium,R,Regular Season,True
+MLB,824606,2026-05-09 23:10:00+00:00,Chicago White Sox,Seattle Mariners,6.0,1.0,Anthony Kay,Luis Castillo,Rate Field,R,Regular Season,True
+MLB,823304,2026-05-09 23:15:00+00:00,San Diego Padres,St. Louis Cardinals,4.0,2.0,Randy Vásquez,Dustin May,Petco Park,R,Regular Season,True
+MLB,825089,2026-05-09 23:15:00+00:00,Arizona Diamondbacks,New York Mets,2.0,1.0,Merrill Kelly,Clay Holmes,Chase Field,R,Regular Season,True
+MLB,823224,2026-05-10 01:05:00+00:00,San Francisco Giants,Pittsburgh Pirates,3.0,13.0,Landen Roupp,Braxton Ashcraft,Oracle Park,R,Regular Season,True
+MLB,823955,2026-05-10 01:10:00+00:00,Los Angeles Dodgers,Atlanta Braves,2.0,7.0,Blake Snell,Spencer Strider,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,823868,2026-05-10 16:15:00+00:00,Miami Marlins,Washington Nationals,5.0,2.0,Sandy Alcantara,Cade Cavalli,loanDepot park,R,Regular Season,True
+MLB,823463,2026-05-10 17:35:00+00:00,Philadelphia Phillies,Colorado Rockies,6.0,0.0,Cristopher Sánchez,Tomoyuki Sugano,Citizens Bank Park,R,Regular Season,True
+MLB,824765,2026-05-10 17:35:00+00:00,Boston Red Sox,Tampa Bay Rays,1.0,4.0,Payton Tolle,Nick Martinez,Fenway Park,R,Regular Season,True
+MLB,824845,2026-05-10 17:35:00+00:00,Baltimore Orioles,Athletics,2.0,1.0,Keegan Akin,Luis Severino,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,822819,2026-05-10 17:37:00+00:00,Toronto Blue Jays,Los Angeles Angels,1.0,6.0,Spencer Miles,José Soriano,Rogers Centre,R,Regular Season,True
+MLB,824440,2026-05-10 17:40:00+00:00,Cleveland Guardians,Minnesota Twins,4.0,5.0,Gavin Williams,Andrew Morris,Progressive Field,R,Regular Season,True
+MLB,824520,2026-05-10 17:40:00+00:00,Cincinnati Reds,Houston Astros,5.0,0.0,Andrew Abbott,Kai-Wei Teng,Great American Ball Park,R,Regular Season,True
+MLB,823793,2026-05-10 18:10:00+00:00,Milwaukee Brewers,New York Yankees,4.0,3.0,Logan Henderson,Carlos Rodón,American Family Field,R,Regular Season,True
+MLB,824605,2026-05-10 18:10:00+00:00,Chicago White Sox,Seattle Mariners,2.0,1.0,Davis Martin,Logan Gilbert,Rate Field,R,Regular Season,True
+MLB,822902,2026-05-10 18:35:00+00:00,Texas Rangers,Chicago Cubs,3.0,0.0,Jacob deGrom,Jameson Taillon,Globe Life Field,R,Regular Season,True
+MLB,823221,2026-05-10 20:05:00+00:00,San Francisco Giants,Pittsburgh Pirates,7.0,6.0,Tyler Mahle,Bubba Chandler,Oracle Park,R,Regular Season,True
+MLB,823305,2026-05-10 20:10:00+00:00,San Diego Padres,St. Louis Cardinals,3.0,2.0,Walker Buehler,Kyle Leahy,Petco Park,R,Regular Season,True
+MLB,823954,2026-05-10 20:10:00+00:00,Los Angeles Dodgers,Atlanta Braves,2.0,7.0,Justin Wrobleski,Bryce Elder,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,825085,2026-05-10 20:10:00+00:00,Arizona Diamondbacks,New York Mets,5.0,1.0,Eduardo Rodriguez,Huascar Brazobán,Chase Field,R,Regular Season,True
+MLB,824113,2026-05-10 23:20:00+00:00,Kansas City Royals,Detroit Tigers,3.0,6.0,Noah Cameron,Brenan Hanifee,Kauffman Stadium,R,Regular Season,True
+MLB,824441,2026-05-11 22:10:00+00:00,Cleveland Guardians,Los Angeles Angels,7.0,2.0,Joey Cantillo,Brent Suter,Progressive Field,R,Regular Season,True
+MLB,824844,2026-05-11 22:35:00+00:00,Baltimore Orioles,New York Yankees,3.0,2.0,Brandon Young,Ryan Weathers,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,822818,2026-05-11 23:07:00+00:00,Toronto Blue Jays,Tampa Bay Rays,5.0,8.0,Kevin Gausman,Drew Rasmussen,Rogers Centre,R,Regular Season,True
+MLB,822901,2026-05-12 00:05:00+00:00,Texas Rangers,Arizona Diamondbacks,0.0,1.0,Jakob Junis,Michael Soroka,Globe Life Field,R,Regular Season,True
+MLB,824199,2026-05-12 00:10:00+00:00,Houston Astros,Seattle Mariners,1.0,3.0,Peter Lambert,George Kirby,Daikin Park,R,Regular Season,True
+MLB,823953,2026-05-12 02:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,3.0,9.0,Roki Sasaki,Trevor McDonald,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,824442,2026-05-12 22:10:00+00:00,Cleveland Guardians,Los Angeles Angels,3.0,2.0,Slade Cecconi,Walbert Ureña,Progressive Field,R,Regular Season,True
+MLB,824843,2026-05-12 22:35:00+00:00,Baltimore Orioles,New York Yankees,2.0,6.0,Trevor Rogers,Will Warren,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,823385,2026-05-12 22:40:00+00:00,Pittsburgh Pirates,Colorado Rockies,3.0,1.0,Paul Skenes,Michael Lorenzen,PNC Park,R,Regular Season,True
+MLB,824521,2026-05-12 22:40:00+00:00,Cincinnati Reds,Washington Nationals,4.0,10.0,Brady Singer,Miles Mikolas,Great American Ball Park,R,Regular Season,True
+MLB,824764,2026-05-12 22:45:00+00:00,Boston Red Sox,Philadelphia Phillies,1.0,2.0,Jovani Morán,Zack Wheeler,Fenway Park,R,Regular Season,True
+MLB,822817,2026-05-12 23:07:00+00:00,Toronto Blue Jays,Tampa Bay Rays,6.0,7.0,Patrick Corbin,Shane McClanahan,Rogers Centre,R,Regular Season,True
+MLB,823632,2026-05-12 23:10:00+00:00,New York Mets,Detroit Tigers,10.0,2.0,Freddy Peralta,Jack Flaherty,Citi Field,R,Regular Season,True
+MLB,824927,2026-05-12 23:15:00+00:00,Atlanta Braves,Chicago Cubs,5.0,2.0,Grant Holmes,Colin Rea,Truist Park,R,Regular Season,True
+MLB,823712,2026-05-12 23:40:00+00:00,Minnesota Twins,Miami Marlins,3.0,0.0,Bailey Ober,Eury Pérez,Target Field,R,Regular Season,True
+MLB,823790,2026-05-12 23:40:00+00:00,Milwaukee Brewers,San Diego Padres,6.0,4.0,Brandon Sproat,Bradgley Rodriguez,American Family Field,R,Regular Season,True
+MLB,824604,2026-05-12 23:40:00+00:00,Chicago White Sox,Kansas City Royals,6.0,5.0,Erick Fedde,Stephen Kolek,Rate Field,R,Regular Season,True
+MLB,822903,2026-05-13 00:05:00+00:00,Texas Rangers,Arizona Diamondbacks,7.0,4.0,MacKenzie Gore,Zac Gallen,Globe Life Field,R,Regular Season,True
+MLB,824197,2026-05-13 00:10:00+00:00,Houston Astros,Seattle Mariners,2.0,10.0,Tatsuya Imai,Bryan Woo,Daikin Park,R,Regular Season,True
+MLB,825011,2026-05-13 01:40:00+00:00,Athletics,St. Louis Cardinals,4.0,6.0,Jeffrey Springs,Andre Pallante,Sutter Health Park,R,Regular Season,True
+MLB,823951,2026-05-13 02:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,2.0,6.0,Yoshinobu Yamamoto,Adrian Houser,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,824841,2026-05-13 17:05:00+00:00,Baltimore Orioles,New York Yankees,7.0,0.0,Kyle Bradish,Max Fried,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,824438,2026-05-13 17:10:00+00:00,Cleveland Guardians,Los Angeles Angels,4.0,2.0,Parker Messick,Reid Detmers,Progressive Field,R,Regular Season,True
+MLB,823386,2026-05-13 22:40:00+00:00,Pittsburgh Pirates,Colorado Rockies,4.0,10.0,Mitch Keller,Jose Quintana,PNC Park,R,Regular Season,True
+MLB,824519,2026-05-13 22:40:00+00:00,Cincinnati Reds,Washington Nationals,7.0,8.0,Nick Lodolo,Jake Irvin,Great American Ball Park,R,Regular Season,True
+MLB,824763,2026-05-13 22:45:00+00:00,Boston Red Sox,Philadelphia Phillies,3.0,1.0,Sonny Gray,Andrew Painter,Fenway Park,R,Regular Season,True
+MLB,822815,2026-05-13 23:07:00+00:00,Toronto Blue Jays,Tampa Bay Rays,5.0,3.0,Dylan Cease,Griffin Jax,Rogers Centre,R,Regular Season,True
+MLB,823631,2026-05-13 23:10:00+00:00,New York Mets,Detroit Tigers,3.0,2.0,Christian Scott,Framber Valdez,Citi Field,R,Regular Season,True
+MLB,824928,2026-05-13 23:15:00+00:00,Atlanta Braves,Chicago Cubs,4.0,1.0,JR Ritchie,Shota Imanaga,Truist Park,R,Regular Season,True
+MLB,823710,2026-05-13 23:40:00+00:00,Minnesota Twins,Miami Marlins,5.0,9.0,Simeon Woods Richardson,Max Meyer,Target Field,R,Regular Season,True
+MLB,823791,2026-05-13 23:40:00+00:00,Milwaukee Brewers,San Diego Padres,1.0,3.0,Jacob Misiorowski,Michael King,American Family Field,R,Regular Season,True
+MLB,824603,2026-05-13 23:40:00+00:00,Chicago White Sox,Kansas City Royals,6.0,5.0,Noah Schultz,Seth Lugo,Rate Field,R,Regular Season,True
+MLB,822900,2026-05-14 00:05:00+00:00,Texas Rangers,Arizona Diamondbacks,6.0,5.0,Kumar Rocker,Ryne Nelson,Globe Life Field,R,Regular Season,True
+MLB,824195,2026-05-14 00:10:00+00:00,Houston Astros,Seattle Mariners,4.0,3.0,Lance McCullers Jr.,Bryce Miller,Daikin Park,R,Regular Season,True
+MLB,825010,2026-05-14 01:40:00+00:00,Athletics,St. Louis Cardinals,6.0,2.0,J.T. Ginn,Matthew Liberatore,Sutter Health Park,R,Regular Season,True
+MLB,823952,2026-05-14 02:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,4.0,0.0,Shohei Ohtani,Robbie Ray,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,823383,2026-05-14 16:35:00+00:00,Pittsburgh Pirates,Colorado Rockies,7.0,2.0,Mason Montgomery,Chase Dollander,PNC Park,R,Regular Season,True
+MLB,824517,2026-05-14 16:40:00+00:00,Cincinnati Reds,Washington Nationals,15.0,1.0,Chase Burns,Foster Griffin,Great American Ball Park,R,Regular Season,True
+MLB,823630,2026-05-14 17:10:00+00:00,New York Mets,Detroit Tigers,9.0,4.0,Nolan McLean,Keider Montero,Citi Field,R,Regular Season,True
+MLB,823709,2026-05-14 17:40:00+00:00,Minnesota Twins,Miami Marlins,9.0,1.0,Zebby Matthews,Braxton Garrett,Target Field,R,Regular Season,True
+MLB,823789,2026-05-14 17:40:00+00:00,Milwaukee Brewers,San Diego Padres,7.0,1.0,Kyle Harrison,Griffin Canning,American Family Field,R,Regular Season,True
+MLB,824196,2026-05-14 18:10:00+00:00,Houston Astros,Seattle Mariners,3.0,8.0,Mike Burrows,Luis Castillo,Daikin Park,R,Regular Season,True
+MLB,825008,2026-05-14 19:05:00+00:00,Athletics,St. Louis Cardinals,4.0,5.0,Jacob Lopez,Michael McGreevy,Sutter Health Park,R,Regular Season,True
+MLB,824762,2026-05-14 22:45:00+00:00,Boston Red Sox,Philadelphia Phillies,1.0,3.0,Ranger Suarez,Jesús Luzardo,Fenway Park,R,Regular Season,True
+MLB,824926,2026-05-14 23:15:00+00:00,Atlanta Braves,Chicago Cubs,0.0,2.0,Chris Sale,Ben Brown,Truist Park,R,Regular Season,True
+MLB,824602,2026-05-14 23:40:00+00:00,Chicago White Sox,Kansas City Royals,6.0,2.0,Anthony Kay,Kris Bubic,Rate Field,R,Regular Season,True
+MLB,823950,2026-05-15 02:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,5.0,2.0,Emmet Sheehan,Landen Roupp,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,823384,2026-05-15 22:40:00+00:00,Pittsburgh Pirates,Philadelphia Phillies,9.0,11.0,Braxton Ashcraft,Aaron Nola,PNC Park,R,Regular Season,True
+MLB,822739,2026-05-15 22:45:00+00:00,Washington Nationals,Baltimore Orioles,3.0,2.0,Zack Littell,Shane Baz,Nationals Park,R,Regular Season,True
+MLB,824280,2026-05-15 22:45:00+00:00,Detroit Tigers,Toronto Blue Jays,3.0,2.0,Brenan Hanifee,Trey Yesavage,Comerica Park,R,Regular Season,True
+MLB,822983,2026-05-15 23:10:00+00:00,Tampa Bay Rays,Miami Marlins,7.0,2.0,Ian Seymour,Janson Junk,Tropicana Field,R,Regular Season,True
+MLB,823707,2026-05-15 23:10:00+00:00,Minnesota Twins,Milwaukee Brewers,2.0,3.0,Joe Ryan,Coleman Crow,Target Field,R,Regular Season,True
+MLB,824439,2026-05-15 23:10:00+00:00,Cleveland Guardians,Cincinnati Reds,6.0,7.0,Tanner Bibee,Andrew Abbott,Progressive Field,R,Regular Season,True
+MLB,823629,2026-05-15 23:15:00+00:00,New York Mets,New York Yankees,2.0,5.0,Clay Holmes,Cam Schlittler,Citi Field,R,Regular Season,True
+MLB,824925,2026-05-15 23:15:00+00:00,Atlanta Braves,Boston Red Sox,3.0,2.0,Spencer Strider,Connelly Early,Truist Park,R,Regular Season,True
+MLB,824601,2026-05-15 23:40:00+00:00,Chicago White Sox,Chicago Cubs,5.0,10.0,Sean Burke,Edward Cabrera,Rate Field,R,Regular Season,True
+MLB,824194,2026-05-16 00:10:00+00:00,Houston Astros,Texas Rangers,2.0,0.0,Spencer Arrighetti,Jack Leiter,Daikin Park,R,Regular Season,True
+MLB,823061,2026-05-16 00:15:00+00:00,St. Louis Cardinals,Kansas City Royals,5.0,4.0,Dustin May,Michael Wacha,Busch Stadium,R,Regular Season,True
+MLB,824360,2026-05-16 00:40:00+00:00,Colorado Rockies,Arizona Diamondbacks,1.0,9.0,Kyle Freeland,Merrill Kelly,Coors Field,R,Regular Season,True
+MLB,824037,2026-05-16 01:38:00+00:00,Los Angeles Angels,Los Angeles Dodgers,0.0,6.0,Jack Kochanowicz,Will Klein,Angel Stadium,R,Regular Season,True
+MLB,823140,2026-05-16 01:40:00+00:00,Seattle Mariners,San Diego Padres,0.0,2.0,Emerson Hancock,Randy Vásquez,T-Mobile Park,R,Regular Season,True
+MLB,825009,2026-05-16 01:40:00+00:00,Athletics,San Francisco Giants,5.0,2.0,Aaron Civale,Tyler Mahle,Sutter Health Park,R,Regular Season,True
+MLB,824278,2026-05-16 17:10:00+00:00,Detroit Tigers,Toronto Blue Jays,1.0,2.0,Casey Mize,Mason Fluharty,Comerica Park,R,Regular Season,True
+MLB,823060,2026-05-16 18:15:00+00:00,St. Louis Cardinals,Kansas City Royals,4.0,2.0,Kyle Leahy,Noah Cameron,Busch Stadium,R,Regular Season,True
+MLB,824359,2026-05-16 19:10:00+00:00,Colorado Rockies,Arizona Diamondbacks,4.0,2.0,Tomoyuki Sugano,Eduardo Rodriguez,Coors Field,R,Regular Season,True
+MLB,822737,2026-05-16 20:05:00+00:00,Washington Nationals,Baltimore Orioles,13.0,3.0,Cade Cavalli,Chris Bassitt,Nationals Park,R,Regular Season,True
+MLB,823382,2026-05-16 20:05:00+00:00,Pittsburgh Pirates,Philadelphia Phillies,0.0,6.0,Bubba Chandler,Cristopher Sánchez,PNC Park,R,Regular Season,True
+MLB,822981,2026-05-16 20:10:00+00:00,Tampa Bay Rays,Miami Marlins,5.0,10.0,Nick Martinez,Sandy Alcantara,Tropicana Field,R,Regular Season,True
+MLB,824435,2026-05-16 22:10:00+00:00,Cleveland Guardians,Cincinnati Reds,7.0,4.0,Joey Cantillo,Chris Paddack,Progressive Field,R,Regular Season,True
+MLB,823706,2026-05-16 23:10:00+00:00,Minnesota Twins,Milwaukee Brewers,1.0,2.0,Connor Prielipp,Logan Henderson,Target Field,R,Regular Season,True
+MLB,824193,2026-05-16 23:10:00+00:00,Houston Astros,Texas Rangers,4.0,1.0,Kai-Wei Teng,Jacob deGrom,Daikin Park,R,Regular Season,True
+MLB,824600,2026-05-16 23:10:00+00:00,Chicago White Sox,Chicago Cubs,8.0,3.0,Davis Martin,Jameson Taillon,Rate Field,R,Regular Season,True
+MLB,823139,2026-05-16 23:15:00+00:00,Seattle Mariners,San Diego Padres,4.0,7.0,Logan Gilbert,Walker Buehler,T-Mobile Park,R,Regular Season,True
+MLB,823627,2026-05-16 23:15:00+00:00,New York Mets,New York Yankees,6.0,3.0,Huascar Brazobán,Carlos Rodón,Citi Field,R,Regular Season,True
+MLB,824924,2026-05-16 23:15:00+00:00,Atlanta Braves,Boston Red Sox,2.0,3.0,Bryce Elder,Payton Tolle,Truist Park,R,Regular Season,True
+MLB,824038,2026-05-17 01:38:00+00:00,Los Angeles Angels,Los Angeles Dodgers,2.0,15.0,José Soriano,Justin Wrobleski,Angel Stadium,R,Regular Season,True
+MLB,825007,2026-05-17 01:40:00+00:00,Athletics,San Francisco Giants,4.0,6.0,Luis Severino,Trevor McDonald,Sutter Health Park,R,Regular Season,True
+MLB,822982,2026-05-17 16:15:00+00:00,Tampa Bay Rays,Miami Marlins,6.0,3.0,Drew Rasmussen,Eury Pérez,Tropicana Field,R,Regular Season,True
+MLB,822738,2026-05-17 17:35:00+00:00,Washington Nationals,Baltimore Orioles,3.0,7.0,Richard Lovelady,Brandon Young,Nationals Park,R,Regular Season,True
+MLB,823381,2026-05-17 17:35:00+00:00,Pittsburgh Pirates,Philadelphia Phillies,0.0,6.0,Paul Skenes,Zack Wheeler,PNC Park,R,Regular Season,True
+MLB,824923,2026-05-17 17:35:00+00:00,Atlanta Braves,Boston Red Sox,8.0,1.0,Grant Holmes,Brayan Bello,Truist Park,R,Regular Season,True
+MLB,823628,2026-05-17 17:40:00+00:00,New York Mets,New York Yankees,7.0,6.0,Freddy Peralta,Elmer Rodríguez,Citi Field,R,Regular Season,True
+MLB,824279,2026-05-17 17:40:00+00:00,Detroit Tigers,Toronto Blue Jays,1.0,4.0,Jack Flaherty,Kevin Gausman,Comerica Park,R,Regular Season,True
+MLB,824436,2026-05-17 17:40:00+00:00,Cleveland Guardians,Cincinnati Reds,10.0,3.0,Gavin Williams,Brady Singer,Progressive Field,R,Regular Season,True
+MLB,823708,2026-05-17 18:10:00+00:00,Minnesota Twins,Milwaukee Brewers,5.0,4.0,Bailey Ober,Robert Gasser,Target Field,R,Regular Season,True
+MLB,824192,2026-05-17 18:10:00+00:00,Houston Astros,Texas Rangers,0.0,8.0,Peter Lambert,Nathan Eovaldi,Daikin Park,R,Regular Season,True
+MLB,824599,2026-05-17 18:10:00+00:00,Chicago White Sox,Chicago Cubs,9.0,8.0,Erick Fedde,Colin Rea,Rate Field,R,Regular Season,True
+MLB,823058,2026-05-17 18:15:00+00:00,St. Louis Cardinals,Kansas City Royals,0.0,2.0,Andre Pallante,Stephen Kolek,Busch Stadium,R,Regular Season,True
+MLB,824358,2026-05-17 19:10:00+00:00,Colorado Rockies,Arizona Diamondbacks,6.0,8.0,Michael Lorenzen,Michael Soroka,Coors Field,R,Regular Season,True
+MLB,825006,2026-05-17 20:05:00+00:00,Athletics,San Francisco Giants,1.0,10.0,Jeffrey Springs,Adrian Houser,Sutter Health Park,R,Regular Season,True
+MLB,824034,2026-05-17 20:07:00+00:00,Los Angeles Angels,Los Angeles Dodgers,1.0,10.0,Grayson Rodriguez,Roki Sasaki,Angel Stadium,R,Regular Season,True
+MLB,823138,2026-05-17 23:20:00+00:00,Seattle Mariners,San Diego Padres,3.0,8.0,George Kirby,Lucas Giolito,T-Mobile Park,R,Regular Season,True
+MLB,822980,2026-05-18 22:40:00+00:00,Tampa Bay Rays,Baltimore Orioles,16.0,6.0,Shane McClanahan,Trevor Rogers,Tropicana Field,R,Regular Season,True
+MLB,823465,2026-05-18 22:40:00+00:00,Philadelphia Phillies,Cincinnati Reds,5.0,4.0,Andrew Painter,Nick Lodolo,Citizens Bank Park,R,Regular Season,True
+MLB,823867,2026-05-18 22:40:00+00:00,Miami Marlins,Atlanta Braves,12.0,0.0,Max Meyer,JR Ritchie,loanDepot park,R,Regular Season,True
+MLB,824277,2026-05-18 22:40:00+00:00,Detroit Tigers,Cleveland Guardians,2.0,8.0,Framber Valdez,Slade Cecconi,Comerica Park,R,Regular Season,True
+MLB,822734,2026-05-18 22:45:00+00:00,Washington Nationals,New York Mets,7.0,16.0,Jake Irvin,Christian Scott,Nationals Park,R,Regular Season,True
+MLB,823549,2026-05-18 23:05:00+00:00,New York Yankees,Toronto Blue Jays,7.0,6.0,Ryan Weathers,Patrick Corbin,Yankee Stadium,R,Regular Season,True
+MLB,824114,2026-05-18 23:10:00+00:00,Kansas City Royals,Boston Red Sox,1.0,3.0,Seth Lugo,Sonny Gray,Kauffman Stadium,R,Regular Season,True
+MLB,823705,2026-05-18 23:40:00+00:00,Minnesota Twins,Houston Astros,6.0,3.0,Kendry Rojas,Tatsuya Imai,Target Field,R,Regular Season,True
+MLB,824680,2026-05-18 23:40:00+00:00,Chicago Cubs,Milwaukee Brewers,3.0,9.0,Shota Imanaga,Brandon Sproat,Wrigley Field,R,Regular Season,True
+MLB,824357,2026-05-19 00:40:00+00:00,Colorado Rockies,Texas Rangers,7.0,6.0,Jose Quintana,MacKenzie Gore,Coors Field,R,Regular Season,True
+MLB,824035,2026-05-19 01:38:00+00:00,Los Angeles Angels,Athletics,2.0,1.0,Walbert Ureña,J.T. Ginn,Angel Stadium,R,Regular Season,True
+MLB,823137,2026-05-19 01:40:00+00:00,Seattle Mariners,Chicago White Sox,6.0,1.0,Bryan Woo,Noah Schultz,T-Mobile Park,R,Regular Season,True
+MLB,823301,2026-05-19 01:40:00+00:00,San Diego Padres,Los Angeles Dodgers,1.0,0.0,Michael King,Yoshinobu Yamamoto,Petco Park,R,Regular Season,True
+MLB,825087,2026-05-19 01:40:00+00:00,Arizona Diamondbacks,San Francisco Giants,12.0,2.0,Zac Gallen,Robbie Ray,Chase Field,R,Regular Season,True
+MLB,823865,2026-05-19 20:10:00+00:00,Miami Marlins,Atlanta Braves,4.0,8.0,Braxton Garrett,Martín Pérez,loanDepot park,R,Regular Season,True
+MLB,822979,2026-05-19 22:40:00+00:00,Tampa Bay Rays,Baltimore Orioles,4.0,1.0,Griffin Jax,Kyle Bradish,Tropicana Field,R,Regular Season,True
+MLB,823464,2026-05-19 22:40:00+00:00,Philadelphia Phillies,Cincinnati Reds,1.0,4.0,Jesús Luzardo,Chase Burns,Citizens Bank Park,R,Regular Season,True
+MLB,824276,2026-05-19 22:40:00+00:00,Detroit Tigers,Cleveland Guardians,3.0,4.0,Keider Montero,Parker Messick,Comerica Park,R,Regular Season,True
+MLB,822736,2026-05-19 22:45:00+00:00,Washington Nationals,New York Mets,9.0,6.0,Foster Griffin,Nolan McLean,Nationals Park,R,Regular Season,True
+MLB,823548,2026-05-19 23:05:00+00:00,New York Yankees,Toronto Blue Jays,5.0,4.0,Will Warren,Dylan Cease,Yankee Stadium,R,Regular Season,True
+MLB,823704,2026-05-19 23:40:00+00:00,Minnesota Twins,Houston Astros,1.0,2.0,Zebby Matthews,Jason Alexander,Target Field,R,Regular Season,True
+MLB,824112,2026-05-19 23:40:00+00:00,Kansas City Royals,Boston Red Sox,1.0,7.0,Bailey Falter,Ranger Suarez,Kauffman Stadium,R,Regular Season,True
+MLB,824677,2026-05-19 23:40:00+00:00,Chicago Cubs,Milwaukee Brewers,2.0,5.0,Ben Brown,Jacob Misiorowski,Wrigley Field,R,Regular Season,True
+MLB,823059,2026-05-19 23:45:00+00:00,St. Louis Cardinals,Pittsburgh Pirates,9.0,6.0,Matthew Liberatore,Mitch Keller,Busch Stadium,R,Regular Season,True
+MLB,824356,2026-05-20 00:40:00+00:00,Colorado Rockies,Texas Rangers,0.0,10.0,Sammy Peralta,Tyler Alexander,Coors Field,R,Regular Season,True
+MLB,824033,2026-05-20 01:38:00+00:00,Los Angeles Angels,Athletics,6.0,14.0,Reid Detmers,Jacob Lopez,Angel Stadium,R,Regular Season,True
+MLB,823136,2026-05-20 01:40:00+00:00,Seattle Mariners,Chicago White Sox,1.0,2.0,Bryce Miller,Anthony Kay,T-Mobile Park,R,Regular Season,True
+MLB,823302,2026-05-20 01:40:00+00:00,San Diego Padres,Los Angeles Dodgers,4.0,5.0,Griffin Canning,Emmet Sheehan,Petco Park,R,Regular Season,True
+MLB,825086,2026-05-20 01:40:00+00:00,Arizona Diamondbacks,San Francisco Giants,5.0,3.0,Ryne Nelson,Landen Roupp,Chase Field,R,Regular Season,True
+MLB,823462,2026-05-20 17:05:00+00:00,Philadelphia Phillies,Cincinnati Reds,4.0,9.0,Aaron Nola,Andrew Abbott,Citizens Bank Park,R,Regular Season,True
+MLB,822977,2026-05-20 17:10:00+00:00,Tampa Bay Rays,Baltimore Orioles,5.0,3.0,Steven Matz,Shane Baz,Tropicana Field,R,Regular Season,True
+MLB,823703,2026-05-20 17:40:00+00:00,Minnesota Twins,Houston Astros,4.0,1.0,Joe Ryan,Mike Burrows,Target Field,R,Regular Season,True
+MLB,824355,2026-05-20 19:10:00+00:00,Colorado Rockies,Texas Rangers,4.0,5.0,Kyle Freeland,Jack Leiter,Coors Field,R,Regular Season,True
+MLB,825084,2026-05-20 19:40:00+00:00,Arizona Diamondbacks,San Francisco Giants,6.0,3.0,Merrill Kelly,Tyler Mahle,Chase Field,R,Regular Season,True
+MLB,823134,2026-05-20 20:10:00+00:00,Seattle Mariners,Chicago White Sox,5.0,4.0,Emerson Hancock,Sean Burke,T-Mobile Park,R,Regular Season,True
+MLB,823866,2026-05-20 22:40:00+00:00,Miami Marlins,Atlanta Braves,1.0,9.0,Janson Junk,Chris Sale,loanDepot park,R,Regular Season,True
+MLB,824273,2026-05-20 22:40:00+00:00,Detroit Tigers,Cleveland Guardians,2.0,3.0,,Tanner Bibee,Comerica Park,R,Regular Season,False
+MLB,822735,2026-05-20 22:45:00+00:00,Washington Nationals,New York Mets,8.0,4.0,Zack Littell,Zac Thornton,Nationals Park,R,Regular Season,True
+MLB,823547,2026-05-20 23:05:00+00:00,New York Yankees,Toronto Blue Jays,1.0,2.0,Cam Schlittler,Trey Yesavage,Yankee Stadium,R,Regular Season,True
+MLB,824111,2026-05-20 23:40:00+00:00,Kansas City Royals,Boston Red Sox,3.0,4.0,Michael Wacha,Connelly Early,Kauffman Stadium,R,Regular Season,True
+MLB,824678,2026-05-20 23:40:00+00:00,Chicago Cubs,Milwaukee Brewers,0.0,5.0,Edward Cabrera,Kyle Harrison,Wrigley Field,R,Regular Season,True
+MLB,823057,2026-05-20 23:45:00+00:00,St. Louis Cardinals,Pittsburgh Pirates,0.0,7.0,Michael McGreevy,Carmen Mlodzinski,Busch Stadium,R,Regular Season,True
+MLB,823299,2026-05-21 00:40:00+00:00,San Diego Padres,Los Angeles Dodgers,0.0,4.0,Randy Vásquez,Shohei Ohtani,Petco Park,R,Regular Season,True
+MLB,824032,2026-05-21 01:38:00+00:00,Los Angeles Angels,Athletics,5.0,6.0,Jack Kochanowicz,Aaron Civale,Angel Stadium,R,Regular Season,True
+MLB,824274,2026-05-21 17:10:00+00:00,Detroit Tigers,Cleveland Guardians,1.0,3.0,Casey Mize,Joey Cantillo,Comerica Park,R,Regular Season,True
+MLB,823056,2026-05-21 17:15:00+00:00,St. Louis Cardinals,Pittsburgh Pirates,2.0,6.0,Dustin May,Braxton Ashcraft,Busch Stadium,R,Regular Season,True
+MLB,822733,2026-05-21 20:05:00+00:00,Washington Nationals,New York Mets,1.0,2.0,Cade Cavalli,David Peterson,Nationals Park,R,Regular Season,True
+MLB,823864,2026-05-21 22:40:00+00:00,Miami Marlins,Atlanta Braves,3.0,9.0,Sandy Alcantara,Spencer Strider,loanDepot park,R,Regular Season,True
+MLB,823545,2026-05-21 23:05:00+00:00,New York Yankees,Toronto Blue Jays,0.0,2.0,Carlos Rodón,Braydon Fisher,Yankee Stadium,R,Regular Season,True
+MLB,824031,2026-05-22 01:38:00+00:00,Los Angeles Angels,Athletics,2.0,3.0,José Soriano,Luis Severino,Angel Stadium,R,Regular Season,True
+MLB,825083,2026-05-22 01:40:00+00:00,Arizona Diamondbacks,Colorado Rockies,2.0,1.0,Eduardo Rodriguez,Zach Agnos,Chase Field,R,Regular Season,True
+MLB,824679,2026-05-22 18:20:00+00:00,Chicago Cubs,Houston Astros,2.0,4.0,Jameson Taillon,Spencer Arrighetti,Wrigley Field,R,Regular Season,True
+MLB,823461,2026-05-22 22:40:00+00:00,Philadelphia Phillies,Cleveland Guardians,0.0,1.0,Cristopher Sánchez,Gavin Williams,Citizens Bank Park,R,Regular Season,True
+MLB,823546,2026-05-22 23:05:00+00:00,New York Yankees,Tampa Bay Rays,2.0,4.0,Gerrit Cole,Nick Martinez,Yankee Stadium,R,Regular Season,True
+MLB,822816,2026-05-22 23:07:00+00:00,Toronto Blue Jays,Pittsburgh Pirates,6.0,2.0,Kevin Gausman,Bubba Chandler,Rogers Centre,R,Regular Season,True
+MLB,823863,2026-05-22 23:10:00+00:00,Miami Marlins,New York Mets,2.0,1.0,Eury Pérez,Tobias Myers,loanDepot park,R,Regular Season,True
+MLB,824761,2026-05-22 23:10:00+00:00,Boston Red Sox,Minnesota Twins,6.0,8.0,Payton Tolle,Connor Prielipp,Fenway Park,R,Regular Season,True
+MLB,824842,2026-05-22 23:15:00+00:00,Baltimore Orioles,Detroit Tigers,7.0,4.0,Keegan Akin,Jack Flaherty,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,824922,2026-05-22 23:15:00+00:00,Atlanta Braves,Washington Nationals,5.0,4.0,Bryce Elder,Richard Lovelady,Truist Park,R,Regular Season,True
+MLB,823788,2026-05-22 23:40:00+00:00,Milwaukee Brewers,Los Angeles Dodgers,5.0,1.0,Logan Henderson,Justin Wrobleski,American Family Field,R,Regular Season,True
+MLB,824110,2026-05-22 23:40:00+00:00,Kansas City Royals,Seattle Mariners,0.0,2.0,Noah Cameron,Logan Gilbert,Kauffman Stadium,R,Regular Season,True
+MLB,824029,2026-05-23 01:38:00+00:00,Los Angeles Angels,Texas Rangers,9.0,6.0,Grayson Rodriguez,Jacob deGrom,Angel Stadium,R,Regular Season,True
+MLB,823298,2026-05-23 01:40:00+00:00,San Diego Padres,Athletics,7.0,3.0,Walker Buehler,Jeffrey Springs,Petco Park,R,Regular Season,True
+MLB,825082,2026-05-23 01:40:00+00:00,Arizona Diamondbacks,Colorado Rockies,2.0,3.0,Michael Soroka,Tomoyuki Sugano,Chase Field,R,Regular Season,True
+MLB,823223,2026-05-23 02:15:00+00:00,San Francisco Giants,Chicago White Sox,4.0,9.0,Trevor McDonald,Davis Martin,Oracle Park,R,Regular Season,True
+MLB,824518,2026-05-23 17:10:00+00:00,Cincinnati Reds,St. Louis Cardinals,1.0,8.0,Chris Paddack,Andre Pallante,Great American Ball Park,R,Regular Season,True
+MLB,824674,2026-05-23 18:20:00+00:00,Chicago Cubs,Houston Astros,0.0,3.0,Colin Rea,Kai-Wei Teng,Wrigley Field,R,Regular Season,True
+MLB,822814,2026-05-23 19:07:00+00:00,Toronto Blue Jays,Pittsburgh Pirates,5.0,2.0,Patrick Corbin,Paul Skenes,Rogers Centre,R,Regular Season,True
+MLB,823222,2026-05-23 20:05:00+00:00,San Francisco Giants,Chicago White Sox,10.0,3.0,Adrian Houser,Bryan Hudson,Oracle Park,R,Regular Season,True
+MLB,823458,2026-05-23 20:05:00+00:00,Philadelphia Phillies,Cleveland Guardians,3.0,0.0,Zack Wheeler,Slade Cecconi,Citizens Bank Park,R,Regular Season,True
+MLB,823862,2026-05-23 20:10:00+00:00,Miami Marlins,New York Mets,4.0,1.0,Max Meyer,Freddy Peralta,loanDepot park,R,Regular Season,True
+MLB,824109,2026-05-23 20:10:00+00:00,Kansas City Royals,Seattle Mariners,5.0,0.0,Stephen Kolek,George Kirby,Kauffman Stadium,R,Regular Season,True
+MLB,824760,2026-05-23 20:10:00+00:00,Boston Red Sox,Minnesota Twins,2.0,4.0,Jovani Morán,Taj Bradley,Fenway Park,R,Regular Season,True
+MLB,824920,2026-05-23 20:10:00+00:00,Atlanta Braves,Washington Nationals,0.0,2.0,Grant Holmes,Jake Irvin,Truist Park,R,Regular Season,True
+MLB,823787,2026-05-23 23:15:00+00:00,Milwaukee Brewers,Los Angeles Dodgers,3.0,11.0,Robert Gasser,Roki Sasaki,American Family Field,R,Regular Season,True
+MLB,824516,2026-05-23 23:15:00+00:00,Cincinnati Reds,St. Louis Cardinals,7.0,6.0,Chase Petty,Kyle Leahy,Great American Ball Park,R,Regular Season,True
+MLB,823300,2026-05-24 01:40:00+00:00,San Diego Padres,Athletics,2.0,0.0,Lucas Giolito,J.T. Ginn,Petco Park,R,Regular Season,True
+MLB,824030,2026-05-24 02:05:00+00:00,Los Angeles Angels,Texas Rangers,5.0,2.0,Walbert Ureña,Nathan Eovaldi,Angel Stadium,R,Regular Season,True
+MLB,825080,2026-05-24 02:10:00+00:00,Arizona Diamondbacks,Colorado Rockies,5.0,4.0,Zac Gallen,Michael Lorenzen,Chase Field,R,Regular Season,True
+MLB,822813,2026-05-24 16:15:00+00:00,Toronto Blue Jays,Pittsburgh Pirates,1.0,4.0,Dylan Cease,Mitch Keller,Rogers Centre,R,Regular Season,True
+MLB,824839,2026-05-24 16:35:00+00:00,Baltimore Orioles,Detroit Tigers,5.0,3.0,Brandon Young,Framber Valdez,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,823459,2026-05-24 17:35:00+00:00,Philadelphia Phillies,Cleveland Guardians,1.0,3.0,Andrew Painter,Parker Messick,Citizens Bank Park,R,Regular Season,True
+MLB,823544,2026-05-24 17:35:00+00:00,New York Yankees,Tampa Bay Rays,2.0,0.0,Ryan Weathers,Drew Rasmussen,Yankee Stadium,R,Regular Season,True
+MLB,824759,2026-05-24 17:35:00+00:00,Boston Red Sox,Minnesota Twins,5.0,6.0,Sonny Gray,Bailey Ober,Fenway Park,R,Regular Season,True
+MLB,823861,2026-05-24 17:40:00+00:00,Miami Marlins,New York Mets,4.0,0.0,Tyler Phillips,Christian Scott,loanDepot park,R,Regular Season,True
+MLB,823786,2026-05-24 18:10:00+00:00,Milwaukee Brewers,Los Angeles Dodgers,1.0,5.0,Brandon Sproat,Yoshinobu Yamamoto,American Family Field,R,Regular Season,True
+MLB,824108,2026-05-24 18:10:00+00:00,Kansas City Royals,Seattle Mariners,8.0,6.0,Seth Lugo,Bryan Woo,Kauffman Stadium,R,Regular Season,True
+MLB,824676,2026-05-24 18:20:00+00:00,Chicago Cubs,Houston Astros,5.0,8.0,Shota Imanaga,Peter Lambert,Wrigley Field,R,Regular Season,True
+MLB,823220,2026-05-24 20:05:00+00:00,San Francisco Giants,Chicago White Sox,8.0,5.0,Robbie Ray,Noah Schultz,Oracle Park,R,Regular Season,True
+MLB,823297,2026-05-24 20:10:00+00:00,San Diego Padres,Athletics,2.0,5.0,Michael King,Luis Medina,Petco Park,R,Regular Season,True
+MLB,824921,2026-05-24 20:10:00+00:00,Atlanta Braves,Washington Nationals,1.0,2.0,Martín Pérez,Foster Griffin,Truist Park,R,Regular Season,True
+MLB,825081,2026-05-24 20:10:00+00:00,Arizona Diamondbacks,Colorado Rockies,9.0,1.0,Ryne Nelson,Jose Quintana,Chase Field,R,Regular Season,True
+MLB,824840,2026-05-24 22:05:00+00:00,Baltimore Orioles,Detroit Tigers,1.0,4.0,Trevor Rogers,Troy Melton,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,824028,2026-05-24 23:20:00+00:00,Los Angeles Angels,Texas Rangers,2.0,1.0,Reid Detmers,MacKenzie Gore,Angel Stadium,R,Regular Season,True
+MLB,823380,2026-05-25 17:35:00+00:00,Pittsburgh Pirates,Chicago Cubs,2.0,1.0,Carmen Mlodzinski,Ben Brown,PNC Park,R,Regular Season,True
+MLB,824838,2026-05-25 17:35:00+00:00,Baltimore Orioles,Tampa Bay Rays,9.0,7.0,Kyle Bradish,Shane McClanahan,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,823784,2026-05-25 18:10:00+00:00,Milwaukee Brewers,St. Louis Cardinals,5.0,1.0,Jacob Misiorowski,Matthew Liberatore,American Family Field,R,Regular Season,True
+MLB,824598,2026-05-25 18:10:00+00:00,Chicago White Sox,Minnesota Twins,3.0,1.0,Anthony Kay,Zebby Matthews,Rate Field,R,Regular Season,True
+MLB,824107,2026-05-25 19:40:00+00:00,Kansas City Royals,New York Yankees,3.0,4.0,Michael Wacha,Will Warren,Kauffman Stadium,R,Regular Season,True
+MLB,823625,2026-05-25 20:10:00+00:00,New York Mets,Cincinnati Reds,2.0,7.0,Nolan McLean,Nick Lodolo,Citi Field,R,Regular Season,True
+MLB,823219,2026-05-25 21:05:00+00:00,San Francisco Giants,Arizona Diamondbacks,2.0,6.0,Landen Roupp,Merrill Kelly,Oracle Park,R,Regular Season,True
+MLB,824437,2026-05-25 22:10:00+00:00,Cleveland Guardians,Washington Nationals,2.0,10.0,Tanner Bibee,PJ Poulin,Progressive Field,R,Regular Season,True
+MLB,823296,2026-05-25 22:40:00+00:00,San Diego Padres,Philadelphia Phillies,0.0,3.0,Griffin Canning,Jesús Luzardo,Petco Park,R,Regular Season,True
+MLB,822899,2026-05-25 23:05:00+00:00,Texas Rangers,Houston Astros,0.0,9.0,Kumar Rocker,Tatsuya Imai,Globe Life Field,R,Regular Season,True
+MLB,822812,2026-05-25 23:07:00+00:00,Toronto Blue Jays,Miami Marlins,2.0,8.0,Trey Yesavage,Janson Junk,Rogers Centre,R,Regular Season,True
+MLB,823948,2026-05-26 01:10:00+00:00,Los Angeles Dodgers,Colorado Rockies,5.0,3.0,Emmet Sheehan,Tanner Gordon,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,825005,2026-05-26 01:40:00+00:00,Athletics,Seattle Mariners,2.0,9.0,Aaron Civale,Luis Castillo,Sutter Health Park,R,Regular Season,True
+MLB,824434,2026-05-26 22:10:00+00:00,Cleveland Guardians,Washington Nationals,3.0,6.0,Joey Cantillo,Cade Cavalli,Progressive Field,R,Regular Season,True
+MLB,824837,2026-05-26 22:35:00+00:00,Baltimore Orioles,Tampa Bay Rays,6.0,1.0,Shane Baz,Griffin Jax,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,823379,2026-05-26 22:40:00+00:00,Pittsburgh Pirates,Chicago Cubs,12.0,1.0,Mitch Keller,Jordan Wicks,PNC Park,R,Regular Season,True
+MLB,824275,2026-05-26 22:40:00+00:00,Detroit Tigers,Los Angeles Angels,6.0,10.0,Keider Montero,Jack Kochanowicz,Comerica Park,R,Regular Season,True
+MLB,824758,2026-05-26 22:45:00+00:00,Boston Red Sox,Atlanta Braves,6.0,7.0,Ranger Suarez,Spencer Strider,Fenway Park,R,Regular Season,True
+MLB,822811,2026-05-26 23:07:00+00:00,Toronto Blue Jays,Miami Marlins,8.0,1.0,Braydon Fisher,Sandy Alcantara,Rogers Centre,R,Regular Season,True
+MLB,823624,2026-05-26 23:10:00+00:00,New York Mets,Cincinnati Reds,2.0,7.0,David Peterson,Chase Burns,Citi Field,R,Regular Season,True
+MLB,823785,2026-05-26 23:40:00+00:00,Milwaukee Brewers,St. Louis Cardinals,6.0,0.0,Kyle Harrison,Michael McGreevy,American Family Field,R,Regular Season,True
+MLB,824106,2026-05-26 23:40:00+00:00,Kansas City Royals,New York Yankees,1.0,15.0,Bailey Falter,Cam Schlittler,Kauffman Stadium,R,Regular Season,True
+MLB,824597,2026-05-26 23:40:00+00:00,Chicago White Sox,Minnesota Twins,3.0,5.0,Sean Burke,Joe Ryan,Rate Field,R,Regular Season,True
+MLB,822898,2026-05-27 00:05:00+00:00,Texas Rangers,Houston Astros,10.0,7.0,Jack Leiter,Jason Alexander,Globe Life Field,R,Regular Season,True
+MLB,823294,2026-05-27 01:40:00+00:00,San Diego Padres,Philadelphia Phillies,3.0,4.0,Randy Vásquez,Aaron Nola,Petco Park,R,Regular Season,True
+MLB,825004,2026-05-27 01:40:00+00:00,Athletics,Seattle Mariners,1.0,4.0,Gage Jump,Emerson Hancock,Sutter Health Park,R,Regular Season,True
+MLB,823216,2026-05-27 01:45:00+00:00,San Francisco Giants,Arizona Diamondbacks,5.0,7.0,Tyler Mahle,Eduardo Rodriguez,Oracle Park,R,Regular Season,True
+MLB,823949,2026-05-27 02:10:00+00:00,Los Angeles Dodgers,Colorado Rockies,15.0,6.0,Eric Lauer,Kyle Freeland,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,822809,2026-05-27 17:07:00+00:00,Toronto Blue Jays,Miami Marlins,2.0,1.0,Kevin Gausman,Eury Pérez,Rogers Centre,R,Regular Season,True
+MLB,824432,2026-05-27 17:10:00+00:00,Cleveland Guardians,Washington Nationals,3.0,2.0,Gavin Williams,PJ Poulin,Progressive Field,R,Regular Season,True
+MLB,823783,2026-05-27 17:40:00+00:00,Milwaukee Brewers,St. Louis Cardinals,2.0,1.0,Chad Patrick,Dustin May,American Family Field,R,Regular Season,True
+MLB,825003,2026-05-27 19:05:00+00:00,Athletics,Seattle Mariners,1.0,9.0,Jeffrey Springs,Logan Gilbert,Sutter Health Park,R,Regular Season,True
+MLB,823217,2026-05-27 19:45:00+00:00,San Francisco Giants,Arizona Diamondbacks,2.0,3.0,Trevor McDonald,Michael Soroka,Oracle Park,R,Regular Season,True
+MLB,823295,2026-05-27 20:10:00+00:00,San Diego Padres,Philadelphia Phillies,0.0,3.0,Walker Buehler,Cristopher Sánchez,Petco Park,R,Regular Season,True
+MLB,824836,2026-05-27 22:35:00+00:00,Baltimore Orioles,Tampa Bay Rays,11.0,2.0,Trey Gibson,Steven Matz,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,823376,2026-05-27 22:40:00+00:00,Pittsburgh Pirates,Chicago Cubs,4.0,10.0,Braxton Ashcraft,Jameson Taillon,PNC Park,R,Regular Season,True
+MLB,824270,2026-05-27 22:40:00+00:00,Detroit Tigers,Los Angeles Angels,4.0,0.0,Casey Mize,José Soriano,Comerica Park,R,Regular Season,True
+MLB,824756,2026-05-27 22:45:00+00:00,Boston Red Sox,Atlanta Braves,8.0,0.0,Connelly Early,Bryce Elder,Fenway Park,R,Regular Season,True
+MLB,823626,2026-05-27 23:10:00+00:00,New York Mets,Cincinnati Reds,4.0,2.0,Huascar Brazobán,Andrew Abbott,Citi Field,R,Regular Season,True
+MLB,824104,2026-05-27 23:40:00+00:00,Kansas City Royals,New York Yankees,0.0,7.0,Noah Cameron,Gerrit Cole,Kauffman Stadium,R,Regular Season,True
+MLB,824596,2026-05-27 23:40:00+00:00,Chicago White Sox,Minnesota Twins,15.0,2.0,David Sandlin,Connor Prielipp,Rate Field,R,Regular Season,True
+MLB,822897,2026-05-28 00:05:00+00:00,Texas Rangers,Houston Astros,3.0,4.0,Jacob deGrom,Mike Burrows,Globe Life Field,R,Regular Season,True
+MLB,823947,2026-05-28 02:10:00+00:00,Los Angeles Dodgers,Colorado Rockies,4.0,1.0,Shohei Ohtani,Tomoyuki Sugano,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,824272,2026-05-28 17:10:00+00:00,Detroit Tigers,Los Angeles Angels,1.0,7.0,Jack Flaherty,Grayson Rodriguez,Comerica Park,R,Regular Season,True
+MLB,824595,2026-05-28 18:10:00+00:00,Chicago White Sox,Minnesota Twins,6.0,2.0,Davis Martin,Simeon Woods Richardson,Rate Field,R,Regular Season,True
+MLB,824757,2026-05-28 20:10:00+00:00,Boston Red Sox,Atlanta Braves,2.0,10.0,Payton Tolle,Chris Sale,Fenway Park,R,Regular Season,True
+MLB,824834,2026-05-28 22:35:00+00:00,Baltimore Orioles,Toronto Blue Jays,1.0,2.0,Chris Bassitt,Patrick Corbin,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,823378,2026-05-28 22:40:00+00:00,Pittsburgh Pirates,Chicago Cubs,2.0,7.0,Paul Skenes,Colin Rea,PNC Park,R,Regular Season,True
+MLB,822896,2026-05-29 00:05:00+00:00,Texas Rangers,Houston Astros,1.0,5.0,Nathan Eovaldi,Spencer Arrighetti,Globe Life Field,R,Regular Season,True
+MLB,824515,2026-05-29 22:40:00+00:00,Cincinnati Reds,Atlanta Braves,3.0,8.0,Chris Paddack,Grant Holmes,Great American Ball Park,R,Regular Season,True
+MLB,822732,2026-05-29 22:45:00+00:00,Washington Nationals,San Diego Padres,5.0,7.0,Paxton Schultz,Lucas Giolito,Nationals Park,R,Regular Season,True
+MLB,823377,2026-05-29 22:45:00+00:00,Pittsburgh Pirates,Minnesota Twins,6.0,5.0,Jared Jones,Taj Bradley,PNC Park,R,Regular Season,True
+MLB,824835,2026-05-29 23:05:00+00:00,Baltimore Orioles,Toronto Blue Jays,5.0,6.0,Trevor Rogers,Adam Macko,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,822978,2026-05-29 23:10:00+00:00,Tampa Bay Rays,Los Angeles Angels,8.0,5.0,Nick Martinez,Walbert Ureña,Tropicana Field,R,Regular Season,True
+MLB,823623,2026-05-29 23:10:00+00:00,New York Mets,Miami Marlins,9.0,7.0,Freddy Peralta,Max Meyer,Citi Field,R,Regular Season,True
+MLB,824433,2026-05-29 23:10:00+00:00,Cleveland Guardians,Boston Red Sox,4.0,3.0,Slade Cecconi,Tyler Samaniego,Progressive Field,R,Regular Season,True
+MLB,823055,2026-05-29 23:15:00+00:00,St. Louis Cardinals,Chicago Cubs,6.0,5.0,Andre Pallante,Shota Imanaga,Busch Stadium,R,Regular Season,True
+MLB,824594,2026-05-29 23:40:00+00:00,Chicago White Sox,Detroit Tigers,4.0,3.0,Erick Fedde,Troy Melton,Rate Field,R,Regular Season,True
+MLB,822894,2026-05-30 00:05:00+00:00,Texas Rangers,Kansas City Royals,9.0,1.0,MacKenzie Gore,Stephen Kolek,Globe Life Field,R,Regular Season,True
+MLB,824191,2026-05-30 00:10:00+00:00,Houston Astros,Milwaukee Brewers,4.0,5.0,Kai-Wei Teng,Coleman Crow,Daikin Park,R,Regular Season,True
+MLB,824353,2026-05-30 00:40:00+00:00,Colorado Rockies,San Francisco Giants,8.0,6.0,Michael Lorenzen,Logan Webb,Coors Field,R,Regular Season,True
+MLB,825002,2026-05-30 01:40:00+00:00,Athletics,New York Yankees,2.0,8.0,Luis Severino,Carlos Rodón,Sutter Health Park,R,Regular Season,True
+MLB,823135,2026-05-30 02:10:00+00:00,Seattle Mariners,Arizona Diamondbacks,7.0,6.0,George Kirby,Zac Gallen,T-Mobile Park,R,Regular Season,True
+MLB,823946,2026-05-30 02:15:00+00:00,Los Angeles Dodgers,Philadelphia Phillies,4.0,2.0,Justin Wrobleski,Zack Wheeler,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,824593,2026-05-30 18:10:00+00:00,Chicago White Sox,Detroit Tigers,7.0,1.0,Anthony Kay,Framber Valdez,Rate Field,R,Regular Season,True
+MLB,822731,2026-05-30 20:05:00+00:00,Washington Nationals,San Diego Padres,9.0,4.0,Foster Griffin,Michael King,Nationals Park,R,Regular Season,True
+MLB,822893,2026-05-30 20:05:00+00:00,Texas Rangers,Kansas City Royals,7.0,6.0,Kumar Rocker,Seth Lugo,Globe Life Field,R,Regular Season,True
+MLB,823375,2026-05-30 20:05:00+00:00,Pittsburgh Pirates,Minnesota Twins,10.0,9.0,Mitch Keller,Bailey Ober,PNC Park,R,Regular Season,True
+MLB,824833,2026-05-30 20:05:00+00:00,Baltimore Orioles,Toronto Blue Jays,6.0,5.0,Brandon Young,Trey Yesavage,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,822975,2026-05-30 20:10:00+00:00,Tampa Bay Rays,Los Angeles Angels,3.0,14.0,Drew Rasmussen,Reid Detmers,Tropicana Field,R,Regular Season,True
+MLB,823622,2026-05-30 20:10:00+00:00,New York Mets,Miami Marlins,6.0,1.0,Christian Scott,Tyler Phillips,Citi Field,R,Regular Season,True
+MLB,824190,2026-05-30 20:10:00+00:00,Houston Astros,Milwaukee Brewers,9.0,2.0,Peter Lambert,Brandon Sproat,Daikin Park,R,Regular Season,True
+MLB,824431,2026-05-30 20:10:00+00:00,Cleveland Guardians,Boston Red Sox,1.0,9.0,Parker Messick,Sonny Gray,Progressive Field,R,Regular Season,True
+MLB,823054,2026-05-30 23:15:00+00:00,St. Louis Cardinals,Chicago Cubs,1.0,6.0,Kyle Leahy,Ben Brown,Busch Stadium,R,Regular Season,True
+MLB,824513,2026-05-30 23:15:00+00:00,Cincinnati Reds,Atlanta Braves,2.0,5.0,Brady Singer,Martín Pérez,Great American Ball Park,R,Regular Season,True
+MLB,824352,2026-05-31 01:10:00+00:00,Colorado Rockies,San Francisco Giants,8.0,3.0,Ryan Feltner,Adrian Houser,Coors Field,R,Regular Season,True
+MLB,825000,2026-05-31 02:05:00+00:00,Athletics,New York Yankees,6.0,4.0,J.T. Ginn,Ryan Weathers,Sutter Health Park,R,Regular Season,True
+MLB,823132,2026-05-31 02:10:00+00:00,Seattle Mariners,Arizona Diamondbacks,5.0,1.0,Bryan Woo,Ryne Nelson,T-Mobile Park,R,Regular Season,True
+MLB,823945,2026-05-31 02:10:00+00:00,Los Angeles Dodgers,Philadelphia Phillies,3.0,4.0,Roki Sasaki,Jesús Luzardo,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,824832,2026-05-31 16:15:00+00:00,Baltimore Orioles,Toronto Blue Jays,9.0,5.0,Kyle Bradish,Spencer Miles,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,822729,2026-05-31 17:35:00+00:00,Washington Nationals,San Diego Padres,4.0,2.0,Zack Littell,Griffin Canning,Nationals Park,R,Regular Season,True
+MLB,823373,2026-05-31 17:35:00+00:00,Pittsburgh Pirates,Minnesota Twins,9.0,3.0,Braxton Ashcraft,Zebby Matthews,PNC Park,R,Regular Season,True
+MLB,822976,2026-05-31 17:40:00+00:00,Tampa Bay Rays,Los Angeles Angels,5.0,2.0,Shane McClanahan,Jack Kochanowicz,Tropicana Field,R,Regular Season,True
+MLB,823621,2026-05-31 17:40:00+00:00,New York Mets,Miami Marlins,10.0,1.0,Nolan McLean,John King,Citi Field,R,Regular Season,True
+MLB,824430,2026-05-31 17:40:00+00:00,Cleveland Guardians,Boston Red Sox,4.0,9.0,Tanner Bibee,Ranger Suarez,Progressive Field,R,Regular Season,True
+MLB,824512,2026-05-31 17:40:00+00:00,Cincinnati Reds,Atlanta Braves,6.0,4.0,Nick Lodolo,Spencer Strider,Great American Ball Park,R,Regular Season,True
+MLB,824187,2026-05-31 18:10:00+00:00,Houston Astros,Milwaukee Brewers,0.0,2.0,Tatsuya Imai,Jacob Misiorowski,Daikin Park,R,Regular Season,True
+MLB,824592,2026-05-31 18:10:00+00:00,Chicago White Sox,Detroit Tigers,2.0,1.0,Sean Burke,Keider Montero,Rate Field,R,Regular Season,True
+MLB,822895,2026-05-31 18:35:00+00:00,Texas Rangers,Kansas City Royals,6.0,3.0,Jack Leiter,Michael Wacha,Globe Life Field,R,Regular Season,True
+MLB,824354,2026-05-31 19:10:00+00:00,Colorado Rockies,San Francisco Giants,6.0,19.0,Tanner Gordon,Robbie Ray,Coors Field,R,Regular Season,True
+MLB,825001,2026-05-31 20:05:00+00:00,Athletics,New York Yankees,8.0,13.0,Jacob Lopez,Will Warren,Sutter Health Park,R,Regular Season,True
+MLB,823133,2026-05-31 20:10:00+00:00,Seattle Mariners,Arizona Diamondbacks,3.0,2.0,Bryce Miller,Merrill Kelly,T-Mobile Park,R,Regular Season,True
+MLB,823944,2026-05-31 20:10:00+00:00,Los Angeles Dodgers,Philadelphia Phillies,9.0,1.0,Yoshinobu Yamamoto,Andrew Painter,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,823053,2026-05-31 23:20:00+00:00,St. Louis Cardinals,Chicago Cubs,5.0,1.0,Matthew Liberatore,Jordan Wicks,Busch Stadium,R,Regular Season,True
+MLB,822974,2026-06-01 22:40:00+00:00,Tampa Bay Rays,Detroit Tigers,9.0,10.0,Griffin Jax,Ty Madden,Tropicana Field,R,Regular Season,True
+MLB,822730,2026-06-01 22:45:00+00:00,Washington Nationals,Miami Marlins,3.0,7.0,Cade Cavalli,Sandy Alcantara,Nationals Park,R,Regular Season,True
+MLB,824510,2026-06-01 23:10:00+00:00,Cincinnati Reds,Kansas City Royals,2.0,9.0,Lyon Richardson,Luinder Avila,Great American Ball Park,R,Regular Season,True
+MLB,823702,2026-06-01 23:40:00+00:00,Minnesota Twins,Chicago White Sox,9.0,6.0,Joe Ryan,David Sandlin,Target Field,R,Regular Season,True
+MLB,823781,2026-06-01 23:40:00+00:00,Milwaukee Brewers,San Francisco Giants,16.0,2.0,Shane Drohan,Landen Roupp,American Family Field,R,Regular Season,True
+MLB,823050,2026-06-01 23:45:00+00:00,St. Louis Cardinals,Texas Rangers,1.0,2.0,Michael McGreevy,Jacob deGrom,Busch Stadium,R,Regular Season,True
+MLB,824027,2026-06-02 01:38:00+00:00,Los Angeles Angels,Colorado Rockies,8.0,9.0,José Soriano,Kyle Freeland,Angel Stadium,R,Regular Season,True
+MLB,823131,2026-06-02 01:40:00+00:00,Seattle Mariners,New York Mets,3.0,2.0,Emerson Hancock,Austin Warren,T-Mobile Park,R,Regular Season,True
+MLB,825078,2026-06-02 01:40:00+00:00,Arizona Diamondbacks,Los Angeles Dodgers,4.0,1.0,Eduardo Rodriguez,Emmet Sheehan,Chase Field,R,Regular Season,True
+MLB,822971,2026-06-02 22:40:00+00:00,Tampa Bay Rays,Detroit Tigers,0.0,8.0,Steven Matz,Jack Flaherty,Tropicana Field,R,Regular Season,True
+MLB,823460,2026-06-02 22:40:00+00:00,Philadelphia Phillies,San Diego Padres,3.0,2.0,Aaron Nola,Randy Vásquez,Citizens Bank Park,R,Regular Season,True
+MLB,822728,2026-06-02 22:45:00+00:00,Washington Nationals,Miami Marlins,3.0,7.0,Richard Lovelady,Lake Bachar,Nationals Park,R,Regular Season,True
+MLB,824754,2026-06-02 22:45:00+00:00,Boston Red Sox,Baltimore Orioles,2.0,4.0,Connelly Early,Shane Baz,Fenway Park,R,Regular Season,True
+MLB,823541,2026-06-02 23:05:00+00:00,New York Yankees,Cleveland Guardians,4.0,9.0,Cam Schlittler,Joey Cantillo,Yankee Stadium,R,Regular Season,True
+MLB,824511,2026-06-02 23:10:00+00:00,Cincinnati Reds,Kansas City Royals,4.0,3.0,Andrew Abbott,Noah Cameron,Great American Ball Park,R,Regular Season,True
+MLB,824918,2026-06-02 23:15:00+00:00,Atlanta Braves,Toronto Blue Jays,4.0,3.0,Bryce Elder,Kevin Gausman,Truist Park,R,Regular Season,True
+MLB,823700,2026-06-02 23:40:00+00:00,Minnesota Twins,Chicago White Sox,6.0,4.0,Connor Prielipp,Davis Martin,Target Field,R,Regular Season,True
+MLB,823782,2026-06-02 23:40:00+00:00,Milwaukee Brewers,San Francisco Giants,8.0,3.0,Kyle Harrison,Trevor McDonald,American Family Field,R,Regular Season,True
+MLB,823052,2026-06-02 23:45:00+00:00,St. Louis Cardinals,Texas Rangers,4.0,7.0,Dustin May,Nathan Eovaldi,Busch Stadium,R,Regular Season,True
+MLB,824675,2026-06-03 00:05:00+00:00,Chicago Cubs,Athletics,1.0,2.0,Jameson Taillon,Gage Jump,Wrigley Field,R,Regular Season,True
+MLB,824189,2026-06-03 00:10:00+00:00,Houston Astros,Pittsburgh Pirates,6.0,10.0,Mike Burrows,Bubba Chandler,Daikin Park,R,Regular Season,True
+MLB,824026,2026-06-03 01:38:00+00:00,Los Angeles Angels,Colorado Rockies,2.0,8.0,Grayson Rodriguez,Tomoyuki Sugano,Angel Stadium,R,Regular Season,True
+MLB,823129,2026-06-03 01:40:00+00:00,Seattle Mariners,New York Mets,8.0,3.0,Logan Gilbert,Huascar Brazobán,T-Mobile Park,R,Regular Season,True
+MLB,825079,2026-06-03 01:40:00+00:00,Arizona Diamondbacks,Los Angeles Dodgers,5.0,6.0,Michael Soroka,Eric Lauer,Chase Field,R,Regular Season,True
+MLB,822727,2026-06-03 17:05:00+00:00,Washington Nationals,Miami Marlins,1.0,4.0,Andrew Alvarez,Max Meyer,Nationals Park,R,Regular Season,True
+MLB,822973,2026-06-03 17:10:00+00:00,Tampa Bay Rays,Detroit Tigers,2.0,7.0,Nick Martinez,Troy Melton,Tropicana Field,R,Regular Season,True
+MLB,823701,2026-06-03 17:40:00+00:00,Minnesota Twins,Chicago White Sox,0.0,8.0,Taj Bradley,Erick Fedde,Target Field,R,Regular Season,True
+MLB,823130,2026-06-03 19:40:00+00:00,Seattle Mariners,New York Mets,1.0,7.0,George Kirby,Freddy Peralta,T-Mobile Park,R,Regular Season,True
+MLB,823456,2026-06-03 22:40:00+00:00,Philadelphia Phillies,San Diego Padres,3.0,2.0,Cristopher Sánchez,Walker Buehler,Citizens Bank Park,R,Regular Season,True
+MLB,824755,2026-06-03 22:45:00+00:00,Boston Red Sox,Baltimore Orioles,8.0,1.0,Payton Tolle,Chris Bassitt,Fenway Park,R,Regular Season,True
+MLB,823540,2026-06-03 23:05:00+00:00,New York Yankees,Cleveland Guardians,4.0,5.0,Gerrit Cole,Gavin Williams,Yankee Stadium,R,Regular Season,True
+MLB,824509,2026-06-03 23:10:00+00:00,Cincinnati Reds,Kansas City Royals,2.0,5.0,Chase Burns,Stephen Kolek,Great American Ball Park,R,Regular Season,True
+MLB,824917,2026-06-03 23:15:00+00:00,Atlanta Braves,Toronto Blue Jays,7.0,3.0,Grant Holmes,Patrick Corbin,Truist Park,R,Regular Season,True
+MLB,823780,2026-06-03 23:40:00+00:00,Milwaukee Brewers,San Francisco Giants,0.0,1.0,Robert Gasser,Logan Webb,American Family Field,R,Regular Season,True
+MLB,823051,2026-06-03 23:45:00+00:00,St. Louis Cardinals,Texas Rangers,5.0,3.0,Andre Pallante,MacKenzie Gore,Busch Stadium,R,Regular Season,True
+MLB,824671,2026-06-04 00:05:00+00:00,Chicago Cubs,Athletics,4.0,5.0,Colin Rea,Jeffrey Springs,Wrigley Field,R,Regular Season,True
+MLB,824188,2026-06-04 00:10:00+00:00,Houston Astros,Pittsburgh Pirates,11.0,9.0,Spencer Arrighetti,Paul Skenes,Daikin Park,R,Regular Season,True
+MLB,824024,2026-06-04 01:38:00+00:00,Los Angeles Angels,Colorado Rockies,11.0,4.0,Walbert Ureña,Michael Lorenzen,Angel Stadium,R,Regular Season,True
+MLB,825077,2026-06-04 01:40:00+00:00,Arizona Diamondbacks,Los Angeles Dodgers,0.0,7.0,Zac Gallen,Shohei Ohtani,Chase Field,R,Regular Season,True
+MLB,823457,2026-06-04 17:05:00+00:00,Philadelphia Phillies,San Diego Padres,6.0,4.0,Zack Wheeler,Lucas Giolito,Citizens Bank Park,R,Regular Season,True
+MLB,823542,2026-06-04 17:35:00+00:00,New York Yankees,Cleveland Guardians,2.0,1.0,Carlos Rodón,Slade Cecconi,Yankee Stadium,R,Regular Season,True
+MLB,824753,2026-06-04 17:35:00+00:00,Boston Red Sox,Baltimore Orioles,2.0,8.0,Brayan Bello,Trevor Rogers,Fenway Park,R,Regular Season,True
+MLB,823779,2026-06-04 18:10:00+00:00,Milwaukee Brewers,San Francisco Giants,9.0,12.0,Coleman Crow,Adrian Houser,American Family Field,R,Regular Season,True
+MLB,824919,2026-06-04 23:15:00+00:00,Atlanta Braves,Toronto Blue Jays,2.0,7.0,Chris Sale,Mason Fluharty,Truist Park,R,Regular Season,True
+MLB,823698,2026-06-04 23:40:00+00:00,Minnesota Twins,Kansas City Royals,6.0,8.0,Andrew Morris,Seth Lugo,Target Field,R,Regular Season,True
+MLB,824672,2026-06-05 00:05:00+00:00,Chicago Cubs,Athletics,7.0,6.0,Shota Imanaga,J.T. Ginn,Wrigley Field,R,Regular Season,True
+MLB,824185,2026-06-05 00:10:00+00:00,Houston Astros,Pittsburgh Pirates,1.0,5.0,Kai-Wei Teng,Jared Jones,Daikin Park,R,Regular Season,True
+MLB,825076,2026-06-05 01:40:00+00:00,Arizona Diamondbacks,Los Angeles Dodgers,3.0,2.0,Ryne Nelson,Justin Wrobleski,Chase Field,R,Regular Season,True
+MLB,824673,2026-06-05 18:20:00+00:00,Chicago Cubs,San Francisco Giants,3.0,18.0,Edward Cabrera,Robbie Ray,Wrigley Field,R,Regular Season,True
+MLB,823455,2026-06-05 22:40:00+00:00,Philadelphia Phillies,Chicago White Sox,8.0,6.0,Jesús Luzardo,Anthony Kay,Citizens Bank Park,R,Regular Season,True
+MLB,824271,2026-06-05 22:40:00+00:00,Detroit Tigers,Seattle Mariners,7.0,3.0,Framber Valdez,Bryan Woo,Comerica Park,R,Regular Season,True
+MLB,823538,2026-06-05 23:05:00+00:00,New York Yankees,Boston Red Sox,3.0,5.0,Ryan Weathers,Sonny Gray,Yankee Stadium,R,Regular Season,True
+MLB,822810,2026-06-05 23:07:00+00:00,Toronto Blue Jays,Baltimore Orioles,3.0,13.0,Trey Yesavage,Brandon Young,Rogers Centre,R,Regular Season,True
+MLB,823860,2026-06-05 23:10:00+00:00,Miami Marlins,Tampa Bay Rays,0.0,6.0,Ryan Gusto,Drew Rasmussen,loanDepot park,R,Regular Season,True
+MLB,824914,2026-06-05 23:15:00+00:00,Atlanta Braves,Pittsburgh Pirates,6.0,3.0,Martín Pérez,Mitch Keller,Truist Park,R,Regular Season,True
+MLB,824186,2026-06-06 00:10:00+00:00,Houston Astros,Athletics,5.0,1.0,Peter Lambert,Jack Perkins,Daikin Park,R,Regular Season,True
+MLB,822892,2026-06-06 00:15:00+00:00,Texas Rangers,Cleveland Guardians,3.0,2.0,Kumar Rocker,Parker Messick,Globe Life Field,R,Regular Season,True
+MLB,823049,2026-06-06 00:15:00+00:00,St. Louis Cardinals,Cincinnati Reds,10.0,3.0,Kyle Leahy,Brady Singer,Busch Stadium,R,Regular Season,True
+MLB,823699,2026-06-06 00:15:00+00:00,Minnesota Twins,Kansas City Royals,5.0,3.0,Zebby Matthews,Michael Wacha,Target Field,R,Regular Season,True
+MLB,824350,2026-06-06 00:40:00+00:00,Colorado Rockies,Milwaukee Brewers,7.0,9.0,Ryan Feltner,Brandon Sproat,Coors Field,R,Regular Season,True
+MLB,823293,2026-06-06 01:40:00+00:00,San Diego Padres,New York Mets,0.0,5.0,Michael King,Christian Scott,Petco Park,R,Regular Season,True
+MLB,825073,2026-06-06 01:40:00+00:00,Arizona Diamondbacks,Washington Nationals,1.0,14.0,Merrill Kelly,Foster Griffin,Chase Field,R,Regular Season,True
+MLB,823943,2026-06-06 02:10:00+00:00,Los Angeles Dodgers,Los Angeles Angels,1.0,0.0,Roki Sasaki,Reid Detmers,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,824269,2026-06-06 17:10:00+00:00,Detroit Tigers,Seattle Mariners,0.0,4.0,Keider Montero,Bryce Miller,Comerica Park,R,Regular Season,True
+MLB,823697,2026-06-06 18:10:00+00:00,Minnesota Twins,Kansas City Royals,2.0,3.0,Joe Ryan,Luinder Avila,Target Field,R,Regular Season,True
+MLB,823048,2026-06-06 18:15:00+00:00,St. Louis Cardinals,Cincinnati Reds,6.0,5.0,Matthew Liberatore,Nick Lodolo,Busch Stadium,R,Regular Season,True
+MLB,824669,2026-06-06 18:20:00+00:00,Chicago Cubs,San Francisco Giants,3.0,2.0,Ben Brown,Landen Roupp,Wrigley Field,R,Regular Season,True
+MLB,822808,2026-06-06 19:07:00+00:00,Toronto Blue Jays,Baltimore Orioles,6.0,4.0,Braydon Fisher,Kyle Bradish,Rogers Centre,R,Regular Season,True
+MLB,823454,2026-06-06 20:05:00+00:00,Philadelphia Phillies,Chicago White Sox,3.0,6.0,Andrew Painter,Brandon Eisert,Citizens Bank Park,R,Regular Season,True
+MLB,823859,2026-06-06 20:10:00+00:00,Miami Marlins,Tampa Bay Rays,4.0,3.0,Lake Bachar,Shane McClanahan,loanDepot park,R,Regular Season,True
+MLB,824184,2026-06-06 20:10:00+00:00,Houston Astros,Athletics,13.0,2.0,Tatsuya Imai,Kade Morris,Daikin Park,R,Regular Season,True
+MLB,824915,2026-06-06 20:10:00+00:00,Atlanta Braves,Pittsburgh Pirates,6.0,3.0,Spencer Strider,Braxton Ashcraft,Truist Park,R,Regular Season,True
+MLB,825075,2026-06-06 20:10:00+00:00,Arizona Diamondbacks,Washington Nationals,1.0,6.0,Eduardo Rodriguez,Zack Littell,Chase Field,R,Regular Season,True
+MLB,822891,2026-06-06 23:35:00+00:00,Texas Rangers,Cleveland Guardians,0.0,6.0,Jack Leiter,Tanner Bibee,Globe Life Field,R,Regular Season,True
+MLB,824351,2026-06-07 01:10:00+00:00,Colorado Rockies,Milwaukee Brewers,1.0,7.0,Zach Agnos,Jacob Misiorowski,Coors Field,R,Regular Season,True
+MLB,823292,2026-06-07 02:10:00+00:00,San Diego Padres,New York Mets,3.0,2.0,Griffin Canning,Nolan McLean,Petco Park,R,Regular Season,True
+MLB,823942,2026-06-07 02:10:00+00:00,Los Angeles Dodgers,Los Angeles Angels,9.0,2.0,Yoshinobu Yamamoto,Jack Kochanowicz,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,823453,2026-06-07 17:35:00+00:00,Philadelphia Phillies,Chicago White Sox,9.0,5.0,Aaron Nola,Tyler Gilbert,Citizens Bank Park,R,Regular Season,True
+MLB,823537,2026-06-07 17:35:00+00:00,New York Yankees,Boston Red Sox,6.0,1.0,Cam Schlittler,Ranger Suarez,Yankee Stadium,R,Regular Season,True
+MLB,824916,2026-06-07 17:35:00+00:00,Atlanta Braves,Pittsburgh Pirates,3.0,2.0,Bryce Elder,Mason Montgomery,Truist Park,R,Regular Season,True
+MLB,822807,2026-06-07 17:37:00+00:00,Toronto Blue Jays,Baltimore Orioles,6.0,4.0,Kevin Gausman,Shane Baz,Rogers Centre,R,Regular Season,True
+MLB,823857,2026-06-07 17:40:00+00:00,Miami Marlins,Tampa Bay Rays,4.0,1.0,Sandy Alcantara,Griffin Jax,loanDepot park,R,Regular Season,True
+MLB,824268,2026-06-07 17:40:00+00:00,Detroit Tigers,Seattle Mariners,5.0,4.0,Jack Flaherty,Luis Castillo,Comerica Park,R,Regular Season,True
+MLB,823696,2026-06-07 18:10:00+00:00,Minnesota Twins,Kansas City Royals,5.0,6.0,Connor Prielipp,Noah Cameron,Target Field,R,Regular Season,True
+MLB,824183,2026-06-07 18:10:00+00:00,Houston Astros,Athletics,0.0,5.0,Mike Burrows,Gage Jump,Daikin Park,R,Regular Season,True
+MLB,823047,2026-06-07 18:15:00+00:00,St. Louis Cardinals,Cincinnati Reds,5.0,3.0,Michael McGreevy,Rhett Lowder,Busch Stadium,R,Regular Season,True
+MLB,822890,2026-06-07 18:35:00+00:00,Texas Rangers,Cleveland Guardians,10.0,0.0,Jacob deGrom,Joey Cantillo,Globe Life Field,R,Regular Season,True
+MLB,824349,2026-06-07 19:10:00+00:00,Colorado Rockies,Milwaukee Brewers,4.0,12.0,Kyle Freeland,Shane Drohan,Coors Field,R,Regular Season,True
+MLB,825074,2026-06-07 19:15:00+00:00,Arizona Diamondbacks,Washington Nationals,5.0,1.0,Michael Soroka,Cade Cavalli,Chase Field,R,Regular Season,True
+MLB,823291,2026-06-07 20:10:00+00:00,San Diego Padres,New York Mets,3.0,7.0,Randy Vásquez,Huascar Brazobán,Petco Park,R,Regular Season,True
+MLB,823941,2026-06-07 20:10:00+00:00,Los Angeles Dodgers,Los Angeles Angels,5.0,13.0,Emmet Sheehan,José Soriano,UNIQLO Field at Dodger Stadium,R,Regular Season,True
+MLB,824670,2026-06-08 00:30:00+00:00,Chicago Cubs,San Francisco Giants,1.0,2.0,Jameson Taillon,Trevor McDonald,Wrigley Field,R,Regular Season,True
+MLB,824829,2026-06-08 22:35:00+00:00,Baltimore Orioles,Seattle Mariners,3.0,6.0,Trey Gibson,Emerson Hancock,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,822972,2026-06-08 22:40:00+00:00,Tampa Bay Rays,Boston Red Sox,3.0,1.0,Ian Seymour,Connelly Early,Tropicana Field,R,Regular Season,True
+MLB,824427,2026-06-08 22:40:00+00:00,Cleveland Guardians,New York Yankees,5.0,7.0,Gavin Williams,Will Warren,Progressive Field,R,Regular Season,True
+MLB,822806,2026-06-08 23:07:00+00:00,Toronto Blue Jays,Philadelphia Phillies,2.0,5.0,Patrick Corbin,Cristopher Sánchez,Rogers Centre,R,Regular Season,True
+MLB,824025,2026-06-09 01:38:00+00:00,Los Angeles Angels,Houston Astros,4.0,5.0,Grayson Rodriguez,Spencer Arrighetti,Angel Stadium,R,Regular Season,True
+MLB,823289,2026-06-09 01:40:00+00:00,San Diego Padres,Cincinnati Reds,6.0,2.0,Walker Buehler,Andrew Abbott,Petco Park,R,Regular Season,True
+MLB,823218,2026-06-09 01:45:00+00:00,San Francisco Giants,Washington Nationals,3.0,4.0,Logan Webb,Richard Lovelady,Oracle Park,R,Regular Season,True
+MLB,824998,2026-06-09 02:05:00+00:00,Athletics,Milwaukee Brewers,14.0,15.0,Jeffrey Springs,Kyle Harrison,Las Vegas Ballpark,R,Regular Season,True
+MLB,824830,2026-06-09 22:35:00+00:00,Baltimore Orioles,Seattle Mariners,5.0,6.0,Trevor Rogers,Logan Gilbert,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,822969,2026-06-09 22:40:00+00:00,Tampa Bay Rays,Boston Red Sox,4.0,3.0,Nick Martinez,Payton Tolle,Tropicana Field,R,Regular Season,True
+MLB,823374,2026-06-09 22:40:00+00:00,Pittsburgh Pirates,Los Angeles Dodgers,3.0,12.0,Paul Skenes,Eric Lauer,PNC Park,R,Regular Season,True
+MLB,823858,2026-06-09 22:40:00+00:00,Miami Marlins,Arizona Diamondbacks,10.0,6.0,Max Meyer,Zac Gallen,loanDepot park,R,Regular Season,True
+MLB,824267,2026-06-09 22:40:00+00:00,Detroit Tigers,Minnesota Twins,10.0,4.0,Troy Melton,Taj Bradley,Comerica Park,R,Regular Season,True
+MLB,824429,2026-06-09 22:40:00+00:00,Cleveland Guardians,New York Yankees,2.0,3.0,Slade Cecconi,Gerrit Cole,Progressive Field,R,Regular Season,True
+MLB,822805,2026-06-09 23:07:00+00:00,Toronto Blue Jays,Philadelphia Phillies,3.0,2.0,Dylan Cease,Zack Wheeler,Rogers Centre,R,Regular Season,True
+MLB,823620,2026-06-09 23:10:00+00:00,New York Mets,St. Louis Cardinals,0.0,7.0,Freddy Peralta,Dustin May,Citi Field,R,Regular Season,True
+MLB,824105,2026-06-09 23:40:00+00:00,Kansas City Royals,Texas Rangers,5.0,3.0,Stephen Kolek,Nathan Eovaldi,Kauffman Stadium,R,Regular Season,True
+MLB,824591,2026-06-09 23:40:00+00:00,Chicago White Sox,Atlanta Braves,6.0,5.0,Brandon Eisert,Grant Holmes,Rate Field,R,Regular Season,True
+MLB,824347,2026-06-10 00:40:00+00:00,Colorado Rockies,Chicago Cubs,7.0,3.0,Tomoyuki Sugano,Colin Rea,Coors Field,R,Regular Season,True
+MLB,824023,2026-06-10 01:38:00+00:00,Los Angeles Angels,Houston Astros,10.0,1.0,Walbert Ureña,Kai-Wei Teng,Angel Stadium,R,Regular Season,True
+MLB,823290,2026-06-10 01:40:00+00:00,San Diego Padres,Cincinnati Reds,3.0,5.0,Lucas Giolito,Chase Burns,Petco Park,R,Regular Season,True
+MLB,823214,2026-06-10 01:45:00+00:00,San Francisco Giants,Washington Nationals,3.0,6.0,Adrian Houser,Andrew Alvarez,Oracle Park,R,Regular Season,True
+MLB,824999,2026-06-10 02:05:00+00:00,Athletics,Milwaukee Brewers,7.0,5.0,J.T. Ginn,Robert Gasser,Las Vegas Ballpark,R,Regular Season,True
+MLB,822970,2026-06-10 17:10:00+00:00,Tampa Bay Rays,Boston Red Sox,7.0,5.0,Drew Rasmussen,Jake Bennett,Tropicana Field,R,Regular Season,True
+MLB,824428,2026-06-10 17:10:00+00:00,Cleveland Guardians,New York Yankees,4.0,8.0,Parker Messick,Carlos Rodón,Progressive Field,R,Regular Season,True
+MLB,823215,2026-06-10 19:45:00+00:00,San Francisco Giants,Washington Nationals,11.0,10.0,Robbie Ray,Foster Griffin,Oracle Park,R,Regular Season,True
+MLB,823287,2026-06-10 20:10:00+00:00,San Diego Padres,Cincinnati Reds,5.0,4.0,Michael King,Brady Singer,Petco Park,R,Regular Season,True
+MLB,824831,2026-06-10 22:35:00+00:00,Baltimore Orioles,Seattle Mariners,7.0,2.0,Brandon Young,George Kirby,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,823372,2026-06-10 22:40:00+00:00,Pittsburgh Pirates,Los Angeles Dodgers,9.0,8.0,Jared Jones,Shohei Ohtani,PNC Park,R,Regular Season,True
+MLB,823856,2026-06-10 22:40:00+00:00,Miami Marlins,Arizona Diamondbacks,8.0,0.0,Ryan Gusto,Ryne Nelson,loanDepot park,R,Regular Season,True
+MLB,824266,2026-06-10 22:40:00+00:00,Detroit Tigers,Minnesota Twins,4.0,6.0,Framber Valdez,Mike Paredes,Comerica Park,R,Regular Season,True
+MLB,822804,2026-06-10 23:07:00+00:00,Toronto Blue Jays,Philadelphia Phillies,4.0,7.0,Max Scherzer,Jesús Luzardo,Rogers Centre,R,Regular Season,True
+MLB,823618,2026-06-10 23:10:00+00:00,New York Mets,St. Louis Cardinals,2.0,9.0,Austin Warren,Andre Pallante,Citi Field,R,Regular Season,True
+MLB,824103,2026-06-10 23:40:00+00:00,Kansas City Royals,Texas Rangers,4.0,6.0,Seth Lugo,MacKenzie Gore,Kauffman Stadium,R,Regular Season,True
+MLB,824590,2026-06-10 23:40:00+00:00,Chicago White Sox,Atlanta Braves,2.0,1.0,Davis Martin,Chris Sale,Rate Field,R,Regular Season,True
+MLB,824348,2026-06-11 00:40:00+00:00,Colorado Rockies,Chicago Cubs,3.0,2.0,Michael Lorenzen,Shota Imanaga,Coors Field,R,Regular Season,True
+MLB,824996,2026-06-11 01:05:00+00:00,Athletics,Milwaukee Brewers,4.0,3.0,Jack Perkins,Brandon Sproat,Las Vegas Ballpark,R,Regular Season,True
+MLB,824022,2026-06-11 01:38:00+00:00,Los Angeles Angels,Houston Astros,3.0,2.0,Reid Detmers,Peter Lambert,Angel Stadium,R,Regular Season,True
+MLB,823619,2026-06-11 17:10:00+00:00,New York Mets,St. Louis Cardinals,5.0,4.0,Christian Scott,Hunter Dobbins,Citi Field,R,Regular Season,True
+MLB,823855,2026-06-11 17:10:00+00:00,Miami Marlins,Arizona Diamondbacks,2.0,0.0,Tyler Phillips,Merrill Kelly,loanDepot park,R,Regular Season,True
+MLB,824265,2026-06-11 17:10:00+00:00,Detroit Tigers,Minnesota Twins,11.0,0.0,Keider Montero,Zebby Matthews,Comerica Park,R,Regular Season,True
+MLB,824101,2026-06-11 18:10:00+00:00,Kansas City Royals,Texas Rangers,2.0,4.0,Michael Wacha,Kumar Rocker,Kauffman Stadium,R,Regular Season,True
+MLB,824346,2026-06-11 19:10:00+00:00,Colorado Rockies,Chicago Cubs,3.0,9.0,Ryan Feltner,Edward Cabrera,Coors Field,R,Regular Season,True
+MLB,823371,2026-06-11 22:40:00+00:00,Pittsburgh Pirates,Los Angeles Dodgers,6.0,8.0,Mitch Keller,Justin Wrobleski,PNC Park,R,Regular Season,True
+MLB,824827,2026-06-11 23:05:00+00:00,Baltimore Orioles,Seattle Mariners,7.0,5.0,Kyle Bradish,Bryan Woo,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,823370,2026-06-12 22:40:00+00:00,Pittsburgh Pirates,Miami Marlins,3.0,8.0,Braxton Ashcraft,Sandy Alcantara,PNC Park,R,Regular Season,True
+MLB,822726,2026-06-12 22:45:00+00:00,Washington Nationals,Seattle Mariners,2.0,10.0,Zack Littell,Bryce Miller,Nationals Park,R,Regular Season,True
+MLB,824826,2026-06-12 23:05:00+00:00,Baltimore Orioles,San Diego Padres,7.0,3.0,Shane Baz,Griffin Canning,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,824425,2026-06-12 23:10:00+00:00,Cleveland Guardians,Detroit Tigers,3.0,2.0,Tanner Bibee,Jack Flaherty,Progressive Field,R,Regular Season,True
+MLB,824752,2026-06-12 23:10:00+00:00,Boston Red Sox,Texas Rangers,10.0,1.0,Sonny Gray,Jack Leiter,Fenway Park,R,Regular Season,True
+MLB,823617,2026-06-12 23:15:00+00:00,New York Mets,Atlanta Braves,7.0,5.0,Nolan McLean,Spencer Strider,Citi Field,R,Regular Season,True
+MLB,824507,2026-06-12 23:15:00+00:00,Cincinnati Reds,Arizona Diamondbacks,2.0,5.0,Nick Lodolo,Eduardo Rodriguez,Great American Ball Park,R,Regular Season,True
+MLB,822803,2026-06-12 23:37:00+00:00,Toronto Blue Jays,New York Yankees,8.0,5.0,Trey Yesavage,Ryan Weathers,Rogers Centre,R,Regular Season,True
+MLB,823778,2026-06-12 23:40:00+00:00,Milwaukee Brewers,Philadelphia Phillies,6.0,0.0,Jacob Misiorowski,Tanner Banks,American Family Field,R,Regular Season,True
+MLB,824588,2026-06-12 23:40:00+00:00,Chicago White Sox,Los Angeles Dodgers,8.0,2.0,Anthony Kay,Roki Sasaki,Rate Field,R,Regular Season,True
+MLB,823695,2026-06-13 00:10:00+00:00,Minnesota Twins,St. Louis Cardinals,9.0,8.0,Joe Ryan,Kyle Leahy,Target Field,R,Regular Season,True
+MLB,824102,2026-06-13 00:10:00+00:00,Kansas City Royals,Houston Astros,8.0,10.0,Luinder Avila,Tatsuya Imai,Kauffman Stadium,R,Regular Season,True
+MLB,824020,2026-06-13 01:38:00+00:00,Los Angeles Angels,Tampa Bay Rays,4.0,3.0,Sam Aldegheri,Shane McClanahan,Angel Stadium,R,Regular Season,True
+MLB,824997,2026-06-13 02:05:00+00:00,Athletics,Colorado Rockies,6.0,4.0,Gage Jump,Sean Sullivan,Las Vegas Ballpark,R,Regular Season,True
+MLB,823211,2026-06-13 02:15:00+00:00,San Francisco Giants,Chicago Cubs,1.0,5.0,Landen Roupp,Javier Assad,Oracle Park,R,Regular Season,True

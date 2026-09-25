@@ -1,0 +1,483 @@
+league,game_id,datetime,home,away,home_score,away_score,home_starter,away_starter,venue,game_type,series_description,confirmed_starters
+MLB,632097,2020-07-18 22:05:00+00:00,Washington Nationals,Philadelphia Phillies,2.0,7.0,Max Scherzer,Aaron Nola,Nationals Park,S,Spring Training,True
+MLB,634820,2020-07-18 23:05:00+00:00,Pittsburgh Pirates,Cleveland Indians,3.0,5.0,Joe Musgrove,Zach Plesac,PNC Park,S,Spring Training,True
+MLB,634680,2020-07-18 23:10:00+00:00,New York Mets,New York Yankees,3.0,9.0,Rick Porcello,Michael King,Citi Field,S,Spring Training,True
+MLB,632171,2020-07-19 22:05:00+00:00,Philadelphia Phillies,Baltimore Orioles,1.0,4.0,Zack Wheeler,Thomas Eshelman,Citizens Bank Park,S,Spring Training,True
+MLB,634678,2020-07-19 23:05:00+00:00,New York Yankees,New York Mets,6.0,0.0,Jordan Montgomery,Corey Oswalt,Yankee Stadium,S,Spring Training,True
+MLB,632101,2020-07-20 00:05:00+00:00,Chicago Cubs,Chicago White Sox,3.0,7.0,Kyle Hendricks,Drew Anderson,Wrigley Field,S,Spring Training,True
+MLB,632092,2020-07-20 01:10:00+00:00,Los Angeles Dodgers,Arizona Diamondbacks,9.0,2.0,Mitch White,Taylor Widener,Dodger Stadium,S,Spring Training,True
+MLB,632103,2020-07-20 22:05:00+00:00,Baltimore Orioles,Washington Nationals,2.0,4.0,Alex Cobb,Stephen Strasburg,Oriole Park at Camden Yards,S,Spring Training,True
+MLB,632172,2020-07-20 22:05:00+00:00,New York Yankees,Philadelphia Phillies,2.0,2.0,Deivi García,Vince Velasquez,Yankee Stadium,S,Spring Training,True
+MLB,634817,2020-07-20 23:05:00+00:00,Cleveland Indians,Pittsburgh Pirates,11.0,7.0,Mike Clevinger,Trevor Williams,Progressive Field,S,Spring Training,True
+MLB,634819,2020-07-21 00:05:00+00:00,Kansas City Royals,Houston Astros,3.0,6.0,Mike Montgomery,Lance McCullers Jr.,Kauffman Stadium,S,Spring Training,True
+MLB,632099,2020-07-21 00:10:00+00:00,Chicago White Sox,Chicago Cubs,5.0,3.0,Dallas Keuchel,Yu Darvish,Guaranteed Rate Field,S,Spring Training,True
+MLB,632091,2020-07-21 01:10:00+00:00,San Diego Padres,Los Angeles Angels,0.0,1.0,Garrett Richards,Griffin Canning,Petco Park,S,Spring Training,True
+MLB,632095,2020-07-21 01:40:00+00:00,Los Angeles Dodgers,Arizona Diamondbacks,12.0,1.0,Julio Urías,Taylor Clarke,Dodger Stadium,S,Spring Training,True
+MLB,634681,2020-07-21 01:40:00+00:00,Oakland Athletics,San Francisco Giants,2.0,6.0,Sean Manaea,Kevin Gausman,Oakland Coliseum,S,Spring Training,True
+MLB,634818,2020-07-21 18:05:00+00:00,Kansas City Royals,Houston Astros,6.0,15.0,Glenn Sparkman,Ryan Pressly,Kauffman Stadium,S,Spring Training,True
+MLB,632100,2020-07-21 22:05:00+00:00,Washington Nationals,Baltimore Orioles,6.0,4.0,Patrick Corbin,Kohl Stewart,Nationals Park,S,Spring Training,True
+MLB,632106,2020-07-21 22:40:00+00:00,Cincinnati Reds,Detroit Tigers,9.0,7.0,Nick Lodolo,Dario Agrazal,Great American Ball Park,S,Spring Training,True
+MLB,634812,2020-07-21 23:00:00+00:00,Atlanta Braves,Miami Marlins,10.0,9.0,Mike Foltynewicz,José Ureña,Truist Park,S,Spring Training,True
+MLB,634679,2020-07-21 23:30:00+00:00,Boston Red Sox,Toronto Blue Jays,6.0,8.0,Ryan Weber,Nate Pearson,Fenway Park,S,Spring Training,True
+MLB,632089,2020-07-22 00:05:00+00:00,Texas Rangers,Colorado Rockies,1.0,5.0,Kyle Gibson,Ashton Goudeau,Globe Life Field,S,Spring Training,True
+MLB,632096,2020-07-22 01:40:00+00:00,Los Angeles Dodgers,Los Angeles Angels,6.0,4.0,Josiah Gray,Félix Peña,Dodger Stadium,S,Spring Training,True
+MLB,634676,2020-07-22 01:45:00+00:00,San Francisco Giants,Oakland Athletics,4.0,2.0,Tyler Rogers,Mike Fiers,Oracle Park,S,Spring Training,True
+MLB,634811,2020-07-22 20:00:00+00:00,Atlanta Braves,Miami Marlins,2.0,6.0,Kyle Wright,Pablo López,Truist Park,S,Spring Training,True
+MLB,634816,2020-07-22 20:05:00+00:00,St. Louis Cardinals,Kansas City Royals,6.0,3.0,Miles Mikolas,Kyle Zimmer,Busch Stadium,S,Spring Training,True
+MLB,634805,2020-07-22 21:05:00+00:00,Pittsburgh Pirates,Cleveland Indians,3.0,5.0,Derek Holland,Aaron Civale,PNC Park,S,Spring Training,True
+MLB,632102,2020-07-22 22:10:00+00:00,Cincinnati Reds,Detroit Tigers,2.0,1.0,José De León,Michael Fulmer,Great American Ball Park,S,Spring Training,True
+MLB,632094,2020-07-22 23:05:00+00:00,Chicago Cubs,Minnesota Twins,4.0,3.0,Jon Lester,Homer Bailey,Wrigley Field,S,Spring Training,True
+MLB,632098,2020-07-23 00:05:00+00:00,Texas Rangers,Colorado Rockies,3.0,7.0,Jordan Lyles,Antonio Senzatela,Globe Life Field,S,Spring Training,True
+MLB,632093,2020-07-23 00:10:00+00:00,Chicago White Sox,Milwaukee Brewers,3.0,5.0,Carlos Rodón,Adrian Houser,Guaranteed Rate Field,S,Spring Training,True
+MLB,632090,2020-07-23 01:40:00+00:00,Los Angeles Angels,San Diego Padres,4.0,5.0,Patrick Sandoval,Joey Lucchesi,Angel Stadium,S,Spring Training,True
+MLB,630851,2020-07-23 23:08:00+00:00,Washington Nationals,New York Yankees,1.0,4.0,Max Scherzer,Gerrit Cole,Nationals Park,R,Regular Season,True
+MLB,631377,2020-07-24 02:08:00+00:00,Los Angeles Dodgers,San Francisco Giants,8.0,1.0,Dustin May,Johnny Cueto,Dodger Stadium,R,Regular Season,True
+MLB,631242,2020-07-24 20:10:00+00:00,New York Mets,Atlanta Braves,1.0,0.0,Jacob deGrom,Michael Soroka,Citi Field,R,Regular Season,True
+MLB,631589,2020-07-24 22:10:00+00:00,Cincinnati Reds,Detroit Tigers,7.0,1.0,Sonny Gray,Matthew Boyd,Great American Ball Park,R,Regular Season,True
+MLB,630966,2020-07-24 22:40:00+00:00,Tampa Bay Rays,Toronto Blue Jays,4.0,6.0,Charlie Morton,Hyun Jin Ryu,Tropicana Field,R,Regular Season,True
+MLB,631121,2020-07-24 23:05:00+00:00,Philadelphia Phillies,Miami Marlins,2.0,5.0,Aaron Nola,Sandy Alcantara,Citizens Bank Park,R,Regular Season,True
+MLB,631563,2020-07-24 23:10:00+00:00,Cleveland Indians,Kansas City Royals,2.0,0.0,Shane Bieber,Danny Duffy,Progressive Field,R,Regular Season,True
+MLB,631641,2020-07-24 23:10:00+00:00,Chicago Cubs,Milwaukee Brewers,3.0,0.0,Kyle Hendricks,Brandon Woodruff,Wrigley Field,R,Regular Season,True
+MLB,631664,2020-07-24 23:30:00+00:00,Boston Red Sox,Baltimore Orioles,13.0,2.0,Nathan Eovaldi,Tommy Milone,Fenway Park,R,Regular Season,True
+MLB,630941,2020-07-25 00:05:00+00:00,Texas Rangers,Colorado Rockies,1.0,0.0,Lance Lynn,Germán Márquez,Globe Life Field,R,Regular Season,True
+MLB,631514,2020-07-25 00:10:00+00:00,Chicago White Sox,Minnesota Twins,5.0,10.0,Lucas Giolito,José Berríos,Guaranteed Rate Field,R,Regular Season,True
+MLB,630989,2020-07-25 00:15:00+00:00,St. Louis Cardinals,Pittsburgh Pirates,5.0,4.0,Jack Flaherty,Joe Musgrove,Busch Stadium,R,Regular Season,True
+MLB,631091,2020-07-25 01:10:00+00:00,San Diego Padres,Arizona Diamondbacks,7.0,2.0,Chris Paddack,Madison Bumgarner,Petco Park,R,Regular Season,True
+MLB,631438,2020-07-25 01:10:00+00:00,Houston Astros,Seattle Mariners,8.0,2.0,Justin Verlander,Marco Gonzales,Minute Maid Park,R,Regular Season,True
+MLB,631378,2020-07-25 01:40:00+00:00,Los Angeles Dodgers,San Francisco Giants,9.0,1.0,Ross Stripling,Tyler Anderson,Dodger Stadium,R,Regular Season,True
+MLB,631182,2020-07-25 02:10:00+00:00,Oakland Athletics,Los Angeles Angels,7.0,3.0,Frankie Montas,Andrew Heaney,Oakland Coliseum,R,Regular Season,True
+MLB,631642,2020-07-25 17:05:00+00:00,Chicago Cubs,Milwaukee Brewers,3.0,8.0,Yu Darvish,Corbin Burnes,Wrigley Field,R,Regular Season,True
+MLB,631666,2020-07-25 17:35:00+00:00,Boston Red Sox,Baltimore Orioles,2.0,7.0,Martín Pérez,Alex Cobb,Fenway Park,R,Regular Season,True
+MLB,631515,2020-07-25 18:10:00+00:00,Chicago White Sox,Minnesota Twins,10.0,3.0,Dallas Keuchel,Randy Dobnak,Guaranteed Rate Field,R,Regular Season,True
+MLB,630992,2020-07-25 18:15:00+00:00,St. Louis Cardinals,Pittsburgh Pirates,9.0,1.0,Adam Wainwright,Trevor Williams,Busch Stadium,R,Regular Season,True
+MLB,630967,2020-07-25 19:10:00+00:00,Tampa Bay Rays,Toronto Blue Jays,4.0,1.0,Ryan Yarbrough,Matt Shoemaker,Tropicana Field,R,Regular Season,True
+MLB,630942,2020-07-25 20:05:00+00:00,Texas Rangers,Colorado Rockies,2.0,3.0,Mike Minor,Jon Gray,Globe Life Field,R,Regular Season,True
+MLB,631108,2020-07-25 20:05:00+00:00,Philadelphia Phillies,Miami Marlins,7.0,1.0,Zack Wheeler,Caleb Smith,Citizens Bank Park,R,Regular Season,True
+MLB,631181,2020-07-25 20:10:00+00:00,Oakland Athletics,Los Angeles Angels,1.0,4.0,Sean Manaea,Dylan Bundy,Oakland Coliseum,R,Regular Season,True
+MLB,631241,2020-07-25 20:10:00+00:00,New York Mets,Atlanta Braves,3.0,5.0,Steven Matz,Max Fried,Citi Field,R,Regular Season,True
+MLB,631382,2020-07-25 20:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,4.0,5.0,Alex Wood,Logan Webb,Dodger Stadium,R,Regular Season,True
+MLB,631453,2020-07-25 20:10:00+00:00,Houston Astros,Seattle Mariners,7.0,2.0,Lance McCullers Jr.,Taijuan Walker,Minute Maid Park,R,Regular Season,True
+MLB,631565,2020-07-25 21:10:00+00:00,Cleveland Indians,Kansas City Royals,2.0,3.0,Mike Clevinger,Brady Singer,Progressive Field,R,Regular Season,True
+MLB,631603,2020-07-25 21:10:00+00:00,Cincinnati Reds,Detroit Tigers,4.0,6.0,Luis Castillo,Iván Nova,Great American Ball Park,R,Regular Season,True
+MLB,630899,2020-07-25 23:15:00+00:00,Washington Nationals,New York Yankees,9.0,2.0,Erick Fedde,James Paxton,Nationals Park,R,Regular Season,True
+MLB,631092,2020-07-26 01:10:00+00:00,San Diego Padres,Arizona Diamondbacks,5.0,1.0,Dinelson Lamet,Robbie Ray,Petco Park,R,Regular Season,True
+MLB,630856,2020-07-26 17:05:00+00:00,Washington Nationals,New York Yankees,2.0,3.0,Patrick Corbin,Jonathan Loáisiga,Nationals Park,R,Regular Season,True
+MLB,631126,2020-07-26 17:05:00+00:00,Philadelphia Phillies,Miami Marlins,6.0,11.0,Vince Velasquez,Robert Dugger,Citizens Bank Park,R,Regular Season,True
+MLB,630968,2020-07-26 17:10:00+00:00,Tampa Bay Rays,Toronto Blue Jays,6.0,5.0,Blake Snell,Thomas Hatch,Tropicana Field,R,Regular Season,True
+MLB,631566,2020-07-26 17:10:00+00:00,Cleveland Indians,Kansas City Royals,9.0,2.0,Carlos Carrasco,Ronald Bolaños,Progressive Field,R,Regular Season,True
+MLB,631591,2020-07-26 17:10:00+00:00,Cincinnati Reds,Detroit Tigers,2.0,3.0,Trevor Bauer,Spencer Turnbull,Great American Ball Park,R,Regular Season,True
+MLB,631668,2020-07-26 17:35:00+00:00,Boston Red Sox,Baltimore Orioles,4.0,7.0,Ryan Weber,Wade LeBlanc,Fenway Park,R,Regular Season,True
+MLB,631441,2020-07-26 18:10:00+00:00,Houston Astros,Seattle Mariners,6.0,7.0,Zack Greinke,Yusei Kikuchi,Minute Maid Park,R,Regular Season,True
+MLB,631517,2020-07-26 18:10:00+00:00,Chicago White Sox,Minnesota Twins,2.0,14.0,Reynaldo López,Kenta Maeda,Guaranteed Rate Field,R,Regular Season,True
+MLB,630993,2020-07-26 18:15:00+00:00,St. Louis Cardinals,Pittsburgh Pirates,1.0,5.0,Dakota Hudson,Mitch Keller,Busch Stadium,R,Regular Season,True
+MLB,631643,2020-07-26 18:20:00+00:00,Chicago Cubs,Milwaukee Brewers,9.0,1.0,Tyler Chatwood,Freddy Peralta,Wrigley Field,R,Regular Season,True
+MLB,630943,2020-07-26 18:35:00+00:00,Texas Rangers,Colorado Rockies,2.0,5.0,Corey Kluber,Kyle Freeland,Globe Life Field,R,Regular Season,True
+MLB,631097,2020-07-26 20:10:00+00:00,San Diego Padres,Arizona Diamondbacks,3.0,4.0,Garrett Richards,Zac Gallen,Petco Park,R,Regular Season,True
+MLB,631165,2020-07-26 20:10:00+00:00,Oakland Athletics,Los Angeles Angels,6.0,4.0,Mike Fiers,Shohei Ohtani,Oakland Coliseum,R,Regular Season,True
+MLB,631240,2020-07-26 23:08:00+00:00,New York Mets,Atlanta Braves,1.0,14.0,Rick Porcello,Sean Newcomb,Citi Field,R,Regular Season,True
+MLB,631384,2020-07-27 02:08:00+00:00,Los Angeles Dodgers,San Francisco Giants,1.0,3.0,Julio Urías,Drew Smyly,Dodger Stadium,R,Regular Season,True
+MLB,631168,2020-07-27 19:40:00+00:00,Oakland Athletics,Los Angeles Angels,3.0,0.0,Chris Bassitt,Griffin Canning,Oakland Coliseum,R,Regular Season,True
+MLB,631098,2020-07-27 20:10:00+00:00,San Diego Padres,Arizona Diamondbacks,6.0,2.0,Joey Lucchesi,Luke Weaver,Petco Park,R,Regular Season,True
+MLB,630861,2020-07-27 22:05:00+00:00,Washington Nationals,Toronto Blue Jays,1.0,4.0,Aníbal Sánchez,Trent Thornton,Nationals Park,R,Regular Season,True
+MLB,630969,2020-07-27 22:40:00+00:00,Tampa Bay Rays,Atlanta Braves,14.0,5.0,Tyler Glasnow,Mike Foltynewicz,Tropicana Field,R,Regular Season,True
+MLB,631592,2020-07-27 22:40:00+00:00,Cincinnati Reds,Chicago Cubs,7.0,8.0,Wade Miley,Jon Lester,Great American Ball Park,R,Regular Season,True
+MLB,631130,2020-07-27 23:05:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,5.0,6.0,Steven Brault,Adrian Houser,PNC Park,R,Regular Season,True
+MLB,631442,2020-07-27 23:10:00+00:00,Houston Astros,Seattle Mariners,8.0,5.0,Josh James,Kendall Graveman,Minute Maid Park,R,Regular Season,True
+MLB,631489,2020-07-27 23:10:00+00:00,Detroit Tigers,Kansas City Royals,6.0,14.0,Michael Fulmer,Mike Montgomery,Comerica Park,R,Regular Season,True
+MLB,631669,2020-07-27 23:35:00+00:00,Boston Red Sox,New York Mets,4.0,7.0,Josh Osich,Michael Wacha,Fenway Park,R,Regular Season,True
+MLB,631573,2020-07-28 19:40:00+00:00,Cleveland Indians,Chicago White Sox,4.0,3.0,Aaron Civale,Dylan Cease,Progressive Field,R,Regular Season,True
+MLB,631567,2020-07-28 19:45:00+00:00,Cleveland Indians,Chicago White Sox,5.0,3.0,Adam Plutko,Carlos Rodón,Progressive Field,R,Regular Season,True
+MLB,630866,2020-07-28 22:05:00+00:00,Washington Nationals,Toronto Blue Jays,1.0,5.0,Austin Voth,Tanner Roark,Nationals Park,R,Regular Season,True
+MLB,630970,2020-07-28 22:40:00+00:00,Tampa Bay Rays,Atlanta Braves,5.0,2.0,Yonny Chirinos,Kyle Wright,Tropicana Field,R,Regular Season,True
+MLB,631593,2020-07-28 22:40:00+00:00,Cincinnati Reds,Chicago Cubs,5.0,8.0,Tyler Mahle,Alec Mills,Great American Ball Park,R,Regular Season,True
+MLB,631132,2020-07-28 23:05:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,8.0,6.0,Derek Holland,Josh Lindblom,PNC Park,R,Regular Season,True
+MLB,631490,2020-07-28 23:10:00+00:00,Detroit Tigers,Kansas City Royals,4.0,3.0,Rony García,Kyle Zimmer,Comerica Park,R,Regular Season,True
+MLB,631663,2020-07-28 23:30:00+00:00,Boston Red Sox,New York Mets,3.0,8.0,Matt Hall,David Peterson,Fenway Park,R,Regular Season,True
+MLB,631269,2020-07-29 00:10:00+00:00,Minnesota Twins,St. Louis Cardinals,6.0,3.0,Homer Bailey,Carlos Martinez,Target Field,R,Regular Season,True
+MLB,630944,2020-07-29 01:05:00+00:00,Texas Rangers,Arizona Diamondbacks,1.0,4.0,Kyle Gibson,Merrill Kelly,Globe Life Field,R,Regular Season,True
+MLB,631443,2020-07-29 01:10:00+00:00,Houston Astros,Los Angeles Dodgers,2.0,5.0,Framber Valdez,Walker Buehler,Minute Maid Park,R,Regular Season,True
+MLB,631171,2020-07-29 01:40:00+00:00,Oakland Athletics,Colorado Rockies,3.0,8.0,Daniel Mengden,Antonio Senzatela,Oakland Coliseum,R,Regular Season,True
+MLB,631387,2020-07-29 01:40:00+00:00,Los Angeles Angels,Seattle Mariners,10.0,2.0,Patrick Sandoval,Justus Sheffield,Angel Stadium,R,Regular Season,True
+MLB,631014,2020-07-29 01:45:00+00:00,San Francisco Giants,San Diego Padres,3.0,5.0,Jeff Samardzija,Zach Davies,Oracle Park,R,Regular Season,True
+MLB,631172,2020-07-29 19:40:00+00:00,Oakland Athletics,Colorado Rockies,1.0,5.0,Frankie Montas,Germán Márquez,Oakland Coliseum,R,Regular Season,True
+MLB,630940,2020-07-29 20:05:00+00:00,Texas Rangers,Arizona Diamondbacks,7.0,4.0,Lance Lynn,Madison Bumgarner,Globe Life Field,R,Regular Season,True
+MLB,630916,2020-07-29 22:05:00+00:00,Toronto Blue Jays,Washington Nationals,0.0,4.0,Nate Pearson,Max Scherzer,Nationals Park,R,Regular Season,True
+MLB,631569,2020-07-29 22:10:00+00:00,Cleveland Indians,Chicago White Sox,0.0,4.0,Zach Plesac,Lucas Giolito,Progressive Field,R,Regular Season,True
+MLB,631594,2020-07-29 22:40:00+00:00,Cincinnati Reds,Chicago Cubs,12.0,7.0,Sonny Gray,Kyle Hendricks,Great American Ball Park,R,Regular Season,True
+MLB,631137,2020-07-29 23:05:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,0.0,3.0,Joe Musgrove,Brandon Woodruff,PNC Park,R,Regular Season,True
+MLB,630272,2020-07-29 23:10:00+00:00,Atlanta Braves,Tampa Bay Rays,7.0,4.0,Michael Soroka,Charlie Morton,Truist Park,R,Regular Season,True
+MLB,631239,2020-07-29 23:10:00+00:00,New York Mets,Boston Red Sox,5.0,6.0,Jacob deGrom,Nathan Eovaldi,Citi Field,R,Regular Season,True
+MLB,631444,2020-07-29 23:10:00+00:00,Houston Astros,Los Angeles Dodgers,2.0,4.0,Cristian Javier,Dustin May,Minute Maid Park,R,Regular Season,True
+MLB,631492,2020-07-29 23:10:00+00:00,Detroit Tigers,Kansas City Royals,5.0,4.0,Matthew Boyd,Danny Duffy,Comerica Park,R,Regular Season,True
+MLB,630495,2020-07-29 23:35:00+00:00,Baltimore Orioles,New York Yankees,3.0,9.0,Asher Wojciechowski,Gerrit Cole,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,631270,2020-07-30 00:10:00+00:00,Minnesota Twins,St. Louis Cardinals,3.0,0.0,Rich Hill,Daniel Ponce de Leon,Target Field,R,Regular Season,True
+MLB,631033,2020-07-30 01:45:00+00:00,San Francisco Giants,San Diego Padres,7.0,6.0,Johnny Cueto,Chris Paddack,Oracle Park,R,Regular Season,True
+MLB,631389,2020-07-30 02:10:00+00:00,Los Angeles Angels,Seattle Mariners,7.0,10.0,Andrew Heaney,Justin Dunn,Angel Stadium,R,Regular Season,True
+MLB,630917,2020-07-30 20:05:00+00:00,Toronto Blue Jays,Washington Nationals,4.0,6.0,Hyun Jin Ryu,Erick Fedde,Nationals Park,R,Regular Season,True
+MLB,630496,2020-07-30 23:05:00+00:00,Baltimore Orioles,New York Yankees,6.0,8.0,John Means,J.A. Happ,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,631238,2020-07-30 23:07:00+00:00,New York Mets,Boston Red Sox,2.0,4.0,Steven Matz,Martín Pérez,Citi Field,R,Regular Season,True
+MLB,631271,2020-07-30 23:07:00+00:00,Minnesota Twins,Cleveland Indians,0.0,2.0,José Berríos,Shane Bieber,Target Field,R,Regular Season,True
+MLB,630346,2020-07-30 23:10:00+00:00,Atlanta Braves,Tampa Bay Rays,2.0,1.0,Max Fried,Ryan Yarbrough,Truist Park,R,Regular Season,True
+MLB,631494,2020-07-30 23:10:00+00:00,Detroit Tigers,Kansas City Royals,3.0,5.0,Iván Nova,Brady Singer,Comerica Park,R,Regular Season,True
+MLB,630145,2020-07-31 01:40:00+00:00,Arizona Diamondbacks,Los Angeles Dodgers,3.0,6.0,Robbie Ray,Ross Stripling,Chase Field,R,Regular Season,True
+MLB,631390,2020-07-31 01:40:00+00:00,Los Angeles Angels,Seattle Mariners,5.0,8.0,Dylan Bundy,Marco Gonzales,Angel Stadium,R,Regular Season,True
+MLB,631018,2020-07-31 01:45:00+00:00,San Francisco Giants,San Diego Padres,7.0,12.0,Kevin Gausman,Dinelson Lamet,Oracle Park,R,Regular Season,True
+MLB,631222,2020-07-31 23:05:00+00:00,New York Yankees,Boston Red Sox,5.0,1.0,Jordan Montgomery,Ryan Weber,Yankee Stadium,R,Regular Season,True
+MLB,630275,2020-07-31 23:10:00+00:00,Atlanta Braves,New York Mets,11.0,10.0,Sean Newcomb,Rick Porcello,Truist Park,R,Regular Season,True
+MLB,631480,2020-07-31 23:10:00+00:00,Detroit Tigers,Cincinnati Reds,7.0,2.0,Spencer Turnbull,Luis Castillo,Comerica Park,R,Regular Season,True
+MLB,630592,2020-07-31 23:35:00+00:00,Baltimore Orioles,Tampa Bay Rays,6.0,3.0,Alex Cobb,Blake Snell,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,631410,2020-08-01 00:05:00+00:00,Kansas City Royals,Chicago White Sox,2.0,3.0,Kris Bubic,Dallas Keuchel,Kauffman Stadium,R,Regular Season,True
+MLB,631272,2020-08-01 00:10:00+00:00,Minnesota Twins,Cleveland Indians,4.0,1.0,Randy Dobnak,Mike Clevinger,Target Field,R,Regular Season,True
+MLB,631539,2020-08-01 00:10:00+00:00,Colorado Rockies,San Diego Padres,7.0,8.0,Jon Gray,Garrett Richards,Coors Field,R,Regular Season,True
+MLB,631647,2020-08-01 00:15:00+00:00,Chicago Cubs,Pittsburgh Pirates,6.0,3.0,Yu Darvish,Trevor Williams,Wrigley Field,R,Regular Season,True
+MLB,631019,2020-08-01 01:10:00+00:00,San Francisco Giants,Texas Rangers,9.0,2.0,Logan Webb,Mike Minor,Oracle Park,R,Regular Season,True
+MLB,631391,2020-08-01 01:10:00+00:00,Los Angeles Angels,Houston Astros,6.0,9.0,Matt Andriese,Lance McCullers Jr.,Angel Stadium,R,Regular Season,True
+MLB,630201,2020-08-01 01:40:00+00:00,Arizona Diamondbacks,Los Angeles Dodgers,5.0,3.0,Zac Gallen,Tony Gonsolin,Chase Field,R,Regular Season,True
+MLB,631066,2020-08-01 01:40:00+00:00,Seattle Mariners,Oakland Athletics,5.0,3.0,Taijuan Walker,Sean Manaea,T-Mobile Park,R,Regular Season,True
+MLB,631413,2020-08-01 23:05:00+00:00,Kansas City Royals,Chicago White Sox,5.0,11.0,Ronald Bolaños,Gio Gonzalez,Kauffman Stadium,R,Regular Season,True
+MLB,631224,2020-08-01 23:07:00+00:00,New York Yankees,Boston Red Sox,5.0,2.0,Masahiro Tanaka,Zack Godley,Yankee Stadium,R,Regular Season,True
+MLB,631392,2020-08-01 23:07:00+00:00,Los Angeles Angels,Houston Astros,5.0,4.0,Griffin Canning,Zack Greinke,Angel Stadium,R,Regular Season,True
+MLB,630278,2020-08-01 23:10:00+00:00,Atlanta Braves,New York Mets,7.0,1.0,Touki Toussaint,Michael Wacha,Truist Park,R,Regular Season,True
+MLB,631273,2020-08-01 23:10:00+00:00,Minnesota Twins,Cleveland Indians,3.0,0.0,Kenta Maeda,Carlos Carrasco,Target Field,R,Regular Season,True
+MLB,630492,2020-08-01 23:35:00+00:00,Baltimore Orioles,Tampa Bay Rays,5.0,4.0,Wade LeBlanc,Tyler Glasnow,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,630100,2020-08-02 00:10:00+00:00,Arizona Diamondbacks,Los Angeles Dodgers,2.0,11.0,Luke Weaver,Julio Urías,Chase Field,R,Regular Season,True
+MLB,631540,2020-08-02 00:10:00+00:00,Colorado Rockies,San Diego Padres,6.0,1.0,Kyle Freeland,Joey Lucchesi,Coors Field,R,Regular Season,True
+MLB,631622,2020-08-02 00:15:00+00:00,Chicago Cubs,Pittsburgh Pirates,4.0,3.0,Tyler Chatwood,Mitch Keller,Wrigley Field,R,Regular Season,True
+MLB,631020,2020-08-02 01:10:00+00:00,San Francisco Giants,Texas Rangers,7.0,3.0,Drew Smyly,Jordan Lyles,Oracle Park,R,Regular Season,True
+MLB,631067,2020-08-02 01:10:00+00:00,Seattle Mariners,Oakland Athletics,2.0,3.0,Yusei Kikuchi,Mike Fiers,T-Mobile Park,R,Regular Season,True
+MLB,631470,2020-08-02 16:10:00+00:00,Detroit Tigers,Cincinnati Reds,3.0,4.0,Rony García,Anthony DeSclafani,Comerica Park,R,Regular Season,True
+MLB,631469,2020-08-02 16:15:00+00:00,Detroit Tigers,Cincinnati Reds,0.0,4.0,Daniel Norris,Trevor Bauer,Comerica Park,R,Regular Season,True
+MLB,630493,2020-08-02 17:05:00+00:00,Baltimore Orioles,Tampa Bay Rays,5.0,1.0,Tommy Milone,Yonny Chirinos,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,630280,2020-08-02 17:10:00+00:00,Atlanta Braves,New York Mets,4.0,0.0,Kyle Wright,David Peterson,Truist Park,R,Regular Season,True
+MLB,631415,2020-08-02 18:05:00+00:00,Kansas City Royals,Chicago White Sox,2.0,9.0,Jakob Junis,Dylan Cease,Kauffman Stadium,R,Regular Season,True
+MLB,631274,2020-08-02 18:10:00+00:00,Minnesota Twins,Cleveland Indians,3.0,1.0,Tyler Clippard,Aaron Civale,Target Field,R,Regular Season,True
+MLB,631606,2020-08-02 18:20:00+00:00,Chicago Cubs,Pittsburgh Pirates,2.0,1.0,Jon Lester,Steven Brault,Wrigley Field,R,Regular Season,True
+MLB,631541,2020-08-02 19:10:00+00:00,Colorado Rockies,San Diego Padres,9.0,6.0,Antonio Senzatela,Zach Davies,Coors Field,R,Regular Season,True
+MLB,631021,2020-08-02 20:05:00+00:00,San Francisco Giants,Texas Rangers,5.0,9.0,Jeff Samardzija,Kolby Allard,Oracle Park,R,Regular Season,True
+MLB,630101,2020-08-02 20:10:00+00:00,Arizona Diamondbacks,Los Angeles Dodgers,0.0,3.0,Merrill Kelly,Clayton Kershaw,Chase Field,R,Regular Season,True
+MLB,631068,2020-08-02 20:10:00+00:00,Seattle Mariners,Oakland Athletics,2.0,3.0,Kendall Graveman,Chris Bassitt,T-Mobile Park,R,Regular Season,True
+MLB,631393,2020-08-02 20:10:00+00:00,Los Angeles Angels,Houston Astros,5.0,6.0,Shohei Ohtani,Josh James,Angel Stadium,R,Regular Season,True
+MLB,631210,2020-08-02 23:08:00+00:00,New York Yankees,Boston Red Sox,9.0,7.0,James Paxton,Austin Brice,Yankee Stadium,R,Regular Season,True
+MLB,631596,2020-08-03 22:40:00+00:00,Cincinnati Reds,Cleveland Indians,3.0,2.0,Sonny Gray,Zach Plesac,Great American Ball Park,R,Regular Season,True
+MLB,631219,2020-08-03 23:05:00+00:00,New York Yankees,Philadelphia Phillies,6.0,3.0,Gerrit Cole,Jake Arrieta,Yankee Stadium,R,Regular Season,True
+MLB,630281,2020-08-03 23:10:00+00:00,Atlanta Braves,New York Mets,2.0,7.0,Michael Soroka,Jacob deGrom,Truist Park,R,Regular Season,True
+MLB,631275,2020-08-04 00:10:00+00:00,Minnesota Twins,Pittsburgh Pirates,5.0,4.0,Lewis Thorpe,Derek Holland,Target Field,R,Regular Season,True
+MLB,631293,2020-08-04 00:10:00+00:00,Milwaukee Brewers,Chicago White Sox,4.0,6.0,Brett Anderson,Carlos Rodón,Miller Park,R,Regular Season,True
+MLB,631645,2020-08-04 00:15:00+00:00,Chicago Cubs,Kansas City Royals,2.0,0.0,Alec Mills,Danny Duffy,Wrigley Field,R,Regular Season,True
+MLB,631542,2020-08-04 00:40:00+00:00,Colorado Rockies,San Francisco Giants,7.0,6.0,Chi Chi González,Johnny Cueto,Coors Field,R,Regular Season,True
+MLB,631070,2020-08-04 01:10:00+00:00,Seattle Mariners,Oakland Athletics,1.0,11.0,Justus Sheffield,Frankie Montas,T-Mobile Park,R,Regular Season,True
+MLB,631090,2020-08-04 01:10:00+00:00,San Diego Padres,Los Angeles Dodgers,5.0,4.0,Chris Paddack,Walker Buehler,Petco Park,R,Regular Season,True
+MLB,631276,2020-08-04 18:10:00+00:00,Minnesota Twins,Pittsburgh Pirates,7.0,3.0,José Berríos,Joe Musgrove,Target Field,R,Regular Season,True
+MLB,631597,2020-08-04 22:10:00+00:00,Cincinnati Reds,Cleveland Indians,2.0,4.0,Tyler Mahle,Shane Bieber,Great American Ball Park,R,Regular Season,True
+MLB,630971,2020-08-04 22:40:00+00:00,Tampa Bay Rays,Boston Red Sox,5.0,1.0,Charlie Morton,Nathan Eovaldi,Tropicana Field,R,Regular Season,True
+MLB,630874,2020-08-04 23:05:00+00:00,Washington Nationals,New York Mets,5.0,3.0,Patrick Corbin,Steven Matz,Nationals Park,R,Regular Season,True
+MLB,630284,2020-08-04 23:10:00+00:00,Atlanta Braves,Toronto Blue Jays,10.0,1.0,Max Fried,Matt Shoemaker,Truist Park,R,Regular Season,True
+MLB,630575,2020-08-04 23:35:00+00:00,Baltimore Orioles,Miami Marlins,0.0,4.0,John Means,Pablo López,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,631294,2020-08-05 00:10:00+00:00,Milwaukee Brewers,Chicago White Sox,2.0,3.0,Brandon Woodruff,Lucas Giolito,Miller Park,R,Regular Season,True
+MLB,631608,2020-08-05 00:15:00+00:00,Chicago Cubs,Kansas City Royals,5.0,4.0,Kyle Hendricks,Brady Singer,Wrigley Field,R,Regular Season,True
+MLB,631543,2020-08-05 00:40:00+00:00,Colorado Rockies,San Francisco Giants,5.0,2.0,Germán Márquez,Kevin Gausman,Coors Field,R,Regular Season,True
+MLB,630109,2020-08-05 01:10:00+00:00,Arizona Diamondbacks,Houston Astros,2.0,8.0,Madison Bumgarner,Cristian Javier,Chase Field,R,Regular Season,True
+MLB,631069,2020-08-05 01:10:00+00:00,San Diego Padres,Los Angeles Dodgers,2.0,5.0,Dinelson Lamet,Dustin May,Petco Park,R,Regular Season,True
+MLB,631173,2020-08-05 01:10:00+00:00,Oakland Athletics,Texas Rangers,5.0,1.0,Jesús Luzardo,Lance Lynn,Oakland Coliseum,R,Regular Season,True
+MLB,631057,2020-08-05 02:10:00+00:00,Seattle Mariners,Los Angeles Angels,3.0,5.0,Justin Dunn,Andrew Heaney,T-Mobile Park,R,Regular Season,True
+MLB,631220,2020-08-05 20:05:00+00:00,New York Yankees,Philadelphia Phillies,7.0,11.0,J.A. Happ,Zack Wheeler,Citizens Bank Park,R,Regular Season,True
+MLB,631127,2020-08-05 20:10:00+00:00,Philadelphia Phillies,New York Yankees,1.0,3.0,Aaron Nola,Jonathan Loáisiga,Citizens Bank Park,R,Regular Season,True
+MLB,630591,2020-08-05 21:05:00+00:00,Baltimore Orioles,Miami Marlins,0.0,1.0,Alex Cobb,Elieser Hernández,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,631339,2020-08-05 21:10:00+00:00,Miami Marlins,Baltimore Orioles,2.0,1.0,Josh A. Smith,Asher Wojciechowski,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,630878,2020-08-05 22:05:00+00:00,Washington Nationals,New York Mets,1.0,3.0,Max Scherzer,Rick Porcello,Nationals Park,R,Regular Season,True
+MLB,630972,2020-08-05 22:40:00+00:00,Tampa Bay Rays,Boston Red Sox,0.0,5.0,Ryan Yarbrough,Martín Pérez,Tropicana Field,R,Regular Season,True
+MLB,631140,2020-08-05 23:05:00+00:00,Pittsburgh Pirates,Minnesota Twins,2.0,5.0,Trevor Williams,Randy Dobnak,PNC Park,R,Regular Season,True
+MLB,630307,2020-08-05 23:10:00+00:00,Atlanta Braves,Toronto Blue Jays,1.0,2.0,Sean Newcomb,Hyun Jin Ryu,Truist Park,R,Regular Season,True
+MLB,631570,2020-08-05 23:10:00+00:00,Cleveland Indians,Cincinnati Reds,2.0,0.0,Mike Clevinger,Tejay Antone,Progressive Field,R,Regular Season,True
+MLB,631417,2020-08-06 00:05:00+00:00,Kansas City Royals,Chicago Cubs,1.0,6.0,Kris Bubic,Yu Darvish,Kauffman Stadium,R,Regular Season,True
+MLB,631518,2020-08-06 00:10:00+00:00,Chicago White Sox,Milwaukee Brewers,0.0,1.0,Dallas Keuchel,Adrian Houser,Guaranteed Rate Field,R,Regular Season,True
+MLB,631544,2020-08-06 00:40:00+00:00,Colorado Rockies,San Francisco Giants,3.0,4.0,Jon Gray,Logan Webb,Coors Field,R,Regular Season,True
+MLB,630110,2020-08-06 01:10:00+00:00,Arizona Diamondbacks,Houston Astros,14.0,7.0,Robbie Ray,Lance McCullers Jr.,Chase Field,R,Regular Season,True
+MLB,631085,2020-08-06 01:10:00+00:00,San Diego Padres,Los Angeles Dodgers,6.0,7.0,Garrett Richards,Ross Stripling,Petco Park,R,Regular Season,True
+MLB,631174,2020-08-06 01:10:00+00:00,Oakland Athletics,Texas Rangers,6.0,4.0,Sean Manaea,Kyle Gibson,Oakland Coliseum,R,Regular Season,True
+MLB,631043,2020-08-06 01:40:00+00:00,Seattle Mariners,Los Angeles Angels,7.0,6.0,Marco Gonzales,Julio Teheran,T-Mobile Park,R,Regular Season,True
+MLB,631148,2020-08-06 17:35:00+00:00,Pittsburgh Pirates,Minnesota Twins,6.0,5.0,JT Brubaker,Kenta Maeda,PNC Park,R,Regular Season,True
+MLB,631545,2020-08-06 19:10:00+00:00,Colorado Rockies,San Francisco Giants,6.0,4.0,Kyle Freeland,Tyler Anderson,Coors Field,R,Regular Season,True
+MLB,631175,2020-08-06 19:40:00+00:00,Oakland Athletics,Texas Rangers,6.0,4.0,Mike Fiers,Mike Minor,Oakland Coliseum,R,Regular Season,True
+MLB,631042,2020-08-06 20:10:00+00:00,Seattle Mariners,Los Angeles Angels,1.0,6.0,Taijuan Walker,Dylan Bundy,T-Mobile Park,R,Regular Season,True
+MLB,631129,2020-08-06 22:05:00+00:00,Philadelphia Phillies,New York Yankees,5.0,4.0,Zach Eflin,Jordan Montgomery,Citizens Bank Park,R,Regular Season,True
+MLB,631571,2020-08-06 22:10:00+00:00,Cleveland Indians,Cincinnati Reds,13.0,0.0,Carlos Carrasco,Luis Castillo,Progressive Field,R,Regular Season,True
+MLB,630111,2020-08-06 23:07:00+00:00,Arizona Diamondbacks,Houston Astros,5.0,4.0,Zac Gallen,Brandon Bielak,Chase Field,R,Regular Season,True
+MLB,631425,2020-08-06 23:07:00+00:00,Kansas City Royals,Chicago Cubs,13.0,2.0,Brad Keller,Tyler Chatwood,Kauffman Stadium,R,Regular Season,True
+MLB,630313,2020-08-06 23:10:00+00:00,Atlanta Braves,Toronto Blue Jays,4.0,3.0,Touki Toussaint,Nate Pearson,Truist Park,R,Regular Season,True
+MLB,631340,2020-08-06 23:35:00+00:00,Miami Marlins,Baltimore Orioles,8.0,7.0,Jordan Yamamoto,Wade LeBlanc,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,631513,2020-08-07 00:10:00+00:00,Chicago White Sox,Milwaukee Brewers,3.0,8.0,Gio Gonzalez,Josh Lindblom,Guaranteed Rate Field,R,Regular Season,True
+MLB,630879,2020-08-07 22:05:00+00:00,Washington Nationals,Baltimore Orioles,0.0,11.0,Aníbal Sánchez,Tommy Milone,Nationals Park,R,Regular Season,True
+MLB,630974,2020-08-07 22:40:00+00:00,Tampa Bay Rays,New York Yankees,1.0,0.0,Blake Snell,Masahiro Tanaka,Tropicana Field,R,Regular Season,True
+MLB,631105,2020-08-07 23:05:00+00:00,Pittsburgh Pirates,Detroit Tigers,13.0,17.0,Chad Kuhl,Matthew Boyd,PNC Park,R,Regular Season,True
+MLB,631237,2020-08-07 23:10:00+00:00,New York Mets,Miami Marlins,3.0,4.0,Michael Wacha,Humberto Mejía,Citi Field,R,Regular Season,True
+MLB,631623,2020-08-07 23:30:00+00:00,Boston Red Sox,Toronto Blue Jays,5.0,3.0,Ryan Weber,Tanner Roark,Fenway Park,R,Regular Season,True
+MLB,631419,2020-08-08 00:05:00+00:00,Kansas City Royals,Minnesota Twins,3.0,2.0,Jakob Junis,Devin Smeltzer,Kauffman Stadium,R,Regular Season,True
+MLB,631295,2020-08-08 00:10:00+00:00,Milwaukee Brewers,Cincinnati Reds,3.0,8.0,Eric Lauer,Trevor Bauer,Miller Park,R,Regular Season,True
+MLB,631504,2020-08-08 00:10:00+00:00,Chicago White Sox,Cleveland Indians,2.0,0.0,Dylan Cease,Aaron Civale,Guaranteed Rate Field,R,Regular Season,True
+MLB,630920,2020-08-08 01:05:00+00:00,Texas Rangers,Los Angeles Angels,4.0,3.0,Jordan Lyles,Griffin Canning,Globe Life Field,R,Regular Season,True
+MLB,631073,2020-08-08 01:10:00+00:00,San Diego Padres,Arizona Diamondbacks,3.0,0.0,Zach Davies,Luke Weaver,Petco Park,R,Regular Season,True
+MLB,631176,2020-08-08 01:10:00+00:00,Oakland Athletics,Houston Astros,3.0,2.0,Chris Bassitt,Zack Greinke,Oakland Coliseum,R,Regular Season,True
+MLB,631045,2020-08-08 01:40:00+00:00,Seattle Mariners,Colorado Rockies,4.0,8.0,Yusei Kikuchi,Antonio Senzatela,T-Mobile Park,R,Regular Season,True
+MLB,631358,2020-08-08 01:40:00+00:00,Los Angeles Dodgers,San Francisco Giants,7.0,2.0,Julio Urías,Jeff Samardzija,Dodger Stadium,R,Regular Season,True
+MLB,630962,2020-08-08 18:10:00+00:00,Tampa Bay Rays,New York Yankees,4.0,8.0,Tyler Glasnow,Gerrit Cole,Tropicana Field,R,Regular Season,True
+MLB,631503,2020-08-08 18:10:00+00:00,Chicago White Sox,Cleveland Indians,1.0,7.0,Matt Foster,Zach Plesac,Guaranteed Rate Field,R,Regular Season,True
+MLB,630973,2020-08-08 18:15:00+00:00,Tampa Bay Rays,New York Yankees,5.0,3.0,Ryan Thompson,Michael King,Tropicana Field,R,Regular Season,True
+MLB,631106,2020-08-08 20:05:00+00:00,Pittsburgh Pirates,Detroit Tigers,5.0,11.0,Derek Holland,Iván Nova,PNC Park,R,Regular Season,True
+MLB,631177,2020-08-08 20:10:00+00:00,Oakland Athletics,Houston Astros,3.0,1.0,Frankie Montas,Framber Valdez,Oakland Coliseum,R,Regular Season,True
+MLB,630880,2020-08-08 22:05:00+00:00,Washington Nationals,Baltimore Orioles,3.0,5.0,Austin Voth,Thomas Eshelman,Nationals Park,R,Regular Season,True
+MLB,631133,2020-08-08 22:05:00+00:00,Philadelphia Phillies,Atlanta Braves,5.0,0.0,Jake Arrieta,Kyle Wright,Citizens Bank Park,R,Regular Season,True
+MLB,630935,2020-08-08 23:05:00+00:00,Texas Rangers,Los Angeles Angels,2.0,0.0,Kolby Allard,Patrick Sandoval,Globe Life Field,R,Regular Season,True
+MLB,631420,2020-08-08 23:05:00+00:00,Kansas City Royals,Minnesota Twins,9.0,6.0,Danny Duffy,Jake Odorizzi,Kauffman Stadium,R,Regular Season,True
+MLB,631236,2020-08-08 23:10:00+00:00,New York Mets,Miami Marlins,8.0,4.0,David Peterson,Daniel Castano,Citi Field,R,Regular Season,True
+MLB,631296,2020-08-08 23:10:00+00:00,Milwaukee Brewers,Cincinnati Reds,1.0,4.0,Brett Anderson,Anthony DeSclafani,Miller Park,R,Regular Season,True
+MLB,631658,2020-08-08 23:30:00+00:00,Boston Red Sox,Toronto Blue Jays,1.0,2.0,Zack Godley,Chase Anderson,Fenway Park,R,Regular Season,True
+MLB,631046,2020-08-09 01:10:00+00:00,Seattle Mariners,Colorado Rockies,0.0,5.0,Nick Margevicius,Ryan Castellani,T-Mobile Park,R,Regular Season,True
+MLB,631074,2020-08-09 01:10:00+00:00,San Diego Padres,Arizona Diamondbacks,2.0,3.0,Chris Paddack,Merrill Kelly,Petco Park,R,Regular Season,True
+MLB,631343,2020-08-09 01:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,4.0,5.0,Clayton Kershaw,Johnny Cueto,Dodger Stadium,R,Regular Season,True
+MLB,631136,2020-08-09 17:05:00+00:00,Philadelphia Phillies,Atlanta Braves,2.0,5.0,Vince Velasquez,Huascar Ynoa,Citizens Bank Park,R,Regular Season,True
+MLB,630946,2020-08-09 17:10:00+00:00,Tampa Bay Rays,New York Yankees,4.0,3.0,Charlie Morton,James Paxton,Tropicana Field,R,Regular Season,True
+MLB,631131,2020-08-09 17:10:00+00:00,Philadelphia Phillies,Atlanta Braves,0.0,8.0,Spencer Howard,Max Fried,Citizens Bank Park,R,Regular Season,True
+MLB,631235,2020-08-09 17:10:00+00:00,New York Mets,Miami Marlins,4.0,2.0,Jacob deGrom,Pablo López,Citi Field,R,Regular Season,True
+MLB,631110,2020-08-09 17:35:00+00:00,Pittsburgh Pirates,Detroit Tigers,1.0,2.0,Steven Brault,Spencer Turnbull,PNC Park,R,Regular Season,True
+MLB,631630,2020-08-09 17:35:00+00:00,Boston Red Sox,Toronto Blue Jays,5.0,3.0,Nathan Eovaldi,Matt Shoemaker,Fenway Park,R,Regular Season,True
+MLB,631421,2020-08-09 18:05:00+00:00,Kansas City Royals,Minnesota Twins,4.0,2.0,Brady Singer,José Berríos,Kauffman Stadium,R,Regular Season,True
+MLB,631297,2020-08-09 18:10:00+00:00,Milwaukee Brewers,Cincinnati Reds,9.0,3.0,Brandon Woodruff,Sonny Gray,Miller Park,R,Regular Season,True
+MLB,630922,2020-08-09 18:35:00+00:00,Texas Rangers,Los Angeles Angels,7.0,3.0,Lance Lynn,Andrew Heaney,Globe Life Field,R,Regular Season,True
+MLB,631047,2020-08-09 20:10:00+00:00,Seattle Mariners,Colorado Rockies,5.0,3.0,Justus Sheffield,Germán Márquez,T-Mobile Park,R,Regular Season,True
+MLB,631075,2020-08-09 20:10:00+00:00,San Diego Padres,Arizona Diamondbacks,9.0,5.0,Dinelson Lamet,Madison Bumgarner,Petco Park,R,Regular Season,True
+MLB,631178,2020-08-09 20:10:00+00:00,Oakland Athletics,Houston Astros,7.0,2.0,Jesús Luzardo,Cristian Javier,Oakland Coliseum,R,Regular Season,True
+MLB,631373,2020-08-09 20:10:00+00:00,Los Angeles Dodgers,San Francisco Giants,6.0,2.0,Walker Buehler,Kevin Gausman,Dodger Stadium,R,Regular Season,True
+MLB,631506,2020-08-09 23:08:00+00:00,Chicago White Sox,Cleveland Indians,4.0,5.0,Lucas Giolito,Shane Bieber,Guaranteed Rate Field,R,Regular Season,True
+MLB,631138,2020-08-10 22:05:00+00:00,Philadelphia Phillies,Atlanta Braves,13.0,8.0,Aaron Nola,Sean Newcomb,Citizens Bank Park,R,Regular Season,True
+MLB,631233,2020-08-10 23:10:00+00:00,New York Mets,Washington Nationals,4.0,16.0,Steven Matz,Patrick Corbin,Citi Field,R,Regular Season,True
+MLB,631473,2020-08-10 23:10:00+00:00,Detroit Tigers,Chicago White Sox,5.0,1.0,Michael Fulmer,Dallas Keuchel,Comerica Park,R,Regular Season,True
+MLB,631631,2020-08-10 23:30:00+00:00,Boston Red Sox,Tampa Bay Rays,7.0,8.0,Ryan Brasier,Ryan Yarbrough,Fenway Park,R,Regular Season,True
+MLB,631298,2020-08-11 00:10:00+00:00,Milwaukee Brewers,Minnesota Twins,2.0,4.0,Adrian Houser,Randy Dobnak,Miller Park,R,Regular Season,True
+MLB,631546,2020-08-11 00:40:00+00:00,Colorado Rockies,Arizona Diamondbacks,8.0,12.0,Jon Gray,Robbie Ray,Coors Field,R,Regular Season,True
+MLB,630923,2020-08-11 01:05:00+00:00,Texas Rangers,Seattle Mariners,2.0,10.0,Kyle Gibson,Justin Dunn,Globe Life Field,R,Regular Season,True
+MLB,631445,2020-08-11 01:10:00+00:00,Houston Astros,San Francisco Giants,6.0,4.0,Lance McCullers Jr.,Logan Webb,Minute Maid Park,R,Regular Season,True
+MLB,631346,2020-08-11 01:40:00+00:00,Los Angeles Dodgers,San Diego Padres,1.0,2.0,Dustin May,Luis Perdomo,Dodger Stadium,R,Regular Season,True
+MLB,631395,2020-08-11 01:40:00+00:00,Los Angeles Angels,Oakland Athletics,10.0,9.0,Julio Teheran,Sean Manaea,Angel Stadium,R,Regular Season,True
+MLB,630901,2020-08-11 22:37:00+00:00,Toronto Blue Jays,Miami Marlins,5.0,4.0,Hyun Jin Ryu,Elieser Hernández,Sahlen Field,R,Regular Season,True
+MLB,631598,2020-08-11 22:40:00+00:00,Cincinnati Reds,Kansas City Royals,6.0,5.0,Luis Castillo,Kris Bubic,Great American Ball Park,R,Regular Season,True
+MLB,631139,2020-08-11 23:05:00+00:00,Philadelphia Phillies,Baltimore Orioles,9.0,10.0,Zack Wheeler,Alex Cobb,Citizens Bank Park,R,Regular Season,True
+MLB,631192,2020-08-11 23:05:00+00:00,New York Yankees,Atlanta Braves,9.0,6.0,Jordan Montgomery,Touki Toussaint,Yankee Stadium,R,Regular Season,True
+MLB,631243,2020-08-11 23:10:00+00:00,New York Mets,Washington Nationals,1.0,2.0,Rick Porcello,Max Scherzer,Citi Field,R,Regular Season,True
+MLB,631474,2020-08-11 23:10:00+00:00,Detroit Tigers,Chicago White Sox,4.0,8.0,Tyler Alexander,Gio Gonzalez,Comerica Park,R,Regular Season,True
+MLB,631572,2020-08-11 23:10:00+00:00,Cleveland Indians,Chicago Cubs,1.0,7.0,Adam Plutko,Jon Lester,Progressive Field,R,Regular Season,True
+MLB,631646,2020-08-11 23:30:00+00:00,Boston Red Sox,Tampa Bay Rays,2.0,8.0,Martín Pérez,Andrew Kittredge,Fenway Park,R,Regular Season,True
+MLB,631299,2020-08-12 00:10:00+00:00,Milwaukee Brewers,Minnesota Twins,6.0,4.0,Josh Lindblom,Tyler Clippard,Miller Park,R,Regular Season,True
+MLB,631547,2020-08-12 00:40:00+00:00,Colorado Rockies,Arizona Diamondbacks,8.0,7.0,Kyle Freeland,Zac Gallen,Coors Field,R,Regular Season,True
+MLB,630924,2020-08-12 01:05:00+00:00,Texas Rangers,Seattle Mariners,4.0,2.0,Mike Minor,Marco Gonzales,Globe Life Field,R,Regular Season,True
+MLB,631446,2020-08-12 01:10:00+00:00,Houston Astros,San Francisco Giants,6.0,7.0,Brandon Bielak,Tyler Anderson,Minute Maid Park,R,Regular Season,True
+MLB,631347,2020-08-12 01:40:00+00:00,Los Angeles Dodgers,San Diego Padres,2.0,6.0,Ross Stripling,Garrett Richards,Dodger Stadium,R,Regular Season,True
+MLB,631396,2020-08-12 01:40:00+00:00,Los Angeles Angels,Oakland Athletics,6.0,0.0,Dylan Bundy,Mike Fiers,Angel Stadium,R,Regular Season,True
+MLB,631475,2020-08-12 17:10:00+00:00,Detroit Tigers,Chicago White Sox,5.0,7.0,Matthew Boyd,Dylan Cease,Comerica Park,R,Regular Season,True
+MLB,631535,2020-08-12 19:10:00+00:00,Colorado Rockies,Arizona Diamondbacks,7.0,13.0,Antonio Senzatela,Luke Weaver,Coors Field,R,Regular Season,True
+MLB,631397,2020-08-12 20:10:00+00:00,Los Angeles Angels,Oakland Athletics,4.0,8.0,Griffin Canning,Chris Bassitt,Angel Stadium,R,Regular Season,True
+MLB,631568,2020-08-12 22:10:00+00:00,Cleveland Indians,Chicago Cubs,2.0,7.0,Carlos Carrasco,Kyle Hendricks,Progressive Field,R,Regular Season,True
+MLB,630902,2020-08-12 22:37:00+00:00,Toronto Blue Jays,Miami Marlins,11.0,14.0,Nate Pearson,Jordan Yamamoto,Sahlen Field,R,Regular Season,True
+MLB,631599,2020-08-12 22:40:00+00:00,Cincinnati Reds,Kansas City Royals,4.0,5.0,Wade Miley,Brad Keller,Great American Ball Park,R,Regular Season,True
+MLB,631141,2020-08-12 23:05:00+00:00,Philadelphia Phillies,Baltimore Orioles,4.0,5.0,Zach Eflin,Wade LeBlanc,Citizens Bank Park,R,Regular Season,True
+MLB,631208,2020-08-12 23:05:00+00:00,New York Yankees,Atlanta Braves,6.0,3.0,Masahiro Tanaka,Huascar Ynoa,Yankee Stadium,R,Regular Season,True
+MLB,631232,2020-08-12 23:10:00+00:00,New York Mets,Washington Nationals,11.0,6.0,Robert Gsellman,Aníbal Sánchez,Citi Field,R,Regular Season,True
+MLB,631300,2020-08-12 23:10:00+00:00,Milwaukee Brewers,Minnesota Twins,2.0,12.0,Eric Lauer,Kenta Maeda,Miller Park,R,Regular Season,True
+MLB,631447,2020-08-12 23:10:00+00:00,Houston Astros,San Francisco Giants,5.0,1.0,Zack Greinke,Trevor Cahill,Minute Maid Park,R,Regular Season,True
+MLB,631648,2020-08-12 23:30:00+00:00,Boston Red Sox,Tampa Bay Rays,5.0,9.0,Zack Godley,Blake Snell,Fenway Park,R,Regular Season,True
+MLB,630926,2020-08-13 01:05:00+00:00,Texas Rangers,Seattle Mariners,7.0,4.0,Jordan Lyles,Taijuan Walker,Globe Life Field,R,Regular Season,True
+MLB,631350,2020-08-13 01:40:00+00:00,Los Angeles Dodgers,San Diego Padres,6.0,0.0,Tony Gonsolin,Zach Davies,Dodger Stadium,R,Regular Season,True
+MLB,631231,2020-08-13 17:10:00+00:00,New York Mets,Washington Nationals,8.0,2.0,David Peterson,Austin Voth,Citi Field,R,Regular Season,True
+MLB,631142,2020-08-13 20:05:00+00:00,Philadelphia Phillies,Baltimore Orioles,4.0,11.0,Jake Arrieta,Thomas Eshelman,Citizens Bank Park,R,Regular Season,True
+MLB,631650,2020-08-13 20:30:00+00:00,Boston Red Sox,Tampa Bay Rays,8.0,17.0,Kyle Hart,Tyler Glasnow,Fenway Park,R,Regular Season,True
+MLB,631600,2020-08-13 21:10:00+00:00,Cincinnati Reds,Pittsburgh Pirates,6.0,9.0,Anthony DeSclafani,Trevor Williams,Great American Ball Park,R,Regular Season,True
+MLB,631609,2020-08-13 23:15:00+00:00,Chicago Cubs,Milwaukee Brewers,4.0,2.0,Yu Darvish,Brett Anderson,Wrigley Field,R,Regular Season,True
+MLB,631351,2020-08-14 01:40:00+00:00,Los Angeles Dodgers,San Diego Padres,11.0,2.0,Julio Urías,Chris Paddack,Dodger Stadium,R,Regular Season,True
+MLB,630882,2020-08-14 21:05:00+00:00,Washington Nationals,Baltimore Orioles,2.0,6.0,Stephen Strasburg,Asher Wojciechowski,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,630903,2020-08-14 22:37:00+00:00,Toronto Blue Jays,Tampa Bay Rays,12.0,4.0,Tanner Roark,Trevor Richards,Sahlen Field,R,Regular Season,True
+MLB,631683,2020-08-14 22:59:00+00:00,Baltimore Orioles,Washington Nationals,3.0,15.0,Tommy Milone,Stephen Strasburg,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,631150,2020-08-14 23:05:00+00:00,Philadelphia Phillies,New York Mets,6.0,5.0,Spencer Howard,Walker Lockett,Citizens Bank Park,R,Regular Season,True
+MLB,631196,2020-08-14 23:05:00+00:00,New York Yankees,Boston Red Sox,10.0,3.0,Gerrit Cole,Colten Brewer,Yankee Stadium,R,Regular Season,True
+MLB,631322,2020-08-14 23:10:00+00:00,Miami Marlins,Atlanta Braves,8.0,2.0,Pablo López,Kyle Wright,Marlins Park,R,Regular Season,True
+MLB,631476,2020-08-14 23:10:00+00:00,Detroit Tigers,Cleveland Indians,5.0,10.0,Iván Nova,Aaron Civale,Comerica Park,R,Regular Season,True
+MLB,631601,2020-08-14 23:10:00+00:00,Cincinnati Reds,Pittsburgh Pirates,8.0,1.0,Sonny Gray,Chad Kuhl,Great American Ball Park,R,Regular Season,True
+MLB,631610,2020-08-15 00:15:00+00:00,Chicago Cubs,Milwaukee Brewers,3.0,4.0,Alec Mills,Brandon Woodruff,Wrigley Field,R,Regular Season,True
+MLB,631516,2020-08-15 00:40:00+00:00,Colorado Rockies,Texas Rangers,2.0,3.0,Ryan Castellani,Lance Lynn,Coors Field,R,Regular Season,True
+MLB,631448,2020-08-15 01:10:00+00:00,Houston Astros,Seattle Mariners,11.0,1.0,Framber Valdez,Nestor Cortes,Minute Maid Park,R,Regular Season,True
+MLB,630115,2020-08-15 01:40:00+00:00,Arizona Diamondbacks,San Diego Padres,5.0,1.0,Merrill Kelly,Dinelson Lamet,Chase Field,R,Regular Season,True
+MLB,631381,2020-08-15 01:40:00+00:00,Los Angeles Angels,Los Angeles Dodgers,4.0,7.0,Patrick Sandoval,Clayton Kershaw,Angel Stadium,R,Regular Season,True
+MLB,631022,2020-08-15 01:45:00+00:00,San Francisco Giants,Oakland Athletics,7.0,8.0,Johnny Cueto,Jesús Luzardo,Oracle Park,R,Regular Season,True
+MLB,631508,2020-08-15 17:10:00+00:00,Chicago White Sox,St. Louis Cardinals,1.0,5.0,Lucas Giolito,Adam Wainwright,Guaranteed Rate Field,R,Regular Season,True
+MLB,631507,2020-08-15 17:15:00+00:00,Chicago White Sox,St. Louis Cardinals,3.0,6.0,Matt Foster,Jake Woodford,Guaranteed Rate Field,R,Regular Season,True
+MLB,631280,2020-08-15 17:35:00+00:00,Minnesota Twins,Kansas City Royals,4.0,2.0,Jake Odorizzi,Ian Kennedy,Target Field,R,Regular Season,True
+MLB,631279,2020-08-15 17:40:00+00:00,Minnesota Twins,Kansas City Royals,2.0,4.0,,,Target Field,R,Regular Season,False
+MLB,631611,2020-08-15 19:20:00+00:00,Chicago Cubs,Milwaukee Brewers,5.0,6.0,Colin Rea,Adrian Houser,Wrigley Field,R,Regular Season,True
+MLB,631151,2020-08-15 22:05:00+00:00,Philadelphia Phillies,New York Mets,6.0,2.0,Aaron Nola,Steven Matz,Citizens Bank Park,R,Regular Season,True
+MLB,631330,2020-08-15 22:10:00+00:00,Miami Marlins,Atlanta Braves,1.0,2.0,Daniel Castano,Max Fried,Marlins Park,R,Regular Season,True
+MLB,631477,2020-08-15 22:10:00+00:00,Detroit Tigers,Cleveland Indians,1.0,3.0,Spencer Turnbull,Shane Bieber,Comerica Park,R,Regular Season,True
+MLB,631023,2020-08-15 23:07:00+00:00,San Francisco Giants,Oakland Athletics,6.0,7.0,Kevin Gausman,Sean Manaea,Oracle Park,R,Regular Season,True
+MLB,631197,2020-08-15 23:07:00+00:00,New York Yankees,Boston Red Sox,11.0,5.0,James Paxton,Nathan Eovaldi,Yankee Stadium,R,Regular Season,True
+MLB,631449,2020-08-15 23:10:00+00:00,Houston Astros,Seattle Mariners,2.0,1.0,Cristian Javier,Nick Margevicius,Minute Maid Park,R,Regular Season,True
+MLB,630568,2020-08-15 23:35:00+00:00,Baltimore Orioles,Washington Nationals,7.0,3.0,Asher Wojciechowski,Patrick Corbin,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,630116,2020-08-16 00:10:00+00:00,Arizona Diamondbacks,San Diego Padres,7.0,6.0,Alex Young,Cal Quantrill,Chase Field,R,Regular Season,True
+MLB,631533,2020-08-16 00:10:00+00:00,Colorado Rockies,Texas Rangers,4.0,6.0,Germán Márquez,Kyle Gibson,Coors Field,R,Regular Season,True
+MLB,631363,2020-08-16 01:40:00+00:00,Los Angeles Angels,Los Angeles Dodgers,5.0,6.0,Andrew Heaney,Walker Buehler,Angel Stadium,R,Regular Season,True
+MLB,631124,2020-08-16 17:05:00+00:00,Philadelphia Phillies,New York Mets,6.0,2.0,Zack Wheeler,Rick Porcello,Citizens Bank Park,R,Regular Season,True
+MLB,631679,2020-08-16 17:05:00+00:00,Baltimore Orioles,Washington Nationals,5.0,6.0,John Means,Max Scherzer,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,630905,2020-08-16 17:07:00+00:00,Toronto Blue Jays,Tampa Bay Rays,2.0,3.0,Chase Anderson,Ryan Yarbrough,Sahlen Field,R,Regular Season,True
+MLB,631324,2020-08-16 17:10:00+00:00,Miami Marlins,Atlanta Braves,0.0,4.0,Elieser Hernández,Robbie Erlin,Marlins Park,R,Regular Season,True
+MLB,631479,2020-08-16 17:10:00+00:00,Detroit Tigers,Cleveland Indians,5.0,8.0,Michael Fulmer,Adam Plutko,Comerica Park,R,Regular Season,True
+MLB,630872,2020-08-16 18:07:00+00:00,Toronto Blue Jays,Tampa Bay Rays,5.0,7.0,Matt Shoemaker,Yonny Chirinos,Sahlen Field,R,Regular Season,True
+MLB,631252,2020-08-16 18:10:00+00:00,Minnesota Twins,Kansas City Royals,4.0,2.0,Randy Dobnak,Brady Singer,Target Field,R,Regular Season,True
+MLB,631450,2020-08-16 18:10:00+00:00,Houston Astros,Seattle Mariners,3.0,2.0,Lance McCullers Jr.,Justus Sheffield,Minute Maid Park,R,Regular Season,True
+MLB,631491,2020-08-16 18:10:00+00:00,Chicago White Sox,St. Louis Cardinals,7.0,2.0,Dallas Keuchel,Dakota Hudson,Guaranteed Rate Field,R,Regular Season,True
+MLB,631612,2020-08-16 18:20:00+00:00,Chicago Cubs,Milwaukee Brewers,5.0,6.0,Jon Lester,Josh Lindblom,Wrigley Field,R,Regular Season,True
+MLB,631521,2020-08-16 19:10:00+00:00,Colorado Rockies,Texas Rangers,10.0,6.0,Jon Gray,Kolby Allard,Coors Field,R,Regular Season,True
+MLB,631024,2020-08-16 20:05:00+00:00,San Francisco Giants,Oakland Athletics,3.0,15.0,Logan Webb,Mike Fiers,Oracle Park,R,Regular Season,True
+MLB,630117,2020-08-16 20:10:00+00:00,Arizona Diamondbacks,San Diego Padres,5.0,4.0,Robbie Ray,Garrett Richards,Chase Field,R,Regular Season,True
+MLB,631364,2020-08-16 20:10:00+00:00,Los Angeles Angels,Los Angeles Dodgers,3.0,8.0,Julio Teheran,Dustin May,Angel Stadium,R,Regular Season,True
+MLB,631198,2020-08-16 23:08:00+00:00,New York Yankees,Boston Red Sox,4.0,2.0,J.A. Happ,Chris Mazza,Yankee Stadium,R,Regular Season,True
+MLB,631613,2020-08-17 21:15:00+00:00,Chicago Cubs,St. Louis Cardinals,1.0,3.0,Kyle Hendricks,Kwang Hyun Kim,Wrigley Field,R,Regular Season,True
+MLB,630996,2020-08-17 21:20:00+00:00,St. Louis Cardinals,Chicago Cubs,4.0,5.0,Alex Reyes,Tyson Miller,Wrigley Field,R,Regular Season,True
+MLB,631199,2020-08-17 23:05:00+00:00,New York Yankees,Boston Red Sox,6.0,3.0,Jordan Montgomery,Martín Pérez,Yankee Stadium,R,Regular Season,True
+MLB,630316,2020-08-17 23:10:00+00:00,Atlanta Braves,Washington Nationals,7.0,6.0,Touki Toussaint,Aníbal Sánchez,Truist Park,R,Regular Season,True
+MLB,631325,2020-08-17 23:10:00+00:00,Miami Marlins,New York Mets,4.0,11.0,Jordan Yamamoto,Robert Gsellman,Marlins Park,R,Regular Season,True
+MLB,631678,2020-08-17 23:35:00+00:00,Baltimore Orioles,Toronto Blue Jays,2.0,7.0,Alex Cobb,Hyun Jin Ryu,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,631258,2020-08-18 00:10:00+00:00,Minnesota Twins,Kansas City Royals,4.0,1.0,Matt Wisler,Kris Bubic,Target Field,R,Regular Season,True
+MLB,631493,2020-08-18 00:10:00+00:00,Chicago White Sox,Detroit Tigers,7.0,2.0,Gio Gonzalez,Matthew Boyd,Guaranteed Rate Field,R,Regular Season,True
+MLB,630927,2020-08-18 01:05:00+00:00,Texas Rangers,San Diego Padres,4.0,14.0,Jordan Lyles,Zach Davies,Globe Life Field,R,Regular Season,True
+MLB,631451,2020-08-18 01:10:00+00:00,Houston Astros,Colorado Rockies,2.0,1.0,Brandon Bielak,Kyle Freeland,Minute Maid Park,R,Regular Season,True
+MLB,630118,2020-08-18 01:40:00+00:00,Arizona Diamondbacks,Oakland Athletics,4.0,3.0,Zac Gallen,Chris Bassitt,Chase Field,R,Regular Season,True
+MLB,631352,2020-08-18 01:40:00+00:00,Los Angeles Dodgers,Seattle Mariners,11.0,9.0,Ross Stripling,Justin Dunn,Dodger Stadium,R,Regular Season,True
+MLB,631365,2020-08-18 01:40:00+00:00,Los Angeles Angels,San Francisco Giants,7.0,6.0,Griffin Canning,Tyler Anderson,Angel Stadium,R,Regular Season,True
+MLB,631452,2020-08-18 19:10:00+00:00,Houston Astros,Colorado Rockies,2.0,1.0,Zack Greinke,Antonio Senzatela,Minute Maid Park,R,Regular Season,True
+MLB,630928,2020-08-18 20:05:00+00:00,Texas Rangers,San Diego Padres,4.0,6.0,Mike Minor,Adrian Morejon,Globe Life Field,R,Regular Season,True
+MLB,631366,2020-08-18 20:10:00+00:00,Los Angeles Angels,San Francisco Giants,2.0,8.0,Dylan Bundy,Trevor Cahill,Angel Stadium,R,Regular Season,True
+MLB,630174,2020-08-18 22:10:00+00:00,Arizona Diamondbacks,Oakland Athletics,10.0,1.0,Luke Weaver,Frankie Montas,Chase Field,R,Regular Season,True
+MLB,631114,2020-08-18 23:05:00+00:00,Pittsburgh Pirates,Cleveland Indians,3.0,6.0,JT Brubaker,Carlos Carrasco,PNC Park,R,Regular Season,True
+MLB,631200,2020-08-18 23:05:00+00:00,New York Yankees,Tampa Bay Rays,3.0,6.0,Masahiro Tanaka,Blake Snell,Yankee Stadium,R,Regular Season,True
+MLB,630322,2020-08-18 23:10:00+00:00,Atlanta Braves,Washington Nationals,5.0,8.0,Josh Tomlin,Austin Voth,Truist Park,R,Regular Season,True
+MLB,631326,2020-08-18 23:10:00+00:00,Miami Marlins,New York Mets,3.0,8.0,Humberto Mejía,Corey Oswalt,Marlins Park,R,Regular Season,True
+MLB,631353,2020-08-18 23:10:00+00:00,Los Angeles Dodgers,Seattle Mariners,2.0,1.0,Tony Gonsolin,Marco Gonzales,Dodger Stadium,R,Regular Season,True
+MLB,631651,2020-08-18 23:30:00+00:00,Boston Red Sox,Philadelphia Phillies,6.0,13.0,Zack Godley,Zach Eflin,Fenway Park,R,Regular Season,True
+MLB,631681,2020-08-18 23:35:00+00:00,Baltimore Orioles,Toronto Blue Jays,7.0,8.0,Wade LeBlanc,Nate Pearson,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,631260,2020-08-19 00:10:00+00:00,Minnesota Twins,Milwaukee Brewers,4.0,3.0,Kenta Maeda,Corbin Burnes,Target Field,R,Regular Season,True
+MLB,631496,2020-08-19 00:10:00+00:00,Chicago White Sox,Detroit Tigers,10.0,4.0,Dylan Cease,Tarik Skubal,Guaranteed Rate Field,R,Regular Season,True
+MLB,631620,2020-08-19 00:15:00+00:00,Chicago Cubs,St. Louis Cardinals,6.0,3.0,Yu Darvish,Daniel Ponce de Leon,Wrigley Field,R,Regular Season,True
+MLB,631682,2020-08-19 17:05:00+00:00,Baltimore Orioles,Toronto Blue Jays,2.0,5.0,Tommy Milone,Tanner Roark,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,631652,2020-08-19 17:35:00+00:00,Boston Red Sox,Philadelphia Phillies,6.0,3.0,Kyle Hart,Jake Arrieta,Fenway Park,R,Regular Season,True
+MLB,631621,2020-08-19 18:20:00+00:00,Chicago Cubs,St. Louis Cardinals,3.0,9.0,Alec Mills,Jack Flaherty,Wrigley Field,R,Regular Season,True
+MLB,630997,2020-08-19 18:25:00+00:00,St. Louis Cardinals,Chicago Cubs,2.0,4.0,Johan Oviedo,Adbert Alzolay,Wrigley Field,R,Regular Season,True
+MLB,631418,2020-08-19 21:05:00+00:00,Kansas City Royals,Cincinnati Reds,4.0,0.0,Brad Keller,Luis Castillo,Kauffman Stadium,R,Regular Season,True
+MLB,631422,2020-08-19 21:10:00+00:00,Kansas City Royals,Cincinnati Reds,0.0,5.0,Matt Harvey,Trevor Bauer,Kauffman Stadium,R,Regular Season,True
+MLB,631120,2020-08-19 23:05:00+00:00,Pittsburgh Pirates,Cleveland Indians,1.0,6.0,Steven Brault,Aaron Civale,PNC Park,R,Regular Season,True
+MLB,631201,2020-08-19 23:05:00+00:00,New York Yankees,Tampa Bay Rays,2.0,4.0,Gerrit Cole,Tyler Glasnow,Yankee Stadium,R,Regular Season,True
+MLB,631327,2020-08-19 23:10:00+00:00,Miami Marlins,New York Mets,3.0,5.0,Pablo López,Jacob deGrom,Marlins Park,R,Regular Season,True
+MLB,631249,2020-08-20 00:10:00+00:00,Minnesota Twins,Milwaukee Brewers,3.0,9.0,Rich Hill,Brett Anderson,Target Field,R,Regular Season,True
+MLB,631497,2020-08-20 00:10:00+00:00,Chicago White Sox,Detroit Tigers,5.0,3.0,Dane Dunning,Casey Mize,Guaranteed Rate Field,R,Regular Season,True
+MLB,631522,2020-08-20 00:40:00+00:00,Colorado Rockies,Houston Astros,6.0,13.0,Ryan Castellani,Framber Valdez,Coors Field,R,Regular Season,True
+MLB,631076,2020-08-20 01:10:00+00:00,San Diego Padres,Texas Rangers,6.0,3.0,Chris Paddack,Lance Lynn,Petco Park,R,Regular Season,True
+MLB,631048,2020-08-20 01:40:00+00:00,Seattle Mariners,Los Angeles Dodgers,6.0,4.0,Taijuan Walker,Julio Urías,T-Mobile Park,R,Regular Season,True
+MLB,631179,2020-08-20 01:40:00+00:00,Oakland Athletics,Arizona Diamondbacks,4.0,1.0,Jesús Luzardo,Merrill Kelly,Oakland Coliseum,R,Regular Season,True
+MLB,631025,2020-08-20 01:45:00+00:00,San Francisco Giants,Los Angeles Angels,7.0,2.0,Johnny Cueto,Patrick Sandoval,Oracle Park,R,Regular Season,True
+MLB,631202,2020-08-20 17:05:00+00:00,New York Yankees,Tampa Bay Rays,5.0,10.0,James Paxton,John Curtiss,Yankee Stadium,R,Regular Season,True
+MLB,630919,2020-08-20 17:07:00+00:00,Toronto Blue Jays,Philadelphia Phillies,3.0,2.0,Chase Anderson,Spencer Howard,Sahlen Field,R,Regular Season,True
+MLB,630918,2020-08-20 17:12:00+00:00,Toronto Blue Jays,Philadelphia Phillies,9.0,8.0,Trent Thornton,Vince Velasquez,Sahlen Field,R,Regular Season,True
+MLB,631498,2020-08-20 18:10:00+00:00,Chicago White Sox,Detroit Tigers,9.0,0.0,Lucas Giolito,Spencer Turnbull,Guaranteed Rate Field,R,Regular Season,True
+MLB,631523,2020-08-20 19:10:00+00:00,Colorado Rockies,Houston Astros,8.0,10.0,Germán Márquez,Cristian Javier,Coors Field,R,Regular Season,True
+MLB,631118,2020-08-20 23:05:00+00:00,Pittsburgh Pirates,Cleveland Indians,0.0,2.0,Trevor Williams,Shane Bieber,PNC Park,R,Regular Season,True
+MLB,631049,2020-08-20 23:10:00+00:00,Seattle Mariners,Los Angeles Dodgers,1.0,6.0,Yusei Kikuchi,Clayton Kershaw,T-Mobile Park,R,Regular Season,True
+MLB,631248,2020-08-20 23:10:00+00:00,Minnesota Twins,Milwaukee Brewers,7.0,1.0,José Berríos,Brandon Woodruff,Target Field,R,Regular Season,True
+MLB,631684,2020-08-20 23:35:00+00:00,Baltimore Orioles,Boston Red Sox,1.0,7.0,Asher Wojciechowski,Nathan Eovaldi,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,631077,2020-08-21 00:10:00+00:00,San Diego Padres,Texas Rangers,8.0,7.0,Dinelson Lamet,Kyle Gibson,Petco Park,R,Regular Season,True
+MLB,630986,2020-08-21 00:15:00+00:00,St. Louis Cardinals,Cincinnati Reds,5.0,4.0,Adam Wainwright,Sonny Gray,Busch Stadium,R,Regular Season,True
+MLB,631180,2020-08-21 01:40:00+00:00,Oakland Athletics,Arizona Diamondbacks,5.0,1.0,Sean Manaea,Alex Young,Oakland Coliseum,R,Regular Season,True
+MLB,631026,2020-08-21 01:45:00+00:00,San Francisco Giants,Los Angeles Angels,10.0,5.0,Kevin Gausman,José Suarez,Oracle Park,R,Regular Season,True
+MLB,630886,2020-08-21 22:05:00+00:00,Washington Nationals,Miami Marlins,2.0,3.0,Patrick Corbin,Elieser Hernández,Nationals Park,R,Regular Season,True
+MLB,630960,2020-08-21 22:40:00+00:00,Tampa Bay Rays,Toronto Blue Jays,5.0,6.0,Ryan Yarbrough,Matt Shoemaker,Tropicana Field,R,Regular Season,True
+MLB,631103,2020-08-21 23:05:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,7.0,2.0,Chad Kuhl,Adrian Houser,PNC Park,R,Regular Season,True
+MLB,630324,2020-08-21 23:10:00+00:00,Atlanta Braves,Philadelphia Phillies,11.0,2.0,Max Fried,Aaron Nola,Truist Park,R,Regular Season,True
+MLB,631548,2020-08-21 23:10:00+00:00,Cleveland Indians,Detroit Tigers,5.0,10.0,Adam Plutko,Michael Fulmer,Progressive Field,R,Regular Season,True
+MLB,631665,2020-08-21 23:35:00+00:00,Baltimore Orioles,Boston Red Sox,5.0,8.0,John Means,Colten Brewer,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,631409,2020-08-22 00:05:00+00:00,Kansas City Royals,Minnesota Twins,7.0,2.0,Danny Duffy,Jake Odorizzi,Kauffman Stadium,R,Regular Season,True
+MLB,630990,2020-08-22 00:15:00+00:00,St. Louis Cardinals,Cincinnati Reds,2.0,4.0,Dakota Hudson,Anthony DeSclafani,Busch Stadium,R,Regular Season,True
+MLB,631633,2020-08-22 00:15:00+00:00,Chicago Cubs,Chicago White Sox,1.0,10.0,Jon Lester,Dallas Keuchel,Wrigley Field,R,Regular Season,True
+MLB,631050,2020-08-22 01:10:00+00:00,Seattle Mariners,Texas Rangers,7.0,4.0,Nick Margevicius,Kolby Allard,T-Mobile Park,R,Regular Season,True
+MLB,631078,2020-08-22 01:10:00+00:00,San Diego Padres,Houston Astros,4.0,3.0,Garrett Richards,Lance McCullers Jr.,Petco Park,R,Regular Season,True
+MLB,631186,2020-08-22 01:40:00+00:00,Oakland Athletics,Los Angeles Angels,5.0,3.0,Mike Fiers,Andrew Heaney,Oakland Coliseum,R,Regular Season,True
+MLB,631348,2020-08-22 01:40:00+00:00,Los Angeles Dodgers,Colorado Rockies,5.0,1.0,Walker Buehler,Jon Gray,Dodger Stadium,R,Regular Season,True
+MLB,631027,2020-08-22 01:45:00+00:00,San Francisco Giants,Arizona Diamondbacks,6.0,2.0,Logan Webb,Robbie Ray,Oracle Park,R,Regular Season,True
+MLB,630890,2020-08-22 20:05:00+00:00,Washington Nationals,Miami Marlins,5.0,4.0,Max Scherzer,Daniel Castano,Nationals Park,R,Regular Season,True
+MLB,631104,2020-08-22 20:05:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,12.0,5.0,Derek Holland,Josh Lindblom,PNC Park,R,Regular Season,True
+MLB,631154,2020-08-22 20:10:00+00:00,Oakland Athletics,Los Angeles Angels,3.0,4.0,Chris Bassitt,Griffin Canning,Oakland Coliseum,R,Regular Season,True
+MLB,631341,2020-08-22 20:10:00+00:00,Miami Marlins,Washington Nationals,5.0,3.0,Sixto Sánchez,Wil Crowe,Nationals Park,R,Regular Season,True
+MLB,630948,2020-08-22 22:40:00+00:00,Tampa Bay Rays,Toronto Blue Jays,2.0,1.0,Aaron Slegers,Hyun Jin Ryu,Tropicana Field,R,Regular Season,True
+MLB,631403,2020-08-22 23:05:00+00:00,Kansas City Royals,Minnesota Twins,2.0,7.0,Brady Singer,Randy Dobnak,Kauffman Stadium,R,Regular Season,True
+MLB,630338,2020-08-22 23:10:00+00:00,Atlanta Braves,Philadelphia Phillies,6.0,5.0,Robbie Erlin,Zack Wheeler,Truist Park,R,Regular Season,True
+MLB,631564,2020-08-22 23:10:00+00:00,Cleveland Indians,Detroit Tigers,6.0,1.0,Triston McKenzie,Matthew Boyd,Progressive Field,R,Regular Season,True
+MLB,631667,2020-08-22 23:35:00+00:00,Baltimore Orioles,Boston Red Sox,5.0,4.0,Alex Cobb,Martín Pérez,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,630991,2020-08-23 00:15:00+00:00,St. Louis Cardinals,Cincinnati Reds,3.0,0.0,Kwang Hyun Kim,Wade Miley,Busch Stadium,R,Regular Season,True
+MLB,631638,2020-08-23 00:15:00+00:00,Chicago Cubs,Chicago White Sox,4.0,7.0,Kyle Hendricks,Reynaldo López,Wrigley Field,R,Regular Season,True
+MLB,631051,2020-08-23 01:10:00+00:00,Seattle Mariners,Texas Rangers,10.0,1.0,Justus Sheffield,Jordan Lyles,T-Mobile Park,R,Regular Season,True
+MLB,631079,2020-08-23 01:10:00+00:00,San Diego Padres,Houston Astros,13.0,2.0,Zach Davies,Brandon Bielak,Petco Park,R,Regular Season,True
+MLB,631349,2020-08-23 01:10:00+00:00,Los Angeles Dodgers,Colorado Rockies,4.0,3.0,Dustin May,Kyle Freeland,Dodger Stadium,R,Regular Season,True
+MLB,631028,2020-08-23 01:15:00+00:00,San Francisco Giants,Arizona Diamondbacks,5.0,1.0,Tyler Anderson,Zac Gallen,Oracle Park,R,Regular Season,True
+MLB,630897,2020-08-23 16:35:00+00:00,Washington Nationals,Miami Marlins,9.0,3.0,Aníbal Sánchez,Humberto Mejía,Nationals Park,R,Regular Season,True
+MLB,631670,2020-08-23 17:05:00+00:00,Baltimore Orioles,Boston Red Sox,5.0,4.0,Wade LeBlanc,Zack Godley,Oriole Park at Camden Yards,R,Regular Season,True
+MLB,630949,2020-08-23 17:10:00+00:00,Tampa Bay Rays,Toronto Blue Jays,5.0,4.0,Josh Fleming,Trent Thornton,Tropicana Field,R,Regular Season,True
+MLB,631551,2020-08-23 17:10:00+00:00,Cleveland Indians,Detroit Tigers,4.0,7.0,Carlos Carrasco,Tarik Skubal,Progressive Field,R,Regular Season,True
+MLB,631107,2020-08-23 17:35:00+00:00,Pittsburgh Pirates,Milwaukee Brewers,5.0,4.0,JT Brubaker,Corbin Burnes,PNC Park,R,Regular Season,True
+MLB,631412,2020-08-23 18:05:00+00:00,Kansas City Royals,Minnesota Twins,4.0,5.0,Kris Bubic,Matt Wisler,Kauffman Stadium,R,Regular Season,True
+MLB,630976,2020-08-23 18:15:00+00:00,St. Louis Cardinals,Cincinnati Reds,6.0,2.0,Daniel Ponce de Leon,Tyler Mahle,Busch Stadium,R,Regular Season,True
+MLB,631639,2020-08-23 18:20:00+00:00,Chicago Cubs,Chicago White Sox,2.0,1.0,Yu Darvish,Dylan Cease,Wrigley Field,R,Regular Season,True
+MLB,631029,2020-08-23 20:10:00+00:00,San Francisco Giants,Arizona Diamondbacks,6.0,1.0,Trevor Cahill,Luke Weaver,Oracle Park,R,Regular Season,True
+MLB,631052,2020-08-23 20:10:00+00:00,Seattle Mariners,Texas Rangers,4.0,1.0,Justin Dunn,Mike Minor,T-Mobile Park,R,Regular Season,True
+MLB,631080,2020-08-23 20:10:00+00:00,San Diego Padres,Houston Astros,5.0,3.0,Adrian Morejon,Zack Greinke,Petco Park,R,Regular Season,True
+MLB,631170,2020-08-23 20:10:00+00:00,Oakland Athletics,Los Angeles Angels,5.0,4.0,Frankie Montas,Dylan Bundy,Oakland Coliseum,R,Regular Season,True
+MLB,631354,2020-08-23 20:10:00+00:00,Los Angeles Dodgers,Colorado Rockies,11.0,3.0,Ross Stripling,Antonio Senzatela,Dodger Stadium,R,Regular Season,True
+MLB,630273,2020-08-23 23:08:00+00:00,Atlanta Braves,Philadelphia Phillies,4.0,5.0,Josh Tomlin,Zach Eflin,Truist Park,R,Regular Season,True
+MLB,630950,2020-08-24 19:10:00+00:00,Tampa Bay Rays,Toronto Blue Jays,4.0,6.0,Blake Snell,Tanner Roark,Tropicana Field,R,Regular Season,True
+MLB,630898,2020-08-24 22:05:00+00:00,Washington Nationals,Miami Marlins,8.0,11.0,Austin Voth,Pablo López,Nationals Park,R,Regular Season,True
+MLB,631468,2020-08-24 23:10:00+00:00,Detroit Tigers,Chicago Cubs,3.0,9.0,Casey Mize,Alec Mills,Comerica Park,R,Regular Season,True
+MLB,631552,2020-08-24 23:10:00+00:00,Cleveland Indians,Minnesota Twins,2.0,3.0,Aaron Civale,Kenta Maeda,Progressive Field,R,Regular Season,True
+MLB,630929,2020-08-25 00:05:00+00:00,Texas Rangers,Oakland Athletics,3.0,2.0,Lance Lynn,Jesús Luzardo,Globe Life Field,R,Regular Season,True
+MLB,631301,2020-08-25 00:10:00+00:00,Milwaukee Brewers,Cincinnati Reds,4.0,2.0,Brett Anderson,Trevor Bauer,Miller Park,R,Regular Season,True
+MLB,630977,2020-08-25 00:15:00+00:00,St. Louis Cardinals,Kansas City Royals,9.0,3.0,Jack Flaherty,Brad Keller,Busch Stadium,R,Regular Season,True
+MLB,631439,2020-08-25 01:10:00+00:00,Houston Astros,Los Angeles Angels,11.0,4.0,Framber Valdez,Patrick Sandoval,Minute Maid Park,R,Regular Season,True
+MLB,630193,2020-08-25 01:40:00+00:00,Arizona Diamondbacks,Colorado Rockies,2.0,3.0,Taylor Clarke,Ryan Castellani,Chase Field,R,Regular Season,True
+MLB,631423,2020-08-25 20:05:00+00:00,Houston Astros,Los Angeles Angels,6.0,3.0,Cristian Javier,José Suarez,Minute Maid Park,R,Regular Season,True
+MLB,631426,2020-08-25 20:10:00+00:00,Houston Astros,Los Angeles Angels,5.0,12.0,Brandon Bielak,Julio Teheran,Minute Maid Park,R,Regular Season,True
+MLB,631227,2020-08-25 21:10:00+00:00,New York Mets,Miami Marlins,0.0,4.0,Rick Porcello,Daniel Castano,Citi Field,R,Regular Season,True
+MLB,631323,2020-08-25 21:15:00+00:00,Miami Marlins,New York Mets,3.0,0.0,Trevor Rogers,Seth Lugo,Citi Field,R,Regular Season,True
+MLB,630855,2020-08-25 22:05:00+00:00,Washington Nationals,Philadelphia Phillies,3.0,8.0,Erick Fedde,Jake Arrieta,Nationals Park,R,Regular Season,True
+MLB,630862,2020-08-25 22:37:00+00:00,Toronto Blue Jays,Boston Red Sox,7.0,9.0,Chase Anderson,Kyle Hart,Sahlen Field,R,Regular Season,True
+MLB,630951,2020-08-25 22:40:00+00:00,Tampa Bay Rays,Baltimore Orioles,4.0,2.0,Tyler Glasnow,Tommy Milone,Tropicana Field,R,Regular Season,True
+MLB,631467,2020-08-25 23:10:00+00:00,Detroit Tigers,Chicago Cubs,7.0,1.0,Spencer Turnbull,Tyler Chatwood,Comerica Park,R,Regular Season,True
+MLB,631553,2020-08-25 23:10:00+00:00,Cleveland Indians,Minnesota Twins,4.0,2.0,Shane Bieber,Rich Hill,Progressive Field,R,Regular Season,True
+MLB,630930,2020-08-26 00:05:00+00:00,Texas Rangers,Oakland Athletics,3.0,10.0,Kyle Gibson,Sean Manaea,Globe Life Field,R,Regular Season,True
+MLB,631302,2020-08-26 00:10:00+00:00,Milwaukee Brewers,Cincinnati Reds,3.0,2.0,Brandon Woodruff,Luis Castillo,Miller Park,R,Regular Season,True
+MLB,631499,2020-08-26 00:10:00+00:00,Chicago White Sox,Pittsburgh Pirates,4.0,0.0,Lucas Giolito,Steven Brault,Guaranteed Rate Field,R,Regular Season,True
+MLB,630978,2020-08-26 00:15:00+00:00,St. Louis Cardinals,Kansas City Royals,4.0,5.0,Adam Wainwright,Matt Harvey,Busch Stadium,R,Regular Season,True
+MLB,631081,2020-08-26 01:10:00+00:00,San Diego Padres,Seattle Mariners,3.0,8.0,Chris Paddack,Marco Gonzales,Petco Park,R,Regular Season,True
+MLB,630194,2020-08-26 01:40:00+00:00,Arizona Diamondbacks,Colorado Rockies,4.0,5.0,Alex Young,Germán Márquez,Chase Field,R,Regular Season,True
+MLB,631015,2020-08-26 01:45:00+00:00,San Francisco Giants,Los Angeles Dodgers,10.0,8.0,Johnny Cueto,Julio Urías,Oracle Park,R,Regular Season,True
+MLB,631500,2020-08-26 18:10:00+00:00,Chicago White Sox,Pittsburgh Pirates,10.0,3.0,Dallas Keuchel,Trevor Williams,Guaranteed Rate Field,R,Regular Season,True
+MLB,630361,2020-08-26 20:10:00+00:00,Atlanta Braves,New York Yankees,5.0,1.0,Ian Anderson,Gerrit Cole,Truist Park,R,Regular Season,True
+MLB,630360,2020-08-26 20:15:00+00:00,Atlanta Braves,New York Yankees,2.0,1.0,Max Fried,Masahiro Tanaka,Truist Park,R,Regular Season,True
+MLB,630853,2020-08-26 22:05:00+00:00,Washington Nationals,Philadelphia Phillies,2.0,3.0,Patrick Corbin,Aaron Nola,Nationals Park,R,Regular Season,True
+MLB,630863,2020-08-26 22:37:00+00:00,Toronto Blue Jays,Boston Red Sox,9.0,1.0,Julian Merryweather,Colten Brewer,Sahlen Field,R,Regular Season,True
+MLB,630952,2020-08-26 22:40:00+00:00,Tampa Bay Rays,Baltimore Orioles,4.0,3.0,Trevor Richards,Asher Wojciechowski,Tropicana Field,R,Regular Season,True
+MLB,631226,2020-08-26 23:10:00+00:00,New York Mets,Miami Marlins,5.0,4.0,Jacob deGrom,Elieser Hernández,Citi Field,R,Regular Season,True
+MLB,631455,2020-08-26 23:10:00+00:00,Detroit Tigers,Chicago Cubs,7.0,6.0,Michael Fulmer,Jon Lester,Comerica Park,R,Regular Season,True
+MLB,631554,2020-08-26 23:10:00+00:00,Cleveland Indians,Minnesota Twins,6.0,3.0,Mike Clevinger,José Berríos,Progressive Field,R,Regular Season,True
+MLB,630931,2020-08-27 00:05:00+00:00,Texas Rangers,Oakland Athletics,1.0,3.0,Kolby Allard,Mike Fiers,Globe Life Field,R,Regular Season,True
+MLB,630979,2020-08-27 00:15:00+00:00,St. Louis Cardinals,Kansas City Royals,6.0,5.0,Dakota Hudson,Jakob Junis,Busch Stadium,R,Regular Season,True
+MLB,630099,2020-08-27 01:40:00+00:00,Arizona Diamondbacks,Colorado Rockies,7.0,8.0,Robbie Ray,Jon Gray,Chase Field,R,Regular Season,True
+MLB,631083,2020-08-27 19:10:00+00:00,San Diego Padres,Seattle Mariners,10.0,7.0,Dinelson Lamet,Ljay Newsome,Petco Park,R,Regular Season,True
+MLB,630999,2020-08-27 19:15:00+00:00,St. Louis Cardinals,Pittsburgh Pirates,3.0,4.0,Kwang Hyun Kim,Chad Kuhl,Busch Stadium,R,Regular Season,True
+MLB,631082,2020-08-27 19:15:00+00:00,San Diego Padres,Seattle Mariners,3.0,8.0,Garrett Richards,Yusei Kikuchi,Petco Park,R,Regular Season,True
+MLB,631000,2020-08-27 19:20:00+00:00,St. Louis Cardinals,Pittsburgh Pirates,0.0,2.0,Johan Oviedo,Cody Ponce,Busch Stadium,R,Regular Season,True
+MLB,631017,2020-08-27 20:05:00+00:00,San Francisco Giants,Los Angeles Dodgers,0.0,7.0,Logan Webb,Walker Buehler,Oracle Park,R,Regular Season,True
+MLB,631001,2020-08-27 20:10:00+00:00,San Francisco Giants,Los Angeles Dodgers,0.0,2.0,Kevin Gausman,Caleb Ferguson,Oracle Park,R,Regular Season,True
+MLB,631290,2020-08-27 21:10:00+00:00,Milwaukee Brewers,Cincinnati Reds,1.0,6.0,Adrian Houser,Sonny Gray,Miller Park,R,Regular Season,True
+MLB,631303,2020-08-27 21:15:00+00:00,Milwaukee Brewers,Cincinnati Reds,0.0,6.0,Josh Lindblom,,Miller Park,R,Regular Season,False

@@ -1,0 +1,351 @@
+league,game_id,datetime,home,away,home_score,away_score,home_starter,away_starter,venue,game_type,series_description,confirmed_starters
+MLB,832033,2026-02-20 18:05:00+00:00,Boston Red Sox,Northeastern Huskies,18,3,Tyler Uberstine,Robbie O'Connor,JetBlue Park,E,Exhibition Game,True
+MLB,832034,2026-02-20 18:05:00+00:00,Baltimore Orioles,New York Yankees,2,0,Trevor Rogers,Elmer Rodríguez,Ed Smith Stadium,S,Spring Training,True
+MLB,831829,2026-02-20 20:05:00+00:00,Texas Rangers,Kansas City Royals,3,7,Nathan Eovaldi,Stephen Kolek,Surprise Stadium,S,Spring Training,True
+MLB,832042,2026-02-20 20:05:00+00:00,Chicago Cubs,Chicago White Sox,1,8,Jameson Taillon,Jonathan Cannon,Sloan Park,S,Spring Training,True
+MLB,831764,2026-02-20 20:10:00+00:00,Seattle Mariners,San Diego Padres,7,4,Dane Dunning,Jagger Haynes,Peoria Stadium,S,Spring Training,True
+MLB,831959,2026-02-20 20:10:00+00:00,Colorado Rockies,Arizona Diamondbacks,2,3,Antonio Senzatela,Thomas Hatch,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,832043,2026-02-20 23:05:00+00:00,Minnesota Twins,Minnesota Golden Gophers,10,3,Zebby Matthews,,Lee Health Sports Complex,E,Exhibition Game,False
+MLB,831494,2026-02-21 18:05:00+00:00,St. Louis Cardinals,Washington Nationals,2,6,Matthew Liberatore,Shinnosuke Ogasawara,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831543,2026-02-21 18:05:00+00:00,Tampa Bay Rays,Atlanta Braves,1,5,TJ Nichols,Carlos Carrasco,Charlotte Sports Park,S,Spring Training,True
+MLB,831544,2026-02-21 18:05:00+00:00,Baltimore Orioles,Pittsburgh Pirates,2,8,Dean Kremer,Wilber Dotel,Ed Smith Stadium,S,Spring Training,True
+MLB,831598,2026-02-21 18:05:00+00:00,Washington Nationals,Houston Astros,2,1,Jake Eder,Colton Gordon,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831654,2026-02-21 18:05:00+00:00,Minnesota Twins,Boston Red Sox,2,7,Eston Stull,Payton Tolle,Lee Health Sports Complex,S,Spring Training,True
+MLB,831655,2026-02-21 18:05:00+00:00,New York Yankees,Detroit Tigers,20,3,Carlos Lagrange,Keider Montero,George M. Steinbrenner Field,S,Spring Training,True
+MLB,831542,2026-02-21 18:07:00+00:00,Toronto Blue Jays,Philadelphia Phillies,3,0,Eric Lauer,Bryse Wilson,TD Ballpark,S,Spring Training,True
+MLB,831497,2026-02-21 18:10:00+00:00,New York Mets,Miami Marlins,1,2,Brandon Waddell,Robby Snelling,Clover Park,S,Spring Training,True
+MLB,831732,2026-02-21 20:05:00+00:00,Chicago Cubs,Texas Rangers,2,3,Matthew Boyd,Kumar Rocker,Sloan Park,S,Spring Training,True
+MLB,831775,2026-02-21 20:05:00+00:00,Kansas City Royals,San Diego Padres,3,10,Ryan Bergert,Matt Waldron,Surprise Stadium,S,Spring Training,True
+MLB,831900,2026-02-21 20:05:00+00:00,Cleveland Guardians,Cincinnati Reds,4,2,Logan Allen,Chase Burns,Goodyear Ballpark,S,Spring Training,True
+MLB,831948,2026-02-21 20:05:00+00:00,Chicago White Sox,Athletics,11,2,Chris Murphy,Jack Perkins,Camelback Ranch,S,Spring Training,True
+MLB,831750,2026-02-21 20:10:00+00:00,Seattle Mariners,San Francisco Giants,5,10,Emerson Hancock,Hayden Birdsong,Peoria Stadium,S,Spring Training,True
+MLB,831872,2026-02-21 20:10:00+00:00,Arizona Diamondbacks,Colorado Rockies,6,11,Mitch Bratt,Valente Bellozo,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831878,2026-02-21 20:10:00+00:00,Milwaukee Brewers,Cleveland Guardians,6,9,Garrett Stallings,Joey Cantillo,American Family Fields of Phoenix,S,Spring Training,True
+MLB,832063,2026-02-21 20:10:00+00:00,Los Angeles Angels,Los Angeles Dodgers,2,15,José Soriano,Yoshinobu Yamamoto,Tempe Diablo Stadium,S,Spring Training,True
+MLB,831484,2026-02-22 18:05:00+00:00,Philadelphia Phillies,Pittsburgh Pirates,3,4,Trevor Richards,Braxton Ashcraft,BayCare Ballpark,S,Spring Training,True
+MLB,831537,2026-02-22 18:05:00+00:00,New York Yankees,New York Mets,4,6,Luis Gil,Justin Hagenman,George M. Steinbrenner Field,S,Spring Training,True
+MLB,831548,2026-02-22 18:05:00+00:00,Houston Astros,St. Louis Cardinals,5,6,Mike Burrows,Kyle Leahy,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831596,2026-02-22 18:05:00+00:00,Pittsburgh Pirates,Tampa Bay Rays,7,4,Mitch Keller,Jake Woodford,LECOM Park,S,Spring Training,True
+MLB,831597,2026-02-22 18:05:00+00:00,Atlanta Braves,Minnesota Twins,1,8,Chris Sale,Taj Bradley,CoolToday Park,S,Spring Training,True
+MLB,831656,2026-02-22 18:05:00+00:00,Boston Red Sox,Toronto Blue Jays,11,10,Brayan Bello,Fernando Perez,JetBlue Park,S,Spring Training,True
+MLB,831657,2026-02-22 18:05:00+00:00,Detroit Tigers,Baltimore Orioles,4,4,Jack Flaherty,Kyle Bradish,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,831495,2026-02-22 18:10:00+00:00,Miami Marlins,Washington Nationals,8,16,Sandy Alcantara,Mitchell Parker,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831744,2026-02-22 20:05:00+00:00,Cincinnati Reds,Seattle Mariners,8,14,Jose Franco,Randy Dobnak,Goodyear Ballpark,S,Spring Training,True
+MLB,831790,2026-02-22 20:05:00+00:00,Chicago White Sox,Milwaukee Brewers,5,2,Mike Vasil,Logan Henderson,Camelback Ranch,S,Spring Training,True
+MLB,831859,2026-02-22 20:05:00+00:00,Texas Rangers,Colorado Rockies,9,5,MacKenzie Gore,Jimmy Herget,Surprise Stadium,S,Spring Training,True
+MLB,831886,2026-02-22 20:05:00+00:00,Athletics,Cleveland Guardians,0,6,Luis Severino,Parker Messick,Hohokam Stadium,S,Spring Training,True
+MLB,831922,2026-02-22 20:05:00+00:00,San Francisco Giants,Chicago Cubs,4,2,Robbie Ray,Colin Rea,Scottsdale Stadium,S,Spring Training,True
+MLB,831803,2026-02-22 20:10:00+00:00,San Diego Padres,Los Angeles Dodgers,1,5,Randy Vásquez,Jackson Ferris,Peoria Stadium,S,Spring Training,True
+MLB,831830,2026-02-22 20:10:00+00:00,Arizona Diamondbacks,Los Angeles Angels,9,10,Kohl Drake,Alek Manoah,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831841,2026-02-22 20:10:00+00:00,Milwaukee Brewers,Kansas City Royals,3,7,Robert Gasser,Bailey Falter,American Family Fields of Phoenix,S,Spring Training,True
+MLB,831485,2026-02-23 18:05:00+00:00,St. Louis Cardinals,Miami Marlins,5,4,Michael McGreevy,Eury Pérez,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831540,2026-02-23 18:05:00+00:00,Baltimore Orioles,Atlanta Braves,7,10,Cade Povich,Garrett Baumann,Ed Smith Stadium,S,Spring Training,True
+MLB,831595,2026-02-23 18:05:00+00:00,Pittsburgh Pirates,New York Yankees,2,6,Bubba Chandler,Ryan Yarbrough,LECOM Park,S,Spring Training,True
+MLB,831652,2026-02-23 18:05:00+00:00,Tampa Bay Rays,Boston Red Sox,2,1,Drew Rasmussen,Connelly Early,Charlotte Sports Park,S,Spring Training,True
+MLB,831658,2026-02-23 18:05:00+00:00,Detroit Tigers,Minnesota Twins,0,3,Tarik Skubal,Mick Abel,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,831539,2026-02-23 18:07:00+00:00,Toronto Blue Jays,New York Mets,3,4,José Berríos,Clay Holmes,TD Ballpark,S,Spring Training,True
+MLB,831745,2026-02-23 20:05:00+00:00,Los Angeles Dodgers,Seattle Mariners,3,0,Landon Knack,Logan Gilbert,Camelback Ranch,S,Spring Training,True
+MLB,831927,2026-02-23 20:05:00+00:00,Kansas City Royals,Chicago Cubs,2,3,Seth Lugo,Ben Brown,Surprise Stadium,S,Spring Training,True
+MLB,831939,2026-02-23 20:05:00+00:00,San Francisco Giants,Athletics,6,2,JT Brubaker,J.T. Ginn,Scottsdale Stadium,S,Spring Training,True
+MLB,831955,2026-02-23 20:05:00+00:00,Cleveland Guardians,Arizona Diamondbacks,9,5,Tanner Bibee,Taylor Clarke,Goodyear Ballpark,S,Spring Training,True
+MLB,831724,2026-02-23 20:10:00+00:00,Los Angeles Angels,Texas Rangers,0,6,Reid Detmers,Jack Leiter,Tempe Diablo Stadium,S,Spring Training,True
+MLB,831783,2026-02-23 20:10:00+00:00,San Diego Padres,Milwaukee Brewers,7,5,JP Sears,Easton McGee,Peoria Stadium,S,Spring Training,True
+MLB,831912,2026-02-23 20:10:00+00:00,Colorado Rockies,Chicago White Sox,5,4,Michael Lorenzen,Shane Smith,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831483,2026-02-23 23:05:00+00:00,Washington Nationals,Philadelphia Phillies,5,5,Jake Irvin,Alan Rangel,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831534,2026-02-24 18:05:00+00:00,Boston Red Sox,Pittsburgh Pirates,7,16,Ranger Suarez,Carmen Mlodzinski,JetBlue Park,S,Spring Training,True
+MLB,831594,2026-02-24 18:05:00+00:00,Atlanta Braves,Detroit Tigers,8,1,Reynaldo López,Enmanuel De Jesus,CoolToday Park,S,Spring Training,True
+MLB,831650,2026-02-24 18:05:00+00:00,Tampa Bay Rays,Minnesota Twins,12,1,Joe Boyle,Christian MacLeod,Charlotte Sports Park,S,Spring Training,True
+MLB,831651,2026-02-24 18:05:00+00:00,Minnesota Twins,Baltimore Orioles,5,10,Andrew Morris,Albert Suárez,Lee Health Sports Complex,S,Spring Training,True
+MLB,831649,2026-02-24 18:07:00+00:00,Toronto Blue Jays,New York Yankees,7,8,Grant Rogers,Will Warren,TD Ballpark,S,Spring Training,True
+MLB,831489,2026-02-24 18:10:00+00:00,Miami Marlins,Philadelphia Phillies,6,1,Chris Paddack,Seth Johnson,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831593,2026-02-24 18:10:00+00:00,New York Mets,Houston Astros,6,6,Jack Wenninger,Jason Alexander,Clover Park,S,Spring Training,True
+MLB,831781,2026-02-24 20:05:00+00:00,Chicago Cubs,San Diego Padres,6,5,Shota Imanaga,Marco Gonzales,Sloan Park,S,Spring Training,True
+MLB,831797,2026-02-24 20:05:00+00:00,Athletics,Milwaukee Brewers,0,10,Mason Barnett,Rob Zastryzny,Hohokam Stadium,S,Spring Training,True
+MLB,831847,2026-02-24 20:05:00+00:00,Cincinnati Reds,Kansas City Royals,5,4,Andrew Abbott,Michael Wacha,Goodyear Ballpark,S,Spring Training,True
+MLB,831876,2026-02-24 20:05:00+00:00,Los Angeles Dodgers,Cleveland Guardians,11,3,Gavin Stone,Gavin Williams,Camelback Ranch,S,Spring Training,True
+MLB,831951,2026-02-24 20:05:00+00:00,Texas Rangers,Arizona Diamondbacks,4,6,Jacob Latz,Michael Soroka,Surprise Stadium,S,Spring Training,True
+MLB,831825,2026-02-24 20:10:00+00:00,Colorado Rockies,Los Angeles Angels,7,5,Chase Dollander,Jack Kochanowicz,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831906,2026-02-24 20:10:00+00:00,Seattle Mariners,Chicago White Sox,10,12,George Kirby,Anthony Kay,Peoria Stadium,S,Spring Training,True
+MLB,832060,2026-02-24 20:10:00+00:00,Los Angeles Angels,San Francisco Giants,1,4,Grayson Rodriguez,Logan Webb,Tempe Diablo Stadium,S,Spring Training,True
+MLB,831491,2026-02-24 23:05:00+00:00,Washington Nationals,St. Louis Cardinals,6,1,Cade Cavalli,Andre Pallante,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831490,2026-02-25 18:05:00+00:00,Atlanta Braves,Pittsburgh Pirates,3,1,Bryce Elder,Paul Skenes,CoolToday Park,S,Spring Training,True
+MLB,831591,2026-02-25 18:05:00+00:00,Philadelphia Phillies,Detroit Tigers,5,3,Brad Keller,Ty Madden,BayCare Ballpark,S,Spring Training,True
+MLB,831645,2026-02-25 18:05:00+00:00,Minnesota Twins,Boston Red Sox,3,5,Kody Funderburk,Johan Oviedo,Lee Health Sports Complex,S,Spring Training,True
+MLB,831647,2026-02-25 18:05:00+00:00,Detroit Tigers,Toronto Blue Jays,4,4,Casey Mize,Cody Ponce,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,831653,2026-02-25 18:05:00+00:00,Baltimore Orioles,Tampa Bay Rays,4,3,Trevor Rogers,Brody Hopkins,Ed Smith Stadium,S,Spring Training,True
+MLB,831488,2026-02-25 18:10:00+00:00,New York Mets,St. Louis Cardinals,0,6,Jonah Tong,Richard Fitts,Clover Park,S,Spring Training,True
+MLB,831584,2026-02-25 18:10:00+00:00,Miami Marlins,Houston Astros,1,4,Tyler Phillips,Hunter Brown,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831730,2026-02-25 20:05:00+00:00,Cleveland Guardians,Texas Rangers,4,11,Slade Cecconi,Nathan Eovaldi,Goodyear Ballpark,S,Spring Training,True
+MLB,831741,2026-02-25 20:05:00+00:00,Kansas City Royals,Seattle Mariners,8,8,Noah Cameron,Bryan Woo,Surprise Stadium,S,Spring Training,True
+MLB,831870,2026-02-25 20:05:00+00:00,Chicago Cubs,Colorado Rockies,7,14,Jameson Taillon,Jose Quintana,Sloan Park,S,Spring Training,True
+MLB,831901,2026-02-25 20:05:00+00:00,Chicago White Sox,Cincinnati Reds,2,3,Davis Martin,Nick Lodolo,Camelback Ranch,S,Spring Training,True
+MLB,831753,2026-02-25 20:10:00+00:00,Milwaukee Brewers,San Francisco Giants,13,12,Carlos Rodriguez,Adrian Houser,American Family Fields of Phoenix,S,Spring Training,True
+MLB,831815,2026-02-25 20:10:00+00:00,Arizona Diamondbacks,Los Angeles Dodgers,7,10,Zac Gallen,Roki Sasaki,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831819,2026-02-25 20:10:00+00:00,San Diego Padres,Los Angeles Angels,7,3,Michael King,George Klassen,Peoria Stadium,S,Spring Training,True
+MLB,831538,2026-02-25 23:35:00+00:00,New York Yankees,Washington Nationals,7,0,Ryan Weathers,Andrew Alvarez,George M. Steinbrenner Field,S,Spring Training,True
+MLB,831487,2026-02-26 18:05:00+00:00,Philadelphia Phillies,Washington Nationals,7,3,Taijuan Walker,Jake Eder,BayCare Ballpark,S,Spring Training,True
+MLB,831535,2026-02-26 18:05:00+00:00,Houston Astros,New York Mets,0,5,Tatsuya Imai,Nolan McLean,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831536,2026-02-26 18:05:00+00:00,New York Yankees,Atlanta Braves,7,3,Elmer Rodríguez,Carlos Carrasco,George M. Steinbrenner Field,S,Spring Training,True
+MLB,831589,2026-02-26 18:05:00+00:00,St. Louis Cardinals,Houston Astros,9,4,Matthew Liberatore,Peter Lambert,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831590,2026-02-26 18:05:00+00:00,Pittsburgh Pirates,Minnesota Twins,6,4,José Urquidy,Simeon Woods Richardson,LECOM Park,S,Spring Training,True
+MLB,831643,2026-02-26 18:05:00+00:00,Boston Red Sox,Tampa Bay Rays,7,5,Garrett Crochet,Steven Matz,JetBlue Park,S,Spring Training,True
+MLB,831644,2026-02-26 18:05:00+00:00,Baltimore Orioles,Detroit Tigers,6,5,Dean Kremer,Keider Montero,Ed Smith Stadium,S,Spring Training,True
+MLB,831541,2026-02-26 18:07:00+00:00,Toronto Blue Jays,Miami Marlins,7,8,Kevin Gausman,Braxton Garrett,TD Ballpark,S,Spring Training,True
+MLB,831736,2026-02-26 20:05:00+00:00,Athletics,Texas Rangers,7,3,Jack Perkins,Cal Quantrill,Hohokam Stadium,S,Spring Training,True
+MLB,831773,2026-02-26 20:05:00+00:00,Cincinnati Reds,San Diego Padres,11,10,Chase Burns,Nick Pivetta,Goodyear Ballpark,S,Spring Training,True
+MLB,831788,2026-02-26 20:05:00+00:00,Texas Rangers,Milwaukee Brewers,1,5,Kumar Rocker,Aaron Ashby,Surprise Stadium,S,Spring Training,True
+MLB,831862,2026-02-26 20:05:00+00:00,San Francisco Giants,Colorado Rockies,3,11,Blade Tidwell,Valente Bellozo,Scottsdale Stadium,S,Spring Training,True
+MLB,831911,2026-02-26 20:05:00+00:00,Los Angeles Dodgers,Chicago White Sox,7,6,Tyler Glasnow,Sean Newcomb,Camelback Ranch,S,Spring Training,True
+MLB,831843,2026-02-26 20:10:00+00:00,Arizona Diamondbacks,Kansas City Royals,13,10,Eduardo Rodriguez,Ryan Bergert,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831875,2026-02-26 20:10:00+00:00,Seattle Mariners,Cleveland Guardians,8,7,Bryce Miller,Joey Cantillo,Peoria Stadium,S,Spring Training,True
+MLB,831926,2026-02-26 20:10:00+00:00,Los Angeles Angels,Chicago Cubs,5,4,José Soriano,Matthew Boyd,Tempe Diablo Stadium,S,Spring Training,True
+MLB,831482,2026-02-27 18:05:00+00:00,St. Louis Cardinals,New York Mets,3,14,Quinn Mathews,Freddy Peralta,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831486,2026-02-27 18:05:00+00:00,Philadelphia Phillies,Miami Marlins,10,2,Aaron Nola,Robby Snelling,BayCare Ballpark,S,Spring Training,True
+MLB,831528,2026-02-27 18:05:00+00:00,Detroit Tigers,Philadelphia Phillies,16,8,Jack Flaherty,Jean Cabrera,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,831587,2026-02-27 18:05:00+00:00,Pittsburgh Pirates,Baltimore Orioles,6,1,Mitch Keller,Shane Baz,LECOM Park,S,Spring Training,True
+MLB,831588,2026-02-27 18:05:00+00:00,Atlanta Braves,Boston Red Sox,15,8,Chris Sale,Brayan Bello,CoolToday Park,S,Spring Training,True
+MLB,831646,2026-02-27 18:05:00+00:00,Tampa Bay Rays,Toronto Blue Jays,6,5,Ryan Pepiot,Eric Lauer,Charlotte Sports Park,S,Spring Training,True
+MLB,831648,2026-02-27 18:05:00+00:00,Minnesota Twins,New York Yankees,5,17,Marco Raya,Luis Gil,Lee Health Sports Complex,S,Spring Training,True
+MLB,831729,2026-02-27 20:05:00+00:00,Chicago White Sox,Texas Rangers,3,1,Erick Fedde,MacKenzie Gore,Camelback Ranch,S,Spring Training,True
+MLB,831805,2026-02-27 20:05:00+00:00,San Francisco Giants,Los Angeles Dodgers,12,4,Robbie Ray,Yoshinobu Yamamoto,Scottsdale Stadium,S,Spring Training,True
+MLB,831823,2026-02-27 20:05:00+00:00,Cincinnati Reds,Los Angeles Angels,3,4,Rhett Lowder,Brent Suter,Goodyear Ballpark,S,Spring Training,True
+MLB,831884,2026-02-27 20:05:00+00:00,Chicago Cubs,Cleveland Guardians,8,6,Edward Cabrera,Logan Allen,Sloan Park,S,Spring Training,True
+MLB,831946,2026-02-27 20:05:00+00:00,Kansas City Royals,Athletics,7,6,Bailey Falter,Jeffrey Springs,Surprise Stadium,S,Spring Training,True
+MLB,831776,2026-02-27 20:10:00+00:00,Colorado Rockies,San Diego Padres,3,2,Tanner Gordon,Randy Vásquez,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831909,2026-02-27 20:10:00+00:00,Milwaukee Brewers,Chicago White Sox,5,2,Brandon Sproat,Sean Burke,American Family Fields of Phoenix,S,Spring Training,True
+MLB,831586,2026-02-27 23:05:00+00:00,Washington Nationals,Houston Astros,4,4,Miles Mikolas,Lance McCullers Jr.,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831952,2026-02-28 01:10:00+00:00,Seattle Mariners,Arizona Diamondbacks,1,3,Luis Castillo,Ryne Nelson,Peoria Stadium,S,Spring Training,True
+MLB,831526,2026-02-28 18:05:00+00:00,Houston Astros,Pittsburgh Pirates,2,5,Mike Burrows,Braxton Ashcraft,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831530,2026-02-28 18:05:00+00:00,Baltimore Orioles,Atlanta Braves,5,7,Kyle Bradish,Spencer Strider,Ed Smith Stadium,S,Spring Training,True
+MLB,831635,2026-02-28 18:05:00+00:00,Boston Red Sox,Minnesota Twins,13,8,Sonny Gray,Taj Bradley,JetBlue Park,S,Spring Training,True
+MLB,831636,2026-02-28 18:05:00+00:00,New York Yankees,Toronto Blue Jays,5,1,Paul Blackburn,José Berríos,George M. Steinbrenner Field,S,Spring Training,True
+MLB,831637,2026-02-28 18:05:00+00:00,Tampa Bay Rays,Detroit Tigers,3,12,Nick Martinez,Drew Anderson,Charlotte Sports Park,S,Spring Training,True
+MLB,831533,2026-02-28 18:07:00+00:00,Toronto Blue Jays,Philadelphia Phillies,7,5,Dylan Cease,Cristopher Sánchez,TD Ballpark,S,Spring Training,True
+MLB,831474,2026-02-28 18:10:00+00:00,Miami Marlins,St. Louis Cardinals,2,10,Eury Pérez,Michael McGreevy,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831481,2026-02-28 18:10:00+00:00,New York Mets,Washington Nationals,2,3,Tobias Myers,Jake Irvin,Clover Park,S,Spring Training,True
+MLB,831763,2026-02-28 20:05:00+00:00,Athletics,San Francisco Giants,2,8,Luis Morales,Tyler Mahle,Hohokam Stadium,S,Spring Training,True
+MLB,831798,2026-02-28 20:05:00+00:00,Texas Rangers,Los Angeles Dodgers,7,6,Jack Leiter,Jackson Ferris,Surprise Stadium,S,Spring Training,True
+MLB,831917,2026-02-28 20:05:00+00:00,Cleveland Guardians,Chicago White Sox,5,7,Tanner Bibee,Shane Smith,Goodyear Ballpark,S,Spring Training,True
+MLB,831925,2026-02-28 20:05:00+00:00,Los Angeles Dodgers,Chicago Cubs,2,6,Justin Wrobleski,Colin Rea,Camelback Ranch,S,Spring Training,True
+MLB,831738,2026-02-28 20:10:00+00:00,San Diego Padres,Seattle Mariners,7,1,JP Sears,Kade Anderson,Peoria Stadium,S,Spring Training,True
+MLB,831845,2026-02-28 20:10:00+00:00,Colorado Rockies,Kansas City Royals,3,16,Michael Lorenzen,Seth Lugo,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831893,2026-02-28 20:10:00+00:00,Milwaukee Brewers,Cincinnati Reds,7,9,Rob Zastryzny,Hunter Greene,American Family Fields of Phoenix,S,Spring Training,True
+MLB,831957,2026-02-28 20:10:00+00:00,Los Angeles Angels,Arizona Diamondbacks,5,8,Alek Manoah,Mitch Bratt,Tempe Diablo Stadium,S,Spring Training,True
+MLB,831475,2026-03-01 18:05:00+00:00,Washington Nationals,Miami Marlins,0,3,Brad Lord,Chris Paddack,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831477,2026-03-01 18:05:00+00:00,St. Louis Cardinals,Pittsburgh Pirates,1,6,Kyle Leahy,Hunter Barco,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831531,2026-03-01 18:05:00+00:00,Minnesota Twins,Atlanta Braves,2,2,Mick Abel,Grant Holmes,Lee Health Sports Complex,S,Spring Training,True
+MLB,831578,2026-03-01 18:05:00+00:00,Philadelphia Phillies,New York Yankees,3,5,Andrew Painter,Will Warren,BayCare Ballpark,S,Spring Training,True
+MLB,831585,2026-03-01 18:05:00+00:00,Atlanta Braves,Tampa Bay Rays,5,3,Reynaldo López,Drew Rasmussen,CoolToday Park,S,Spring Training,True
+MLB,831638,2026-03-01 18:05:00+00:00,Boston Red Sox,Baltimore Orioles,7,8,Ranger Suarez,Chris Bassitt,JetBlue Park,S,Spring Training,True
+MLB,831639,2026-03-01 18:05:00+00:00,Detroit Tigers,Toronto Blue Jays,4,4,Tarik Skubal,Grant Rogers,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,831579,2026-03-01 18:10:00+00:00,New York Mets,Houston Astros,4,3,Clay Holmes,Jason Alexander,Clover Park,S,Spring Training,True
+MLB,831768,2026-03-01 20:05:00+00:00,San Francisco Giants,San Diego Padres,9,1,Logan Webb,Germán Márquez,Scottsdale Stadium,S,Spring Training,True
+MLB,831794,2026-03-01 20:05:00+00:00,Kansas City Royals,Milwaukee Brewers,3,1,Kris Bubic,Chad Patrick,Surprise Stadium,S,Spring Training,True
+MLB,831827,2026-03-01 20:05:00+00:00,Los Angeles Dodgers,Los Angeles Angels,4,3,Landon Knack,Reid Detmers,Camelback Ranch,S,Spring Training,True
+MLB,831867,2026-03-01 20:05:00+00:00,Cleveland Guardians,Colorado Rockies,8,3,Gavin Williams,Chase Dollander,Goodyear Ballpark,S,Spring Training,True
+MLB,831899,2026-03-01 20:05:00+00:00,Athletics,Cincinnati Reds,12,4,J.T. Ginn,Andrew Abbott,Hohokam Stadium,S,Spring Training,True
+MLB,831914,2026-03-01 20:05:00+00:00,Chicago Cubs,Chicago White Sox,1,5,Shota Imanaga,Anthony Kay,Sloan Park,S,Spring Training,True
+MLB,831721,2026-03-01 20:10:00+00:00,Seattle Mariners,Texas Rangers,4,9,Logan Gilbert,Jacob Latz,Peoria Stadium,S,Spring Training,True
+MLB,831888,2026-03-01 20:10:00+00:00,Arizona Diamondbacks,Cleveland Guardians,9,6,Michael Soroka,Daniel Espino,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831476,2026-03-02 18:05:00+00:00,St. Louis Cardinals,Miami Marlins,3,2,Andre Pallante,Adam Mazur,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831527,2026-03-02 18:05:00+00:00,Detroit Tigers,Atlanta Braves,2,5,Framber Valdez,Bryce Elder,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,831529,2026-03-02 18:05:00+00:00,Houston Astros,Washington Nationals,3,3,Hunter Brown,Josiah Gray,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831577,2026-03-02 18:05:00+00:00,Pittsburgh Pirates,Tampa Bay Rays,4,1,Mike Clevinger,Mason Englert,LECOM Park,S,Spring Training,True
+MLB,831640,2026-03-02 18:07:00+00:00,Toronto Blue Jays,Boston Red Sox,6,7,Cody Ponce,Johan Oviedo,TD Ballpark,S,Spring Training,True
+MLB,831760,2026-03-02 20:05:00+00:00,Chicago White Sox,San Francisco Giants,5,6,Davis Martin,Landen Roupp,Camelback Ranch,S,Spring Training,True
+MLB,831874,2026-03-02 20:05:00+00:00,Texas Rangers,Cleveland Guardians,3,1,Austin Gomber,Slade Cecconi,Surprise Stadium,S,Spring Training,True
+MLB,831930,2026-03-02 20:05:00+00:00,Cincinnati Reds,Chicago Cubs,17,9,Brady Singer,Jameson Taillon,Goodyear Ballpark,S,Spring Training,True
+MLB,831808,2026-03-02 20:10:00+00:00,Colorado Rockies,Los Angeles Dodgers,5,7,Jimmy Herget,Ryder Ryan,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831840,2026-03-02 20:10:00+00:00,Los Angeles Angels,Kansas City Royals,5,4,Grayson Rodriguez,Noah Cameron,Tempe Diablo Stadium,S,Spring Training,True
+MLB,831934,2026-03-02 20:10:00+00:00,San Diego Padres,Athletics,2,7,Michael King,Mason Barnett,Peoria Stadium,S,Spring Training,True
+MLB,831430,2026-03-03 18:05:00+00:00,Pittsburgh Pirates,Colombia,7,1,José Urquidy,Julio Teheran,LECOM Park,E,Exhibition Game,True
+MLB,831444,2026-03-03 18:05:00+00:00,New York Yankees,Panama,11,1,Max Fried,Jorge Garcia,George M. Steinbrenner Field,E,Exhibition Game,True
+MLB,831445,2026-03-03 18:05:00+00:00,Baltimore Orioles,Kingdom of the Netherlands,5,8,Trevor Rogers,Ryjeteri Merite,Ed Smith Stadium,E,Exhibition Game,True
+MLB,831532,2026-03-03 18:05:00+00:00,Tampa Bay Rays,Philadelphia Phillies,3,1,Shane McClanahan,Alan Rangel,Charlotte Sports Park,S,Spring Training,True
+MLB,831641,2026-03-03 18:05:00+00:00,Minnesota Twins,Tampa Bay Rays,3,5,Simeon Woods Richardson,Brody Hopkins,Lee Health Sports Complex,S,Spring Training,True
+MLB,831437,2026-03-03 18:07:00+00:00,Toronto Blue Jays,Canada,10,7,Kevin Gausman,Logan Allen,TD Ballpark,E,Exhibition Game,True
+MLB,831434,2026-03-03 18:10:00+00:00,New York Mets,Nicaragua,6,3,Jonah Tong,Erasmo Ramírez,Clover Park,E,Exhibition Game,True
+MLB,831436,2026-03-03 18:10:00+00:00,Miami Marlins,Israel,0,1,Braxton Garrett,Robert Stock,Roger Dean Chevrolet Stadium,E,Exhibition Game,True
+MLB,831772,2026-03-03 20:05:00+00:00,Chicago White Sox,San Diego Padres,3,4,Sean Newcomb,Nick Pivetta,Camelback Ranch,S,Spring Training,True
+MLB,831811,2026-03-03 20:05:00+00:00,Cleveland Guardians,Los Angeles Dodgers,4,5,Joey Cantillo,Roki Sasaki,Goodyear Ballpark,S,Spring Training,True
+MLB,831851,2026-03-03 20:05:00+00:00,Kansas City Royals,Cuba,4,0,Ryan Bergert,,Surprise Stadium,E,Exhibition Game,False
+MLB,831853,2026-03-03 20:05:00+00:00,Chicago Cubs,Italy,4,9,Cade Horton,,Sloan Park,E,Exhibition Game,False
+MLB,831940,2026-03-03 20:05:00+00:00,Athletics,Brazil,14,4,Aaron Civale,,Hohokam Stadium,E,Exhibition Game,False
+MLB,831720,2026-03-03 20:08:00+00:00,San Francisco Giants,United States,1,15,Adrian Houser,Paul Skenes,Scottsdale Stadium,E,Exhibition Game,True
+MLB,831800,2026-03-03 20:10:00+00:00,Arizona Diamondbacks,Mexico,3,6,Zac Gallen,,Salt River Fields at Talking Stick,E,Exhibition Game,False
+MLB,831817,2026-03-03 20:10:00+00:00,Seattle Mariners,Los Angeles Angels,6,7,Bryan Woo,George Klassen,Peoria Stadium,S,Spring Training,True
+MLB,831855,2026-03-03 20:10:00+00:00,Milwaukee Brewers,Great Britain,3,7,Jacob Misiorowski,,American Family Fields of Phoenix,E,Exhibition Game,False
+MLB,831439,2026-03-03 23:05:00+00:00,Boston Red Sox,Puerto Rico,3,5,Jake Bennett,Elmer Rodríguez,JetBlue Park,E,Exhibition Game,True
+MLB,831440,2026-03-03 23:05:00+00:00,Houston Astros,Venezuela,3,1,Cristian Javier,Eduard Bazardo,CACTI Park of the Palm Beaches,E,Exhibition Game,True
+MLB,836149,2026-03-03 23:05:00+00:00,Dominican Republic,Detroit Tigers,12,4,Luis Severino,Ty Madden,Estadio Quisqueya Juan Marichal,E,World Baseball Classic Exhibition,True
+MLB,831427,2026-03-04 18:05:00+00:00,Philadelphia Phillies,Canada,3,5,Aaron Nola,Cal Quantrill,BayCare Ballpark,E,Exhibition Game,True
+MLB,831429,2026-03-04 18:05:00+00:00,St. Louis Cardinals,Nicaragua,1,2,Matthew Liberatore,Dilmer Mejia,Roger Dean Chevrolet Stadium,E,Exhibition Game,True
+MLB,831432,2026-03-04 18:05:00+00:00,Tampa Bay Rays,Kingdom of the Netherlands,8,11,Jake Woodford,Juan Carlos Sulbaran,Charlotte Sports Park,E,Exhibition Game,True
+MLB,831433,2026-03-04 18:05:00+00:00,Detroit Tigers,Panama,2,1,Jack Flaherty,Jaime Barria,Publix Field at Joker Marchant Stadium,E,Exhibition Game,True
+MLB,831435,2026-03-04 18:05:00+00:00,Minnesota Twins,Puerto Rico,6,3,Zebby Matthews,Raymond Burgos,Lee Health Sports Complex,E,Exhibition Game,True
+MLB,831438,2026-03-04 18:05:00+00:00,Atlanta Braves,Colombia,9,1,Elieser Hernández,Luis Patiño,CoolToday Park,E,Exhibition Game,True
+MLB,831634,2026-03-04 18:05:00+00:00,Boston Red Sox,New York Yankees,0,4,Garrett Crochet,Luis Gil,JetBlue Park,S,Spring Training,True
+MLB,831642,2026-03-04 18:05:00+00:00,Baltimore Orioles,Houston Astros,2,4,Shane Baz,Colton Gordon,Ed Smith Stadium,S,Spring Training,True
+MLB,831431,2026-03-04 18:10:00+00:00,New York Mets,Israel,5,2,David Peterson,Ben Simon,Clover Park,E,Exhibition Game,True
+MLB,836150,2026-03-04 19:05:00+00:00,Dominican Republic,Detroit Tigers,4,4,Brayan Bello,Burch Smith,Estadio Quisqueya Juan Marichal,E,World Baseball Classic Exhibition,True
+MLB,831799,2026-03-04 20:05:00+00:00,Los Angeles Dodgers,Mexico,7,5,Tyler Glasnow,,Camelback Ranch,E,Exhibition Game,False
+MLB,831852,2026-03-04 20:05:00+00:00,Cuba,Cincinnati Reds,2,19,Rhett Lowder,,Goodyear Ballpark,E,World Baseball Classic Exhibition,False
+MLB,831938,2026-03-04 20:05:00+00:00,Texas Rangers,Brazil,13,2,Jacob deGrom,Enzo Sawayama,Surprise Stadium,E,Exhibition Game,True
+MLB,831963,2026-03-04 20:05:00+00:00,Athletics,Arizona Diamondbacks,1,3,Jeffrey Springs,Brandon Pfaadt,Hohokam Stadium,S,Spring Training,True
+MLB,831723,2026-03-04 20:10:00+00:00,Colorado Rockies,United States,4,14,Kyle Freeland,Ryan Yarbrough,Salt River Fields at Talking Stick,E,Exhibition Game,True
+MLB,831844,2026-03-04 20:10:00+00:00,Los Angeles Angels,Italy,4,3,Mitch Farris,Gabriele Quattrini,Tempe Diablo Stadium,E,Exhibition Game,True
+MLB,831854,2026-03-04 20:10:00+00:00,San Diego Padres,Great Britain,2,2,Joe Musgrove,,Peoria Stadium,E,Exhibition Game,False
+MLB,831929,2026-03-04 20:10:00+00:00,Milwaukee Brewers,Chicago Cubs,1,4,Brandon Sproat,Edward Cabrera,American Family Fields of Phoenix,S,Spring Training,True
+MLB,831428,2026-03-04 23:05:00+00:00,Washington Nationals,Venezuela,5,1,Foster Griffin,Eduardo Rodriguez,CACTI Park of the Palm Beaches,E,Exhibition Game,True
+MLB,831739,2026-03-05 02:05:00+00:00,San Francisco Giants,Seattle Mariners,9,4,Robbie Ray,Cooper Criswell,Scottsdale Stadium,S,Spring Training,True
+MLB,831478,2026-03-05 18:05:00+00:00,Pittsburgh Pirates,St. Louis Cardinals,2,3,Mitch Keller,Dustin May,LECOM Park,S,Spring Training,True
+MLB,831479,2026-03-05 18:05:00+00:00,Washington Nationals,New York Mets,7,4,Miles Mikolas,Justin Hagenman,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831581,2026-03-05 18:05:00+00:00,Philadelphia Phillies,Boston Red Sox,6,2,Jesús Luzardo,T.J. Sikkema,BayCare Ballpark,S,Spring Training,True
+MLB,831583,2026-03-05 18:05:00+00:00,Atlanta Braves,Toronto Blue Jays,9,5,Chris Sale,Eric Lauer,CoolToday Park,S,Spring Training,True
+MLB,831632,2026-03-05 18:05:00+00:00,New York Yankees,Minnesota Twins,0,15,Paul Blackburn,Taj Bradley,George M. Steinbrenner Field,S,Spring Training,True
+MLB,831633,2026-03-05 18:05:00+00:00,Tampa Bay Rays,Baltimore Orioles,3,4,Ryan Pepiot,Zach Eflin,Charlotte Sports Park,S,Spring Training,True
+MLB,831582,2026-03-05 18:10:00+00:00,Miami Marlins,Houston Astros,2,0,Sandy Alcantara,Tatsuya Imai,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831810,2026-03-05 20:05:00+00:00,Cincinnati Reds,Los Angeles Dodgers,14,13,Jose Franco,Cole Irvin,Goodyear Ballpark,S,Spring Training,True
+MLB,831961,2026-03-05 20:05:00+00:00,Chicago Cubs,Arizona Diamondbacks,8,1,Colin Rea,Ryne Nelson,Sloan Park,S,Spring Training,True
+MLB,831765,2026-03-05 20:10:00+00:00,Seattle Mariners,San Diego Padres,6,27,Luis Castillo,Walker Buehler,Peoria Stadium,S,Spring Training,True
+MLB,831792,2026-03-05 20:10:00+00:00,Colorado Rockies,Milwaukee Brewers,8,10,Michael Lorenzen,Robert Gasser,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831941,2026-03-05 20:10:00+00:00,Los Angeles Angels,Athletics,11,16,Alek Manoah,Luis Morales,Tempe Diablo Stadium,S,Spring Training,True
+MLB,831733,2026-03-06 01:05:00+00:00,Kansas City Royals,Texas Rangers,9,15,Cole Ragans,MacKenzie Gore,Surprise Stadium,S,Spring Training,True
+MLB,831880,2026-03-06 01:05:00+00:00,Chicago White Sox,Cleveland Guardians,3,12,Sean Burke,Tanner Bibee,Camelback Ranch,S,Spring Training,True
+MLB,831470,2026-03-06 18:05:00+00:00,Pittsburgh Pirates,Philadelphia Phillies,10,14,Braxton Ashcraft,Jean Cabrera,LECOM Park,S,Spring Training,True
+MLB,831519,2026-03-06 18:05:00+00:00,Baltimore Orioles,St. Louis Cardinals,2,10,Chris Bassitt,Michael McGreevy,Ed Smith Stadium,S,Spring Training,True
+MLB,831524,2026-03-06 18:05:00+00:00,Houston Astros,Washington Nationals,7,1,Mike Burrows,Cade Cavalli,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831631,2026-03-06 18:05:00+00:00,Detroit Tigers,Boston Red Sox,11,3,Justin Verlander,Connelly Early,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,831525,2026-03-06 18:07:00+00:00,Toronto Blue Jays,Pittsburgh Pirates,9,2,José Berríos,Bubba Chandler,TD Ballpark,S,Spring Training,True
+MLB,831737,2026-03-06 20:05:00+00:00,Texas Rangers,Seattle Mariners,1,5,Jack Leiter,Kade Anderson,Surprise Stadium,S,Spring Training,True
+MLB,831826,2026-03-06 20:05:00+00:00,Cleveland Guardians,Los Angeles Angels,5,3,Gavin Williams,Reid Detmers,Goodyear Ballpark,S,Spring Training,True
+MLB,831871,2026-03-06 20:05:00+00:00,Athletics,Colorado Rockies,6,11,J.T. Ginn,Chase Dollander,Hohokam Stadium,S,Spring Training,True
+MLB,831889,2026-03-06 20:05:00+00:00,San Francisco Giants,Cincinnati Reds,6,3,Tyler Mahle,Andrew Abbott,Scottsdale Stadium,S,Spring Training,True
+MLB,831919,2026-03-06 20:10:00+00:00,Arizona Diamondbacks,Chicago White Sox,0,6,Daniel Eagen,Anthony Kay,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831954,2026-03-06 20:10:00+00:00,Milwaukee Brewers,Arizona Diamondbacks,6,2,Chad Patrick,Mitch Bratt,American Family Fields of Phoenix,S,Spring Training,True
+MLB,831521,2026-03-06 23:05:00+00:00,Minnesota Twins,Atlanta Braves,1,4,Bailey Ober,Reynaldo López,Lee Health Sports Complex,S,Spring Training,True
+MLB,831624,2026-03-06 23:35:00+00:00,New York Yankees,Tampa Bay Rays,3,0,Cam Schlittler,Joe Boyle,George M. Steinbrenner Field,S,Spring Training,True
+MLB,831480,2026-03-07 00:10:00+00:00,Miami Marlins,New York Mets,2,0,Max Meyer,Sean Manaea,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831842,2026-03-07 01:05:00+00:00,Los Angeles Dodgers,Kansas City Royals,6,0,Ryder Ryan,Mitch Spence,Camelback Ranch,S,Spring Training,True
+MLB,831921,2026-03-07 01:10:00+00:00,San Diego Padres,Chicago Cubs,3,0,Germán Márquez,Ben Brown,Peoria Stadium,S,Spring Training,True
+MLB,831523,2026-03-07 17:05:00+00:00,Houston Astros,Miami Marlins,5,4,Jason Alexander,Chris Paddack,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831469,2026-03-07 18:05:00+00:00,St. Louis Cardinals,New York Mets,2,3,Kyle Leahy,Kodai Senga,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831518,2026-03-07 18:05:00+00:00,Detroit Tigers,Pittsburgh Pirates,3,5,Casey Mize,Hunter Barco,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,831576,2026-03-07 18:05:00+00:00,Philadelphia Phillies,Toronto Blue Jays,0,1,Andrew Painter,Max Scherzer,BayCare Ballpark,S,Spring Training,True
+MLB,831580,2026-03-07 18:05:00+00:00,Atlanta Braves,Baltimore Orioles,2,2,Grant Holmes,Luis De León,CoolToday Park,S,Spring Training,True
+MLB,831629,2026-03-07 18:05:00+00:00,Boston Red Sox,Tampa Bay Rays,2,0,Johan Oviedo,Ty Johnson,JetBlue Park,S,Spring Training,True
+MLB,831630,2026-03-07 18:05:00+00:00,Baltimore Orioles,Minnesota Twins,3,2,Cade Povich,Mick Abel,Ed Smith Stadium,S,Spring Training,True
+MLB,831726,2026-03-07 20:05:00+00:00,San Francisco Giants,Texas Rangers,7,5,Carson Whisenhunt,Jacob Latz,Scottsdale Stadium,S,Spring Training,True
+MLB,831774,2026-03-07 20:05:00+00:00,Cleveland Guardians,San Diego Padres,7,1,Slade Cecconi,Michael King,Goodyear Ballpark,S,Spring Training,True
+MLB,831897,2026-03-07 20:05:00+00:00,Kansas City Royals,Cincinnati Reds,6,2,Kris Bubic,Nick Lodolo,Surprise Stadium,S,Spring Training,True
+MLB,831949,2026-03-07 20:05:00+00:00,Chicago Cubs,Athletics,4,3,Shota Imanaga,Mason Barnett,Sloan Park,S,Spring Training,True
+MLB,831795,2026-03-07 20:10:00+00:00,Los Angeles Angels,Milwaukee Brewers,1,7,Grayson Rodriguez,Brandon Woodruff,Tempe Diablo Stadium,S,Spring Training,True
+MLB,831904,2026-03-07 20:10:00+00:00,Seattle Mariners,Chicago White Sox,1,5,Logan Gilbert,Grant Taylor,Peoria Stadium,S,Spring Training,True
+MLB,832862,2026-03-07 20:10:00+00:00,Arizona Diamondbacks,San Francisco Giants,4,7,Kohl Drake,JT Brubaker,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831828,2026-03-07 21:05:00+00:00,Athletics,Los Angeles Angels,0,3,Gage Jump,Ryan Johnson,Las Vegas Ballpark,S,Spring Training,True
+MLB,831568,2026-03-07 23:05:00+00:00,Washington Nationals,New York Yankees,3,0,Josiah Gray,Will Warren,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831863,2026-03-08 01:05:00+00:00,Los Angeles Dodgers,Colorado Rockies,4,6,Landon Knack,Sean Sullivan,Camelback Ranch,S,Spring Training,True
+MLB,831520,2026-03-08 17:05:00+00:00,Tampa Bay Rays,Atlanta Braves,9,8,Logan Workman,Bryce Elder,Charlotte Sports Park,S,Spring Training,True
+MLB,831522,2026-03-08 17:05:00+00:00,Minnesota Twins,Philadelphia Phillies,7,6,Simeon Woods Richardson,Alan Rangel,Lee Health Sports Complex,S,Spring Training,True
+MLB,831571,2026-03-08 17:05:00+00:00,Pittsburgh Pirates,Boston Red Sox,9,7,Carmen Mlodzinski,Jake Bennett,LECOM Park,S,Spring Training,True
+MLB,831572,2026-03-08 17:05:00+00:00,Washington Nationals,Houston Astros,3,1,Andrew Alvarez,Hunter Brown,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831628,2026-03-08 17:05:00+00:00,Baltimore Orioles,Toronto Blue Jays,0,1,Tyler Wells,Cody Ponce,Ed Smith Stadium,S,Spring Training,True
+MLB,831627,2026-03-08 17:07:00+00:00,Toronto Blue Jays,Detroit Tigers,5,0,Kevin Gausman,Bryan Sammons,TD Ballpark,S,Spring Training,True
+MLB,831467,2026-03-08 17:10:00+00:00,Miami Marlins,St. Louis Cardinals,2,2,Braxton Garrett,Andre Pallante,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831575,2026-03-08 17:10:00+00:00,New York Mets,New York Yankees,10,4,Freddy Peralta,Ryan Weathers,Clover Park,S,Spring Training,True
+MLB,831757,2026-03-08 20:05:00+00:00,Chicago Cubs,San Francisco Giants,5,9,Caleb Thielbar,Landen Roupp,Sloan Park,S,Spring Training,True
+MLB,831812,2026-03-08 20:05:00+00:00,Athletics,Los Angeles Dodgers,11,7,Jacob Lopez,Justin Wrobleski,Hohokam Stadium,S,Spring Training,True
+MLB,831813,2026-03-08 20:05:00+00:00,Texas Rangers,Los Angeles Angels,7,10,Nathan Eovaldi,Victor Mederos,Surprise Stadium,S,Spring Training,True
+MLB,831832,2026-03-08 20:05:00+00:00,Athletics,Los Angeles Angels,7,4,Aaron Civale,Jack Kochanowicz,Las Vegas Ballpark,S,Spring Training,True
+MLB,831848,2026-03-08 20:05:00+00:00,Chicago White Sox,Kansas City Royals,5,4,Jordan Hicks,Noah Cameron,Camelback Ranch,S,Spring Training,True
+MLB,831960,2026-03-08 20:05:00+00:00,Cincinnati Reds,Arizona Diamondbacks,13,4,Brady Singer,Drey Jameson,Goodyear Ballpark,S,Spring Training,True
+MLB,831740,2026-03-08 20:10:00+00:00,Milwaukee Brewers,Seattle Mariners,6,3,Kyle Harrison,George Kirby,American Family Fields of Phoenix,S,Spring Training,True
+MLB,831882,2026-03-08 20:10:00+00:00,Colorado Rockies,Cleveland Guardians,4,4,Eiberson Castellano,Joey Cantillo,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831892,2026-03-08 20:10:00+00:00,San Diego Padres,Cincinnati Reds,14,3,Logan Gillaspie,Chase Burns,Peoria Stadium,S,Spring Training,True
+MLB,831515,2026-03-09 17:05:00+00:00,Boston Red Sox,Philadelphia Phillies,5,3,Garrett Crochet,Bryse Wilson,JetBlue Park,S,Spring Training,True
+MLB,831516,2026-03-09 17:05:00+00:00,Houston Astros,St. Louis Cardinals,10,3,Cristian Javier,Richard Fitts,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831569,2026-03-09 17:05:00+00:00,Atlanta Braves,Minnesota Twins,9,8,Carlos Carrasco,Zebby Matthews,CoolToday Park,S,Spring Training,True
+MLB,831570,2026-03-09 17:05:00+00:00,St. Louis Cardinals,Baltimore Orioles,7,2,Matthew Liberatore,Trey Gibson,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831626,2026-03-09 17:05:00+00:00,Detroit Tigers,Tampa Bay Rays,4,4,Framber Valdez,Shane McClanahan,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,831816,2026-03-09 20:05:00+00:00,San Francisco Giants,Los Angeles Angels,0,2,Robbie Ray,José Soriano,Scottsdale Stadium,S,Spring Training,True
+MLB,831865,2026-03-09 20:05:00+00:00,Chicago White Sox,Colorado Rockies,12,3,Jedixson Paez,Kyle Freeland,Camelback Ranch,S,Spring Training,True
+MLB,831881,2026-03-09 20:05:00+00:00,Kansas City Royals,Cleveland Guardians,2,6,Ryan Bergert,Parker Messick,Surprise Stadium,S,Spring Training,True
+MLB,831943,2026-03-09 20:05:00+00:00,Cincinnati Reds,Athletics,7,9,Rhett Lowder,Jack Perkins,Goodyear Ballpark,S,Spring Training,True
+MLB,831725,2026-03-09 20:10:00+00:00,San Diego Padres,Texas Rangers,1,4,Randy Vásquez,Trey Supak,Peoria Stadium,S,Spring Training,True
+MLB,831748,2026-03-09 20:10:00+00:00,Arizona Diamondbacks,Seattle Mariners,2,1,Zac Gallen,Bryan Woo,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831802,2026-03-09 20:10:00+00:00,Milwaukee Brewers,Los Angeles Dodgers,3,4,Aaron Ashby,Emmet Sheehan,American Family Fields of Phoenix,S,Spring Training,True
+MLB,831468,2026-03-09 22:10:00+00:00,New York Mets,Miami Marlins,9,0,Zac Thornton,Tyler Phillips,Clover Park,S,Spring Training,True
+MLB,831517,2026-03-09 22:35:00+00:00,New York Yankees,Pittsburgh Pirates,3,5,Max Fried,José Urquidy,George M. Steinbrenner Field,S,Spring Training,True
+MLB,831573,2026-03-10 17:05:00+00:00,Philadelphia Phillies,New York Yankees,2,4,Tanner Banks,Luis Gil,BayCare Ballpark,S,Spring Training,True
+MLB,831617,2026-03-10 17:05:00+00:00,Houston Astros,Baltimore Orioles,7,6,Lance McCullers Jr.,Levi Wells,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831618,2026-03-10 17:05:00+00:00,Tampa Bay Rays,Minnesota Twins,5,6,Steven Matz,Joe Ryan,Charlotte Sports Park,S,Spring Training,True
+MLB,831625,2026-03-10 17:05:00+00:00,Boston Red Sox,Detroit Tigers,2,7,Sonny Gray,Ty Madden,JetBlue Park,S,Spring Training,True
+MLB,831513,2026-03-10 17:07:00+00:00,Toronto Blue Jays,Atlanta Braves,7,0,Dylan Cease,JR Ritchie,TD Ballpark,S,Spring Training,True
+MLB,831471,2026-03-10 17:10:00+00:00,Miami Marlins,Washington Nationals,5,7,Eury Pérez,Foster Griffin,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831473,2026-03-10 17:10:00+00:00,New York Mets,St. Louis Cardinals,6,1,David Peterson,Jared Shuster,Clover Park,S,Spring Training,True
+MLB,831758,2026-03-10 20:05:00+00:00,Cleveland Guardians,San Francisco Giants,4,5,Tanner Bibee,Carson Seymour,Goodyear Ballpark,S,Spring Training,True
+MLB,831918,2026-03-10 20:05:00+00:00,Athletics,Chicago White Sox,11,7,Jeffrey Springs,Shane Smith,Hohokam Stadium,S,Spring Training,True
+MLB,831920,2026-03-10 20:05:00+00:00,Texas Rangers,Chicago Cubs,8,3,Jacob deGrom,Cade Horton,Surprise Stadium,S,Spring Training,True
+MLB,831956,2026-03-10 20:05:00+00:00,Los Angeles Dodgers,Arizona Diamondbacks,4,1,Tyler Glasnow,Brandon Pfaadt,Camelback Ranch,S,Spring Training,True
+MLB,831771,2026-03-10 20:10:00+00:00,Los Angeles Angels,San Diego Padres,2,10,Mitch Farris,Walker Buehler,Tempe Diablo Stadium,S,Spring Training,True
+MLB,831836,2026-03-10 20:10:00+00:00,Seattle Mariners,Kansas City Royals,4,3,Cooper Criswell,Cole Ragans,Peoria Stadium,S,Spring Training,True
+MLB,831898,2026-03-10 20:10:00+00:00,Colorado Rockies,Cincinnati Reds,1,8,Ryan Feltner,Brandon Williamson,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831465,2026-03-11 17:05:00+00:00,Washington Nationals,St. Louis Cardinals,3,1,Cade Cavalli,Dustin May,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831507,2026-03-11 17:05:00+00:00,Baltimore Orioles,Pittsburgh Pirates,7,2,Kyle Bradish,Noah Davis,Ed Smith Stadium,S,Spring Training,True
+MLB,831574,2026-03-11 17:05:00+00:00,Atlanta Braves,Tampa Bay Rays,5,3,Spencer Strider,Nick Martinez,CoolToday Park,S,Spring Training,True
+MLB,831619,2026-03-11 17:05:00+00:00,Minnesota Twins,Detroit Tigers,2,1,Taj Bradley,Tanner Rainey,Lee Health Sports Complex,S,Spring Training,True
+MLB,831561,2026-03-11 17:10:00+00:00,Miami Marlins,Houston Astros,1,4,Max Meyer,Tatsuya Imai,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831762,2026-03-11 20:05:00+00:00,Kansas City Royals,San Francisco Giants,2,5,Bailey Falter,Tyler Mahle,Surprise Stadium,S,Spring Training,True
+MLB,831793,2026-03-11 20:05:00+00:00,Cincinnati Reds,Milwaukee Brewers,6,3,Andrew Abbott,Robert Gasser,Goodyear Ballpark,S,Spring Training,True
+MLB,831824,2026-03-11 20:05:00+00:00,Chicago White Sox,Los Angeles Angels,4,8,Anthony Kay,Alek Manoah,Camelback Ranch,S,Spring Training,True
+MLB,831849,2026-03-11 20:05:00+00:00,Chicago Cubs,Kansas City Royals,9,8,Colin Rea,Mitch Spence,Sloan Park,S,Spring Training,True
+MLB,831861,2026-03-11 20:10:00+00:00,Seattle Mariners,Colorado Rockies,7,11,Luis Castillo,Chase Dollander,Peoria Stadium,S,Spring Training,True
+MLB,831950,2026-03-11 20:10:00+00:00,Arizona Diamondbacks,Athletics,3,13,Ryne Nelson,Luis Morales,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831620,2026-03-11 22:35:00+00:00,New York Yankees,Toronto Blue Jays,8,1,Cam Schlittler,Eric Lauer,George M. Steinbrenner Field,S,Spring Training,True
+MLB,831472,2026-03-12 17:05:00+00:00,St. Louis Cardinals,New York Mets,3,1,Michael McGreevy,Sean Manaea,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831564,2026-03-12 17:05:00+00:00,Philadelphia Phillies,Toronto Blue Jays,8,5,Jesús Luzardo,CJ Van Eyk,BayCare Ballpark,S,Spring Training,True
+MLB,831621,2026-03-12 17:05:00+00:00,Detroit Tigers,New York Yankees,3,4,Justin Verlander,Will Warren,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,831622,2026-03-12 17:05:00+00:00,Minnesota Twins,Boston Red Sox,8,5,Bailey Ober,Connelly Early,Lee Health Sports Complex,S,Spring Training,True
+MLB,831754,2026-03-12 20:05:00+00:00,Chicago Cubs,Seattle Mariners,7,4,Edward Cabrera,Emerson Hancock,Sloan Park,S,Spring Training,True
+MLB,831936,2026-03-12 20:05:00+00:00,Texas Rangers,Athletics,7,6,Jack Leiter,J.T. Ginn,Surprise Stadium,S,Spring Training,True
+MLB,831869,2026-03-12 20:10:00+00:00,Arizona Diamondbacks,Colorado Rockies,2,13,Taylor Clarke,Sean Sullivan,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831466,2026-03-12 22:05:00+00:00,Pittsburgh Pirates,Atlanta Braves,5,2,Bubba Chandler,Grant Holmes,LECOM Park,S,Spring Training,True
+MLB,831510,2026-03-12 22:05:00+00:00,Houston Astros,Washington Nationals,2,3,Mike Burrows,Jake Irvin,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831791,2026-03-13 01:05:00+00:00,Cleveland Guardians,Milwaukee Brewers,1,0,Slade Cecconi,DL Hall,Goodyear Ballpark,S,Spring Training,True
+MLB,831894,2026-03-13 01:05:00+00:00,Los Angeles Dodgers,Cincinnati Reds,9,5,Cole Irvin,Nick Lodolo,Camelback Ranch,S,Spring Training,True
+MLB,831908,2026-03-13 01:05:00+00:00,San Francisco Giants,Chicago White Sox,3,3,Trevor McDonald,Ryan Borucki,Scottsdale Stadium,S,Spring Training,True
+MLB,831839,2026-03-13 01:10:00+00:00,San Diego Padres,Kansas City Royals,1,10,Germán Márquez,Kris Bubic,Peoria Stadium,S,Spring Training,True
+MLB,831563,2026-03-13 17:05:00+00:00,Atlanta Braves,New York Yankees,7,6,Didier Fuentes,Ryan Weathers,CoolToday Park,S,Spring Training,True
+MLB,831565,2026-03-13 17:05:00+00:00,Philadelphia Phillies,Baltimore Orioles,11,8,Andrew Painter,Cade Povich,BayCare Ballpark,S,Spring Training,True
+MLB,831616,2026-03-13 17:05:00+00:00,Boston Red Sox,Tampa Bay Rays,7,6,Johan Oviedo,Drew Rasmussen,JetBlue Park,S,Spring Training,True
+MLB,831623,2026-03-13 17:07:00+00:00,Toronto Blue Jays,Minnesota Twins,6,1,Cody Ponce,Mick Abel,TD Ballpark,S,Spring Training,True
+MLB,831778,2026-03-13 20:05:00+00:00,Athletics,San Diego Padres,9,13,Aaron Civale,Michael King,Hohokam Stadium,S,Spring Training,True
+MLB,831933,2026-03-13 20:05:00+00:00,Chicago White Sox,Chicago Cubs,4,2,Davis Martin,Riley Martin,Camelback Ranch,S,Spring Training,True
+MLB,831731,2026-03-13 20:10:00+00:00,Colorado Rockies,Texas Rangers,4,9,Jose Quintana,Jacob Latz,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831879,2026-03-13 20:10:00+00:00,Los Angeles Angels,Cleveland Guardians,5,2,Grayson Rodriguez,Joey Cantillo,Tempe Diablo Stadium,S,Spring Training,True
+MLB,831935,2026-03-13 20:10:00+00:00,Milwaukee Brewers,Athletics,4,13,Kyle Harrison,Gage Jump,American Family Fields of Phoenix,S,Spring Training,True
+MLB,831464,2026-03-13 22:05:00+00:00,Washington Nationals,New York Mets,3,8,Zack Littell,Carl Edwards Jr.,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831512,2026-03-13 22:05:00+00:00,Detroit Tigers,Pittsburgh Pirates,5,7,Casey Mize,Mike Clevinger,Publix Field at Joker Marchant Stadium,S,Spring Training,True
+MLB,831567,2026-03-13 22:05:00+00:00,St. Louis Cardinals,Houston Astros,5,4,Kyle Leahy,Kai-Wei Teng,Roger Dean Chevrolet Stadium,S,Spring Training,True
+MLB,831462,2026-03-13 22:10:00+00:00,New York Mets,Miami Marlins,0,1,Kodai Senga,Chris Paddack,Clover Park,S,Spring Training,True
+MLB,831891,2026-03-13 23:05:00+00:00,San Francisco Giants,Cincinnati Reds,1,6,Landen Roupp,Chase Burns,Scottsdale Stadium,S,Spring Training,True
+MLB,831759,2026-03-14 01:05:00+00:00,Cincinnati Reds,San Francisco Giants,1,0,Brady Singer,Carson Whisenhunt,Goodyear Ballpark,S,Spring Training,True
+MLB,831958,2026-03-14 01:05:00+00:00,Kansas City Royals,Arizona Diamondbacks,5,11,Michael Wacha,Merrill Kelly,Surprise Stadium,S,Spring Training,True
+MLB,831801,2026-03-14 01:10:00+00:00,Seattle Mariners,Los Angeles Dodgers,7,10,Kade Anderson,Landon Knack,Peoria Stadium,S,Spring Training,True
+MLB,831459,2026-03-14 16:05:00+00:00,Washington Nationals,Miami Marlins,1,4,Alex Clemmey,,CACTI Park of the Palm Beaches,S,Spring Training,False
+MLB,831514,2026-03-14 17:05:00+00:00,New York Yankees,Philadelphia Phillies,4,6,Max Fried,Bryse Wilson,George M. Steinbrenner Field,S,Spring Training,True
+MLB,831562,2026-03-14 17:05:00+00:00,Pittsburgh Pirates,Baltimore Orioles,8,6,Carmen Mlodzinski,Trevor Rogers,LECOM Park,S,Spring Training,True
+MLB,831613,2026-03-14 17:05:00+00:00,Minnesota Twins,Tampa Bay Rays,6,9,Simeon Woods Richardson,Jake Woodford,Lee Health Sports Complex,S,Spring Training,True
+MLB,831614,2026-03-14 17:07:00+00:00,Toronto Blue Jays,Detroit Tigers,1,6,Max Scherzer,Tarik Skubal,TD Ballpark,S,Spring Training,True
+MLB,831460,2026-03-14 17:10:00+00:00,Miami Marlins,St. Louis Cardinals,7,7,,Andre Pallante,Roger Dean Chevrolet Stadium,S,Spring Training,False
+MLB,831728,2026-03-14 20:05:00+00:00,Cincinnati Reds,Texas Rangers,4,3,Rhett Lowder,Austin Gomber,Goodyear Ballpark,S,Spring Training,True
+MLB,831770,2026-03-14 20:05:00+00:00,Texas Rangers,San Diego Padres,22,2,Nathan Eovaldi,Marco Gonzales,Surprise Stadium,S,Spring Training,True
+MLB,831809,2026-03-14 20:05:00+00:00,Chicago White Sox,Los Angeles Dodgers,7,2,Mike Vasil,Justin Wrobleski,Camelback Ranch,S,Spring Training,True
+MLB,831850,2026-03-14 20:05:00+00:00,Athletics,Kansas City Royals,12,1,Jacob Lopez,Ryan Bergert,Hohokam Stadium,S,Spring Training,True
+MLB,831953,2026-03-14 20:05:00+00:00,San Francisco Giants,Arizona Diamondbacks,7,8,Adrian Houser,Zac Gallen,Scottsdale Stadium,S,Spring Training,True
+MLB,831747,2026-03-14 20:10:00+00:00,Los Angeles Angels,Seattle Mariners,6,2,Walbert Ureña,Logan Gilbert,Tempe Diablo Stadium,S,Spring Training,True
+MLB,831860,2026-03-14 20:10:00+00:00,Milwaukee Brewers,Colorado Rockies,8,4,Jacob Misiorowski,Zach Agnos,American Family Fields of Phoenix,S,Spring Training,True
+MLB,831877,2026-03-14 20:10:00+00:00,San Diego Padres,Cleveland Guardians,8,5,Nick Pivetta,Logan Allen,Peoria Stadium,S,Spring Training,True
+MLB,831928,2026-03-14 20:10:00+00:00,Colorado Rockies,Chicago Cubs,4,3,Kyle Freeland,Ben Brown,Salt River Fields at Talking Stick,S,Spring Training,True
+MLB,831508,2026-03-14 22:05:00+00:00,Houston Astros,New York Mets,8,2,Ryan Weiss,Freddy Peralta,CACTI Park of the Palm Beaches,S,Spring Training,True
+MLB,831566,2026-03-14 22:05:00+00:00,Atlanta Braves,Boston Red Sox,10,1,Bryce Elder,Brayan Bello,CoolToday Park,S,Spring Training,True
