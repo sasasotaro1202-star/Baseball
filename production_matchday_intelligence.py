@@ -928,6 +928,7 @@ def main() -> int:
                     lineup_state=g.get("lineup_state", "UNKNOWN"),
                     weather_state=g.get("weather_state", "UNKNOWN"),
                     roster_events=g.get("roster_events", []),
+                    rest_travel=g.get("rest_travel", {}),
                 )
                 if score_fitted is not None:
                     lam_h, lam_a = bt.predict_scores(score_fitted, fx, "NPB")
