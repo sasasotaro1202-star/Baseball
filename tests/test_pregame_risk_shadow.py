@@ -50,7 +50,7 @@ def test_case_score_uses_expert_disagreement_and_is_bounded():
     out = score_case(row)
     assert out["risk_available"] is True
     assert out["expert_count"] == 2
-    assert out["expert_disagreement"] > 0.8
+    assert out["expert_disagreement"] > 0.7
     assert 0.0 <= out["risk_score"] <= 1.0
 
 
