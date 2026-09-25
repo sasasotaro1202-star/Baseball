@@ -4,20 +4,23 @@ on:
   push:
     paths:
       - '.github/workflows/baseball_recovery.yml'
+      - '.github/workflows/baseball-parallel-source-acquisition.yml'
       - '.github/workflows/baseball-data-acquisition.yml'
-      - '.github/workflows/baseball-mlb-competition.yml'
       - '.github/workflows/baseball_production.yml'
       - '.github/workflows/baseball_matchday.yml'
       - '.github/workflows/baseball_research.yml'
+      - '.github/workflows/baseball-mlb-competition.yml'
+      - '.github/workflows/baseball_game_type_ablation.yml'
       - '.github/workflows/validate-code.yml'
   workflow_run:
     workflows:
       - Baseball Production Backtest
       - Baseball Mac OOS Compute
       - Baseball Autonomous Research
-      - Baseball NPB Source Acquisition
-      - Baseball MLB + Competition Research
+      - Baseball Source Acquisition
+      - Baseball Parallel NPB Source Acquisition
       - Baseball Matchday Intelligence
+      - Baseball MLB + Competition Research
       - Baseball NPB Game-Type OOS Ablation
       - Validate Code Syntax
     types: [completed]
@@ -35,209 +38,31 @@ concurrency:
 
 jobs:
   watchdog:
-    # Successful workflow_run events do not require a second recovery job.
-    # Failures/cancellations stay event-driven; the 15-minute schedule remains
-    # the round-the-clock reconciliation heartbeat.
     if: ${{ github.event_name != 'workflow_run' || contains(fromJson('["failure","cancelled","timed_out","action_required"]'), github.event.workflow_run.conclusion) }}
     name: Autonomous pipeline watchdog
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - name: Checkout latest main
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: main
+          persist-credentials: false
       - name: Reconcile, cancel stuck runs and recover the autonomous pipeline
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_API_URL: ${{ github.api_url }}
-        shell: bash
         run: |
-          set -uo pipefail
+          set -euo pipefail
           mkdir -p recovery_diagnostics
-          python3 - <<'PY'
-          import json, os, time, urllib.error, urllib.request, traceback
-          from datetime import datetime, timezone
-          from pathlib import Path
-
-          repo=os.environ['GITHUB_REPOSITORY']; token=os.environ['GH_TOKEN']; api=os.environ.get('GITHUB_API_URL','https://api.github.com').rstrip('/')
-          workflows={'validation':'validate-code.yml','production':'baseball_production.yml','acquisition':'baseball-data-acquisition.yml','mlb_competition':'baseball-mlb-competition.yml','mac':'baseball_mac_compute.yml','research':'baseball_research.yml','matchday':'baseball_matchday.yml','game_type_ablation':'baseball_game_type_ablation.yml'}
-          STALE_MINUTES={'validation':25,'production':155,'acquisition':165,'mlb_competition':165,'mac':180,'research':180,'matchday':45,'game_type_ablation':180}
-          QUEUED_STALE_MINUTES=20
-          ACTIVE_STATES={'queued','in_progress','waiting','pending','requested'}
-          QUEUED_STATES={'queued','waiting','pending','requested'}
-          RECENT_DISPATCH_GUARD_MINUTES=5
-          RETRYABLE={408,409,425,429,500,502,503,504}
-          errors=[]; stuck=[]; action='none'; data={}; latest={}
-
-          def request(method,path,payload=None,attempts=5):
-              body=None if payload is None else json.dumps(payload).encode('utf-8')
-              last=None
-              for attempt in range(1,attempts+1):
-                  req=urllib.request.Request(api+path,data=body,method=method,headers={
-                      'Authorization':f'Bearer {token}','Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','User-Agent':'Baseball-Autonomous-Recovery','Content-Type':'application/json'})
-                  try:
-                      with urllib.request.urlopen(req,timeout=30) as resp:
-                          raw=resp.read(); return json.loads(raw.decode('utf-8')) if raw else {}
-                  except urllib.error.HTTPError as exc:
-                      detail=exc.read().decode('utf-8',errors='replace')
-                      last=RuntimeError(f'GitHub API {method} {path} failed: HTTP {exc.code}: {detail[:1200]}')
-                      if exc.code not in RETRYABLE: raise last
-                  except (urllib.error.URLError, TimeoutError, OSError) as exc:
-                      last=exc
-                  if attempt<attempts: time.sleep(min(20,2**(attempt-1)))
-              raise last
-
-          now=datetime.now(timezone.utc)
-          def runs(filename): return request('GET',f'/repos/{repo}/actions/workflows/{filename}/runs?per_page=100').get('workflow_runs',[])
-          def main_sha():
-              payload=request('GET',f'/repos/{repo}/git/ref/heads/main')
-              return str(payload.get('object',{}).get('sha') or '')
-          def active(row): return bool(row) and row.get('status') in ACTIVE_STATES
-          def success(row): return bool(row) and row.get('conclusion')=='success'
-          def npb_complete():
-              try:
-                  payload=request('GET',f'/repos/{repo}/contents/data/checkpoints/npb_collection_status.json?ref=main')
-                  import base64
-                  raw=base64.b64decode(payload.get('content','')).decode('utf-8')
-                  state=json.loads(raw)
-                  return bool(state.get('complete',False)), int(state.get('aggregate_games') or 0)
-              except Exception as exc:
-                  print(f'[WATCHDOG] NPB readiness lookup deferred: {exc}')
-                  return False, 0
-          def mlb_complete():
-              try:
-                  payload=request('GET',f'/repos/{repo}/contents/data/checkpoints/mlb_collection_status.json?ref=main')
-                  import base64
-                  raw=base64.b64decode(payload.get('content','')).decode('utf-8')
-                  state=json.loads(raw)
-                  return bool(state.get('complete',False)), int(state.get('aggregate_games') or 0)
-              except Exception as exc:
-                  print(f'[WATCHDOG] MLB readiness lookup deferred: {exc}')
-                  return False, 0
-          def ts(row):
-              value=(row or {}).get('created_at') or (row or {}).get('updated_at')
-              return datetime.fromisoformat(value.replace('Z','+00:00')) if value else datetime.min.replace(tzinfo=timezone.utc)
-          def age_minutes(row): return (now-ts(row)).total_seconds()/60.0 if row else 0.0
-          def recently_created(rows, minutes=RECENT_DISPATCH_GUARD_MINUTES):
-              return any(0.0 <= age_minutes(r) < minutes for r in rows)
-
-          try:
-              data={k:runs(v) for k,v in workflows.items()}
-              latest={k:(rows[0] if rows else None) for k,rows in data.items()}
-              active_runs={k:[r for r in rows if active(r)] for k,rows in data.items()}
-              for label,rows in active_runs.items():
-                  for row in rows:
-                      limit=QUEUED_STALE_MINUTES if row.get('status') in QUEUED_STATES else STALE_MINUTES[label]
-                      if age_minutes(row)>limit:
-                          run_id=row['id']; print(f'[WATCHDOG] STUCK {label} run={run_id} status={row.get("status")} age_min={age_minutes(row):.1f} limit={limit}; cancelling')
-                          try:
-                              request('POST',f'/repos/{repo}/actions/runs/{run_id}/cancel'); stuck.append(run_id)
-                          except Exception as exc:
-                              errors.append(f'cancel {run_id}: {exc}'); print(f'[WATCHDOG] cancel failed for {run_id}: {exc}')
-              if stuck:
-                  action='cancel-stuck'
-              else:
-                  validation=latest['validation']; prod=latest['production']; mac=latest['mac']; research=latest['research']; acquisition=latest['acquisition']; mlb_competition=latest['mlb_competition']; matchday=latest['matchday']; game_type_ablation=latest['game_type_ablation']
-                  npb_ready, npb_games = npb_complete()
-                  mlb_ready, mlb_games = mlb_complete()
-                  print(f'[WATCHDOG] NPB readiness complete={npb_ready} aggregate_games={npb_games}')
-                  print(f'[WATCHDOG] MLB readiness complete={mlb_ready} aggregate_games={mlb_games}')
-                  def dispatch(label,workflow):
-                      try:
-                          print(f'[WATCHDOG] dispatch {label}: {workflow}')
-                          request('POST',f'/repos/{repo}/actions/workflows/{workflow}/dispatches',{'ref':'main'})
-                          dispatched.append(label)
-                      except Exception as exc:
-                          errors.append(f'dispatch {workflow}: {exc}'); print(f'[WATCHDOG] dispatch failed for {workflow}: {exc}')
-                  current_main_sha = main_sha()
-                  validation_current = bool(validation) and str(validation.get('head_sha') or '') == current_main_sha and success(validation)
-                  print(f'[WATCHDOG] current_main_sha={current_main_sha} validation_sha={validation.get("head_sha") if validation else ""} validation_current={validation_current}')
-                  # Dispatch independent lanes in the same reconciliation cycle.
-                  # Dependency/readiness gates are preserved; unrelated work is not serialized.
-                  dispatched = []
-
-                  if not validation_current and not recently_created(data.get('validation',[])):
-                      dispatch('validation',workflows['validation']); dispatched.append('validation')
-
-                  if not recently_created(data.get('matchday',[])) and not any(
-                      str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('matchday',[])
-                  ):
-                      dispatch('matchday',workflows['matchday']); dispatched.append('matchday')
-
-                  if ((
-                      mlb_competition is None
-                      or mlb_competition.get('conclusion') in {'failure','cancelled','timed_out'}
-                      or age_minutes(mlb_competition) > STALE_MINUTES['mlb_competition']
-                  ) and not any(
-                      str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('mlb_competition',[])
-                  ) and not recently_created(data.get('mlb_competition',[])):
-                      dispatch('mlb-competition-recovery',workflows['mlb_competition']); dispatched.append('mlb_competition')
-
-                  if (not npb_ready) and not any(
-                      str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('acquisition',[])
-                  ) and not recently_created(data.get('acquisition',[])):
-                      dispatch('baseball-source-acquisition',workflows['acquisition']); dispatched.append('acquisition')
-
-                  if validation_current and mlb_ready and (
-                      not success(prod) or ts(acquisition) > ts(prod)
-                  ) and not any(
-                      str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('production',[])
-                  ) and not recently_created(data.get('production',[])):
-                      dispatch('production-recovery',workflows['production']); dispatched.append('production')
-
-                  if npb_ready and mlb_ready and validation_current and (
-                      not success(mac) or ts(mac) < ts(prod)
-                  ) and not any(
-                      str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('mac',[])
-                  ) and not recently_created(data.get('mac',[])):
-                      dispatch('mac-oos',workflows['mac']); dispatched.append('mac')
-
-                  if npb_ready and mlb_ready and validation_current and (
-                      not success(research) or ts(research) < ts(prod)
-                  ) and not any(
-                      str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('research',[])
-                  ) and not recently_created(data.get('research',[])):
-                      dispatch('autonomous-research',workflows['research']); dispatched.append('research')
-
-                  if npb_ready and mlb_ready and validation_current and (
-                      game_type_ablation is None
-                      or game_type_ablation.get('conclusion') in {'failure','cancelled','timed_out'}
-                      or ts(game_type_ablation) < ts(acquisition)
-                  ) and not any(
-                      str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('game_type_ablation',[])
-                  ) and not recently_created(data.get('game_type_ablation',[])):
-                      dispatch('game-type-ablation',workflows['game_type_ablation']); dispatched.append('game_type_ablation')
-
-                  if not dispatched:
-                      action='active-no-dispatch'
-                  else:
-                      action='dispatch-parallel:' + ','.join(dispatched)
-
-
-          except Exception as exc:
-              errors.append(f'watchdog fatal: {exc}')
-              print('[WATCHDOG] degraded:',exc); traceback.print_exc()
-
-          diagnostic={'version':'baseball-recovery-v5','time':datetime.now(timezone.utc).isoformat(),'status':'degraded' if errors else 'ok','action':action,'errors':errors,'active_runs':{k:[r['id'] for r in v] for k,v in active_runs.items()} if 'active_runs' in locals() else {},'cancelled_stuck_runs':stuck,'latest':{k:({'id':r.get('id'),'status':r.get('status'),'conclusion':r.get('conclusion'),'created_at':r.get('created_at')} if r else None) for k,r in latest.items()}}
-          Path('recovery_diagnostics/latest.json').write_text(json.dumps(diagnostic,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-          Path('recovery_diagnostics/recent_runs.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-          print(json.dumps(diagnostic,ensure_ascii=False,indent=2))
-          if errors: raise SystemExit(1)
-          PY
-      - name: Publish recovery diagnostics without repository commits
+          python3 -m py_compile monitoring/recovery_controller.py
+          python3 monitoring/recovery_controller.py
+      - name: Publish recovery diagnostics
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: baseball-recovery-${{ github.run_id }}
           path: recovery_diagnostics/
           if-no-files-found: error
           retention-days: 30
-
-      - name: Recovery policy summary
-        if: always()
-        run: |
-          echo '[RECOVERY] Hosted watchdog runs independently of the OOS compute worker.'
-          echo '[RECOVERY] Independent production, acquisition, competition, research and Matchday lanes are reconciled concurrently.'
-          echo '[RECOVERY] Failed/cancelled/stuck stages are recovered without duplicating active work.'
-          echo '[RECOVERY] Active-run detection scans the full recent run window, not only the newest run.'
-          echo '[RECOVERY] Recovery reacts to completed workflow events and also reconciles every 15 minutes.'
-          echo '[RECOVERY] Recovery diagnostics are published as 30-day artifacts, not repository commits.'
-          echo '[RECOVERY] Queued/runner-blocked runs are treated as stuck after 20 minutes; active computation gets a generous timeout margin.'
