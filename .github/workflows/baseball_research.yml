@@ -2,6 +2,9 @@ name: Baseball Autonomous Research
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'control/baseball-research-trigger.txt'
   schedule:
     - cron: "47 */6 * * *"
 
