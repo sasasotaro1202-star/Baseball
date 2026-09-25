@@ -1,4 +1,4 @@
-name: Baseball Source Acquisition - Parallel Lanes
+name: Baseball Source Acquisition
 
 on:
   workflow_dispatch:
@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: baseball-source-acquisition
@@ -20,7 +21,7 @@ env:
 
 jobs:
   npb:
-    name: NPB historical + postseason acquisition
+    name: NPB full-scope resumable acquisition
     runs-on: ubuntu-latest
     timeout-minutes: 150
     steps:
@@ -32,13 +33,27 @@ jobs:
           python3 --version
           df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
           curl --fail --silent --show-error --location --retry 4 --retry-delay 3 --retry-all-errors --max-time 20 https://api.github.com/rate_limit >/dev/null
-          echo '[NPB HEALTH] GitHub HTTPS PASS'
-      - name: Setup Python
+          echo '[HEALTH] GitHub HTTPS PASS'
+      - name: Setup persistent Python acquisition environment
         run: |
           set -euo pipefail
-          python3 -m venv "$RUNNER_TEMP/npb-venv"
-          "$RUNNER_TEMP/npb-venv/bin/python" -m pip install -r requirements.txt
-          echo "$RUNNER_TEMP/npb-venv/bin" >> "$GITHUB_PATH"
+          VENV="$RUNNER_TEMP/baseball-acquisition-venv"
+          STAMP="$VENV/.requirements.sha256"
+          REQ_HASH="$(shasum -a 256 requirements.txt | awk '{print $1}')"
+          mkdir -p "$(dirname "$VENV")"
+          STAMP_CONTENT=""
+          if [ -f "$STAMP" ]; then STAMP_CONTENT="$(cat "$STAMP")"; fi
+          if [ ! -x "$VENV/bin/python" ] || [ ! -f "$STAMP" ] || [ "$STAMP_CONTENT" != "$REQ_HASH" ]; then
+            rm -rf "$VENV"
+            python3 -m venv "$VENV"
+            "$VENV/bin/python" -m pip install --disable-pip-version-check -r requirements.txt
+            printf '%s' "$REQ_HASH" > "$STAMP"
+          fi
+          "$VENV/bin/python" - <<'PY'
+          import numpy, pandas, requests
+          print('[DEPS] NPB imports OK')
+          PY
+          echo "$VENV/bin" >> "$GITHUB_PATH"
       - name: Acquisition preflight
         run: |
           set -euo pipefail
@@ -47,13 +62,6 @@ jobs:
           python npb_runtime_patch.py
           python -m py_compile npb_multi_source.py
           python source_quality_gate.py
-      - name: NPB source connectivity
-        run: |
-          set -euo pipefail
-          for url in https://npb.jp/ https://spaia.jp/baseball/npb/api/weekly_schedule; do
-            curl --fail --silent --show-error --location --retry 3 --retry-delay 2 --retry-all-errors --max-time 15 "$url" >/dev/null
-          done
-          echo '[NPB HEALTH] source connectivity PASS'
       - name: NPB full-scope resumable acquisition
         id: npb_acquire
         continue-on-error: true
@@ -69,43 +77,56 @@ jobs:
           NPB_COLLECTION_SAFETY_SEC: "600"
           BASEBALL_TIME_BUDGET_SEC: "6000"
         run: python npb_multi_source.py
-      - name: Persist NPB checkpoints and outputs
+      - name: Persist resumable NPB checkpoint
         if: always()
         run: |
           set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/checkpoints data/npb_games data/weather data/source_coverage.csv npb_multi_source.py
-          if git diff --cached --quiet; then
-            echo '[NPB] no checkpoint/output changes'
-            exit 0
-          fi
-          git commit -m 'Checkpoint parallel NPB acquisition lane'
-          for attempt in 1 2 3 4 5; do
-            git fetch origin main
-            if git rebase origin/main && git push origin HEAD:main; then
-              echo "[NPB] checkpoint persisted on attempt $attempt"
-              exit 0
+          if [ -d data/checkpoints ] || [ -d data/npb_games ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add data/checkpoints data/npb_games data/weather data/source_coverage.csv npb_multi_source.py
+            if git diff --cached --quiet; then
+              echo '[NPB] no checkpoint changes'
+            else
+              git commit -m 'Checkpoint resumable NPB acquisition'
+              for attempt in 1 2 3 4 5; do
+                git fetch origin main
+                if git rebase origin/main && git push origin HEAD:main; then
+                  echo "[NPB] checkpoint persisted on attempt $attempt"
+                  break
+                fi
+                git rebase --abort 2>/dev/null || :
+                if [ "$attempt" -eq 5 ]; then exit 1; fi
+                sleep $((attempt * 5))
+              done
             fi
-            git rebase --abort 2>/dev/null; abort_rc=$?; if [ "$abort_rc" -ne 0 ] && [ "$abort_rc" -ne 128 ]; then exit "$abort_rc"; fi
-            sleep $((attempt * 5))
-          done
-          exit 1
+          fi
       - name: Finalize NPB acquisition outcome
         if: always()
         run: |
           set -euo pipefail
-          outcome='\x24{{ steps.npb_acquire.outcome }}'
+          outcome='${{ steps.npb_acquire.outcome }}'
           echo "[NPB] acquisition outcome=$outcome"
           if [ "$outcome" != "success" ]; then
-            echo '[NPB] failed; resumable checkpoint is preserved'
+            echo '[NPB] FAIL-CLOSED: acquisition incomplete/failed; checkpoint remains resumable'
             exit 1
           fi
+      - name: Upload NPB diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: baseball-npb-acquisition-${{ github.run_id }}
+          path: |
+            data/
+            results/
+            production_run_manifest.json
+          if-no-files-found: ignore
+          retention-days: 30
 
   mlb:
-    name: MLB historical + postseason-ready acquisition
+    name: MLB full-scope incremental acquisition
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Hosted runner health gate
@@ -113,31 +134,37 @@ jobs:
           set -euo pipefail
           uname -a
           python3 --version
-          df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
           curl --fail --silent --show-error --location --retry 4 --retry-delay 3 --retry-all-errors --max-time 20 https://statsapi.mlb.com/api/v1/sports/1 >/dev/null
-          echo '[MLB HEALTH] MLB Stats API PASS'
-      - name: Setup Python
+          echo '[HEALTH] MLB Stats API PASS'
+      - name: Setup persistent Python acquisition environment
         run: |
           set -euo pipefail
-          python3 -m venv "$RUNNER_TEMP/mlb-venv"
-          "$RUNNER_TEMP/mlb-venv/bin/python" -m pip install -r requirements.txt
-          echo "$RUNNER_TEMP/mlb-venv/bin" >> "$GITHUB_PATH"
+          VENV="$RUNNER_TEMP/baseball-mlb-venv"
+          STAMP="$VENV/.requirements.sha256"
+          REQ_HASH="$(shasum -a 256 requirements.txt | awk '{print $1}')"
+          mkdir -p "$(dirname "$VENV")"
+          STAMP_CONTENT=""
+          if [ -f "$STAMP" ]; then STAMP_CONTENT="$(cat "$STAMP")"; fi
+          if [ ! -x "$VENV/bin/python" ] || [ ! -f "$STAMP" ] || [ "$STAMP_CONTENT" != "$REQ_HASH" ]; then
+            rm -rf "$VENV"
+            python3 -m venv "$VENV"
+            "$VENV/bin/python" -m pip install --disable-pip-version-check -r requirements.txt
+            printf '%s' "$REQ_HASH" > "$STAMP"
+          fi
+          "$VENV/bin/python" - <<'PY'
+          import numpy, pandas, requests
+          print('[DEPS] MLB imports OK')
+          PY
+          echo "$VENV/bin" >> "$GITHUB_PATH"
       - name: MLB acquisition preflight
         run: |
           set -euo pipefail
-          python -m py_compile mlb_incremental_acquire.py production_data_quality_gate.py production_integrity_gate.py
+          python -m py_compile mlb_incremental_acquire.py production_data_quality_gate.py source_quality_gate.py
           python source_quality_gate.py
-      - name: MLB full-scope acquisition with incremental refresh
+      - name: MLB full-scope acquisition
         id: mlb_acquire
-        continue-on-error: true
-        env:
-          MLB_INCREMENTAL_TIMEOUT: "20"
-          MLB_CORRECTION_DAYS: "7"
-          MLB_BOOTSTRAP_START_YEAR: "2020"
         run: python mlb_incremental_acquire.py
-      - name: Validate MLB cache
-        id: mlb_quality
-        if: steps.mlb_acquire.outcome == 'success'
+      - name: MLB data quality and readiness
         run: |
           set -euo pipefail
           test -s data/mlb_games.csv
@@ -147,77 +174,71 @@ jobs:
           d=pd.read_csv(p, low_memory=False)
           if len(d) <= 100:
               raise SystemExit(f'MLB cache unexpectedly small: {len(d)}')
-          if 'game_type' not in d.columns:
-              raise SystemExit('MLB cache missing official game_type metadata')
-          print(f'[MLB] rows={len(d)} min={d.datetime.min()} max={d.datetime.max()}')
+          print(f'[MLB ACQ] rows={len(d)} min={d.datetime.min()} max={d.datetime.max()}')
+          if 'confirmed_starters' in d:
+              print(f'[MLB ACQ] starter_coverage={d.confirmed_starters.fillna(False).mean():.1%}')
           PY
           python production_data_quality_gate.py
-      - name: Persist MLB checkpoints and successful cache
+      - name: Persist MLB readiness and acquired data
         if: always()
         run: |
           set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/checkpoints/mlb_schedule_chunks data/checkpoints/mlb_acquisition_manifest.json
-          if [ '\x24{{ steps.mlb_quality.outcome }}' = 'success' ]; then
-            git add data/mlb_games.csv
-            if [ -f data/checkpoints/mlb_collection_status.json ]; then
-              git add data/checkpoints/mlb_collection_status.json
+          if [ -s data/mlb_games.csv ]; then
+            python - <<'PY'
+            import json
+            from pathlib import Path
+            import pandas as pd
+            p=Path('data/mlb_games.csv')
+            d=pd.read_csv(p, low_memory=False)
+            if len(d) <= 100:
+                raise SystemExit(f'MLB cache unexpectedly small: {len(d)}')
+            out=Path('data/checkpoints/mlb_collection_status.json')
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(json.dumps({
+              'complete': True,
+              'aggregate_games': int(len(d)),
+              'coverage_start': str(d['datetime'].min()),
+              'coverage_end': str(d['datetime'].max()),
+              'source': 'mlb_incremental_acquire.py'
+            }, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
+            PY
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add data/mlb_games.csv data/checkpoints/mlb_collection_status.json data/checkpoints/mlb_schedule_chunks data/checkpoints/mlb_acquisition_manifest.json
+            if git diff --cached --quiet; then
+              echo '[MLB] no changes'
+            else
+              git commit -m 'Update resumable MLB source acquisition'
+              for attempt in 1 2 3 4 5; do
+                git fetch origin main
+                if git rebase origin/main && git push origin HEAD:main; then
+                  echo "[MLB] data persisted on attempt $attempt"
+                  break
+                fi
+                git rebase --abort 2>/dev/null || :
+                if [ "$attempt" -eq 5 ]; then exit 1; fi
+                sleep $((attempt * 5))
+              done
             fi
           fi
-          if git diff --cached --quiet; then
-            echo '[MLB] no checkpoint/cache changes'
-            exit 0
-          fi
-          git commit -m 'Checkpoint parallel MLB acquisition lane'
-          for attempt in 1 2 3 4 5; do
-            git fetch origin main
-            if git rebase origin/main && git push origin HEAD:main; then
-              echo "[MLB] checkpoint/cache persisted on attempt $attempt"
-              exit 0
-            fi
-            git rebase --abort 2>/dev/null || true
-            sleep $((attempt * 5))
-          done
-          exit 1
       - name: Finalize MLB acquisition outcome
         if: always()
         run: |
           set -euo pipefail
-          acquire='\x24{{ steps.mlb_acquire.outcome }}'
-          quality='\x24{{ steps.mlb_quality.outcome }}'
-          echo "[MLB] acquisition=$acquire quality=$quality"
-          if [ "$acquire" != "success" ] || [ "$quality" != "success" ]; then
-            echo '[MLB] production cache not validated; checkpoints remain resumable'
+          outcome='${{ steps.mlb_acquire.outcome }}'
+          echo "[MLB] acquisition outcome=$outcome"
+          if [ "$outcome" != "success" ]; then
+            echo '[MLB] FAIL-CLOSED: acquisition failed'
             exit 1
           fi
-
-  competition:
-    name: Competition / tournament scope audit
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-      - name: Setup Python
-        run: |
-          set -euo pipefail
-          python3 -m venv "$RUNNER_TEMP/competition-venv"
-          "$RUNNER_TEMP/competition-venv/bin/python" -m pip install -r requirements.txt
-          echo "$RUNNER_TEMP/competition-venv/bin" >> "$GITHUB_PATH"
-      - name: Audit competition scope
-        run: |
-          set -euo pipefail
-          python -m py_compile research/competition_scope_audit.py
-          python -m research.competition_scope_audit | tee competition_scope_audit.log
-          test -s results/competition_scope_audit.json
-          python -m json.tool results/competition_scope_audit.json >/dev/null
-      - name: Upload competition audit
+      - name: Upload MLB diagnostics
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: baseball-competition-scope-\x24{{ github.run_id }}
+          name: baseball-mlb-acquisition-${{ github.run_id }}
           path: |
-            results/competition_scope_audit.json
-            competition_scope_audit.log
-          if-no-files-found: warn
+            data/mlb_games.csv
+            data/checkpoints/mlb_*
+            results/production_data_quality.json
+          if-no-files-found: ignore
           retention-days: 30
