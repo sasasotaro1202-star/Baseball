@@ -1,2 +1,3 @@
 manual parallel-lane trigger
 2026-09-25T09:00:00+00:00 MLB + competition lane
+2026-09-25T09:05:00+00:00 retry after artifact/quality-gate fixes
