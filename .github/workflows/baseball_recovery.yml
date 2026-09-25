@@ -34,11 +34,13 @@ permissions:
 
 concurrency:
   group: baseball-autonomous-recovery
-  cancel-in-progress: false
+  # Only the newest watchdog should remain queued/running. Older watchdogs
+  # are redundant and can otherwise amplify workflow churn.
+  cancel-in-progress: true
 
 jobs:
   watchdog:
-    if: ${{ github.event_name != 'workflow_run' || contains(fromJson('["failure","cancelled","timed_out","action_required"]'), github.event.workflow_run.conclusion) }}
+    if: ${{ github.event_name != 'workflow_run' || contains(fromJson('["failure","timed_out","action_required"]'), github.event.workflow_run.conclusion) }}
     name: Autonomous pipeline watchdog
     runs-on: ubuntu-latest
     timeout-minutes: 15
