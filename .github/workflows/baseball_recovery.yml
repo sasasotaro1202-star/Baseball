@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/baseball_recovery.yml'
       - '.github/workflows/baseball-data-acquisition.yml'
+      - '.github/workflows/baseball-mlb-competition.yml'
       - '.github/workflows/baseball_production.yml'
       - '.github/workflows/baseball_matchday.yml'
       - '.github/workflows/baseball_research.yml'
@@ -15,6 +16,7 @@ on:
       - Baseball Mac OOS Compute
       - Baseball Autonomous Research
       - Baseball Source Acquisition
+      - Baseball MLB + Competition Research
       - Baseball Matchday Intelligence
       - Baseball NPB Game-Type OOS Ablation
       - Validate Code Syntax
@@ -56,8 +58,8 @@ jobs:
           from pathlib import Path
 
           repo=os.environ['GITHUB_REPOSITORY']; token=os.environ['GH_TOKEN']; api=os.environ.get('GITHUB_API_URL','https://api.github.com').rstrip('/')
-          workflows={'validation':'validate-code.yml','production':'baseball_production.yml','acquisition':'baseball-data-acquisition.yml','mac':'baseball_mac_compute.yml','research':'baseball_research.yml','matchday':'baseball_matchday.yml','game_type_ablation':'baseball_game_type_ablation.yml'}
-          STALE_MINUTES={'validation':25,'production':155,'acquisition':165,'mac':180,'research':180,'matchday':45,'game_type_ablation':180}
+          workflows={'validation':'validate-code.yml','production':'baseball_production.yml','acquisition':'baseball-data-acquisition.yml','mlb_competition':'baseball-mlb-competition.yml','mac':'baseball_mac_compute.yml','research':'baseball_research.yml','matchday':'baseball_matchday.yml','game_type_ablation':'baseball_game_type_ablation.yml'}
+          STALE_MINUTES={'validation':25,'production':155,'acquisition':165,'mlb_competition':165,'mac':180,'research':180,'matchday':45,'game_type_ablation':180}
           QUEUED_STALE_MINUTES=20
           ACTIVE_STATES={'queued','in_progress','waiting','pending','requested'}
           QUEUED_STATES={'queued','waiting','pending','requested'}
@@ -133,7 +135,7 @@ jobs:
               if stuck:
                   action='cancel-stuck'
               else:
-                  validation=latest['validation']; prod=latest['production']; mac=latest['mac']; research=latest['research']; acquisition=latest['acquisition']; matchday=latest['matchday']; game_type_ablation=latest['game_type_ablation']
+                  validation=latest['validation']; prod=latest['production']; mac=latest['mac']; research=latest['research']; acquisition=latest['acquisition']; mlb_competition=latest['mlb_competition']; matchday=latest['matchday']; game_type_ablation=latest['game_type_ablation']
                   npb_ready, npb_games = npb_complete()
                   mlb_ready, mlb_games = mlb_complete()
                   print(f'[WATCHDOG] NPB readiness complete={npb_ready} aggregate_games={npb_games}')
@@ -159,6 +161,11 @@ jobs:
                       str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('matchday',[])
                   ):
                       dispatch('matchday',workflows['matchday']); dispatched.append('matchday')
+
+                  if (mlb_competition and (mlb_competition.get('conclusion') in {'failure','cancelled','timed_out'} or age_minutes(mlb_competition) > STALE_MINUTES['mlb_competition']) and not any(
+                      str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('mlb_competition',[])
+                  ) and not recently_created(data.get('mlb_competition',[])):
+                      dispatch('mlb-competition-recovery',workflows['mlb_competition']); dispatched.append('mlb_competition')
 
                   if (not npb_ready or not mlb_ready) and not any(
                       str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('acquisition',[])
