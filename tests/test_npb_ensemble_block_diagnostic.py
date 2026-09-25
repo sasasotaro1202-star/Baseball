@@ -37,6 +37,8 @@ def test_diagnose_npb_ensemble_block_2339() -> None:
                 failures[name] = "no validation losses"
         except Exception as exc:
             failures[name] = f"{type(exc).__name__}: {exc}"
-    print("NPB_BLOCK_2339_MODEL_SUCCESSES", successes)
-    print("NPB_BLOCK_2339_MODEL_FAILURES", failures)
-    assert successes, f"all candidate models failed: {failures}"
+    # Deliberately fail in this diagnostic-only branch so pytest exposes the
+    # model-level result in the CI failure message. This branch is never merged.
+    raise AssertionError(
+        f"NPB_BLOCK_2339_DIAGNOSTIC successes={successes} failures={failures}"
+    )
