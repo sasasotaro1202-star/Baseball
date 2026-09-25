@@ -29,6 +29,7 @@ TIMEOUT = 25
 ASIAN_GAMES = {
     2014: "https://www.japan-baseball.jp/en/team/amateur/2014/asiangames/overview.html",
     2018: "https://www.japan-baseball.jp/en/team/amateur/2018/asiangames/overview.html",
+    2022: "https://www.japan-baseball.jp/en/team/amateur/2022/asiangames/overview.html",
     2023: "https://www.japan-baseball.jp/en/team/amateur/2023/asiangames/overview.html",
     2026: "https://www.japan-baseball.jp/en/team/amateur/2026/asiangames/overview.html",
 }
