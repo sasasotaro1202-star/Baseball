@@ -1,6 +1,9 @@
 name: Baseball MLB Game-Type OOS Ablation
 
 on:
+  push:
+    branches:
+      - research/mlb-international-game-types
   workflow_dispatch:
   schedule:
     - cron: "47 14 * * 6"
