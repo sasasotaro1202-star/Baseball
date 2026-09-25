@@ -113,3 +113,47 @@ def test_mlb_future_prediction_keeps_probable_starters_on_hold(tmp_path):
     out = bt.build_future_mlb_predictions(schedule)
     assert out.loc[0, "status"] == "保留"
     assert out.loc[0, "reason"] == "両先発の公式確認が揃っていない"
+
+
+def test_asian_games_collector_parses_official_split_score_cells():
+    from research.international_asian_games_collector import parse_overview_html
+
+    fixture = b"""
+    <html><body>
+      <h3>Opening Round</h3>
+      <table>
+        <tr><th>Date and time</th><th>Venue</th><th>Home - Visitor</th></tr>
+        <tr><td>9/21/2026 12:00</td><td>Toyohashi</td><td>Palestine</td><td>0</td><td>-</td><td>12</td><td>Philippines</td></tr>
+        <tr><td>9/26/2026 12:00</td><td>Okazaki</td><td>Thailand - Palestine</td></tr>
+      </table>
+    </body></html>
+    """
+    out = parse_overview_html(fixture, 2026, "https://www.japan-baseball.jp/test", "2026-09-25T00:00:00+00:00")
+    assert len(out) == 2
+    final = out[out["status"] == "FINAL"].iloc[0]
+    assert final["home"] == "Palestine"
+    assert final["away"] == "Philippines"
+    assert int(final["home_score"]) == 0
+    assert int(final["away_score"]) == 12
+    scheduled = out[out["status"] == "SCHEDULED"].iloc[0]
+    assert scheduled["home"] == "Thailand"
+    assert scheduled["away"] == "Palestine"
+    assert pd.isna(scheduled["home_score"])
+    assert pd.isna(scheduled["away_score"])
+    assert scheduled["prediction_features_allowed"] is False
+    assert scheduled["pit_prediction_status"] == "NOT_A_PREDICTION_FEATURE_SOURCE"
+
+
+def test_asian_games_collector_preserves_jst_and_provenance():
+    from research.international_asian_games_collector import parse_overview_html
+
+    fixture = b"""
+    <table>
+      <tr><th>Date and time</th><th>Venue</th><th>Home - Visitor</th></tr>
+      <tr><td>9/21/2026 12:00</td><td>Toyohashi</td><td>Palestine</td><td>0</td><td>-</td><td>12</td><td>Philippines</td></tr>
+    </table>
+    """
+    out = parse_overview_html(fixture, 2026, "https://www.japan-baseball.jp/test", "2026-09-25T00:00:00+00:00")
+    assert out.loc[0, "datetime_jst"].endswith("+09:00")
+    assert out.loc[0, "source_url"].startswith("https://www.japan-baseball.jp/")
+    assert out.loc[0, "international_game_category"] == "asian_games"
