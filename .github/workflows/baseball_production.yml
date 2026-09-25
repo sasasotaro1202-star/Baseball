@@ -13,10 +13,10 @@ permissions:
   contents: write
   actions: read
 concurrency:
-  group: baseball-production
-  # Let a running chronological OOS finish. With cancel-in-progress=false,
-  # GitHub keeps at most one pending run for this group, so a long OOS is not
-  # destroyed by a newer validation/data commit.
+  # Isolate production OOS by evaluated SHA. This prevents a stale/hung run
+  # from monopolizing the concurrency slot for a newer validated run while
+  # still ensuring at most one run per evaluated SHA.
+  group: baseball-production-${{ github.event.workflow_run.head_sha || github.sha }}
   cancel-in-progress: false
 env:
   PYTHONUNBUFFERED: "1"
