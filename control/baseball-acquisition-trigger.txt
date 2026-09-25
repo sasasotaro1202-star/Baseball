@@ -5,3 +5,4 @@ manual validation trigger
 2026-09-25T08:02:00+00:00 autonomous recovery after production data-deferred gate
 2026-09-25T09:00:00+00:00 autonomous acquisition gate fix + rerun
 2026-09-25T09:15:00+00:00 parallel NPB + MLB/competition rerun after checkpoint recovery
+2026-09-25T09:24:00+00:00 restart isolated NPB acquisition lane
