@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: baseball-validate
+  group: baseball-validate-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
