@@ -92,9 +92,15 @@ jobs:
           git add data/checkpoints data/npb_games data/weather data/source_coverage.csv
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'Update parallel NPB source data'
+          # Runtime patching intentionally modifies a tracked source file in-place.
+          # Stash those ephemeral changes so the data commit can rebase/push safely.
+          git stash push --include-untracked -m 'npb-runtime-ephemeral-before-push'
           for attempt in 1 2 3 4 5; do
             git fetch origin main
-            if git rebase origin/main && git push origin HEAD:main; then exit 0; fi
+            if git rebase origin/main && git push origin HEAD:main; then
+              git stash list | grep -q 'npb-runtime-ephemeral-before-push' && git stash drop
+              exit 0
+            fi
             if git rebase --abort 2>/dev/null; then
               :
             else
