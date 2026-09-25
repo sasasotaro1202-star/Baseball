@@ -130,6 +130,18 @@ def acquire_chunked(start_date, end_date):
                 print(f"[MLB] resume existing chunk {cursor}..{chunk_end}: {len(chunk)} rows")
             except Exception as exc:
                 raise RuntimeError(f"MLB checkpoint chunk unreadable: {path}: {exc}") from exc
+        elif path.exists() and path.stat().st_size == 0:
+            # A zero-byte checkpoint is not valid CSV. Preserve evidence locally,
+            # then rebuild only that exact date range from the canonical API.
+            quarantine = path.with_suffix(path.suffix + ".corrupt")
+            if quarantine.exists():
+                raise RuntimeError(
+                    f"MLB checkpoint remains corrupt and has an existing quarantine: {path}"
+                )
+            path.replace(quarantine)
+            print(f"[MLB] zero-byte checkpoint quarantined: {quarantine.name}")
+            chunk = norm(fetch_schedule(cursor, chunk_end))
+            atomic_csv(chunk, path)
         else:
             print(f"[MLB] fetch chunk {cursor}..{chunk_end}")
             chunk = norm(fetch_schedule(cursor, chunk_end))
