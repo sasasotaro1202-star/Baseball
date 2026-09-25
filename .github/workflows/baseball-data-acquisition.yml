@@ -87,7 +87,7 @@ jobs:
               echo "[NPB] checkpoint persisted on attempt $attempt"
               exit 0
             fi
-            git rebase --abort 2>/dev/null || true
+            git rebase --abort 2>/dev/null; abort_rc=$?; if [ "$abort_rc" -ne 0 ] && [ "$abort_rc" -ne 128 ]; then exit "$abort_rc"; fi
             sleep $((attempt * 5))
           done
           exit 1
@@ -208,7 +208,7 @@ jobs:
         run: |
           set -euo pipefail
           python -m py_compile research/competition_scope_audit.py
-          python research/competition_scope_audit.py | tee competition_scope_audit.log
+          python -m research.competition_scope_audit | tee competition_scope_audit.log
           test -s results/competition_scope_audit.json
           python -m json.tool results/competition_scope_audit.json >/dev/null
       - name: Upload competition audit
