@@ -16,6 +16,7 @@ on:
       - Baseball Autonomous Research
       - Baseball Source Acquisition
       - Baseball Matchday Intelligence
+      - Baseball NPB Game-Type OOS Ablation
       - Validate Code Syntax
     types: [completed]
   schedule:
@@ -55,8 +56,8 @@ jobs:
           from pathlib import Path
 
           repo=os.environ['GITHUB_REPOSITORY']; token=os.environ['GH_TOKEN']; api=os.environ.get('GITHUB_API_URL','https://api.github.com').rstrip('/')
-          workflows={'validation':'validate-code.yml','production':'baseball_production.yml','acquisition':'baseball-data-acquisition.yml','mac':'baseball_mac_compute.yml','research':'baseball_research.yml','matchday':'baseball_matchday.yml'}
-          STALE_MINUTES={'validation':25,'production':155,'acquisition':165,'mac':180,'research':180,'matchday':45}
+          workflows={'validation':'validate-code.yml','production':'baseball_production.yml','acquisition':'baseball-data-acquisition.yml','mac':'baseball_mac_compute.yml','research':'baseball_research.yml','matchday':'baseball_matchday.yml','game_type_ablation':'baseball_game_type_ablation.yml'}
+          STALE_MINUTES={'validation':25,'production':155,'acquisition':165,'mac':180,'research':180,'matchday':45,'game_type_ablation':180}
           QUEUED_STALE_MINUTES=20
           ACTIVE_STATES={'queued','in_progress','waiting','pending','requested'}
           QUEUED_STATES={'queued','waiting','pending','requested'}
@@ -122,7 +123,7 @@ jobs:
               if stuck: action='cancel-stuck'
               elif any(active_runs.values()): action='active-no-dispatch'
               else:
-                  validation=latest['validation']; prod=latest['production']; mac=latest['mac']; research=latest['research']; acquisition=latest['acquisition']; matchday=latest['matchday']
+                  validation=latest['validation']; prod=latest['production']; mac=latest['mac']; research=latest['research']; acquisition=latest['acquisition']; matchday=latest['matchday']; game_type_ablation=latest['game_type_ablation']
                   npb_ready, npb_games = npb_complete()
                   print(f'[WATCHDOG] NPB readiness complete={npb_ready} aggregate_games={npb_games}')
                   def dispatch(label,workflow):
@@ -151,6 +152,10 @@ jobs:
                       dispatch('mac-oos',workflows['mac'])
                   elif npb_ready and (not success(research) or ts(research)<ts(mac)) and not recently_created(data.get('research',[])):
                       dispatch('autonomous-research',workflows['research'])
+                  elif npb_ready and game_type_ablation and game_type_ablation.get('conclusion') in {'failure','cancelled','timed_out'} and not recently_created(data.get('game_type_ablation',[])):
+                      dispatch('game-type-ablation-recovery',workflows['game_type_ablation'])
+                  elif npb_ready and not game_type_ablation and not recently_created(data.get('game_type_ablation',[])):
+                      dispatch('game-type-ablation-recovery',workflows['game_type_ablation'])
                   elif npb_ready and success(research) and ts(research)>ts(prod) and not recently_created(data.get('production',[])):
                       dispatch('next-production',workflows['production'])
 
