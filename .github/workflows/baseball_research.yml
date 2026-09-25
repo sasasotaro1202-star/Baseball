@@ -58,7 +58,7 @@ jobs:
           python -m json.tool matchday_policy_smoke.json >/dev/null
           python research/matchday_effect_fit.py
           python -m json.tool results/matchday_effects.json >/dev/null
-          python research/matchday_reforecast.py | tee matchday_reforecast_smoke.json
+          python -m research.matchday_reforecast | tee matchday_reforecast_smoke.json
           python -m json.tool matchday_reforecast_smoke.json >/dev/null
           python -m research.routing_oos_replay
           python -m json.tool results/routing_oos_replay.json >/dev/null
