@@ -118,7 +118,9 @@ def assess_case_risk(
     situational_parts = []
     for side in ("home", "away"):
         item = rt.get(side) if isinstance(rt.get(side), Mapping) else {}
-        rest_days = float(item.get("rest_days", 30.0) or 30.0)
+        if str(item.get("state", "UNKNOWN")).upper() != "VERIFIED":
+            continue
+        rest_days = float(item.get("rest_days", 0.0) or 0.0)
         games_3d = float(item.get("games_last_3d", 0.0) or 0.0)
         games_7d = float(item.get("games_last_7d", 0.0) or 0.0)
         travel_miles = float(item.get("travel_miles", 0.0) or 0.0)
