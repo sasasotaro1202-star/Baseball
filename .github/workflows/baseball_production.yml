@@ -190,14 +190,14 @@ jobs:
           if-no-files-found: error
           retention-days: 7
       - name: MLB data acquisition, starter quality gate and chronological OOS
-        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.npb_ready.outputs.ready == 'true'
+        if: success() && steps.sha_gate.outputs.ok == 'true'
         env:
           BASEBALL_TIME_BUDGET_SEC: "3600"
           MLB_ENRICH_STARTERS: "1"
           MLB_MIN_STARTER_COVERAGE: "90"
         run: python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
       - name: Validate OOS predictions before any state write
-        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.npb_ready.outputs.ready == 'true'
+        if: success() && steps.sha_gate.outputs.ok == 'true'
         run: |
           set -euo pipefail
           find results -maxdepth 2 -type f -print | head -100
@@ -219,7 +219,7 @@ jobs:
           python production_data_quality_gate.py
           python production_integrity_gate.py
       - name: Upload verified state artifact
-        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.npb_ready.outputs.ready == 'true'
+        if: success() && steps.sha_gate.outputs.ok == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: baseball-production-state-${{ github.run_id }}
@@ -243,7 +243,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
       - name: Persist verified state atomically
-        if: success() && steps.sha_gate.outputs.ok == 'true' && steps.npb_ready.outputs.ready == 'true'
+        if: success() && steps.sha_gate.outputs.ok == 'true'
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'

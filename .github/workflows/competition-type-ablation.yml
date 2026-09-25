@@ -1,0 +1,81 @@
+name: Competition Type OOS Ablation
+on:
+  workflow_dispatch:
+    inputs:
+      league:
+        description: "League / competition family"
+        required: true
+        type: choice
+        options:
+          - NPB
+          - MLB
+          - INTERNATIONAL
+      category:
+        description: "Competition category to add to training"
+        required: true
+        type: choice
+        options:
+          - climax
+          - japan_series
+          - allstar
+          - special
+          - wild_card
+          - division_series
+          - league_championship_series
+          - world_series
+          - postseason
+          - championship
+          - exhibition
+          - wbc
+          - premier12
+          - olympics
+          - asian_games
+          - asian_professional_baseball_championship
+          - international_friendly
+          - international_special
+          - other_international
+
+permissions:
+  contents: read
+
+concurrency:
+  group: competition-type-ablation-${{ inputs.league }}-${{ inputs.category }}
+  cancel-in-progress: false
+
+jobs:
+  ablation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          clean: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4; do
+            if python -m pip install --disable-pip-version-check -r requirements.txt; then exit 0; fi
+            if [ "${attempt}" -lt 4 ]; then sleep $((attempt * 5)); fi
+          done
+          exit 1
+      - name: Run two-policy chronological OOS comparison
+        env:
+          LEAGUE: ${{ inputs.league }}
+          CATEGORY: ${{ inputs.category }}
+          BASEBALL_TIME_BUDGET_SEC: "1500"
+        run: |
+          set -euo pipefail
+          python research/competition_type_ablation.py --league "$LEAGUE" --category "$CATEGORY" --data-dir data
+      - name: Validate ablation artifact
+        run: |
+          set -euo pipefail
+          test -d results/competition_type_ablation
+          find results/competition_type_ablation -type f -maxdepth 5 -print
+          python -m json.tool "$(find results/competition_type_ablation -name comparison.json -print -quit)" >/dev/null || {
+            echo "[ABLATION] comparison artifact unavailable"
+            exit 1
+          }
