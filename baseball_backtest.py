@@ -71,6 +71,27 @@ DATA = ROOT / "data"
 MLB_API = "https://statsapi.mlb.com/api/v1"
 REQUEST_TIMEOUT = 30
 
+MLB_MIN_HISTORY_BY_YEAR = {
+    2020: 800,
+    2021: 2000,
+    2022: 2000,
+    2023: 2000,
+    2024: 2000,
+    2025: 2000,
+}
+
+
+def mlb_history_coverage_ok(df: pd.DataFrame, start_year: int, end_year: int) -> bool:
+    if df.empty or "datetime" not in df.columns:
+        return False
+    years = pd.to_datetime(df["datetime"], errors="coerce", utc=True).dt.year
+    current_year = pd.Timestamp.now(tz="UTC").year
+    for year, minimum in MLB_MIN_HISTORY_BY_YEAR.items():
+        if start_year <= year <= min(end_year, current_year - 1):
+            if int((years == year).sum()) < minimum:
+                return False
+    return True
+
 # Backtest controls
 MIN_TRAIN = 100
 # fit_ensemble requires _validation_splits(), which is defined only for n >= 120.
@@ -500,14 +521,14 @@ class BaseballBacktest:
         cache = self.data_dir / "mlb_games.csv"
         if cache.exists():
             try:
-                df = pd.read_csv(cache)
-                if len(df) > 100 and {"game_type_code", "series_description"}.issubset(df.columns):
+                df = self._normalize_mlb_games(pd.read_csv(cache))
+                if len(df) > 100 and {"game_type_code", "series_description"}.issubset(df.columns) and mlb_history_coverage_ok(df, start_year, end_year):
                     print(f"[MLB] using cache: {cache} ({len(df)})")
-                    return self._normalize_mlb_games(df)
+                    return df
                 if len(df) > 100:
-                    print(f"[MLB] cache lacks competition metadata; rebuilding from Stats API: {cache}")
-            except Exception:
-                pass
+                    print(f"[MLB] cache rejected: incomplete history or competition metadata ({len(df)})")
+            except Exception as exc:
+                print(f"[MLB] cache read/validation failed: {type(exc).__name__}: {exc}")
         rows = []
         for year in range(start_year, end_year + 1):
             url = f"{MLB_API}/schedule"
