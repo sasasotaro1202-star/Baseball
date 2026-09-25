@@ -40,7 +40,9 @@ def test_mlb_probable_starter_is_not_confirmed_without_explicit_signal(monkeypat
     assert bool(out.iloc[0]["probable_starters"]) is True
     assert bool(out.iloc[0]["confirmed_starters"]) is False
     assert out.iloc[0]["starter_state"] == "PROJECTED"
-\n\ndef test_schedule_state_tracks_started_games_without_prediction_leakage():
+
+
+def test_schedule_state_tracks_started_games_without_prediction_leakage():
     import pandas as pd
     from production_matchday_intelligence import classify_schedule_states
 
