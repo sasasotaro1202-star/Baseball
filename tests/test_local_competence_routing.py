@@ -43,3 +43,17 @@ def test_module_has_no_production_mutation_path():
     text = Path("research/local_competence_routing.py").read_text(encoding="utf-8")
     assert "production" in text.lower()
     assert "self_test" in text
+
+
+def test_local_result_uses_only_historical_outcomes():
+    current = np.array([[0.80, 0.20], [0.60, 0.40]])
+    hist = np.array([
+        [[0.79, 0.21], [0.61, 0.39]],
+        [[0.81, 0.19], [0.59, 0.41]],
+    ])
+    cfg = LocalCompetenceConfig(min_history=2, k_neighbors=2)
+    first = local_competence_weights(current, hist, np.array([0, 0]), config=cfg)
+    second = local_competence_weights(current, hist, np.array([1, 1]), config=cfg)
+    assert not np.allclose(first.local_loss, second.local_loss)
+    assert np.isclose(first.weights.sum(), 1.0)
+    assert np.isclose(second.weights.sum(), 1.0)
