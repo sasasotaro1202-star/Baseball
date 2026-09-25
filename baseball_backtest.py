@@ -61,6 +61,7 @@ from sklearn.metrics import accuracy_score, brier_score_loss, log_loss, mean_abs
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from npb_game_type import category_is_evaluation, category_is_training, evaluation_categories, training_categories
+from mlb_game_type import classify_mlb_game, category_is_evaluation as mlb_category_is_evaluation, category_is_training as mlb_category_is_training, evaluation_categories as mlb_evaluation_categories, training_categories as mlb_training_categories
 
 RANDOM_STATE = 42
 ROOT = Path(__file__).resolve().parent
@@ -257,7 +258,7 @@ class BaseballBacktest:
         self.time_budget_sec = min(float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "1500")), 1500.0)  # hard cap: 29:00
         self.audit: List[Dict[str, Any]] = []
         self.checkpoint_dir = RESULTS / "checkpoints"
-        self.checkpoint_version = "npb-massive-resume-v5-matchday-shadow"
+        self.checkpoint_version = "npb-massive-resume-v6-competition-types"
         self._last_temperature = 1.0
         self.context_pit_counters = defaultdict(int)
         self.core_context_training_ready = {"starter": False, "lineup": False}
@@ -498,9 +499,11 @@ class BaseballBacktest:
         if cache.exists():
             try:
                 df = pd.read_csv(cache)
-                if len(df) > 100:
+                if len(df) > 100 and {"game_type_code", "series_description"}.issubset(df.columns):
                     print(f"[MLB] using cache: {cache} ({len(df)})")
                     return self._normalize_mlb_games(df)
+                if len(df) > 100:
+                    print(f"[MLB] cache lacks competition metadata; rebuilding from Stats API: {cache}")
             except Exception:
                 pass
         rows = []
@@ -530,6 +533,9 @@ class BaseballBacktest:
                         "home_starter": hp, "away_starter": ap,
                         "venue": (game.get("venue") or {}).get("name", ""),
                         "confirmed_starters": bool(hp and ap),
+                        "game_type_code": str(game.get("gameType") or ""),
+                        "series_description": str(game.get("seriesDescription") or ""),
+                        "game_type": str(game.get("seriesDescription") or game.get("gameType") or "UNKNOWN"),
                     })
             time.sleep(0.1)
         df = pd.DataFrame(rows)
@@ -584,6 +590,22 @@ class BaseballBacktest:
         out = out.dropna(subset=["datetime", "home_score", "away_score", "home", "away"])
         out["league"] = "MLB"
         out["game_id"] = out["game_id"].astype(str)
+        if "game_type_code" not in out.columns:
+            out["game_type_code"] = ""
+        if "series_description" not in out.columns:
+            out["series_description"] = ""
+        classified = out.apply(
+            lambda r: classify_mlb_game(
+                r.get("game_type_code", ""),
+                r.get("series_description", ""),
+                r.get("game_type", ""),
+            ),
+            axis=1,
+        )
+        out["mlb_game_category"] = classified.map(lambda x: x["category"])
+        out["mlb_type_confidence"] = classified.map(lambda x: x["confidence"])
+        out["mlb_training_default"] = classified.map(lambda x: bool(x["training_default"]))
+        out["mlb_evaluation_default"] = classified.map(lambda x: bool(x["evaluation_default"]))
         return out.sort_values(["datetime", "game_id"]).drop_duplicates("game_id").reset_index(drop=True)
 
     def _get_json(self, url: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -996,9 +1018,18 @@ class BaseballBacktest:
         games = games.sort_values(["datetime", "game_id"]).reset_index(drop=True)
         last_season=None
         for _, row in games.iterrows():
-            category = str(row.get("npb_game_category", "unknown") or "unknown").strip().lower() if row.get("league") == "NPB" else "mlb"
-            train_include = category in training_set if row.get("league") == "NPB" else True
-            eval_include = category in evaluation_set if row.get("league") == "NPB" else True
+            if row.get("league") == "NPB":
+                category = str(row.get("npb_game_category", "unknown") or "unknown").strip().lower()
+                train_include = category_is_training(category)
+                eval_include = category_is_evaluation(category)
+            elif row.get("league") == "MLB":
+                category = str(row.get("mlb_game_category", "unknown") or "unknown").strip().lower()
+                train_include = mlb_category_is_training(category)
+                eval_include = mlb_category_is_evaluation(category)
+            else:
+                category = "unknown"
+                train_include = False
+                eval_include = False
             cur_season=int(pd.Timestamp(row["datetime"]).year)
             if last_season is not None and cur_season != last_season:
                 # Regress Elo at each season boundary; rolling team form naturally
@@ -1016,7 +1047,12 @@ class BaseballBacktest:
                 target = 0 if hscore > ascore else 1
             y.append(target)
             payload = row.to_dict()
-            payload["npb_game_category"] = category
+            if row.get("league") == "NPB":
+                payload["npb_game_category"] = category
+            elif row.get("league") == "MLB":
+                payload["mlb_game_category"] = category
+                payload["mlb_type_confidence"] = row.get("mlb_type_confidence", "unknown")
+            payload["competition_category"] = category
             payload["training_included"] = bool(train_include)
             payload["evaluation_included"] = bool(eval_include)
             meta.append(payload)
@@ -1402,18 +1438,17 @@ class BaseballBacktest:
                 )
 
         X, y, meta = self.build_features(games)
-        if league == "NPB":
-            train_mask = meta["training_included"].astype(bool).to_numpy() if "training_included" in meta else np.ones(len(meta), dtype=bool)
-            eval_mask = meta["evaluation_included"].astype(bool).to_numpy() if "evaluation_included" in meta else np.ones(len(meta), dtype=bool)
-        else:
-            train_mask = np.ones(len(meta), dtype=bool)
-            eval_mask = np.ones(len(meta), dtype=bool)
+        train_mask = meta["training_included"].astype(bool).to_numpy() if "training_included" in meta else np.ones(len(meta), dtype=bool)
+        eval_mask = meta["evaluation_included"].astype(bool).to_numpy() if "evaluation_included" in meta else np.ones(len(meta), dtype=bool)
+        cat_col = "npb_game_category" if league == "NPB" else "mlb_game_category"
         self.audit.append({
-            "type":"npb_game_type_counts",
+            "type":"competition_game_type_counts",
             "league":league,
             "training_rows":int(train_mask.sum()),
             "evaluation_rows":int(eval_mask.sum()),
-            "categories":meta["npb_game_category"].value_counts(dropna=False).to_dict() if "npb_game_category" in meta else {},
+            "categories":meta[cat_col].value_counts(dropna=False).to_dict() if cat_col in meta else {},
+            "training_categories":sorted(training_categories() if league == "NPB" else mlb_training_categories()),
+            "evaluation_categories":sorted(evaluation_categories() if league == "NPB" else mlb_evaluation_categories()),
         })
         matchday_shadow = os.getenv("BASEBALL_MATCHDAY_SHADOW", "0").strip().lower() in {"1","true","yes"}
         X_free = self._context_free_matrix(X) if matchday_shadow else None
@@ -1521,7 +1556,9 @@ class BaseballBacktest:
                     "league": league, "game_id": r["game_id"], "datetime": r["datetime"],
                     "home": r["home"], "away": r["away"], "home_starter": r.get("home_starter", ""), "away_starter": r.get("away_starter", ""),
                     "game_type": r.get("game_type", "UNKNOWN"),
+                    "competition_category": r.get("competition_category", r.get("npb_game_category", r.get("mlb_game_category", "unknown"))),
                     "npb_game_category": r.get("npb_game_category", "unknown"),
+                    "mlb_game_category": r.get("mlb_game_category", "unknown"),
                     "training_included": bool(r.get("training_included", True)),
                     "evaluation_included": bool(r.get("evaluation_included", True)),
                     "pred_home": float(prob[0]), "pred_draw": float(prob[1]) if league == "NPB" else np.nan,
@@ -1595,9 +1632,10 @@ class BaseballBacktest:
         summary.to_csv(RESULTS / f"{league.lower()}_backtest_summary.csv", index=False)
         model = df.groupby("model").agg(Predictions=("correct", "size"), Accuracy=("correct", "mean"), LogLoss=("logloss", "mean"), Brier=("brier", "mean")).reset_index()
         model.to_csv(RESULTS / f"{league.lower()}_model_comparison.csv", index=False)
-        if league == "NPB" and "npb_game_category" in df.columns:
+        if league in {"NPB", "MLB"} and ("npb_game_category" if league == "NPB" else "mlb_game_category") in df.columns:
             rows=[]
-            for category, g in df.groupby("npb_game_category", dropna=False):
+            cat_col = "npb_game_category" if league == "NPB" else "mlb_game_category"
+            for category, g in df.groupby(cat_col, dropna=False):
                 rows.append({
                     "League": league, "Category": str(category),
                     "Predictions": int(len(g)), "Accuracy": float(g.correct.mean()),
@@ -1606,7 +1644,7 @@ class BaseballBacktest:
                     "LowHighAccuracy": float((((g.high>=0.5).astype(int)) == ((g.actual_home_score+g.actual_away_score>=7).astype(int))).mean()),
                     "Top4ScoreHitRate": float(g.apply(lambda r: (("その他" in {str(r.score1),str(r.score2),str(r.score3),str(r.score4)}) if (r.actual_home_score>=7 or r.actual_away_score>=7) else (f"{int(r.actual_home_score)}-{int(r.actual_away_score)}" in {str(r.score1),str(r.score2),str(r.score3),str(r.score4)})), axis=1).mean()),
                 })
-            pd.DataFrame(rows).to_csv(RESULTS / "npb_game_type_metrics.csv", index=False)
+            pd.DataFrame(rows).to_csv(RESULTS / f"{league.lower()}_game_type_metrics.csv", index=False)
         # Calibration bins are useful for diagnosing overconfidence.
         if league == "MLB":
             tmp = df.copy(); tmp["bin"] = pd.cut(tmp.pred_home, np.linspace(0,1,11), include_lowest=True)
