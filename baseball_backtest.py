@@ -1010,7 +1010,7 @@ class BaseballBacktest:
 
     def build_features(self, games: pd.DataFrame) -> Tuple[pd.DataFrame, np.ndarray, pd.DataFrame]:
         self.states.clear(); self.elo_ratings.clear(); self.pitcher_history = defaultdict(list); self.player_history = defaultdict(list); self.venue_states.clear()
-        if self.player_game.empty:
+        if self.player_game.empty and "NPB" in set(games.get("league", pd.Series(dtype=str)).astype(str)):
             self.player_game = self.load_npb_player_features()
         self.player_index = {}
         if not self.player_game.empty:
