@@ -32,3 +32,18 @@ def test_rest_travel_uses_target_window_not_previous_game_relative_window():
     out = rest_travel(historical, game)
     assert out["home"]["games_last_3d"] == 1
     assert out["home"]["games_last_7d"] == 2
+
+
+
+def test_rest_travel_missing_side_is_unknown_not_fabricated():
+    historical = pd.DataFrame([
+        {"home":"A","away":"C","datetime":"2026-09-24T18:00:00Z","venue":"東京ドーム"},
+    ])
+    game = {
+        "datetime": pd.Timestamp("2026-09-25T18:00:00Z"),
+        "home":"A","away":"B","venue":"東京ドーム",
+    }
+    out = rest_travel(historical, game)
+    assert out["home"]["state"] == "VERIFIED"
+    assert out["away"]["state"] == "UNKNOWN"
+    assert out["state"] == "PARTIAL"
