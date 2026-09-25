@@ -9,3 +9,35 @@ def test_mlb_acquisition_uses_resumable_date_chunks():
     assert "resume existing chunk" in text
     assert "atomic_csv" in text
     assert "refusing to discard it" in text
+
+
+
+def test_zero_byte_chunk_is_quarantined_and_rebuilt(tmp_path, monkeypatch):
+    import mlb_incremental_acquire as m
+    from datetime import date
+
+    monkeypatch.setattr(m, "CHUNK_DIR", tmp_path)
+
+    start = date(2020, 4, 15)
+    end = date(2020, 5, 29)
+    path = m.chunk_path(start, end)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(b"")
+
+    monkeypatch.setattr(
+        m,
+        "fetch_schedule",
+        lambda _start, _end: pd.DataFrame(columns=[
+            "league", "game_id", "datetime", "home", "away",
+            "home_score", "away_score", "home_starter", "away_starter",
+            "venue", "game_type", "series_description", "confirmed_starters",
+        ]),
+    )
+
+    out, ranges = m.acquire_chunked(start, end)
+
+    assert len(out) == 0
+    assert path.exists()
+    assert path.stat().st_size > 0
+    assert path.with_suffix(path.suffix + ".corrupt").exists()
+    assert ranges[0]["rows"] == 0
