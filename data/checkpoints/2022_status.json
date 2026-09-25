@@ -2,11 +2,11 @@
   "year": 2022,
   "schedule_games": 967,
   "checkpoint_games": 967,
-  "done": 967,
+  "done": 0,
   "failures": 0,
   "both_starters": 967,
   "both_starter_lines": 967,
   "coverage_pct": 100.0,
   "complete": true,
-  "updated_at": "2026-09-25T13:09:38.537017+00:00"
+  "updated_at": "2026-09-25T15:51:05.629359+00:00"
 }

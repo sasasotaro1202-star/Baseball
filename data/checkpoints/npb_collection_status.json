@@ -7,124 +7,124 @@
       "year": 2017,
       "schedule_games": 886,
       "checkpoint_games": 886,
-      "done": 886,
+      "done": 0,
       "failures": 0,
       "both_starters": 0,
       "both_starter_lines": 0,
       "coverage_pct": 0.0,
       "complete": true,
-      "updated_at": "2026-09-25T12:24:12.664155+00:00"
+      "updated_at": "2026-09-25T15:48:46.395477+00:00"
     },
     {
       "year": 2018,
       "schedule_games": 970,
       "checkpoint_games": 970,
-      "done": 970,
+      "done": 0,
       "failures": 0,
       "both_starters": 0,
       "both_starter_lines": 0,
       "coverage_pct": 0.0,
       "complete": true,
-      "updated_at": "2026-09-25T12:26:00.790905+00:00"
+      "updated_at": "2026-09-25T15:49:26.731544+00:00"
     },
     {
       "year": 2019,
       "schedule_games": 969,
       "checkpoint_games": 969,
-      "done": 969,
+      "done": 0,
       "failures": 0,
       "both_starters": 773,
       "both_starter_lines": 769,
       "coverage_pct": 99.48,
       "complete": true,
-      "updated_at": "2026-09-25T12:40:33.393295+00:00"
+      "updated_at": "2026-09-25T15:50:07.405537+00:00"
     },
     {
       "year": 2020,
       "schedule_games": 787,
       "checkpoint_games": 787,
-      "done": 787,
+      "done": 0,
       "failures": 0,
       "both_starters": 787,
       "both_starter_lines": 785,
       "coverage_pct": 99.75,
       "complete": true,
-      "updated_at": "2026-09-25T12:54:12.447159+00:00"
+      "updated_at": "2026-09-25T15:50:16.020545+00:00"
     },
     {
       "year": 2021,
       "schedule_games": 958,
       "checkpoint_games": 958,
-      "done": 958,
+      "done": 0,
       "failures": 0,
       "both_starters": 958,
       "both_starter_lines": 955,
       "coverage_pct": 99.69,
       "complete": true,
-      "updated_at": "2026-09-25T13:08:19.712591+00:00"
+      "updated_at": "2026-09-25T15:50:56.007113+00:00"
     },
     {
       "year": 2022,
       "schedule_games": 967,
       "checkpoint_games": 967,
-      "done": 967,
+      "done": 0,
       "failures": 0,
       "both_starters": 967,
       "both_starter_lines": 967,
       "coverage_pct": 100.0,
       "complete": true,
-      "updated_at": "2026-09-25T13:09:38.537017+00:00"
+      "updated_at": "2026-09-25T15:51:05.629359+00:00"
     },
     {
       "year": 2023,
       "schedule_games": 975,
       "checkpoint_games": 975,
-      "done": 975,
+      "done": 0,
       "failures": 0,
       "both_starters": 975,
       "both_starter_lines": 975,
       "coverage_pct": 100.0,
       "complete": true,
-      "updated_at": "2026-09-25T13:10:55.501491+00:00"
+      "updated_at": "2026-09-25T15:52:19.868610+00:00"
     },
     {
       "year": 2024,
       "schedule_games": 972,
       "checkpoint_games": 972,
-      "done": 972,
+      "done": 0,
       "failures": 0,
       "both_starters": 906,
       "both_starter_lines": 893,
       "coverage_pct": 98.57,
       "complete": true,
-      "updated_at": "2026-09-25T13:15:18.343100+00:00"
+      "updated_at": "2026-09-25T15:53:34.231952+00:00"
     },
     {
       "year": 2025,
       "schedule_games": 966,
       "checkpoint_games": 966,
-      "done": 966,
+      "done": 0,
       "failures": 0,
       "both_starters": 966,
       "both_starter_lines": 965,
       "coverage_pct": 99.9,
       "complete": true,
-      "updated_at": "2026-09-25T13:16:38.710979+00:00"
+      "updated_at": "2026-09-25T15:54:16.142826+00:00"
     },
     {
       "year": 2026,
       "schedule_games": 909,
       "checkpoint_games": 909,
-      "done": 909,
+      "done": 0,
       "failures": 0,
       "both_starters": 909,
       "both_starter_lines": 900,
       "coverage_pct": 99.01,
       "complete": true,
-      "updated_at": "2026-09-25T13:21:30.555199+00:00"
+      "updated_at": "2026-09-25T15:56:23.977634+00:00"
     }
   ],
   "aggregate_games": 9359,
   "complete": true,
-  "updated_at": "2026-09-25T13:21:37.257473+00:00"
+  "updated_at": "2026-09-25T15:56:30.014524+00:00"
 }

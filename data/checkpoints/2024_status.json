@@ -2,11 +2,11 @@
   "year": 2024,
   "schedule_games": 972,
   "checkpoint_games": 972,
-  "done": 972,
+  "done": 0,
   "failures": 0,
   "both_starters": 906,
   "both_starter_lines": 893,
   "coverage_pct": 98.57,
   "complete": true,
-  "updated_at": "2026-09-25T13:15:18.343100+00:00"
+  "updated_at": "2026-09-25T15:53:34.231952+00:00"
 }

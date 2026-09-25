@@ -2,11 +2,11 @@
   "year": 2018,
   "schedule_games": 970,
   "checkpoint_games": 970,
-  "done": 970,
+  "done": 0,
   "failures": 0,
   "both_starters": 0,
   "both_starter_lines": 0,
   "coverage_pct": 0.0,
   "complete": true,
-  "updated_at": "2026-09-25T12:26:00.790905+00:00"
+  "updated_at": "2026-09-25T15:49:26.731544+00:00"
 }
