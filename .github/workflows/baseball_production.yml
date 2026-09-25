@@ -17,7 +17,6 @@ env:
   PYTHONUNBUFFERED: "1"
 jobs:
   production:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 140
     steps:
@@ -34,13 +33,18 @@ jobs:
             echo "ok=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          CURRENT_SHA="$(git rev-parse HEAD)"
-          if [ "$CURRENT_SHA" != "$VALIDATED_SHA" ]; then
-            echo "[VALIDATION GATE] SKIP current_main=$CURRENT_SHA validated=$VALIDATED_SHA"
+          if [ "$EVENT_NAME" = "workflow_run" ] && [ "${{ github.event.workflow_run.conclusion }}" != "success" ]; then
+            echo "[VALIDATION GATE] FAIL-CLOSED: upstream validation conclusion=${{ github.event.workflow_run.conclusion }}"
             echo "ok=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          echo "[VALIDATION GATE] PASS sha=$CURRENT_SHA"
+          CURRENT_SHA="$(git rev-parse HEAD)"
+          if [ "$EVENT_NAME" = "workflow_run" ] && [ "$CURRENT_SHA" != "$VALIDATED_SHA" ]; then
+            echo "[VALIDATION GATE] DEFERRED: current_main=$CURRENT_SHA validated=$VALIDATED_SHA"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "[VALIDATION GATE] PASS sha=$CURRENT_SHA event=$EVENT_NAME"
           echo "ok=true" >> "$GITHUB_OUTPUT"
 
       - name: Require successful validation for current main
