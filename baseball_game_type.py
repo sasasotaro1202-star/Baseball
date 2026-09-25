@@ -34,6 +34,7 @@ CATEGORIES = {
         "division_series",
         "league_championship_series",
         "world_series",
+        "postseason",
         "allstar",
         "spring_training",
         "exhibition",
@@ -74,6 +75,7 @@ DEFAULT_EVALUATION = {
         "division_series",
         "league_championship_series",
         "world_series",
+        "postseason",
         "allstar",
         "championship",
         "exhibition",
@@ -110,7 +112,7 @@ _MLB_CODE = {
     "E": "exhibition",
     "I": "intrasquad",
     "C": "championship",
-    "P": "championship",  # generic postseason/championship bucket
+    "P": "postseason",
 }
 
 _INTERNATIONAL_TERMS = {
@@ -168,6 +170,8 @@ def classify_game(
                 category = "league_championship_series"
             elif "world series" in text:
                 category = "world_series"
+            elif "postseason" in text:
+                category = "postseason"
             elif "all-star" in text or "all star" in text:
                 category = "allstar"
             elif "spring training" in text:
