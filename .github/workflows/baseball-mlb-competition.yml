@@ -1,0 +1,137 @@
+name: Baseball MLB + Competition Research
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'control/baseball-mlb-competition-trigger.txt'
+  schedule:
+    - cron: '22 11 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: baseball-mlb-competition
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  mlb:
+    name: MLB historical + postseason acquisition
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Hosted runner health gate
+        run: |
+          set -euo pipefail
+          uname -a
+          python3 --version
+          df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
+          curl --fail --silent --show-error --location --retry 4 --retry-delay 2 --retry-all-errors --max-time 20 https://statsapi.mlb.com/api/v1/sports/1 >/dev/null
+          echo '[MLB HEALTH] MLB Stats API PASS'
+      - name: Setup Python
+        run: |
+          set -euo pipefail
+          python3 -m venv "$RUNNER_TEMP/mlb-venv"
+          "$RUNNER_TEMP/mlb-venv/bin/python" -m pip install -r requirements.txt
+          echo "$RUNNER_TEMP/mlb-venv/bin" >> "$GITHUB_PATH"
+      - name: MLB acquisition preflight
+        run: |
+          set -euo pipefail
+          python -m py_compile mlb_incremental_acquire.py production_data_quality_gate.py production_integrity_gate.py
+          python source_quality_gate.py
+      - name: MLB full-scope acquisition with incremental refresh
+        id: mlb_acquire
+        continue-on-error: true
+        env:
+          MLB_INCREMENTAL_TIMEOUT: "20"
+          MLB_CORRECTION_DAYS: "7"
+          MLB_BOOTSTRAP_START_YEAR: "2020"
+        run: python mlb_incremental_acquire.py
+      - name: Validate MLB cache
+        id: mlb_quality
+        if: steps.mlb_acquire.outcome == 'success'
+        run: |
+          set -euo pipefail
+          test -s data/mlb_games.csv
+          python - <<'PY'
+          import pandas as pd
+          d=pd.read_csv('data/mlb_games.csv', low_memory=False)
+          if len(d) <= 100: raise SystemExit(f'MLB cache unexpectedly small: {len(d)}')
+          if 'game_type' not in d.columns: raise SystemExit('MLB cache missing official game_type metadata')
+          print(f'[MLB] rows={len(d)} min={d.datetime.min()} max={d.datetime.max()}')
+          PY
+          python production_data_quality_gate.py
+      - name: Persist MLB checkpoints and successful cache
+        if: always()
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/checkpoints/mlb_schedule_chunks data/checkpoints/mlb_acquisition_manifest.json
+          if [ '\x24{{ steps.mlb_quality.outcome }}' = 'success' ]; then
+            git add data/mlb_games.csv
+            if [ -f data/checkpoints/mlb_collection_status.json ]; then git add data/checkpoints/mlb_collection_status.json; fi
+          fi
+          if git diff --cached --quiet; then
+            echo '[MLB] no checkpoint/cache changes'
+            exit 0
+          fi
+          git commit -m 'Checkpoint isolated MLB acquisition lane'
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            if git rebase origin/main && git push origin HEAD:main; then
+              echo "[MLB] checkpoint/cache persisted on attempt $attempt"
+              exit 0
+            fi
+            git rebase --abort 2>/dev/null
+            abort_rc=$?
+            if [ "$abort_rc" -ne 0 ] && [ "$abort_rc" -ne 128 ]; then exit "$abort_rc"; fi
+            sleep $((attempt * 5))
+          done
+          exit 1
+      - name: Finalize MLB acquisition outcome
+        if: always()
+        run: |
+          set -euo pipefail
+          acquire='\x24{{ steps.mlb_acquire.outcome }}'
+          quality='\x24{{ steps.mlb_quality.outcome }}'
+          echo "[MLB] acquisition=$acquire quality=$quality"
+          if [ "$acquire" != "success" ] || [ "$quality" != "success" ]; then
+            echo '[MLB] production cache not validated; checkpoints remain resumable'
+            exit 1
+          fi
+
+  competition:
+    name: MLB + cross-competition scope audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Setup Python
+        run: |
+          set -euo pipefail
+          python3 -m venv "$RUNNER_TEMP/competition-venv"
+          "$RUNNER_TEMP/competition-venv/bin/python" -m pip install -r requirements.txt
+          echo "$RUNNER_TEMP/competition-venv/bin" >> "$GITHUB_PATH"
+      - name: Audit competition scope
+        run: |
+          set -euo pipefail
+          python -m py_compile research/competition_scope_audit.py
+          python -m research.competition_scope_audit | tee competition_scope_audit.log
+          test -s results/competition_scope_audit.json
+          python -m json.tool results/competition_scope_audit.json >/dev/null
+      - name: Upload competition audit
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: baseball-mlb-competition-scope-\x24{{ github.run_id }}
+          path: |
+            results/competition_scope_audit.json
+            competition_scope_audit.log
+          if-no-files-found: warn
+          retention-days: 30
