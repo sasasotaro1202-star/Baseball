@@ -17,3 +17,26 @@ def test_matchday_prediction_ready_only_with_model_and_starters():
     ok, reason = prediction_eligibility({"starter_state": "VERIFIED"}, True)
     assert ok is True
     assert reason == "READY"
+
+
+def test_mlb_probable_starter_is_not_confirmed_without_explicit_signal(monkeypatch):
+    from baseball_backtest import BaseballBacktest
+
+    class Stub(BaseballBacktest):
+        def _get_json(self, *args, **kwargs):
+            return {
+                "dates": [{"games": [{
+                    "gamePk": 123,
+                    "gameDate": "2026-09-25T19:00:00Z",
+                    "teams": {
+                        "home": {"team": {"name": "Home"}, "probablePitcher": {"fullName": "Home P"}},
+                        "away": {"team": {"name": "Away"}, "probablePitcher": {"fullName": "Away P"}},
+                    },
+                }]}]
+            }
+
+    obj = object.__new__(Stub)
+    out = obj.current_mlb_schedule("2026-09-25")
+    assert bool(out.iloc[0]["probable_starters"]) is True
+    assert bool(out.iloc[0]["confirmed_starters"]) is False
+    assert out.iloc[0]["starter_state"] == "PROJECTED"
