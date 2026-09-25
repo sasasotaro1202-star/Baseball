@@ -148,31 +148,56 @@ jobs:
                   current_main_sha = main_sha()
                   validation_current = bool(validation) and str(validation.get('head_sha') or '') == current_main_sha and success(validation)
                   print(f'[WATCHDOG] current_main_sha={current_main_sha} validation_sha={validation.get("head_sha") if validation else ""} validation_current={validation_current}')
+                  # Dispatch independent lanes in the same reconciliation cycle.
+                  # Dependency/readiness gates are preserved; unrelated work is not serialized.
+                  dispatched = []
+
                   if not validation_current and not recently_created(data.get('validation',[])):
-                      dispatch('validation',workflows['validation'])
-                  elif not recently_created(data.get('matchday',[])) and (
-                      matchday is None
-                      or matchday.get('conclusion') in {'failure','cancelled'}
-                      or age_minutes(matchday) > STALE_MINUTES['matchday']
+                      dispatch('validation',workflows['validation']); dispatched.append('validation')
+
+                  if not recently_created(data.get('matchday',[])) and not any(
+                      str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('matchday',[])
                   ):
-                      dispatch('matchday',workflows['matchday'])
-                  elif validation_current and mlb_ready and (
-                      not success(prod)
-                      or ts(acquisition) > ts(prod)
+                      dispatch('matchday',workflows['matchday']); dispatched.append('matchday')
+
+                  if (not npb_ready or not mlb_ready) and not any(
+                      str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('acquisition',[])
+                  ) and not recently_created(data.get('acquisition',[])):
+                      dispatch('baseball-source-acquisition',workflows['acquisition']); dispatched.append('acquisition')
+
+                  if validation_current and mlb_ready and (
+                      not success(prod) or ts(acquisition) > ts(prod)
+                  ) and not any(
+                      str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('production',[])
                   ) and not recently_created(data.get('production',[])):
-                      dispatch('production-recovery',workflows['production'])
-                  elif (not npb_ready or not mlb_ready) and not recently_created(data.get('acquisition',[])):
-                      dispatch('baseball-source-acquisition',workflows['acquisition'])
-                  elif npb_ready and mlb_ready and validation_current and (not success(mac) or ts(mac)<ts(prod)) and not recently_created(data.get('mac',[])):
-                      dispatch('mac-oos',workflows['mac'])
-                  elif npb_ready and mlb_ready and validation_current and (not success(research) or ts(research)<ts(mac)) and not recently_created(data.get('research',[])):
-                      dispatch('autonomous-research',workflows['research'])
-                  elif npb_ready and mlb_ready and validation_current and game_type_ablation and game_type_ablation.get('conclusion') in {'failure','cancelled','timed_out'} and not recently_created(data.get('game_type_ablation',[])):
-                      dispatch('game-type-ablation-recovery',workflows['game_type_ablation'])
-                  elif npb_ready and mlb_ready and validation_current and not game_type_ablation and not recently_created(data.get('game_type_ablation',[])):
-                      dispatch('game-type-ablation-recovery',workflows['game_type_ablation'])
-                  elif npb_ready and mlb_ready and validation_current and success(research) and ts(research)>ts(prod) and not recently_created(data.get('production',[])):
-                      dispatch('next-production',workflows['production'])
+                      dispatch('production-recovery',workflows['production']); dispatched.append('production')
+
+                  if npb_ready and mlb_ready and validation_current and (
+                      not success(mac) or ts(mac) < ts(prod)
+                  ) and not any(
+                      str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('mac',[])
+                  ) and not recently_created(data.get('mac',[])):
+                      dispatch('mac-oos',workflows['mac']); dispatched.append('mac')
+
+                  if npb_ready and mlb_ready and validation_current and (
+                      not success(research) or ts(research) < ts(prod)
+                  ) and not any(
+                      str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('research',[])
+                  ) and not recently_created(data.get('research',[])):
+                      dispatch('autonomous-research',workflows['research']); dispatched.append('research')
+
+                  if npb_ready and mlb_ready and validation_current and (
+                      game_type_ablation is None
+                      or game_type_ablation.get('conclusion') in {'failure','cancelled','timed_out'}
+                      or ts(game_type_ablation) < ts(acquisition)
+                  ) and not any(
+                      str(r.get('status')) in ACTIVE_STATES for r in active_runs.get('game_type_ablation',[])
+                  ) and not recently_created(data.get('game_type_ablation',[])):
+                      dispatch('game-type-ablation',workflows['game_type_ablation']); dispatched.append('game_type_ablation')
+
+                  if dispatched:
+                      action='dispatch-parallel:' + ','.join(dispatched)
+
 
           except Exception as exc:
               errors.append(f'watchdog fatal: {exc}')
