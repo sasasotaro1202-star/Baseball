@@ -778,6 +778,13 @@ class BaseballBacktest:
         available = pd.to_datetime(raw, errors="coerce", utc=True)
         if pd.isna(available) or available > cutoff:
             return False
+        # Weather provenance is a separate PIT contract. Reject retired or
+        # unknown availability schemes even when a legacy cache contains a
+        # seemingly valid timestamp.
+        if available_col == "weather_available_at":
+            quality = str(row.get("weather_pit_quality", "") or "").upper().strip()
+            if quality in {"", "UNKNOWN", "CONSERVATIVE_8H_BOUND", "FAIL_CLOSED_NO_ISSUANCE_TIMESTAMP"}:
+                return False
         if state_col:
             state = str(row.get(state_col, "") or "").upper().strip()
             if state and state not in set(allow_states):
