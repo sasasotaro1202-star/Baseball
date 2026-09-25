@@ -122,3 +122,20 @@ def test_npb_raw_fallback_preserves_draws_and_uses_stable_game_identity(tmp_path
     assert loaded.iloc[0]["home_score"] == 1
     assert loaded.iloc[0]["away_score"] == 1
     assert loaded.iloc[0]["npb_game_category"] == "regular"
+
+
+def test_npb_raw_fallback_reads_tracked_repository_snapshots():
+    data_dir = Path("data")
+    raw_dir = data_dir / "npb"
+    files = sorted(raw_dir.glob("npb_games_*_RAW_UNNORMALIZED.csv"))
+    assert len(files) >= 8
+
+    bt = BaseballBacktest(data_dir=data_dir)
+    loaded = bt.load_npb_pbp()
+
+    assert len(loaded) >= 5000
+    years = pd.to_datetime(loaded["date"], utc=True).dt.year
+    assert years.min() <= 2018
+    assert years.max() >= 2025
+    assert {"regular season", "interleague"}.issubset(set(loaded["game_type"].astype(str)))
+    assert loaded["game_id"].nunique() == len(loaded)
