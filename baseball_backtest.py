@@ -1469,19 +1469,23 @@ class BaseballBacktest:
             existing = pd.DataFrame()
         completed_ids = set(existing.get("game_id", pd.Series(dtype=str)).astype(str)) if not existing.empty else set()
         all_rows = existing.to_dict("records") if not existing.empty else []
-        # Start only after the prefix actually contains enough training-eligible
-        # rows.  Competition-type exclusions can make the raw row count look large
-        # while the effective chronological training sample is still too small.
+        # Start only after the prefix actually contains enough
+        # training-eligible rows for BOTH model fitting and chronological
+        # validation.  _validation_splits() requires at least 120 samples;
+        # starting at MIN_TRAIN=100 would otherwise deterministically fail the
+        # first MLB block when competition-type filtering leaves exactly 100
+        # eligible regular-season games.
         required_classes = 3 if league == "NPB" else 2
+        min_effective_fit_train = max(MIN_TRAIN, 120)
         prefix_train = np.cumsum(train_mask.astype(int))
-        valid_positions = np.flatnonzero(prefix_train >= MIN_TRAIN)
+        valid_positions = np.flatnonzero(prefix_train >= min_effective_fit_train)
         if len(valid_positions) == 0:
             self.audit.append({
                 "type": "effective_training_gate",
                 "league": league,
                 "status": "DEFERRED",
                 "reason": "fewer than MIN_TRAIN training-eligible rows across the full chronological sample",
-                "min_train": int(MIN_TRAIN),
+                "min_train": int(min_effective_fit_train),
                 "training_rows": int(train_mask.sum()),
             })
             print(f"[{league}] DEFERRED: no chronological prefix reaches MIN_TRAIN eligible rows")
@@ -1493,7 +1497,7 @@ class BaseballBacktest:
             "league": league,
             "status": "PASS",
             "first_valid_start": int(first_valid_start),
-            "min_train": int(MIN_TRAIN),
+            "min_train": int(min_effective_fit_train),
             "required_classes": int(required_classes),
             "total_training_rows": int(train_mask.sum()),
         })
@@ -1502,7 +1506,7 @@ class BaseballBacktest:
             effective_train_y = y[:bstart][train_mask[:bstart]]
             train_count = int(len(effective_train_y))
             class_count = int(len(np.unique(effective_train_y))) if train_count else 0
-            if train_count < MIN_TRAIN or class_count < required_classes:
+            if train_count < min_effective_fit_train or class_count < required_classes:
                 print(
                     f"[{league}] skip block {bstart}:{bend}: "
                     f"effective_train={train_count}, classes={class_count}"
