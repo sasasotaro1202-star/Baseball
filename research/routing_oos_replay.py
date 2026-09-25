@@ -255,7 +255,7 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
         if len(raw_expert_history) >= 40:
             local_result = local_competence_weights(
                 current,
-                np.asarray(raw_expert_history[-120:], dtype=float),
+                np.asarray(history_expert_probs[-120:], dtype=float),
                 np.asarray(outcomes[-120:], dtype=int),
                 history_expert_logloss=np.asarray(history_logloss[-120:], dtype=float),
             )
@@ -343,6 +343,9 @@ def _replay(df: pd.DataFrame, config: RoutingConfig) -> Tuple[Dict, Dict]:
         "calibration_updates_rejected": int(calibrator.rejected_updates),
         "temperature_start": 1.0,
         "temperature_end": float(calibrator.temperature),
+        "local_calibration_updates_accepted": int(local_calibrator.accepted_updates),
+        "local_calibration_updates_rejected": int(local_calibrator.rejected_updates),
+        "local_temperature_end": float(local_calibrator.temperature),
         "expert_calibration_updates_accepted": int(expert_calibrators.accepted_updates),
         "expert_calibration_updates_rejected": int(expert_calibrators.rejected_updates),
         "expert_temperatures_end": [float(x) for x in expert_calibrators.temperatures()],
