@@ -31,6 +31,19 @@ jobs:
       - name: Validate GitHub Actions workflow YAML
         run: |
           ruby -e 'require "yaml"; Dir[".github/workflows/*.yml",".github/workflows/*.yaml"].flatten.sort.each { |p| YAML.load_file(p); puts "[YAML] PASS #{p}" }'
+      - name: Runtime patch smoke tests
+        run: |
+          set -euo pipefail
+          TMP="$(mktemp -d)"
+          trap 'rm -rf "$TMP"' EXIT
+          cp baseball_backtest.py baseball_backtest_runtime_patch.py npb_game_type.py "$TMP"/
+          cp -R research "$TMP"/research
+          (
+            cd "$TMP"
+            python baseball_backtest_runtime_patch.py
+            python -m py_compile baseball_backtest.py
+          )
+
       - name: Validate Python syntax
         run: |
           python -m py_compile run.py
