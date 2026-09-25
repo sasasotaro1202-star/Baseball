@@ -338,30 +338,49 @@ class BaseballBacktest:
             if "npb_game_category" in df.columns
             else pd.Series(["unknown"] * len(df), index=df.index)
         )
+        raw_resolved = out["game_id"].map(raw_categories)
         resolved_cat = existing_cat.where(
             ~existing_cat.isin({"","nan","none","unknown"}),
-            out["game_id"].map(raw_categories).fillna("unknown"),
+            raw_resolved.fillna("unknown"),
         )
         out["npb_game_category"] = resolved_cat.astype(str).str.strip().str.lower()
+
+        # If the category was recovered from authoritative RAW game_kind_id,
+        # recompute eligibility from the recovered category rather than retaining
+        # the stale False flags emitted by the original UNKNOWN multi-source row.
+        recovered = existing_cat.isin({"","nan","none","unknown"}) & raw_resolved.notna()
+        category_training = out["npb_game_category"].isin({"regular","interleague"})
+        category_evaluation = out["npb_game_category"].isin(
+            {"regular","interleague","climax","japan_series","allstar","special"}
+        )
 
         if "npb_type_confidence" not in df.columns:
             out["npb_type_confidence"] = np.where(
                 out["npb_game_category"].eq("unknown"), "low", "high"
             )
         else:
-            out["npb_type_confidence"] = df["npb_type_confidence"]
-        if "npb_training_default" not in df.columns:
-            out["npb_training_default"] = out["npb_game_category"].isin(
-                {"regular","interleague"}
+            original_conf = df["npb_type_confidence"].astype(str).str.strip().str.lower()
+            out["npb_type_confidence"] = original_conf.where(
+                ~recovered, "high"
             )
-        else:
-            out["npb_training_default"] = df["npb_training_default"].astype(str).str.lower().eq("true")
-        if "npb_evaluation_default" not in df.columns:
-            out["npb_evaluation_default"] = out["npb_game_category"].isin(
-                {"regular","interleague","climax","japan_series","allstar","special"}
-            )
-        else:
-            out["npb_evaluation_default"] = df["npb_evaluation_default"].astype(str).str.lower().eq("true")
+
+        original_training = (
+            df["npb_training_default"].astype(str).str.lower().eq("true")
+            if "npb_training_default" in df.columns
+            else category_training
+        )
+        out["npb_training_default"] = original_training.where(
+            ~recovered, category_training
+        )
+
+        original_evaluation = (
+            df["npb_evaluation_default"].astype(str).str.lower().eq("true")
+            if "npb_evaluation_default" in df.columns
+            else category_evaluation
+        )
+        out["npb_evaluation_default"] = original_evaluation.where(
+            ~recovered, category_evaluation
+        )
 
         if "row_order" in df.columns:
             out["row_order"] = pd.to_numeric(df["row_order"], errors="coerce").fillna(0)
