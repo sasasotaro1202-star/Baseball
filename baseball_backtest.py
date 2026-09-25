@@ -276,6 +276,72 @@ class BaseballBacktest:
     # ------------------------------------------------------------------
     # NPB loader
     # ------------------------------------------------------------------
+    def _normalize_npb_pbp(self, raw: pd.DataFrame) -> pd.DataFrame:
+        """Normalize the game-level schema emitted by the NPB collector."""
+        if raw is None or raw.empty:
+            raise RuntimeError("No NPB rows to normalize")
+        df = raw.copy()
+        df.columns = [str(c).strip() for c in df.columns]
+
+        def pick(names, default=""):
+            for name in names:
+                if name in df.columns:
+                    return df[name]
+            return pd.Series([default] * len(df), index=df.index)
+
+        out = pd.DataFrame(index=df.index)
+        out["game_id"] = pick(("game_id","gameId","GameID","gamePk")).astype(str).str.strip()
+        out["date"] = pd.to_datetime(
+            pick(("date","datetime","game_date","gameDate")), errors="coerce", utc=True
+        )
+        out["home"] = pick(("home","home_team","home_team_name","HTeamNameS")).astype(str).str.strip()
+        out["away"] = pick(("away","away_team","away_team_name","VTeamNameS")).astype(str).str.strip()
+        out["home_score"] = pd.to_numeric(
+            pick(("home_score","homeScore","HScore","HomeScore")), errors="coerce"
+        )
+        out["away_score"] = pd.to_numeric(
+            pick(("away_score","awayScore","AScore","VScore","AwayScore")), errors="coerce"
+        )
+        out["venue"] = pick(("venue","venue_name","stadium","stadium_name")).astype(str).replace({"nan":"","None":""}).str.strip()
+        out["game_type"] = pick(("game_type","game_kind_id","gameKindId"), "UNKNOWN").astype(str).replace({"nan":"","None":""}).str.strip()
+        out["home_pitcher"] = pick(("home_pitcher","home_starter")).astype(str).replace({"nan":"","None":""}).str.strip()
+        out["away_pitcher"] = pick(("away_pitcher","away_starter")).astype(str).replace({"nan":"","None":""}).str.strip()
+
+        if "row_order" in df.columns:
+            out["row_order"] = pd.to_numeric(df["row_order"], errors="coerce").fillna(0)
+        else:
+            out["row_order"] = np.arange(len(out), dtype=np.int64)
+
+        # Preserve provenance/PIT fields, but consumption remains guarded by
+        # explicit availability timestamps/state checks elsewhere in the class.
+        for col in (
+            "home_starter","away_starter","home_pregame_starter","away_pregame_starter",
+            "home_lineup_json","away_lineup_json","home_pregame_lineup_json","away_pregame_lineup_json",
+            "starter_available_at","starter_state","starter_source",
+            "home_lineup_available_at","away_lineup_available_at","home_lineup_state","away_lineup_state",
+            "lineup_available_at","lineup_state","lineup_source","prediction_time_utc",
+            "weather_valid_time_utc","weather_available_at","weather_state","weather_source",
+            "weather_pit_quality","weather_temp_c","weather_humidity_pct","weather_precip_mm","weather_wind_kmh",
+            "pregame_context_quality","pregame_starter_verified","pregame_lineup_verified",
+        ):
+            if col in df.columns:
+                out[col] = df[col]
+
+        out = out.dropna(subset=["date","game_id","home","away","home_score","away_score"]).copy()
+        if out.empty:
+            raise RuntimeError("No valid NPB rows after normalization")
+        out["game_id"] = out["game_id"].astype(str)
+        out = out.sort_values(["date","game_id","row_order"]).reset_index(drop=True)
+        self.audit.append({
+            "type":"npb_multisource_normalized",
+            "rows":int(len(out)),
+            "games":int(out["game_id"].nunique()),
+            "coverage_start":str(out["date"].min()),
+            "coverage_end":str(out["date"].max()),
+            "pit_guard":"pregame starter/lineup/weather remain gated by explicit availability provenance",
+        })
+        return out
+
     def load_npb_pbp(self) -> pd.DataFrame:
         """Load all available NPB seasons from the massive multi-season collector.
 
