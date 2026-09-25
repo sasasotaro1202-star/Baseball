@@ -254,7 +254,9 @@ class BaseballBacktest:
         self.results: List[Dict[str, Any]] = []
         self.model_scores: List[Dict[str, Any]] = []
         self.started_at = time.time()
-        # Production workflows allocate 3600s per league run; keep one explicit hard safety cap\n        # while honoring that configured budget instead of silently truncating it to 1500s.\n        self.time_budget_sec = min(max(60.0, float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "3600"))), 3600.0)
+        # Production workflows allocate 3600s per league run; keep one explicit hard safety cap
+        # while honoring that configured budget instead of silently truncating it to 1500s.
+        self.time_budget_sec = min(max(60.0, float(os.getenv("BASEBALL_TIME_BUDGET_SEC", "3600"))), 3600.0)
         self.audit: List[Dict[str, Any]] = []
         self.checkpoint_dir = RESULTS / "checkpoints"
         self.checkpoint_version = "npb-massive-resume-v5-matchday-shadow"
