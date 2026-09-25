@@ -26,3 +26,16 @@ def test_validation_retriggers_on_production_data_updates():
         "data/checkpoints/mlb_collection_status.json",
     ):
         assert path in text
+
+
+def test_runtime_budget_hit_is_fail_closed():
+    text = Path("baseball_backtest.py").read_text(encoding="utf-8")
+    assert "if time.time() - self.started_at >= self.time_budget_sec:" in text
+    assert "budget_exhausted = True" in text
+
+
+def test_stale_oos_artifact_preserves_backtest_results():
+    text = Path(".github/workflows/baseball_production.yml").read_text(encoding="utf-8")
+    assert "results/runtime_summary.csv" in text
+    assert "results/*_backtest_results.csv" in text
+    assert "results/checkpoints/**" in text
