@@ -655,6 +655,20 @@ def build_matchday_observations(game: dict, prediction_time: str) -> list[dict]:
     return rows
 
 
+def prediction_eligibility(game: dict, model_available: bool) -> tuple[bool, str]:
+    """Return whether a matchday game is eligible for an actual production prediction.
+
+    Production prediction requires both an available incumbent model and both
+    officially announced starters. Unknown/unconfirmed starters are deferred;
+    no fallback prediction is emitted from incomplete pregame information.
+    """
+    if not model_available:
+        return False, "MODEL_UNAVAILABLE"
+    if str(game.get("starter_state") or "").upper() != "VERIFIED":
+        return False, "STARTERS_UNCONFIRMED"
+    return True, "READY"
+
+
 def persist_matchday_forward_ledger(predictions: list[dict]) -> None:
     """Append prediction/context snapshots for future settlement and replay."""
     snapshot_path = RESULTS / "matchday_snapshots.jsonl"
@@ -855,7 +869,10 @@ def main() -> int:
         g["rest_travel"]=rest_travel(historical,g)
 
         pred_payload={"incumbent_status":"DEFERRED","score_status":"DEFERRED","low_high_status":"DEFERRED","score_choices":[],"shadow_status":"DEFERRED","shadow_not_promoted":True}
-        if fitted is not None:
+        prediction_ready, prediction_blocker = prediction_eligibility(g, fitted is not None)
+        if not prediction_ready:
+            pred_payload["incumbent_reason"] = model_error if prediction_blocker == "MODEL_UNAVAILABLE" and model_error else prediction_blocker
+        if prediction_ready:
             row=pd.Series({
                 "league":"NPB","game_id":g["game_id"],"datetime":g["datetime"],"home":g["home"],"away":g["away"],
                 "home_starter":g["starter_home"],"away_starter":g["starter_away"],
@@ -1160,9 +1177,22 @@ def main() -> int:
 
     persist_matchday_forward_ledger(predictions)
 
+    pass_count = sum(1 for g in predictions if (g.get("prediction") or {}).get("incumbent_status") == "PASS")
+    deferred_count = len(predictions) - pass_count
+    if not predictions:
+        prediction_status = "DEFERRED"
+    elif pass_count == len(predictions):
+        prediction_status = "PASS"
+    elif pass_count > 0:
+        prediction_status = "PARTIAL"
+    else:
+        prediction_status = "DEFERRED"
+
     payload={
         "schema_version":1,
-        "status":"PASS" if games or not schedule_error else "DEFERRED",
+        "status":"PASS" if (games and not schedule_error and prediction_status == "PASS") else "DEFERRED",
+        "prediction_status":prediction_status,
+        "prediction_summary":{"games":len(predictions),"pass":pass_count,"deferred":deferred_count},
         "prediction_time_utc":now.astimezone(timezone.utc).isoformat(),
         "target_date_jst":target_date,
         "source_policy":{"schedule":"NPB.jp","starter":"NPB.jp announcement","lineup":"SPAIA current snapshot","weather":"Open-Meteo forecast","market":"UNKNOWN/no paid source"},
