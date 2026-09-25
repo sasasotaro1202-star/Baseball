@@ -24,3 +24,10 @@ def test_production_downstream_steps_are_guarded_by_sha_gate():
         pos = text.index(marker)
         block = text[pos:pos + 1800]
         assert "steps.sha_gate.outputs.ok == 'true'" in block, f"{marker} is not guarded by the SHA gate"
+
+
+def test_production_readiness_is_independent_of_npb_status():
+    text = Path(".github/workflows/baseball_production.yml").read_text(encoding="utf-8")
+    assert "data/checkpoints/mlb_collection_status.json" in text
+    assert "data/checkpoints/npb_collection_status.json" not in text
+    assert "steps.mlb_ready.outputs.ready == 'true'" in text
