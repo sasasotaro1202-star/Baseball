@@ -469,6 +469,13 @@ def add_weather(d,year):
         return d
     p=season_paths(year)
     cache=pd.read_csv(p['weather']) if p['weather'].exists() else pd.DataFrame()
+    if not cache.empty:
+        # Sanitize any legacy cache produced by the retired inferred-availability
+        # scheme before it can reach PIT-sensitive replay. New explicit provenance
+        # can replace these rows below.
+        cache['weather_available_at']=''
+        cache['weather_state']='UNKNOWN'
+        cache['weather_pit_quality']='FAIL_CLOSED_NO_ISSUANCE_TIMESTAMP'
     for v in sorted(set(d.venue.astype(str))):
         if near_deadline():
             break
