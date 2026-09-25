@@ -99,7 +99,21 @@ def main() -> int:
     league = args.league
     category = args.category.strip().lower()
     if category not in EVALUATION[league]:
-        raise SystemExit(f"category is not in the league evaluation universe: {category}")
+        payload = {
+            "schema_version": 1,
+            "status": "DEFERRED",
+            "reason": f"category is not in the {league} evaluation universe: {category}",
+            "promotion_auto": False,
+            "league": league,
+            "category": category,
+        }
+        SNAP.mkdir(parents=True, exist_ok=True)
+        (SNAP / f"{league.lower()}_{category}_comparison.json").write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2) + "\\n",
+            encoding="utf-8",
+        )
+        print(json.dumps(payload, ensure_ascii=False))
+        return 0
 
     baseline = tuple(BASELINE[league])
     candidate = tuple(dict.fromkeys((*baseline, category)))
