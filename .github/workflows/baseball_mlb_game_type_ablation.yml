@@ -220,7 +220,7 @@ jobs:
               keep=np.isfinite(p) & np.isfinite(y)
               p=np.clip(p[keep],1e-9,1-1e-9); y=y[keep].astype(int)
               if len(y)==0:
-                  return {"rows":0,"accuracy":float("nan"),"logloss":float("nan"),"brier":float("nan"),"ece":float("nan")}
+                  return {"rows":0,"accuracy":None,"logloss":None,"brier":None,"ece":None}
               actual_home=(y==0).astype(int)
               pred_home=(p>=0.5).astype(int)
               acc=float(np.mean(pred_home==actual_home))
@@ -244,7 +244,7 @@ jobs:
               cand=df[df["game_id"].astype(str).isin(common)].copy().sort_values(["datetime","game_id"],kind="mergesort")
               base_common=baseline[baseline["game_id"].astype(str).isin(common)].copy().sort_values(["datetime","game_id"],kind="mergesort")
               row={"variant":name,"common_rows":int(len(common)),"overall":metric(cand)}
-              if name!="baseline" and not cand.empty:
+              if name!="baseline" and len(common)>=200 and not cand.empty:
                   row["baseline"]=metric(base_common)
                   for frac,label in ((0.70,"latest30pct"),(0.80,"latest20pct")):
                       cut=max(1,int(math.floor(len(cand)*frac)))
