@@ -117,11 +117,14 @@ jobs:
           import json
           from pathlib import Path
           p=Path('data/checkpoints/npb_collection_status.json')
-          s=json.loads(p.read_text(encoding='utf-8'))
-          games=int(s.get('aggregate_games') or 0)
-          if games <= 0:
-              raise SystemExit('[ACQ RECOVERY] refusing to persist zero-game checkpoint')
-          print(f'[ACQ RECOVERY] checkpoint valid for persistence: aggregate_games={games} complete={bool(s.get("complete"))}')
+          if not p.exists():
+              print('[ACQ RECOVERY] aggregate status absent; preserving available season checkpoints without claiming completion')
+          else:
+              s=json.loads(p.read_text(encoding='utf-8'))
+              games=int(s.get('aggregate_games') or 0)
+              if games <= 0:
+                  raise SystemExit('[ACQ RECOVERY] refusing to persist zero-game checkpoint')
+              print(f'[ACQ RECOVERY] checkpoint valid for persistence: aggregate_games={games} complete={bool(s.get("complete"))}')
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
