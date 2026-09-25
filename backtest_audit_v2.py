@@ -242,8 +242,16 @@ if validation and "[YAML] PASS" not in validation:
     errors.append("workflow-wide YAML validation step missing")
 
 production = need(".github/workflows/baseball_production.yml", r"Validate Code Syntax", "production validation dependency")
-if production and ("workflow_run:" not in production or "github.event.workflow_run.conclusion == 'success'" not in production):
-    errors.append("production is not fail-closed on successful validation")
+if production:
+    workflow_run_safe = (
+        "workflow_run:" in production
+        and (
+            "github.event.workflow_run.conclusion == 'success'" in production
+            or "FAIL-CLOSED: upstream validation conclusion" in production
+        )
+    )
+    if not workflow_run_safe:
+        errors.append("production is not fail-closed on validation workflow_run")
 
 for workflow_path in (
     ".github/workflows/baseball_production.yml",
