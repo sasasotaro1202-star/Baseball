@@ -458,12 +458,23 @@ def rest_travel(historical, game):
         return {"state":"UNKNOWN"}
     result={}
     for side, team in (("home",game["home"]),("away",game["away"])):
-        sub=historical[(historical["home"]==team)|(historical["away"]==team)].sort_values("datetime")
+        dt=pd.Timestamp(game["datetime"])
+        if pd.isna(dt):
+            result[side]={"state":"UNKNOWN","reason":"target game datetime invalid"}
+            continue
+        sub=historical[
+            ((historical["home"]==team)|(historical["away"]==team))
+            & (pd.to_datetime(historical["datetime"], errors="coerce", utc=True) < dt)
+        ].copy()
         if sub.empty:
-            result[side]={"rest_days":30.0,"games_last_3d":0,"games_last_7d":0,"travel_miles":0.0}
+            result[side]={"rest_days":30.0,"games_last_3d":0,"games_last_7d":0,"travel_miles":0.0,"history_cutoff":"strictly_before_target"}
+            continue
+        sub["datetime"]=pd.to_datetime(sub["datetime"], errors="coerce", utc=True)
+        sub=sub.dropna(subset=["datetime"]).sort_values("datetime")
+        if sub.empty:
+            result[side]={"rest_days":30.0,"games_last_3d":0,"games_last_7d":0,"travel_miles":0.0,"history_cutoff":"strictly_before_target"}
             continue
         last=sub.iloc[-1]
-        dt=pd.Timestamp(game["datetime"])
         last_dt=pd.Timestamp(last["datetime"])
         rest=max(0.0,(dt-last_dt).total_seconds()/86400)
         prev_venue=str(last.get("venue",""))
@@ -475,7 +486,9 @@ def rest_travel(historical, game):
             p=np.pi/180.0
             a=np.sin((lat2-lat1)*p/2)**2+np.cos(lat1*p)*np.cos(lat2*p)*np.sin((lon2-lon1)*p/2)**2
             miles=3958.7613*2*np.arcsin(np.sqrt(a))
-        result[side]={"rest_days":float(rest),"games_last_3d":int(((sub["datetime"]>=last_dt-pd.Timedelta(days=3)) & (sub["datetime"]<dt)).sum()),"games_last_7d":int(((sub["datetime"]>=last_dt-pd.Timedelta(days=7)) & (sub["datetime"]<dt)).sum()),"travel_miles":float(miles)}
+        games_3d=int((sub["datetime"]>=dt-pd.Timedelta(days=3)).sum())
+        games_7d=int((sub["datetime"]>=dt-pd.Timedelta(days=7)).sum())
+        result[side]={"rest_days":float(rest),"games_last_3d":games_3d,"games_last_7d":games_7d,"travel_miles":float(miles),"history_cutoff":"strictly_before_target"}
     result["state"]="VERIFIED"
     return result
 
