@@ -236,7 +236,9 @@ jobs:
                   if: success() && steps.sha_gate.outputs.ok == 'true' && steps.mlb_ready.outputs.ready == 'true'
                   env:
           BASEBALL_TIME_BUDGET_SEC: '3600'
-          MLB_ENRICH_STARTERS: '1'
+          # Historical final boxscore starters are not PIT-safe without an availability timestamp.
+          # Keep enrichment disabled until the pregame snapshot ledger exists.
+          MLB_ENRICH_STARTERS: '0'
           MLB_MIN_STARTER_COVERAGE: '90'
                   run: python baseball_backtest.py --mlb-only --data-dir data --mlb-start 2020 --mlb-end 2026
 
