@@ -4,7 +4,8 @@ from pathlib import Path
 def test_production_workflow_validation_gate_is_race_safe():
     text = Path(".github/workflows/baseball_production.yml").read_text(encoding="utf-8")
     expected = "if: github.event_name != 'workflow_run' && steps.sha_gate.outputs.ok == 'true'"
-    assert expected in text, "workflow_run events must rely on the already-verified SHA gate"
+    assert expected in text, "manual/scheduled validation check must remain gated"
+    assert "FAIL-CLOSED: upstream validation conclusion" in text, "workflow_run validation must fail closed when upstream validation is not successful"
     assert "Verify validation SHA matches current main" in text
     assert "Require successful validation for current main" in text
 
