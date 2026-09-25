@@ -1705,8 +1705,12 @@ class BaseballBacktest:
             for g in d.get("games", []):
                 t=g.get("teams",{}); h=t.get("home",{}); a=t.get("away",{})
                 hp=(h.get("probablePitcher") or {}).get("fullName",""); ap=(a.get("probablePitcher") or {}).get("fullName","")
-                # "probable" is not equivalent to officially confirmed. Only mark confirmed when status/game data says it.
-                confirmed=bool(hp and ap)
+                # Stats API schedule exposes probablePitcher, but that is not by itself
+                # explicit official pre-first-pitch confirmation. Keep it visible for
+                # research while leaving the production prediction gate CLOSED.
+                confirmation_state = "PROBABLE" if (hp and ap) else "UNKNOWN"
+                confirmation_source = "statsapi_schedule_probable" if (hp and ap) else "none"
+                confirmed = False
                 info=classify_mlb_game(
                     g.get("gameType", ""),
                     g.get("seriesDescription", ""),
@@ -1720,6 +1724,8 @@ class BaseballBacktest:
                     "home_starter":hp,
                     "away_starter":ap,
                     "confirmed_starters":confirmed,
+                    "starter_confirmation_state":confirmation_state,
+                    "starter_confirmation_source":confirmation_source,
                     "game_type_code":str(g.get("gameType") or ""),
                     "series_description":str(g.get("seriesDescription") or ""),
                     "game_type":str(g.get("seriesDescription") or g.get("gameType") or "UNKNOWN"),
