@@ -321,13 +321,21 @@ jobs:
           echo '[PERSIST] verified state push failed after 5 attempts'
           exit 1
 
-      - name: Upload stale-OOS diagnostics
+      - name: Upload stale-OOS diagnostics and results
         if: success() && steps.sha_gate.outputs.ok == 'true' && steps.oos_sha_gate.outputs.status == 'deferred'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: baseball-production-stale-oos-deferred
-          path: results/production_persist_deferred.txt
-          if-no-files-found: error
+          path: |
+            results/production_persist_deferred.txt
+            results/runtime_summary.csv
+            results/audit_log.csv
+            results/combined_backtest_results.csv
+            results/*_backtest_results.csv
+            results/*_backtest_summary.csv
+            results/*_model_comparison.csv
+            results/checkpoints/**
+          if-no-files-found: warn
           retention-days: 30
 
       - name: Upload deferred diagnostics
