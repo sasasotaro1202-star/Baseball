@@ -69,6 +69,7 @@ def assess_case_risk(
     lineup_state: str = "UNKNOWN",
     weather_state: str = "UNKNOWN",
     roster_events: Iterable[Mapping[str, object]] | None = None,
+    rest_travel: Mapping[str, object] | None = None,
     observation_count: int = 0,
     usable_observation_count: int = 0,
 ) -> dict[str, object]:
@@ -111,16 +112,33 @@ def assess_case_risk(
         + 0.30 * _clip01(feature_drift)
         + 0.20 * _clip01(output_drift)
     )
+
+    # Situational anomalies are diagnostics, not forced outcome flips.
+    rt = dict(rest_travel or {})
+    situational_parts = []
+    for side in ("home", "away"):
+        item = rt.get(side) if isinstance(rt.get(side), Mapping) else {}
+        rest_days = float(item.get("rest_days", 30.0) or 30.0)
+        games_3d = float(item.get("games_last_3d", 0.0) or 0.0)
+        games_7d = float(item.get("games_last_7d", 0.0) or 0.0)
+        travel_miles = float(item.get("travel_miles", 0.0) or 0.0)
+        short_rest = _clip01((2.0 - rest_days) / 2.0)
+        density = _clip01(max(games_3d / 3.0, games_7d / 7.0))
+        travel = _clip01(travel_miles / 1000.0)
+        situational_parts.append(0.45 * short_rest + 0.35 * density + 0.20 * travel)
+    situational_risk = float(max(situational_parts, default=0.0))
+
     instability_risk = _clip01(
         0.55 * _clip01(disagreement)
         + 0.45 * _clip01(conformal)
     )
 
     score = _clip01(
-        0.38 * model_risk
-        + 0.27 * data_risk
-        + 0.20 * drift_risk
-        + 0.15 * instability_risk
+        0.34 * model_risk
+        + 0.25 * data_risk
+        + 0.18 * drift_risk
+        + 0.13 * instability_risk
+        + 0.10 * situational_risk
     )
     state = "HIGH" if score >= 0.70 else "MEDIUM" if score >= 0.45 else "LOW"
 
@@ -145,6 +163,8 @@ def assess_case_risk(
         reasons.append("observation_coverage_gap")
     if events:
         reasons.append("roster_change_signal")
+    if situational_risk >= 0.60:
+        reasons.append("situational_load_or_travel_anomaly")
 
     # This is intentionally named as a signal rather than a forced outcome.
     upset_signal = _clip01(
@@ -169,5 +189,6 @@ def assess_case_risk(
         "lineup_risk": float(lineup_risk),
         "weather_risk": float(weather_risk),
         "missing_observation_risk": float(missing_risk),
+        "situational_risk": float(situational_risk),
         "reasons": reasons,
     }
