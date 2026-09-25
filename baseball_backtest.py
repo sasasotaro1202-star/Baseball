@@ -1547,8 +1547,19 @@ class BaseballBacktest:
                     league,
                 )
             except Exception as e:
-                print(f"[{league}] block {bstart}: model failure {e}")
-                continue
+                self.audit.append({
+                    "type": "oos_block_failure",
+                    "league": league,
+                    "bstart": int(bstart),
+                    "bend": int(bend),
+                    "error": f"{type(e).__name__}: {e}",
+                    "status": "FAIL",
+                })
+                print(f"[{league}] block {bstart}: model failure -> FAIL-CLOSED: {e}")
+                raise RuntimeError(
+                    f"{league} chronological OOS block {bstart}:{bend} failed; "
+                    "refusing to emit a misleading partial OOS result"
+                ) from e
             # Preserve each expert's raw OOS probabilities for research-only
             # dynamic routing. These probabilities are produced before any
             # realized outcome from the current block is consumed.
