@@ -2,11 +2,23 @@
   "schema_version": 1,
   "policy": "explicit competition taxonomy; PIT/OOS evidence required before cross-competition training",
   "NPB": {
-    "training_default": ["regular", "interleague"],
-    "evaluation_default": ["regular", "interleague", "climax", "japan_series", "allstar", "special"]
+    "training_default": [
+      "regular",
+      "interleague"
+    ],
+    "evaluation_default": [
+      "regular",
+      "interleague",
+      "climax",
+      "japan_series",
+      "allstar",
+      "special"
+    ]
   },
   "MLB": {
-    "training_default": ["regular"],
+    "training_default": [
+      "regular"
+    ],
     "evaluation_default": [
       "regular",
       "wild_card",
@@ -22,7 +34,7 @@
     "source": "MLB Stats API gameType + seriesDescription"
   },
   "international": {
-    "data_acquisition_status": "RESEARCH_SCOPE_ONLY",
+    "data_acquisition_status": "RESEARCH_CONNECTED_PARTIAL",
     "training_default": [],
     "evaluation_default": [
       "world_baseball_classic",
@@ -46,6 +58,20 @@
       "Asian/continental championships",
       "Other WBSC-sanctioned senior international competitions"
     ],
-    "note": "Classification is implemented, but no international game acquisition is promoted into production by this change."
+    "note": "Asian Games schedule/results acquisition is connected for research-only audit/OOS fixtures. It is not a production training or prediction feature source. Other international competitions remain taxonomy/scope-only until equivalent free, reproducible and PIT-safe sources are validated.",
+    "connected_research_sources": {
+      "asian_games": {
+        "status": "CONNECTED_RESEARCH_ONLY",
+        "editions": [
+          2018,
+          2023,
+          2026
+        ],
+        "source": "https://www.japan-baseball.jp/",
+        "collector": "research/international_asian_games_collector.py",
+        "prediction_features_allowed": false,
+        "production_training_enabled": false
+      }
+    }
   }
 }
