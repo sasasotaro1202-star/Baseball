@@ -1472,9 +1472,45 @@ class BaseballBacktest:
             existing = pd.DataFrame()
         completed_ids = set(existing.get("game_id", pd.Series(dtype=str)).astype(str)) if not existing.empty else set()
         all_rows = existing.to_dict("records") if not existing.empty else []
-        start = max(MIN_TRAIN, int(len(X) * 0.25))
+        # Start only after the prefix actually contains enough training-eligible
+        # rows.  Competition-type exclusions can make the raw row count look large
+        # while the effective chronological training sample is still too small.
+        required_classes = 3 if league == "NPB" else 2
+        prefix_train = np.cumsum(train_mask.astype(int))
+        valid_positions = np.flatnonzero(prefix_train >= MIN_TRAIN)
+        if len(valid_positions) == 0:
+            self.audit.append({
+                "type": "effective_training_gate",
+                "league": league,
+                "status": "DEFERRED",
+                "reason": "fewer than MIN_TRAIN training-eligible rows across the full chronological sample",
+                "min_train": int(MIN_TRAIN),
+                "training_rows": int(train_mask.sum()),
+            })
+            print(f"[{league}] DEFERRED: no chronological prefix reaches MIN_TRAIN eligible rows")
+            return pd.DataFrame(all_rows)
+        first_valid_start = int(valid_positions[0]) + 1
+        start = max(first_valid_start, int(len(X) * 0.25))
+        self.audit.append({
+            "type": "effective_training_gate",
+            "league": league,
+            "status": "PASS",
+            "first_valid_start": int(first_valid_start),
+            "min_train": int(MIN_TRAIN),
+            "required_classes": int(required_classes),
+            "total_training_rows": int(train_mask.sum()),
+        })
         for bstart in range(start, len(X), RETRAIN_EVERY):
             bend = min(len(X), bstart + RETRAIN_EVERY)
+            effective_train_y = y[:bstart][train_mask[:bstart]]
+            train_count = int(len(effective_train_y))
+            class_count = int(len(np.unique(effective_train_y))) if train_count else 0
+            if train_count < MIN_TRAIN or class_count < required_classes:
+                print(
+                    f"[{league}] skip block {bstart}:{bend}: "
+                    f"effective_train={train_count}, classes={class_count}"
+                )
+                continue
             block_ids = set(meta.iloc[bstart:bend].loc[eval_mask[bstart:bend], "game_id"].astype(str))
             if block_ids and block_ids.issubset(completed_ids):
                 print(f"[{league}] resume skip block {bstart}:{bend} ({len(block_ids)} games already checkpointed)")
