@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "policy": "explicit competition taxonomy; PIT/OOS evidence required before cross-competition training",
+  "NPB": {
+    "training_default": ["regular", "interleague"],
+    "evaluation_default": ["regular", "interleague", "climax", "japan_series", "allstar", "special"]
+  },
+  "MLB": {
+    "training_default": ["regular"],
+    "evaluation_default": [
+      "regular",
+      "wild_card",
+      "division_series",
+      "league_championship",
+      "world_series",
+      "allstar",
+      "spring_training",
+      "exhibition_special",
+      "other_postseason"
+    ],
+    "source": "MLB Stats API gameType + seriesDescription"
+  },
+  "international": {
+    "data_acquisition_status": "RESEARCH_SCOPE_ONLY",
+    "training_default": [],
+    "evaluation_default": [
+      "world_baseball_classic",
+      "premier12",
+      "olympic_games",
+      "asian_games",
+      "pan_american_games",
+      "asian_championship",
+      "continental_championship",
+      "world_cup",
+      "other_major_multisport",
+      "friendly_exhibition",
+      "other_international"
+    ],
+    "required_events": [
+      "World Baseball Classic",
+      "Premier12",
+      "Olympic Games",
+      "Asian Games",
+      "Pan American Games",
+      "Asian/continental championships",
+      "Other WBSC-sanctioned senior international competitions"
+    ],
+    "note": "Classification is implemented, but no international game acquisition is promoted into production by this change."
+  }
+}
