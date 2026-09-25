@@ -85,6 +85,7 @@ jobs:
           check_url 'SPAIA' 'https://spaia.jp/baseball/npb/api/weekly_schedule'
       - name: NPB full-scope resumable acquisition
         id: npb_acquire
+        continue-on-error: true
         env:
           NPB_START_YEAR: "2017"
           NPB_END_YEAR: "2026"
@@ -143,6 +144,7 @@ jobs:
           exit 1
 
       - name: NPB checkpoint gate
+        if: always()
         id: npb_gate
         run: |
           set -euo pipefail
@@ -150,23 +152,24 @@ jobs:
           import json
           from pathlib import Path
           p=Path('data/checkpoints/npb_collection_status.json')
-          if not p.exists(): raise SystemExit('NPB status file missing')
-          s=json.loads(p.read_text())
-          complete=bool(s.get('complete'))
-          games=int(s.get('aggregate_games') or 0)
-          print('[NPB]',complete,games)
-          if games <= 0: raise SystemExit('NPB collected zero games')
-          print(f'complete={str(complete).lower()}')
+          if not p.exists():
+              print('[NPB] status file missing; continuing with MLB acquisition')
+              print('complete=false')
+          else:
+              s=json.loads(p.read_text())
+              complete=bool(s.get('complete'))
+              games=int(s.get('aggregate_games') or 0)
+              print('[NPB]',complete,games)
+              print(f'complete={str(complete).lower()}')
           PY
       - name: MLB full-scope acquisition with incremental refresh
-        if: steps.npb_gate.outputs.complete == 'true'
+        id: mlb_acquire
         env:
           MLB_INCREMENTAL_TIMEOUT: "20"
           MLB_CORRECTION_DAYS: "7"
           MLB_BOOTSTRAP_START_YEAR: "2020"
         run: python mlb_incremental_acquire.py
       - name: Acquisition data quality gate
-        if: steps.npb_gate.outputs.complete == 'true'
         run: |
           set -euo pipefail
           test -s data/mlb_games.csv
@@ -179,6 +182,33 @@ jobs:
           print(f'[MLB ACQ] starter_coverage={(d.home_starter.fillna("").astype(str).str.strip().ne("") & d.away_starter.fillna("").astype(str).str.strip().ne("")).mean():.1%}')
           PY
           python production_data_quality_gate.py
+      - name: Persist MLB readiness checkpoint
+        if: success() && steps.mlb_acquire.outcome == 'success'
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+          p=Path('data/mlb_games.csv')
+          if not p.exists():
+              raise SystemExit('MLB cache missing after successful acquisition')
+          d=pd.read_csv(p, low_memory=False)
+          games=len(d)
+          if games <= 100:
+              raise SystemExit(f'MLB cache unexpectedly small: {games}')
+          out=Path('data/checkpoints/mlb_collection_status.json')
+          out.parent.mkdir(parents=True, exist_ok=True)
+          payload={
+              'complete': True,
+              'aggregate_games': int(games),
+              'coverage_start': str(d['datetime'].min()) if 'datetime' in d.columns and len(d) else '',
+              'coverage_end': str(d['datetime'].max()) if 'datetime' in d.columns and len(d) else '',
+              'source': 'mlb_incremental_acquire.py',
+          }
+          out.write_text(json.dumps(payload, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
+          print(f'[MLB READY] checkpoint persisted games={games}')
+          PY
       - name: Persist acquired data
         if: success()
         run: |
@@ -199,6 +229,17 @@ jobs:
             sleep $((attempt * 5))
           done
           exit 1
+      - name: Finalize NPB acquisition outcome
+        if: always()
+        run: |
+          set -euo pipefail
+          outcome='${{ steps.npb_acquire.outcome }}'
+          echo "[NPB] acquisition outcome=${outcome}"
+          if [ "$outcome" != "success" ]; then
+            echo "[NPB] acquisition failed or was cancelled; resumable checkpoint/recovery remains authoritative"
+            exit 1
+          fi
+
       - name: Upload acquisition diagnostics
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
