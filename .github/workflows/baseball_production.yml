@@ -265,6 +265,28 @@ jobs:
       - name: Persist verified state atomically
         if: success() && steps.sha_gate.outputs.ok == 'true' && (steps.npb_ready.outputs.ready == 'true' || steps.mlb_ready.outputs.ready == 'true')
         run: |
+          git fetch origin main
+          CURRENT_REMOTE_SHA="$(git rev-parse origin/main)"
+          VALIDATED_SHA="${{ github.event.workflow_run.head_sha }}"
+          EVENT_NAME="${{ github.event_name }}"
+          if [ "$EVENT_NAME" = "workflow_run" ] && [ -n "$VALIDATED_SHA" ] && [ "$CURRENT_REMOTE_SHA" != "$VALIDATED_SHA" ]; then
+            echo "[PERSIST] DEFERRED: OOS was computed from validated_sha=$VALIDATED_SHA but current_main=$CURRENT_REMOTE_SHA"
+            mkdir -p results
+            CURRENT_REMOTE_SHA="$CURRENT_REMOTE_SHA" VALIDATED_SHA="$VALIDATED_SHA" python - <<'PY'
+import json, os
+from pathlib import Path
+Path("results/production_persist_deferred.json").write_text(
+    json.dumps({
+        "status": "DEFERRED",
+        "reason": "validated SHA is no longer current main",
+        "validated_sha": os.environ.get("VALIDATED_SHA", ""),
+        "current_main_sha": os.environ.get("CURRENT_REMOTE_SHA", ""),
+    }, ensure_ascii=False, indent=2) + "\n",
+    encoding="utf-8",
+)
+PY
+            exit 0
+          fi
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
