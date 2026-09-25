@@ -1,3 +1,6 @@
+import pandas as pd
+
+from baseball_backtest import BaseballBacktest
 from mlb_game_type import (
     CATEGORIES,
     DEFAULT_TRAINING_CATEGORIES,
@@ -59,3 +62,38 @@ def test_international_wbsc_events():
     assert classify_international_game("World Baseball Classic")["category"] == "world_baseball_classic"
     assert classify_international_game("Premier12")["category"] == "premier12"
     assert classify_international_game("Olympic Games")["category"] == "olympic_games"
+
+
+def test_mlb_postgame_starter_enrichment_is_pit_closed(tmp_path):
+    bt = BaseballBacktest(tmp_path)
+    games = pd.DataFrame(
+        [{
+            "game_id": "1",
+            "home_starter": "Probable Home",
+            "away_starter": "Probable Away",
+            "prediction_time_utc": "2026-09-25T16:00:00Z",
+            "starter_available_at": "2026-09-25T16:05:00Z",
+        }]
+    )
+    out = bt.enrich_mlb_starters(games)
+    assert out.loc[0, "confirmed_starters"] is False
+    assert out.loc[0, "starter_confirmation_state"] == "UNKNOWN"
+    assert out.loc[0, "starter_confirmation_source"] == "none"
+    assert out.loc[0, "home_starter"] == "Probable Home"
+    assert out.loc[0, "away_starter"] == "Probable Away"
+
+
+def test_mlb_pregame_starter_provenance_can_be_confirmed(tmp_path):
+    bt = BaseballBacktest(tmp_path)
+    games = pd.DataFrame(
+        [{
+            "home_pregame_starter": "Confirmed Home",
+            "away_pregame_starter": "Confirmed Away",
+            "prediction_time_utc": "2026-09-25T16:00:00Z",
+            "starter_available_at": "2026-09-25T15:30:00Z",
+        }]
+    )
+    out = bt.enrich_mlb_starters(games)
+    assert bool(out.loc[0, "confirmed_starters"]) is True
+    assert out.loc[0, "starter_confirmation_state"] == "CONFIRMED"
+    assert out.loc[0, "starter_confirmation_source"] == "pregame_snapshot"
