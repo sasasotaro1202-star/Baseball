@@ -44,6 +44,7 @@ jobs:
           echo "ok=true" >> "$GITHUB_OUTPUT"
 
       - name: Require successful validation for current main
+        if: github.event_name != 'workflow_run' && steps.sha_gate.outputs.ok == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_API_URL: ${{ github.api_url }}
