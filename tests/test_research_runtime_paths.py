@@ -53,3 +53,42 @@ def test_common_venue_columns_are_preserved():
     })
     out = bt.aggregate_npb_games(g)
     assert out.loc[0, "venue"] == "甲子園"
+
+
+def test_context_readiness_uses_only_prior_training_eligible_pit_safe_rows():
+    import pandas as pd
+    from baseball_backtest import BaseballBacktest
+
+    base = pd.Timestamp("2024-04-01T09:00:00Z")
+    rows = []
+    for i in range(34):
+        dt = base + pd.Timedelta(days=i)
+        rows.append({
+            "game_id": f"g{i:03d}",
+            "league": "NPB",
+            "home": "阪神タイガース" if i % 2 == 0 else "読売ジャイアンツ",
+            "away": "読売ジャイアンツ" if i % 2 == 0 else "阪神タイガース",
+            "datetime": dt,
+            "home_score": 3 + (i % 2),
+            "away_score": 1,
+            "venue": "甲子園",
+            "npb_game_category": "regular",
+            "home_pregame_starter": f"home-sp-{i}",
+            "away_pregame_starter": f"away-sp-{i}",
+            "starter_available_at": (dt - pd.Timedelta(hours=2)).isoformat(),
+            "prediction_time_utc": dt.isoformat(),
+        })
+
+    rows[5]["npb_game_category"] = "special"
+    rows[6]["npb_game_category"] = "unknown"
+
+    bt = BaseballBacktest()
+    X, _, _ = bt.build_features(pd.DataFrame(rows))
+
+    assert float(X.iloc[0]["starter_known"]) == 0.0
+    assert float(X.iloc[29]["starter_known"]) == 0.0
+    assert float(X.iloc[30]["starter_known"]) == 0.0
+    assert float(X.iloc[32]["starter_known"]) == 1.0
+    assert float(X.iloc[33]["starter_known"]) == 1.0
+    assert bt.context_pit_counters["starter_context_seen"] == 32
+    assert bt.context_pit_counters["starter_context_safe"] == 32
