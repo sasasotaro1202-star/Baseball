@@ -1663,7 +1663,25 @@ class BaseballBacktest:
                 hp=(h.get("probablePitcher") or {}).get("fullName",""); ap=(a.get("probablePitcher") or {}).get("fullName","")
                 # "probable" is not equivalent to officially confirmed. Only mark confirmed when status/game data says it.
                 confirmed=bool(hp and ap)
-                rows.append({"game_id":g.get("gamePk"),"datetime":g.get("gameDate"),"home":h.get("team",{}).get("name",""),"away":a.get("team",{}).get("name",""),"home_starter":hp,"away_starter":ap,"confirmed_starters":confirmed})
+                info=classify_mlb_game(
+                    g.get("gameType", ""),
+                    g.get("seriesDescription", ""),
+                    "",
+                )
+                rows.append({
+                    "game_id":g.get("gamePk"),
+                    "datetime":g.get("gameDate"),
+                    "home":h.get("team",{}).get("name",""),
+                    "away":a.get("team",{}).get("name",""),
+                    "home_starter":hp,
+                    "away_starter":ap,
+                    "confirmed_starters":confirmed,
+                    "game_type_code":str(g.get("gameType") or ""),
+                    "series_description":str(g.get("seriesDescription") or ""),
+                    "game_type":str(g.get("seriesDescription") or g.get("gameType") or "UNKNOWN"),
+                    "mlb_game_category":info["category"],
+                    "mlb_type_confidence":info["confidence"],
+                })
         return pd.DataFrame(rows)
 
     def build_future_mlb_predictions(self, schedule: pd.DataFrame) -> pd.DataFrame:
