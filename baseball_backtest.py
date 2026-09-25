@@ -265,9 +265,9 @@ class BaseballBacktest:
         self.pitcher_history = defaultdict(list)
         self.player_history = defaultdict(list)
         self.venue_states: Dict[Tuple[str, str], VenueState] = {}
-        training_set = set(training_categories())
-        evaluation_set = set(evaluation_categories())
-        self.audit.append({"type":"npb_game_type_policy","training_categories":sorted(training_set),"evaluation_categories":sorted(evaluation_set)})
+        self.training_set = set(training_categories())
+        self.evaluation_set = set(evaluation_categories())
+        self.audit.append({"type":"npb_game_type_policy","training_categories":sorted(self.training_set),"evaluation_categories":sorted(self.evaluation_set)})
         self.player_index = {}
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
@@ -1070,8 +1070,8 @@ class BaseballBacktest:
         last_season=None
         for _, row in games.iterrows():
             category = str(row.get("npb_game_category", "unknown") or "unknown").strip().lower() if row.get("league") == "NPB" else "mlb"
-            train_include = category in training_set if row.get("league") == "NPB" else True
-            eval_include = category in evaluation_set if row.get("league") == "NPB" else True
+            train_include = category in self.training_set if row.get("league") == "NPB" else True
+            eval_include = category in self.evaluation_set if row.get("league") == "NPB" else True
             cur_season=int(pd.Timestamp(row["datetime"]).year)
             if last_season is not None and cur_season != last_season:
                 # Regress Elo at each season boundary; rolling team form naturally
