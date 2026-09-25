@@ -45,19 +45,35 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -s data/npb_multi_source_games_all.csv || {
-            echo '[GAME-TYPE ABLATION] DEFERRED: aggregate NPB dataset is not available'
-            echo 'ready=false' >> "$GITHUB_OUTPUT"
-            exit 0
-          }
           python - <<'PY' >> "$GITHUB_OUTPUT"
+          from pathlib import Path
           import pandas as pd
-          d=pd.read_csv("data/npb_multi_source_games_all.csv",usecols=lambda c: c in {"game_id","npb_game_category","game_type"})
-          if "game_id" not in d or len(d) < 200:
+
+          aggregate = Path("data/npb_multi_source_games_all.csv")
+          files = [aggregate] if aggregate.exists() else sorted(Path("data/npb_games").glob("*_multi_source_pbp.csv"))
+          if not files:
+              print('[GAME-TYPE ABLATION] DEFERRED: no NPB multi-source dataset is available')
+              print("ready=false")
+              raise SystemExit
+
+          frames = []
+          for path in files:
+              try:
+                  frame = pd.read_csv(path, usecols=lambda c: c in {"game_id","npb_game_category","game_type"})
+              except Exception:
+                  continue
+              if "game_id" in frame:
+                  frames.append(frame)
+          if not frames:
+              print("ready=false")
+              raise SystemExit
+          d = pd.concat(frames, ignore_index=True, sort=False).drop_duplicates("game_id")
+          if len(d) < 200:
+              print(f"[GAME-TYPE ABLATION] DEFERRED: rows={len(d)}")
               print("ready=false")
               raise SystemExit
           cats=d.get("npb_game_category",pd.Series(dtype=str)).fillna("unknown").value_counts()
-          print(f"[GAME-TYPE ABLATION] rows={len(d)} categories={cats.to_dict()}")
+          print(f"[GAME-TYPE ABLATION] rows={len(d)} files={len(files)} categories={cats.to_dict()}")
           print("ready=true")
           PY
       - name: Setup Python
