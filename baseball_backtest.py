@@ -1839,8 +1839,15 @@ class BaseballBacktest:
         pd.DataFrame([runtime_summary]).to_csv(RESULTS / "runtime_summary.csv", index=False)
         print(json.dumps(runtime_summary, ensure_ascii=False))
         print("="*72)
-        if failures or budget_exhausted:
-            print("FAIL-CLOSED: backtest did not produce a fully valid run")
+        runtime_over_budget = bool(runtime_seconds > self.time_budget_sec)
+        if failures or budget_exhausted or runtime_over_budget:
+            if runtime_over_budget:
+                print(
+                    f"FAIL-CLOSED: runtime {runtime_seconds}s exceeded "
+                    f"configured budget {self.time_budget_sec}s"
+                )
+            else:
+                print("FAIL-CLOSED: backtest did not produce a fully valid run")
             raise RuntimeError("Baseball backtest incomplete or failed; see results/audit_log.csv and runtime_summary.csv")
         print("COMPLETE")
         print("="*72)
