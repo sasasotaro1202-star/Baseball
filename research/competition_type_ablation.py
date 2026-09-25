@@ -73,8 +73,14 @@ def run_variant(league: str, categories: tuple[str, ...], out_dir: Path, data_di
             shutil.copy2(src, dst)
             copied.append(str(dst))
 
+    if proc.returncode != 0:
+        status = "FAIL"
+    elif not copied:
+        status = "DEFERRED"
+    else:
+        status = "PASS"
     return {
-        "status": "PASS" if proc.returncode == 0 else "FAIL",
+        "status": status,
         "returncode": proc.returncode,
         "training_categories": list(categories),
         "evaluation_categories": list(EVALUATION[league]),
