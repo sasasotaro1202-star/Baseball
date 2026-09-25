@@ -95,7 +95,12 @@ jobs:
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             if git rebase origin/main && git push origin HEAD:main; then exit 0; fi
-            git rebase --abort 2>/dev/null || true
+            if git rebase --abort 2>/dev/null; then
+              :
+            else
+              rc=$?
+              if [ "$rc" -ne 128 ]; then exit "$rc"; fi
+            fi
             sleep $((attempt * 5))
           done
           exit 1
