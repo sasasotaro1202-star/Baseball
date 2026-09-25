@@ -17,9 +17,12 @@ def test_mlb_code_taxonomy():
     assert classify_mlb_game("D")["category"] == "division_series"
     assert classify_mlb_game("L")["category"] == "league_championship"
     assert classify_mlb_game("W")["category"] == "world_series"
+    assert classify_mlb_game("C")["category"] == "championship"
+    assert classify_mlb_game("P")["category"] == "postseason"
     assert classify_mlb_game("A")["category"] == "allstar"
     assert classify_mlb_game("S")["category"] == "spring_training"
     assert classify_mlb_game("E")["category"] == "exhibition_special"
+    assert classify_mlb_game("I")["category"] == "intrasquad"
 
 
 def test_mlb_description_fallback():
@@ -33,6 +36,8 @@ def test_mlb_training_is_conservative():
     assert "wild_card" in DEFAULT_EVALUATION_CATEGORIES
     assert "allstar" in DEFAULT_EVALUATION_CATEGORIES
     assert "exhibition_special" in DEFAULT_EVALUATION_CATEGORIES
+    assert "postseason" in DEFAULT_EVALUATION_CATEGORIES
+    assert "intrasquad" not in DEFAULT_EVALUATION_CATEGORIES
     assert set(DEFAULT_TRAINING_CATEGORIES).issubset(CATEGORIES)
 
 
