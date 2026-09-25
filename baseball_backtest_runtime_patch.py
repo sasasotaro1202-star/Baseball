@@ -172,6 +172,10 @@ try:
     spec=importlib.util.spec_from_file_location('_bb_score_prior_smoke', str(P))
     mod=importlib.util.module_from_spec(spec)
     assert spec.loader is not None
+    # dataclasses resolves the defining module through sys.modules; register
+    # the dynamically imported module before executing it.
+    import sys
+    sys.modules[spec.name]=mod
     spec.loader.exec_module(mod)
     obj=object.__new__(mod.BaseballBacktest)
     X=pd.DataFrame({
