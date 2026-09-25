@@ -510,6 +510,9 @@ def add_weather(d,year):
             w['weather_available_at']=''
             w['weather_state']='UNKNOWN'
             w['weather_source']='Open-Meteo Historical Forecast'
+            # CONSERVATIVE_8H_BOUND is RETIRED: valid-time minus 8h is not
+            # treated as an availability timestamp because issuance timing is not
+            # proven for the stitched historical series.
             w['weather_pit_quality']='FAIL_CLOSED_NO_ISSUANCE_TIMESTAMP'
             if not existing.empty:
                 existing=existing[~existing.datetime.isin(w.datetime)]
