@@ -37,3 +37,8 @@ def test_production_readiness_is_independent_of_npb_status():
     assert "steps.mlb_ready.outputs.ready == 'true'" in text
     assert "NPB chronological OOS" in text
     assert "MLB chronological OOS" in text
+
+
+def test_production_job_skips_unsuccessful_validation_events():
+    text = Path(".github/workflows/baseball_production.yml").read_text(encoding="utf-8")
+    assert "github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'" in text
