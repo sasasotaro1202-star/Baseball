@@ -22,11 +22,14 @@ def test_mlb_statsapi_game_types_are_separated():
     assert classify_game("MLB", game_type_code="D")["category"] == "division_series"
     assert classify_game("MLB", game_type_code="L")["category"] == "league_championship_series"
     assert classify_game("MLB", game_type_code="W")["category"] == "world_series"
+    assert classify_game("MLB", game_type_code="P")["category"] == "postseason"
     assert classify_game("MLB", game_type_code="A")["category"] == "allstar"
     assert classify_game("MLB", game_type_code="S")["category"] == "spring_training"
     assert "regular" in training_categories("MLB")
     assert "world_series" not in training_categories("MLB")
+    assert "postseason" not in training_categories("MLB")
     assert "world_series" in evaluation_categories("MLB")
+    assert "postseason" in evaluation_categories("MLB")
 
 
 def test_international_taxonomy_includes_asian_games_without_mixing_into_club_training():
