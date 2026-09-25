@@ -1743,7 +1743,7 @@ class BaseballBacktest:
                 out.append({**r.to_dict(), "status":"予測対象"})
         return pd.DataFrame(out)
 
-    def run(self, npb: bool = True, mlb: bool = True, mlb_start: int = 2020, mlb_end: int = 2026):
+    def run(self, npb: bool = True, mlb: bool = True, international: bool = False, mlb_start: int = 2020, mlb_end: int = 2026):
         RESULTS.mkdir(exist_ok=True)
         print("="*72); print("BASEBALL BACKTEST SYSTEM / NPB + MLB"); print("="*72)
         if time.time() - self.started_at >= self.time_budget_sec:
@@ -1779,7 +1779,10 @@ class BaseballBacktest:
                 print(f"[MLB STOP] {e}")
             except Exception as e:
                 print(f"[MLB ERROR] {type(e).__name__}: {e}")
-        intl_games = self.load_international()
+        if international:
+            intl_games = self.load_international()
+        else:
+            intl_games = pd.DataFrame()
         if not intl_games.empty:
             try:
                 print(f"INTERNATIONAL games: {len(intl_games)}")
@@ -1814,12 +1817,29 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--npb-only", action="store_true")
     p.add_argument("--mlb-only", action="store_true")
+    p.add_argument("--international-only", action="store_true")
+    p.add_argument("--international", action="store_true")
     p.add_argument("--data-dir", default="data")
     p.add_argument("--mlb-start", type=int, default=2020)
     p.add_argument("--mlb-end", type=int, default=2026)
     args = p.parse_args()
     bt = BaseballBacktest(Path(args.data_dir))
-    bt.run(npb=not args.mlb_only, mlb=not args.npb_only, mlb_start=args.mlb_start, mlb_end=args.mlb_end)
+    if args.international_only:
+        bt.run(
+            npb=False,
+            mlb=False,
+            international=True,
+            mlb_start=args.mlb_start,
+            mlb_end=args.mlb_end,
+        )
+    else:
+        bt.run(
+            npb=not args.mlb_only,
+            mlb=not args.npb_only,
+            international=bool(args.international),
+            mlb_start=args.mlb_start,
+            mlb_end=args.mlb_end,
+        )
 
 
 if __name__ == "__main__":
