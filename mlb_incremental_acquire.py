@@ -143,7 +143,7 @@ def acquire_chunked(start_date, end_date):
             if path.stat().st_size == 0:
                 refetch = True
                 reason = "zero-byte checkpoint"
-            elif path.stat().st_size == 1 and path.read_bytes() == b"\\n":
+            elif path.stat().st_size == 1 and path.read_bytes() == b"\n":
                 chunk = empty_chunk_frame()
                 refetch = False
                 print(f"[MLB] resume existing empty chunk {cursor}..{chunk_end}")
