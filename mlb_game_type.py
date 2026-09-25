@@ -19,28 +19,30 @@ CATEGORIES = (
     "division_series",
     "league_championship",
     "world_series",
+    "championship",
+    "postseason",
     "allstar",
     "spring_training",
     "exhibition_special",
-    "other_postseason",
+    "intrasquad",
     "unknown",
     "excluded",
 )
 
+# Current MLB Stats API gameTypes. Source verified against:
+# GET https://statsapi.mlb.com/api/v1/gameTypes
 GAME_TYPE_CODE_MAP = {
     "R": "regular",
     "F": "wild_card",
     "D": "division_series",
     "L": "league_championship",
     "W": "world_series",
+    "C": "championship",
+    "P": "postseason",
     "A": "allstar",
     "S": "spring_training",
     "E": "exhibition_special",
-    "P": "other_postseason",
-    "C": "other_postseason",
-    "N": "other_postseason",
-    "I": "other_postseason",
-    "B": "spring_training",
+    "I": "intrasquad",
 }
 
 CATEGORY_TERMS = {
@@ -55,7 +57,8 @@ CATEGORY_TERMS = {
         "special series", "charity game", "international exhibition",
     ),
     "regular": ("regular season",),
-    "other_postseason": ("postseason", "playoffs", "championship"),
+    "championship": ("championship",),
+    "postseason": ("postseason", "playoffs"),
 }
 
 DEFAULT_TRAINING_CATEGORIES = ("regular",)
@@ -68,7 +71,7 @@ DEFAULT_EVALUATION_CATEGORIES = (
     "allstar",
     "spring_training",
     "exhibition_special",
-    "other_postseason",
+    "postseason",
 )
 
 
