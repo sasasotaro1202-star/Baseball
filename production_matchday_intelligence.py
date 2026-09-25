@@ -1190,7 +1190,7 @@ def main() -> int:
 
     payload={
         "schema_version":1,
-        "status":"PASS" if games or not schedule_error else "DEFERRED",
+        "status":"PASS" if (games and not schedule_error and prediction_status == "PASS") else "DEFERRED",
         "prediction_status":prediction_status,
         "prediction_summary":{"games":len(predictions),"pass":pass_count,"deferred":deferred_count},
         "prediction_time_utc":now.astimezone(timezone.utc).isoformat(),
