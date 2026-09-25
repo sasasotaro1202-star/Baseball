@@ -15,3 +15,11 @@ def test_competition_lane_uses_package_module_execution():
     text = Path(".github/workflows/baseball-data-acquisition.yml").read_text(encoding="utf-8")
     assert "python -m research.competition_scope_audit" in text
     assert "python research/competition_scope_audit.py |" not in text
+
+
+
+def test_mlb_acquisition_does_not_depend_on_unrelated_production_results():
+    text = Path(".github/workflows/baseball-mlb-competition.yml").read_text(encoding="utf-8")
+    assert "python production_data_quality_gate.py" not in text
+    assert "MLB cache unexpectedly small" in text
+    assert "game_type metadata" in text
