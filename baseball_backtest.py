@@ -294,7 +294,80 @@ class BaseballBacktest:
             files += sorted(ROOT.glob("*_pbp.csv"))
             files = [f for f in dict.fromkeys(files) if f.name not in {aggregate.name, "2026_multi_source_pbp.csv"}]
         if not files:
-            raise FileNotFoundError("NPB data not found. Run npb_multi_source_massive_resumable.py first.")
+            # Recovery fallback: the repository already contains annual NPB
+            # schedule/result snapshots under data/npb/*_RAW_UNNORMALIZED.csv.
+            # These are schedule-grade rows rather than pitch-by-pitch data, so
+            # they intentionally provide team/venue/score history only; starter,
+            # lineup and weather context remain absent unless separately proven PIT-safe.
+            raw_schedule_files = sorted(self.data_dir.glob("npb/npb_games_*_RAW_UNNORMALIZED.csv"))
+            if not raw_schedule_files:
+                raise FileNotFoundError("NPB data not found. Run npb_multi_source_massive_resumable.py first.")
+            raw_rows = []
+            kind_map = {
+                "1": "regular season",
+                "2": "regular season",
+                "11": "regular season",
+                "26": "interleague",
+                "3": "japan series",
+                "4": "all-star",
+                "13": "all-star",
+                "35": "climax series",
+                "36": "climax series",
+                "37": "climax series",
+                "38": "climax series",
+                "5": "open game",
+            }
+            for f in raw_schedule_files:
+                if time.time() - self.started_at >= self.time_budget_sec:
+                    raise TimeoutError("time budget reached during NPB raw schedule fallback")
+                try:
+                    d = pd.read_csv(f, low_memory=False)
+                    required = {
+                        "game_id", "game_date", "home_team_short_name", "away_team_short_name",
+                        "home_score", "away_score", "stadium_name_jpn", "game_kind_id", "game_state",
+                    }
+                    if not required.issubset(set(d.columns)):
+                        self.audit.append({"type": "npb_raw_fallback_skip", "file": str(f), "reason": "missing required columns"})
+                        continue
+                    d["game_state"] = pd.to_numeric(d["game_state"], errors="coerce")
+                    d["home_score"] = pd.to_numeric(d["home_score"], errors="coerce")
+                    d["away_score"] = pd.to_numeric(d["away_score"], errors="coerce")
+                    d = d[d["game_state"].eq(2) & d["home_score"].notna() & d["away_score"].notna()].copy()
+                    if d.empty:
+                        continue
+                    for col in ("game_id", "game_date", "home_team_short_name", "away_team_short_name", "stadium_name_jpn", "game_kind_id"):
+                        d[col] = d[col].astype(str).str.strip()
+                    d["game_type"] = d["game_kind_id"].map(kind_map).fillna("unknown")
+                    d["row_order"] = pd.to_numeric(d.get("SeqNo", 0), errors="coerce").fillna(0)
+                    d["home"] = d["home_team_short_name"]
+                    d["away"] = d["away_team_short_name"]
+                    d["date"] = d["game_date"]
+                    d["venue"] = d["stadium_name_jpn"]
+                    d["home_pitcher"] = ""
+                    d["away_pitcher"] = ""
+                    raw_rows.append(d[[
+                        "game_id", "row_order", "home", "away", "date", "home_score", "away_score",
+                        "venue", "game_type", "home_pitcher", "away_pitcher",
+                    ]])
+                    print(f"[NPB RAW FALLBACK] {f} rows={len(d)}")
+                except Exception as exc:
+                    self.audit.append({"type": "npb_raw_fallback_error", "file": str(f), "error": str(exc)})
+                    print(f"[NPB RAW FALLBACK SKIP] {f}: {exc}")
+            if not raw_rows:
+                raise RuntimeError("No readable NPB raw schedule/result snapshots.")
+            raw = pd.concat(raw_rows, ignore_index=True, sort=False)
+            raw["date"] = pd.to_datetime(raw["date"], errors="coerce", utc=True)
+            raw = raw.dropna(subset=["date", "game_id", "home", "away", "home_score", "away_score"])
+            raw = raw.sort_values(["date", "game_id", "row_order"]).drop_duplicates("game_id", keep="last").reset_index(drop=True)
+            self.audit.append({
+                "type": "npb_raw_fallback_used",
+                "files": [str(x) for x in raw_schedule_files],
+                "games": int(len(raw)),
+                "coverage_start": str(raw["date"].min()),
+                "coverage_end": str(raw["date"].max()),
+                "context_limit": "schedule/result only; starter/lineup/weather context absent unless separately PIT-safe",
+            })
+            return raw
         chunks=[]
         for f in files:
             if time.time()-self.started_at >= self.time_budget_sec:
