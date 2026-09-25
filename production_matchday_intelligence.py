@@ -1152,6 +1152,7 @@ def main() -> int:
                                 lineup_state=g.get("lineup_state", "UNKNOWN"),
                                 weather_state=g.get("weather_state", "UNKNOWN"),
                                 roster_events=g.get("roster_events", []),
+                                rest_travel=g.get("rest_travel", {}),
                                 observation_count=len(locals().get("observations", [])),
                                 usable_observation_count=sum(
                                     str(getattr(o, "state", "")).upper() in {"VERIFIED", "PROJECTED", "EXPECTED"}
