@@ -16,7 +16,8 @@
       "allstar",
       "spring_training",
       "exhibition_special",
-      "other_postseason"
+      "postseason",
+      "championship"
     ],
     "source": "MLB Stats API gameType + seriesDescription"
   },
