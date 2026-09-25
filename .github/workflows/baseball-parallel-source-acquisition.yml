@@ -64,9 +64,17 @@ jobs:
           git add data/checkpoints data/npb_games data/weather data/source_coverage.csv
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'Checkpoint parallel NPB acquisition'
+          # Runtime patching can leave ephemeral tracked/untracked changes.
+          # Stash them before rebase so a failure checkpoint can still reach main.
+          git stash push --include-untracked -m 'npb-runtime-ephemeral-before-failure-push'
           for attempt in 1 2 3 4 5; do
             git fetch origin main
-            if git rebase origin/main && git push origin HEAD:main; then exit 0; fi
+            if git rebase origin/main && git push origin HEAD:main; then
+              if git stash list | grep -q 'npb-runtime-ephemeral-before-failure-push'; then
+                git stash drop
+              fi
+              exit 0
+            fi
             if git rebase --abort 2>/dev/null; then
               :
             else
