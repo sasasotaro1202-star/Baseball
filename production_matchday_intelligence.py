@@ -467,12 +467,12 @@ def rest_travel(historical, game):
             & (pd.to_datetime(historical["datetime"], errors="coerce", utc=True) < dt)
         ].copy()
         if sub.empty:
-            result[side]={"rest_days":30.0,"games_last_3d":0,"games_last_7d":0,"travel_miles":0.0,"history_cutoff":"strictly_before_target"}
+            result[side]={"state":"UNKNOWN","reason":"no pregame schedule history for side","history_cutoff":"strictly_before_target"}
             continue
         sub["datetime"]=pd.to_datetime(sub["datetime"], errors="coerce", utc=True)
         sub=sub.dropna(subset=["datetime"]).sort_values("datetime")
         if sub.empty:
-            result[side]={"rest_days":30.0,"games_last_3d":0,"games_last_7d":0,"travel_miles":0.0,"history_cutoff":"strictly_before_target"}
+            result[side]={"state":"UNKNOWN","reason":"no valid pregame datetime history for side","history_cutoff":"strictly_before_target"}
             continue
         last=sub.iloc[-1]
         last_dt=pd.Timestamp(last["datetime"])
@@ -488,8 +488,11 @@ def rest_travel(historical, game):
             miles=3958.7613*2*np.arcsin(np.sqrt(a))
         games_3d=int((sub["datetime"]>=dt-pd.Timedelta(days=3)).sum())
         games_7d=int((sub["datetime"]>=dt-pd.Timedelta(days=7)).sum())
-        result[side]={"rest_days":float(rest),"games_last_3d":games_3d,"games_last_7d":games_7d,"travel_miles":float(miles),"history_cutoff":"strictly_before_target"}
-    result["state"]="VERIFIED"
+        result[side]={"state":"VERIFIED","rest_days":float(rest),"games_last_3d":games_3d,"games_last_7d":games_7d,"travel_miles":float(miles),"history_cutoff":"strictly_before_target"}
+    result["state"]="VERIFIED" if all(
+        isinstance(result.get(side), dict) and result[side].get("state") == "VERIFIED"
+        for side in ("home","away")
+    ) else "PARTIAL"
     return result
 
 
