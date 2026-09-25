@@ -71,7 +71,6 @@ jobs:
           BASEBALL_MATCHDAY_SHADOW: "0"
         run: |
           set -euo pipefail
-          python npb_game_type.py >/dev/null 2>&1 || true
           python -m py_compile npb_game_type.py baseball_backtest.py research/npb_game_type_ablation.py
           python baseball_backtest.py --npb-only --data-dir data
           python research/npb_game_type_ablation.py --variant "${{ matrix.variant }}"
