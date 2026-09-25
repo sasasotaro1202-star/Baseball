@@ -1508,7 +1508,14 @@ class BaseballBacktest:
             })
         # Resume support: completed OOS predictions are persisted after every
         # retraining block. On a later run, completed game IDs are skipped.
-        ck = self.checkpoint_dir / f"{league.lower()}_walkforward.csv"
+        train_policy = ",".join(training_categories_generic(league))
+        eval_policy = ",".join(evaluation_categories_generic(league))
+        policy_slug = re.sub(
+            r"[^a-z0-9_]+",
+            "_",
+            f"tr-{train_policy}__ev-{eval_policy}".lower(),
+        ).strip("_") or "none"
+        ck = self.checkpoint_dir / f"{league.lower()}_walkforward_{policy_slug}.csv"
         existing = pd.DataFrame()
         version_file = ck.with_suffix(".version")
         if ck.exists() and version_file.exists() and version_file.read_text(encoding="utf-8").strip() == self.checkpoint_version:
