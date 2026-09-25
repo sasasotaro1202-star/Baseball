@@ -6,6 +6,12 @@ on:
       - '.github/workflows/**'
       - 'requirements*.txt'
       - 'pyproject.toml'
+      # Production-relevant acquisition updates must trigger a fresh validation
+      # so a data-only main commit cannot leave Production OOS stale indefinitely.
+      - 'data/checkpoints/npb_collection_status.json'
+      - 'data/checkpoints/*_game_enrichment.csv'
+      - 'data/mlb_games.csv'
+      - 'data/checkpoints/mlb_collection_status.json'
   workflow_dispatch:
 
 concurrency:
