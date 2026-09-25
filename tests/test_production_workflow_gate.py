@@ -17,8 +17,10 @@ def test_production_downstream_steps_are_guarded_by_sha_gate():
         "Hosted runner health gate",
         "Setup Python",
         "Preflight and integrity gate",
-        "MLB readiness gate and chronological OOS",
-        "MLB data acquisition, starter quality gate and chronological OOS",
+        "NPB readiness gate",
+        "MLB readiness gate",
+        "NPB chronological OOS",
+        "MLB chronological OOS",
         "Validate OOS predictions before any state write",
         "Persist verified state atomically",
     ):
@@ -30,5 +32,8 @@ def test_production_downstream_steps_are_guarded_by_sha_gate():
 def test_production_readiness_is_independent_of_npb_status():
     text = Path(".github/workflows/baseball_production.yml").read_text(encoding="utf-8")
     assert "data/checkpoints/mlb_collection_status.json" in text
-    assert "data/checkpoints/npb_collection_status.json" not in text
+    assert "data/checkpoints/npb_collection_status.json" in text
+    assert "steps.npb_ready.outputs.ready == 'true'" in text
     assert "steps.mlb_ready.outputs.ready == 'true'" in text
+    assert "NPB chronological OOS" in text
+    assert "MLB chronological OOS" in text
