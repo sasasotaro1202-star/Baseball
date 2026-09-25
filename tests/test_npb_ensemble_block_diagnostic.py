@@ -17,6 +17,9 @@ def test_diagnose_npb_ensemble_block_2339() -> None:
     assert len(X_train) >= 100
     assert len(np.unique(y_train)) >= 3
 
+    direct_fitted, direct_scores, direct_best = bt.fit_ensemble(X_train, y_train, "NPB")
+    raise AssertionError(f"NPB_BLOCK_2339_DIRECT_RESULT fitted={bool(direct_fitted)} scores={direct_scores} best={direct_best}")
+
     models = bt.models("NPB")
     failures = {}
     successes = []
