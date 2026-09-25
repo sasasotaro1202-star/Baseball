@@ -156,7 +156,10 @@ jobs:
                       or age_minutes(matchday) > STALE_MINUTES['matchday']
                   ):
                       dispatch('matchday',workflows['matchday'])
-                  elif mlb_ready and validation_current and not success(prod) and not recently_created(data.get('production',[])):
+                  elif validation_current and mlb_ready and (
+                      not success(prod)
+                      or ts(acquisition) > ts(prod)
+                  ) and not recently_created(data.get('production',[])):
                       dispatch('production-recovery',workflows['production'])
                   elif (not npb_ready or not mlb_ready) and not recently_created(data.get('acquisition',[])):
                       dispatch('baseball-source-acquisition',workflows['acquisition'])
