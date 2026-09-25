@@ -97,3 +97,19 @@ def test_mlb_pregame_starter_provenance_can_be_confirmed(tmp_path):
     assert bool(out.loc[0, "confirmed_starters"]) is True
     assert out.loc[0, "starter_confirmation_state"] == "CONFIRMED"
     assert out.loc[0, "starter_confirmation_source"] == "pregame_snapshot"
+
+
+def test_mlb_future_prediction_keeps_probable_starters_on_hold(tmp_path):
+    bt = BaseballBacktest(tmp_path)
+    schedule = pd.DataFrame([{
+        "game_id": "g1",
+        "home": "Home",
+        "away": "Away",
+        "home_starter": "Probable Home",
+        "away_starter": "Probable Away",
+        "confirmed_starters": False,
+        "starter_confirmation_state": "PROBABLE",
+    }])
+    out = bt.build_future_mlb_predictions(schedule)
+    assert out.loc[0, "status"] == "保留"
+    assert out.loc[0, "reason"] == "両先発の公式確認が揃っていない"
