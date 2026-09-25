@@ -11,8 +11,8 @@ def test_mlb_acquisition_uses_resumable_date_chunks():
     assert "refusing to discard it" in text
 
 
-
 def test_zero_byte_chunk_is_quarantined_and_rebuilt(tmp_path, monkeypatch):
+    import pandas as pd
     import mlb_incremental_acquire as m
     from datetime import date
 
