@@ -30,8 +30,19 @@ replacement=r'''    def _score_prior(self, X: pd.DataFrame, league: str) -> Tupl
         n=len(X)
         if n == 0: return np.array([]), np.array([])
         def col(name, default):
-            if name in X: return pd.to_numeric(X[name],errors='coerce').fillna(default).to_numpy(float)
-            return np.full(n,float(default))
+            if name not in X:
+                return np.full(n, float(default)) if np.isscalar(default) else np.asarray(default, dtype=float)
+            v=pd.to_numeric(X[name],errors='coerce')
+            if np.isscalar(default):
+                return v.fillna(float(default)).to_numpy(float)
+            fallback=np.asarray(default,dtype=float).reshape(-1)
+            if len(fallback) != n:
+                raise ValueError(f"score prior fallback length mismatch for {name}: {len(fallback)} != {n}")
+            arr=v.to_numpy(dtype=float,copy=True)
+            mask=np.isnan(arr)
+            if mask.any():
+                arr[mask]=fallback[mask]
+            return arr
         env=col('expected_env', 8.5 if league=='MLB' else 7.0)
         # Offensive and defensive rolling means are the strongest transparent
         # run-level priors available even when player-level data are sparse.
