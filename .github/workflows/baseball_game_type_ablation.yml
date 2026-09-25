@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   workflow_run:
     workflows:
-      - Baseball Source Acquisition
+      - Baseball NPB Source Acquisition
     types: [completed]
   schedule:
     - cron: "31 */6 * * *"
