@@ -73,6 +73,8 @@ REQUEST_TIMEOUT = 30
 
 # Backtest controls
 MIN_TRAIN = 100
+# fit_ensemble requires _validation_splits(), which is defined only for n >= 120.
+MODEL_MIN_TRAIN = 120
 RETRAIN_EVERY = int(os.getenv("NPB_RETRAIN_EVERY", "150"))
 VALIDATION_RATIO = 0.20
 MIN_VALIDATION = 45
@@ -1476,7 +1478,7 @@ class BaseballBacktest:
         # first MLB block when competition-type filtering leaves exactly 100
         # eligible regular-season games.
         required_classes = 3 if league == "NPB" else 2
-        min_effective_fit_train = max(MIN_TRAIN, 120)
+        min_effective_fit_train = max(MIN_TRAIN, MODEL_MIN_TRAIN)
         prefix_train = np.cumsum(train_mask.astype(int))
         valid_positions = np.flatnonzero(prefix_train >= min_effective_fit_train)
         if len(valid_positions) == 0:
