@@ -34,7 +34,7 @@ jobs:
           - variant: +allstar
             training: regular,allstar
           - variant: +postseason
-            training: regular,wild_card,division_series,league_championship,world_series,other_postseason
+            training: regular,wild_card,division_series,league_championship,world_series,postseason,championship
           - variant: +spring_training
             training: regular,spring_training
           - variant: +exhibition_special
@@ -74,7 +74,7 @@ jobs:
           BASEBALL_TIME_BUDGET_SEC: "1500"
           MLB_ENRICH_STARTERS: "1"
           MLB_TRAINING_GAME_CATEGORIES: ${{ matrix.training }}
-          MLB_EVALUATION_GAME_CATEGORIES: "regular,wild_card,division_series,league_championship,world_series,allstar,spring_training,exhibition_special,other_postseason"
+          MLB_EVALUATION_GAME_CATEGORIES: "regular,wild_card,division_series,league_championship,world_series,championship,postseason,allstar,spring_training,exhibition_special"
           BASEBALL_MATCHDAY_SHADOW: "0"
         run: |
           set -euo pipefail
@@ -97,7 +97,7 @@ jobs:
               "schema_version":1,
               "variant":os.environ["VARIANT"],
               "training_categories":os.environ["TRAINING"].split(","),
-              "evaluation_categories":"regular,wild_card,division_series,league_championship,world_series,allstar,spring_training,exhibition_special,other_postseason".split(","),
+              "evaluation_categories":"regular,wild_card,division_series,league_championship,world_series,championship,postseason,allstar,spring_training,exhibition_special".split(","),
               "metrics_path":str(p),
               "status":"PASS" if p.exists() and p.stat().st_size>0 else "DEFERRED",
               "promotion_auto":False,
