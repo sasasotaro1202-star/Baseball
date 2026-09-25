@@ -1726,15 +1726,34 @@ class BaseballBacktest:
     # Current/future prediction helpers
     # ------------------------------------------------------------------
     def current_mlb_schedule(self, date: str) -> pd.DataFrame:
-        data = self._get_json(f"{MLB_API}/schedule", params={"sportId":1, "date":date, "hydrate":"probablePitcher"})
-        rows=[]
+        data = self._get_json(
+            f"{MLB_API}/schedule",
+            params={"sportId": 1, "date": date, "hydrate": "probablePitcher"},
+        )
+        rows = []
         for d in data.get("dates", []):
             for g in d.get("games", []):
-                t=g.get("teams",{}); h=t.get("home",{}); a=t.get("away",{})
-                hp=(h.get("probablePitcher") or {}).get("fullName",""); ap=(a.get("probablePitcher") or {}).get("fullName","")
-                # "probable" is not equivalent to officially confirmed. Only mark confirmed when status/game data says it.
-                confirmed=bool(hp and ap)
-                rows.append({"game_id":g.get("gamePk"),"datetime":g.get("gameDate"),"home":h.get("team",{}).get("name",""),"away":a.get("team",{}).get("name",""),"home_starter":hp,"away_starter":ap,"confirmed_starters":confirmed})
+                t = g.get("teams", {})
+                h = t.get("home", {})
+                a = t.get("away", {})
+                hp = (h.get("probablePitcher") or {}).get("fullName", "")
+                ap = (a.get("probablePitcher") or {}).get("fullName", "")
+                # MLB Stats API's probablePitcher is a projection, not proof that
+                # the starter was officially confirmed before prediction time.
+                # Keep it as a visible projected field and fail closed for the
+                # confirmed-starter gate unless an explicit confirmation signal is
+                # supplied by a trusted pregame source.
+                rows.append({
+                    "game_id": g.get("gamePk"),
+                    "datetime": g.get("gameDate"),
+                    "home": h.get("team", {}).get("name", ""),
+                    "away": a.get("team", {}).get("name", ""),
+                    "home_starter": hp,
+                    "away_starter": ap,
+                    "probable_starters": bool(hp and ap),
+                    "confirmed_starters": False,
+                    "starter_state": "PROJECTED" if hp and ap else "UNKNOWN",
+                })
         return pd.DataFrame(rows)
 
     def build_future_mlb_predictions(self, schedule: pd.DataFrame) -> pd.DataFrame:
