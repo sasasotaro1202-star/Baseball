@@ -469,6 +469,13 @@ def add_weather(d,year):
         return d
     p=season_paths(year)
     cache=pd.read_csv(p['weather']) if p['weather'].exists() else pd.DataFrame()
+    if not cache.empty:
+        # Sanitize any legacy cache produced by the retired inferred-availability
+        # scheme before it can reach PIT-sensitive replay. New explicit provenance
+        # can replace these rows below.
+        cache['weather_available_at']=''
+        cache['weather_state']='UNKNOWN'
+        cache['weather_pit_quality']='FAIL_CLOSED_NO_ISSUANCE_TIMESTAMP'
     for v in sorted(set(d.venue.astype(str))):
         if near_deadline():
             break
@@ -502,11 +509,18 @@ def add_weather(d,year):
             # not a claim that the exact original dissemination timestamp is
             # known for every model/version.
             w['weather_valid_time_utc']=w['datetime'].dt.tz_localize('Asia/Tokyo',ambiguous='NaT',nonexistent='NaT').dt.tz_convert('UTC').astype(str)
-            valid = pd.to_datetime(w['weather_valid_time_utc'], errors='coerce', utc=True)
-            w['weather_available_at']=(valid-pd.Timedelta(hours=8)).astype(str)
-            w['weather_state']='PROJECTED'
+            # Historical Forecast API preserves forecast output but the stitched
+            # series does not expose the exact publication/availability timestamp
+            # for each value. Do NOT synthesize an issuance time from valid time.
+            # Historical weather therefore fails closed for PIT-sensitive features
+            # until an explicit availability timestamp is available.
+            w['weather_available_at']=''
+            w['weather_state']='UNKNOWN'
             w['weather_source']='Open-Meteo Historical Forecast'
-            w['weather_pit_quality']='CONSERVATIVE_8H_BOUND'
+            # CONSERVATIVE_8H_BOUND is RETIRED: valid-time minus 8h is not
+            # treated as an availability timestamp because issuance timing is not
+            # proven for the stitched historical series.
+            w['weather_pit_quality']='FAIL_CLOSED_NO_ISSUANCE_TIMESTAMP'
             if not existing.empty:
                 existing=existing[~existing.datetime.isin(w.datetime)]
             cache=pd.concat([cache,existing,w],ignore_index=True).drop_duplicates(['venue','datetime'],keep='last')
