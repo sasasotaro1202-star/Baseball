@@ -3,14 +3,14 @@
   "status": "DEFERRED",
   "prediction_status": "DEFERRED",
   "prediction_summary": {
-    "games": 5,
+    "games": 2,
     "pass": 0,
-    "deferred": 5
+    "deferred": 2
   },
   "schedule_summary": {
     "games_seen": 5,
-    "future_games": 5,
-    "started_or_in_progress_games": 0,
+    "future_games": 2,
+    "started_or_in_progress_games": 3,
     "games": [
       {
         "home": "東京ヤクルトスワローズ",
@@ -24,21 +24,21 @@
         "away": "阪神タイガース",
         "venue": "横",
         "start_datetime_jst": "2026-09-26T14:00:00+09:00",
-        "schedule_state": "FUTURE"
+        "schedule_state": "STARTED_OR_IN_PROGRESS"
       },
       {
         "home": "埼玉西武ライオンズ",
         "away": "千葉ロッテマリーンズ",
         "venue": "ベルーナドーム",
         "start_datetime_jst": "2026-09-26T14:00:00+09:00",
-        "schedule_state": "FUTURE"
+        "schedule_state": "STARTED_OR_IN_PROGRESS"
       },
       {
         "home": "オリックス・バファローズ",
         "away": "北海道日本ハムファイターズ",
         "venue": "京セラD大阪",
         "start_datetime_jst": "2026-09-26T14:00:00+09:00",
-        "schedule_state": "FUTURE"
+        "schedule_state": "STARTED_OR_IN_PROGRESS"
       },
       {
         "home": "福岡ソフトバンクホークス",
@@ -49,7 +49,7 @@
       }
     ]
   },
-  "prediction_time_utc": "2026-09-26T04:59:55.751156+00:00",
+  "prediction_time_utc": "2026-09-26T05:15:37.371719+00:00",
   "target_date_jst": "2026-09-26",
   "source_policy": {
     "schedule": "NPB.jp",
@@ -140,7 +140,7 @@
       "starter_state": "UNKNOWN",
       "starter_source": "",
       "starter_available_at": "",
-      "prediction_time_utc": "2026-09-26T04:59:55.751156+00:00",
+      "prediction_time_utc": "2026-09-26T05:15:37.371719+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -152,16 +152,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-26T05:05:11.043724+00:00",
+        "retrieved_at": "2026-09-26T05:21:11.585262+00:00",
         "valid_time_local": "2026-09-26T18:00",
         "temperature_c": 18.3,
         "humidity_pct": 95.0,
         "precip_mm": 0.1,
         "wind_kmh": 4.2,
         "wind_direction_deg": 340.0,
-        "available_at": "2026-09-26T05:05:11.043778+00:00"
+        "available_at": "2026-09-26T05:21:11.585278+00:00"
       },
-      "weather_available_at": "2026-09-26T05:05:11.043778+00:00",
+      "weather_available_at": "2026-09-26T05:21:11.585278+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -178,268 +178,6 @@
           "rest_days": 0.625,
           "games_last_3d": 1,
           "games_last_7d": 5,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "state": "VERIFIED"
-      },
-      "prediction": {
-        "incumbent_status": "DEFERRED",
-        "score_status": "DEFERRED",
-        "low_high_status": "DEFERRED",
-        "score_choices": [],
-        "shadow_status": "DEFERRED",
-        "shadow_not_promoted": true,
-        "incumbent_reason": "STARTERS_UNCONFIRMED"
-      }
-    },
-    {
-      "date": "2026-09-26",
-      "home": "横浜DeNAベイスターズ",
-      "away": "阪神タイガース",
-      "venue": "横",
-      "hour": 14,
-      "minute": 0,
-      "official_schedule": true,
-      "schedule_state": "FUTURE",
-      "start_datetime_jst": "2026-09-26T14:00:00+09:00",
-      "game_id": "",
-      "datetime": "2026-09-26 05:00:00+00:00",
-      "starter_home": "",
-      "starter_away": "",
-      "starter_state": "UNKNOWN",
-      "starter_source": "",
-      "starter_available_at": "",
-      "prediction_time_utc": "2026-09-26T04:59:55.751156+00:00",
-      "lineup": {
-        "home": [],
-        "away": []
-      },
-      "lineup_state": "UNKNOWN",
-      "lineup_source": "",
-      "lineup_available_at": "",
-      "weather": {
-        "state": "VERIFIED",
-        "source": "Open-Meteo forecast",
-        "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-26T05:05:11.623275+00:00",
-        "valid_time_local": "2026-09-26T14:00",
-        "temperature_c": 19.5,
-        "humidity_pct": 89.0,
-        "precip_mm": 0.2,
-        "wind_kmh": 9.9,
-        "wind_direction_deg": 10.0,
-        "available_at": "2026-09-26T05:05:11.623295+00:00"
-      },
-      "weather_available_at": "2026-09-26T05:05:11.623295+00:00",
-      "weather_state": "PROJECTED",
-      "roster_events": [],
-      "rest_travel": {
-        "home": {
-          "state": "VERIFIED",
-          "rest_days": 0.4583333333333333,
-          "games_last_3d": 1,
-          "games_last_7d": 5,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "away": {
-          "state": "VERIFIED",
-          "rest_days": 0.4583333333333333,
-          "games_last_3d": 2,
-          "games_last_7d": 6,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "state": "VERIFIED"
-      },
-      "prediction": {
-        "incumbent_status": "DEFERRED",
-        "score_status": "DEFERRED",
-        "low_high_status": "DEFERRED",
-        "score_choices": [],
-        "shadow_status": "DEFERRED",
-        "shadow_not_promoted": true,
-        "incumbent_reason": "STARTERS_UNCONFIRMED"
-      }
-    },
-    {
-      "date": "2026-09-26",
-      "home": "埼玉西武ライオンズ",
-      "away": "千葉ロッテマリーンズ",
-      "venue": "ベルーナドーム",
-      "hour": 14,
-      "minute": 0,
-      "official_schedule": true,
-      "schedule_state": "FUTURE",
-      "start_datetime_jst": "2026-09-26T14:00:00+09:00",
-      "game_id": "",
-      "datetime": "2026-09-26 05:00:00+00:00",
-      "starter_home": "",
-      "starter_away": "",
-      "starter_state": "UNKNOWN",
-      "starter_source": "",
-      "starter_available_at": "",
-      "prediction_time_utc": "2026-09-26T04:59:55.751156+00:00",
-      "lineup": {
-        "home": [],
-        "away": []
-      },
-      "lineup_state": "UNKNOWN",
-      "lineup_source": "",
-      "lineup_available_at": "",
-      "weather": {
-        "state": "VERIFIED",
-        "source": "Open-Meteo forecast",
-        "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-26T05:05:12.224233+00:00",
-        "valid_time_local": "2026-09-26T14:00",
-        "temperature_c": 18.5,
-        "humidity_pct": 92.0,
-        "precip_mm": 0.6,
-        "wind_kmh": 5.0,
-        "wind_direction_deg": 21.0,
-        "available_at": "2026-09-26T05:05:12.224253+00:00"
-      },
-      "weather_available_at": "2026-09-26T05:05:12.224253+00:00",
-      "weather_state": "PROJECTED",
-      "roster_events": [
-        {
-          "status": "REGISTERED",
-          "league": "PACIFIC",
-          "team": "千葉ロッテマリーンズ",
-          "position": "投手",
-          "number": "14",
-          "player_name": "小島 和哉",
-          "source": "NPB.jp roster",
-          "target_date": "2026-09-26"
-        }
-      ],
-      "rest_travel": {
-        "home": {
-          "state": "VERIFIED",
-          "rest_days": 0.4583333333333333,
-          "games_last_3d": 2,
-          "games_last_7d": 4,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "away": {
-          "state": "VERIFIED",
-          "rest_days": 0.4583333333333333,
-          "games_last_3d": 2,
-          "games_last_7d": 4,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "state": "VERIFIED"
-      },
-      "prediction": {
-        "incumbent_status": "DEFERRED",
-        "score_status": "DEFERRED",
-        "low_high_status": "DEFERRED",
-        "score_choices": [],
-        "shadow_status": "DEFERRED",
-        "shadow_not_promoted": true,
-        "incumbent_reason": "STARTERS_UNCONFIRMED"
-      }
-    },
-    {
-      "date": "2026-09-26",
-      "home": "オリックス・バファローズ",
-      "away": "北海道日本ハムファイターズ",
-      "venue": "京セラD大阪",
-      "hour": 14,
-      "minute": 0,
-      "official_schedule": true,
-      "schedule_state": "FUTURE",
-      "start_datetime_jst": "2026-09-26T14:00:00+09:00",
-      "game_id": "",
-      "datetime": "2026-09-26 05:00:00+00:00",
-      "starter_home": "",
-      "starter_away": "",
-      "starter_state": "UNKNOWN",
-      "starter_source": "",
-      "starter_available_at": "",
-      "prediction_time_utc": "2026-09-26T04:59:55.751156+00:00",
-      "lineup": {
-        "home": [],
-        "away": []
-      },
-      "lineup_state": "UNKNOWN",
-      "lineup_source": "",
-      "lineup_available_at": "",
-      "weather": {
-        "state": "VERIFIED",
-        "source": "Open-Meteo forecast",
-        "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-26T05:05:12.802481+00:00",
-        "valid_time_local": "2026-09-26T14:00",
-        "temperature_c": 21.1,
-        "humidity_pct": 93.0,
-        "precip_mm": 1.0,
-        "wind_kmh": 5.4,
-        "wind_direction_deg": 20.0,
-        "available_at": "2026-09-26T05:05:12.802501+00:00"
-      },
-      "weather_available_at": "2026-09-26T05:05:12.802501+00:00",
-      "weather_state": "PROJECTED",
-      "roster_events": [
-        {
-          "status": "REGISTERED",
-          "league": "PACIFIC",
-          "team": "北海道日本ハムファイターズ",
-          "position": "投手",
-          "number": "12",
-          "player_name": "矢澤 宏太",
-          "source": "NPB.jp roster",
-          "target_date": "2026-09-26"
-        },
-        {
-          "status": "REGISTERED",
-          "league": "PACIFIC",
-          "team": "オリックス・バファローズ",
-          "position": "投手",
-          "number": "57",
-          "player_name": "山田 修義",
-          "source": "NPB.jp roster",
-          "target_date": "2026-09-26"
-        },
-        {
-          "status": "REGISTERED",
-          "league": "PACIFIC",
-          "team": "オリックス・バファローズ",
-          "position": "内野手",
-          "number": "5",
-          "player_name": "西野 真弘",
-          "source": "NPB.jp roster",
-          "target_date": "2026-09-26"
-        },
-        {
-          "status": "REMOVED",
-          "league": "PACIFIC",
-          "team": "オリックス・バファローズ",
-          "position": "投手",
-          "number": "16",
-          "player_name": "平野 佳寿",
-          "source": "NPB.jp roster",
-          "target_date": "2026-09-26"
-        }
-      ],
-      "rest_travel": {
-        "home": {
-          "state": "VERIFIED",
-          "rest_days": 0.4583333333333333,
-          "games_last_3d": 2,
-          "games_last_7d": 6,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "away": {
-          "state": "VERIFIED",
-          "rest_days": 1.4583333333333333,
-          "games_last_3d": 2,
-          "games_last_7d": 6,
           "travel_miles": 0.0,
           "history_cutoff": "strictly_before_target"
         },
@@ -472,7 +210,7 @@
       "starter_state": "UNKNOWN",
       "starter_source": "",
       "starter_available_at": "",
-      "prediction_time_utc": "2026-09-26T04:59:55.751156+00:00",
+      "prediction_time_utc": "2026-09-26T05:15:37.371719+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -484,16 +222,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-26T05:05:13.381301+00:00",
+        "retrieved_at": "2026-09-26T05:21:12.273640+00:00",
         "valid_time_local": "2026-09-26T18:00",
         "temperature_c": 22.0,
         "humidity_pct": 88.0,
         "precip_mm": 1.1,
         "wind_kmh": 7.9,
         "wind_direction_deg": 141.0,
-        "available_at": "2026-09-26T05:05:13.381325+00:00"
+        "available_at": "2026-09-26T05:21:12.273658+00:00"
       },
-      "weather_available_at": "2026-09-26T05:05:13.381325+00:00",
+      "weather_available_at": "2026-09-26T05:21:12.273658+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -526,5 +264,5 @@
       }
     }
   ],
-  "state_hash": "1995084bb06bf8def6da398aba475340346d54c2f3b2d54911764cc2f3f9d222"
+  "state_hash": "28f1e485cef9a7da08132c66539c67bb1d4e5c6ed0e90b0766913a456b9158c1"
 }
