@@ -142,5 +142,41 @@
       "NPB": null,
       "MLB": null
     }
+  },
+  {
+    "timestamp": "2026-09-26T05:29:37.340179+00:00",
+    "focus": {
+      "league": "NPB",
+      "objective": "win",
+      "priority": 1.0,
+      "reason": "評価データ待ち"
+    },
+    "next_research": {
+      "objective": "win",
+      "league": "NPB",
+      "reason": "評価データ待ち",
+      "rule": "candidate must pass the fixed promotion gate and improve OOS without unacceptable regression"
+    },
+    "promotion_gate": {
+      "require_oos": true,
+      "min_oos_rows": 200,
+      "min_relative_improvement": 0.01,
+      "max_logloss_regression": 0.005,
+      "max_brier_regression": 0.005,
+      "max_accuracy_regression": 0.005,
+      "max_ece_regression": 0.01,
+      "max_high_state_logloss_regression": 0.01,
+      "require_two_validation_windows": true,
+      "require_calibration_check": true,
+      "require_no_future_target_data": true,
+      "require_reproducible_candidate": true,
+      "require_matchday_pit_snapshots": true,
+      "require_routing_two_late_oos_windows": true,
+      "rollback_on_post_promotion_regression": true
+    },
+    "model_winners": {
+      "NPB": null,
+      "MLB": null
+    }
   }
 ]
