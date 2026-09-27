@@ -3,8 +3,8 @@
   "complete": true,
   "aggregate_games": 18520,
   "bootstrap_start_year": 2020,
-  "last_start": "2026-09-19",
+  "last_start": "2026-09-20",
   "last_end": "2026-09-27",
   "source": "https://statsapi.mlb.com/api/v1",
-  "updated_at": "2026-09-27T05:20:07.351780+00:00"
+  "updated_at": "2026-09-27T12:04:41.827469+00:00"
 }
