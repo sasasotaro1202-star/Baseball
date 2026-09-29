@@ -28,7 +28,7 @@
       }
     ]
   },
-  "prediction_time_utc": "2026-09-29T22:16:54.897960+00:00",
+  "prediction_time_utc": "2026-09-29T22:29:21.656487+00:00",
   "target_date_jst": "2026-09-30",
   "source_policy": {
     "schedule": "NPB.jp",
@@ -67,8 +67,8 @@
       "starter_away": "奥川 恭伸",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-09-29T22:16:54.897960+00:00",
-      "prediction_time_utc": "2026-09-29T22:16:54.897960+00:00",
+      "starter_available_at": "2026-09-29T22:29:21.656487+00:00",
+      "prediction_time_utc": "2026-09-29T22:29:21.656487+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -80,16 +80,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-29T22:22:29.491311+00:00",
+        "retrieved_at": "2026-09-29T22:34:57.088506+00:00",
         "valid_time_local": "2026-09-30T18:00",
         "temperature_c": 25.4,
         "humidity_pct": 64.0,
         "precip_mm": 0.0,
         "wind_kmh": 8.4,
         "wind_direction_deg": 83.0,
-        "available_at": "2026-09-29T22:22:29.491326+00:00"
+        "available_at": "2026-09-29T22:34:57.088522+00:00"
       },
-      "weather_available_at": "2026-09-29T22:22:29.491326+00:00",
+      "weather_available_at": "2026-09-29T22:34:57.088522+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -137,8 +137,8 @@
       "starter_away": "Ｊ．ルケーシー",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-09-29T22:16:54.897960+00:00",
-      "prediction_time_utc": "2026-09-29T22:16:54.897960+00:00",
+      "starter_available_at": "2026-09-29T22:29:21.656487+00:00",
+      "prediction_time_utc": "2026-09-29T22:29:21.656487+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -150,16 +150,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-29T22:22:29.607955+00:00",
+        "retrieved_at": "2026-09-29T22:34:57.746617+00:00",
         "valid_time_local": "2026-09-30T18:00",
         "temperature_c": 18.8,
         "humidity_pct": 70.0,
         "precip_mm": 0.0,
         "wind_kmh": 2.5,
         "wind_direction_deg": 172.0,
-        "available_at": "2026-09-29T22:22:29.607970+00:00"
+        "available_at": "2026-09-29T22:34:57.746634+00:00"
       },
-      "weather_available_at": "2026-09-29T22:22:29.607970+00:00",
+      "weather_available_at": "2026-09-29T22:34:57.746634+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -192,5 +192,5 @@
       }
     }
   ],
-  "state_hash": "a4d86496ac348e243623998391921eed885cb5025a66bbd13938a3740c0ad6b1"
+  "state_hash": "310ab9cc1318f076226a538b273e9fd084e18e12fd0a438a2f93f2b70857080c"
 }
