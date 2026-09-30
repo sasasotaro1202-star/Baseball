@@ -42,7 +42,7 @@
       }
     ]
   },
-  "prediction_time_utc": "2026-09-30T21:12:18.964107+00:00",
+  "prediction_time_utc": "2026-09-30T22:17:39.760256+00:00",
   "target_date_jst": "2026-10-01",
   "source_policy": {
     "schedule": "NPB.jp",
@@ -81,8 +81,8 @@
       "starter_away": "竹丸 和幸",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-09-30T21:12:18.964107+00:00",
-      "prediction_time_utc": "2026-09-30T21:12:18.964107+00:00",
+      "starter_available_at": "2026-09-30T22:17:39.760256+00:00",
+      "prediction_time_utc": "2026-09-30T22:17:39.760256+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -94,16 +94,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-30T21:16:49.256920+00:00",
+        "retrieved_at": "2026-09-30T22:23:15.316833+00:00",
         "valid_time_local": "2026-10-01T18:00",
         "temperature_c": 25.9,
         "humidity_pct": 60.0,
         "precip_mm": 0.0,
         "wind_kmh": 8.7,
         "wind_direction_deg": 5.0,
-        "available_at": "2026-09-30T21:16:49.256943+00:00"
+        "available_at": "2026-09-30T22:23:15.316850+00:00"
       },
-      "weather_available_at": "2026-09-30T21:16:49.256943+00:00",
+      "weather_available_at": "2026-09-30T22:23:15.316850+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -151,8 +151,8 @@
       "starter_away": "大野 雄大",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-09-30T21:12:18.964107+00:00",
-      "prediction_time_utc": "2026-09-30T21:12:18.964107+00:00",
+      "starter_available_at": "2026-09-30T22:17:39.760256+00:00",
+      "prediction_time_utc": "2026-09-30T22:17:39.760256+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -164,16 +164,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-30T21:16:49.818914+00:00",
+        "retrieved_at": "2026-09-30T22:23:15.479031+00:00",
         "valid_time_local": "2026-10-01T18:00",
         "temperature_c": 24.4,
         "humidity_pct": 66.0,
         "precip_mm": 0.0,
         "wind_kmh": 6.2,
         "wind_direction_deg": 350.0,
-        "available_at": "2026-09-30T21:16:49.818935+00:00"
+        "available_at": "2026-09-30T22:23:15.479046+00:00"
       },
-      "weather_available_at": "2026-09-30T21:16:49.818935+00:00",
+      "weather_available_at": "2026-09-30T22:23:15.479046+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -182,7 +182,7 @@
           "rest_days": 1.625,
           "games_last_3d": 1,
           "games_last_7d": 4,
-          "travel_miles": 420.8550678765824,
+          "travel_miles": 420.85506787658244,
           "history_cutoff": "strictly_before_target"
         },
         "away": {
@@ -221,8 +221,8 @@
       "starter_away": "上沢 直之",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-09-30T21:12:18.964107+00:00",
-      "prediction_time_utc": "2026-09-30T21:12:18.964107+00:00",
+      "starter_available_at": "2026-09-30T22:17:39.760256+00:00",
+      "prediction_time_utc": "2026-09-30T22:17:39.760256+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -234,16 +234,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-30T21:16:50.346201+00:00",
+        "retrieved_at": "2026-09-30T22:23:15.593803+00:00",
         "valid_time_local": "2026-10-01T18:00",
         "temperature_c": 23.4,
         "humidity_pct": 60.0,
         "precip_mm": 0.0,
         "wind_kmh": 6.2,
         "wind_direction_deg": 306.0,
-        "available_at": "2026-09-30T21:16:50.346221+00:00"
+        "available_at": "2026-09-30T22:23:15.593815+00:00"
       },
-      "weather_available_at": "2026-09-30T21:16:50.346221+00:00",
+      "weather_available_at": "2026-09-30T22:23:15.593815+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -291,8 +291,8 @@
       "starter_away": "北山 亘基",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-09-30T21:12:18.964107+00:00",
-      "prediction_time_utc": "2026-09-30T21:12:18.964107+00:00",
+      "starter_available_at": "2026-09-30T22:17:39.760256+00:00",
+      "prediction_time_utc": "2026-09-30T22:17:39.760256+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -304,16 +304,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-09-30T21:16:50.880165+00:00",
+        "retrieved_at": "2026-09-30T22:23:15.710006+00:00",
         "valid_time_local": "2026-10-01T18:00",
         "temperature_c": 24.6,
         "humidity_pct": 82.0,
         "precip_mm": 0.0,
         "wind_kmh": 16.6,
         "wind_direction_deg": 214.0,
-        "available_at": "2026-09-30T21:16:50.880185+00:00"
+        "available_at": "2026-09-30T22:23:15.710019+00:00"
       },
-      "weather_available_at": "2026-09-30T21:16:50.880185+00:00",
+      "weather_available_at": "2026-09-30T22:23:15.710019+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -346,5 +346,5 @@
       }
     }
   ],
-  "state_hash": "cf5f727ac5affd395eb9a4f7028d2c4773ec8db950adb24934481c74d83afe0e"
+  "state_hash": "732ba7ca3862af5412fe27962b1c0eea6608b31445da8579fa1b282f3575afc9"
 }
