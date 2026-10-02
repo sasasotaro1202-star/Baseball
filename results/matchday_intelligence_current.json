@@ -3,32 +3,32 @@
   "status": "DEFERRED",
   "prediction_status": "DEFERRED",
   "prediction_summary": {
-    "games": 2,
+    "games": 0,
     "pass": 0,
-    "deferred": 2
+    "deferred": 0
   },
   "schedule_summary": {
     "games_seen": 2,
-    "future_games": 2,
-    "started_or_in_progress_games": 0,
+    "future_games": 0,
+    "started_or_in_progress_games": 2,
     "games": [
       {
         "home": "東京ヤクルトスワローズ",
         "away": "読売ジャイアンツ",
         "venue": "神",
         "start_datetime_jst": "2026-10-02T18:00:00+09:00",
-        "schedule_state": "FUTURE"
+        "schedule_state": "STARTED_OR_IN_PROGRESS"
       },
       {
         "home": "千葉ロッテマリーンズ",
         "away": "福岡ソフトバンクホークス",
         "venue": "ZOZOマリン",
         "start_datetime_jst": "2026-10-02T18:00:00+09:00",
-        "schedule_state": "FUTURE"
+        "schedule_state": "STARTED_OR_IN_PROGRESS"
       }
     ]
   },
-  "prediction_time_utc": "2026-10-02T07:16:24.682739+00:00",
+  "prediction_time_utc": "2026-10-02T10:39:41.271801+00:00",
   "target_date_jst": "2026-10-02",
   "source_policy": {
     "schedule": "NPB.jp",
@@ -161,219 +161,6 @@
       }
     ]
   },
-  "games": [
-    {
-      "date": "2026-10-02",
-      "home": "東京ヤクルトスワローズ",
-      "away": "読売ジャイアンツ",
-      "venue": "神",
-      "hour": 18,
-      "minute": 0,
-      "official_schedule": true,
-      "schedule_state": "FUTURE",
-      "start_datetime_jst": "2026-10-02T18:00:00+09:00",
-      "game_id": "",
-      "datetime": "2026-10-02 09:00:00+00:00",
-      "starter_home": "",
-      "starter_away": "",
-      "starter_state": "UNKNOWN",
-      "starter_source": "",
-      "starter_available_at": "",
-      "prediction_time_utc": "2026-10-02T07:16:24.682739+00:00",
-      "lineup": {
-        "home": [],
-        "away": []
-      },
-      "lineup_state": "UNKNOWN",
-      "lineup_source": "",
-      "lineup_available_at": "",
-      "weather": {
-        "state": "VERIFIED",
-        "source": "Open-Meteo forecast",
-        "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-10-02T07:21:36.771976+00:00",
-        "valid_time_local": "2026-10-02T18:00",
-        "temperature_c": 20.4,
-        "humidity_pct": 76.0,
-        "precip_mm": 0.0,
-        "wind_kmh": 1.3,
-        "wind_direction_deg": 56.0,
-        "available_at": "2026-10-02T07:21:36.771997+00:00"
-      },
-      "weather_available_at": "2026-10-02T07:21:36.771997+00:00",
-      "weather_state": "PROJECTED",
-      "roster_events": [
-        {
-          "status": "REGISTERED",
-          "league": "CENTRAL",
-          "team": "読売ジャイアンツ",
-          "position": "投手",
-          "number": "19",
-          "player_name": "山﨑 伊織",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-02"
-        }
-      ],
-      "rest_travel": {
-        "home": {
-          "state": "VERIFIED",
-          "rest_days": 1.625,
-          "games_last_3d": 1,
-          "games_last_7d": 4,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "away": {
-          "state": "VERIFIED",
-          "rest_days": 0.625,
-          "games_last_3d": 2,
-          "games_last_7d": 4,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "state": "VERIFIED"
-      },
-      "prediction": {
-        "incumbent_status": "DEFERRED",
-        "score_status": "DEFERRED",
-        "low_high_status": "DEFERRED",
-        "score_choices": [],
-        "shadow_status": "DEFERRED",
-        "shadow_not_promoted": true,
-        "incumbent_reason": "STARTERS_UNCONFIRMED"
-      }
-    },
-    {
-      "date": "2026-10-02",
-      "home": "千葉ロッテマリーンズ",
-      "away": "福岡ソフトバンクホークス",
-      "venue": "ZOZOマリン",
-      "hour": 18,
-      "minute": 0,
-      "official_schedule": true,
-      "schedule_state": "FUTURE",
-      "start_datetime_jst": "2026-10-02T18:00:00+09:00",
-      "game_id": "",
-      "datetime": "2026-10-02 09:00:00+00:00",
-      "starter_home": "",
-      "starter_away": "",
-      "starter_state": "UNKNOWN",
-      "starter_source": "",
-      "starter_available_at": "",
-      "prediction_time_utc": "2026-10-02T07:16:24.682739+00:00",
-      "lineup": {
-        "home": [],
-        "away": []
-      },
-      "lineup_state": "UNKNOWN",
-      "lineup_source": "",
-      "lineup_available_at": "",
-      "weather": {
-        "state": "VERIFIED",
-        "source": "Open-Meteo forecast",
-        "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-10-02T07:21:37.346973+00:00",
-        "valid_time_local": "2026-10-02T18:00",
-        "temperature_c": 20.3,
-        "humidity_pct": 75.0,
-        "precip_mm": 0.0,
-        "wind_kmh": 8.4,
-        "wind_direction_deg": 83.0,
-        "available_at": "2026-10-02T07:21:37.346994+00:00"
-      },
-      "weather_available_at": "2026-10-02T07:21:37.346994+00:00",
-      "weather_state": "PROJECTED",
-      "roster_events": [
-        {
-          "status": "REGISTERED",
-          "league": "PACIFIC",
-          "team": "福岡ソフトバンクホークス",
-          "position": "投手",
-          "number": "41",
-          "player_name": "前田 悠伍",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-02"
-        },
-        {
-          "status": "REGISTERED",
-          "league": "PACIFIC",
-          "team": "千葉ロッテマリーンズ",
-          "position": "内野手",
-          "number": "55",
-          "player_name": "櫻井 ユウヤ",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-02"
-        },
-        {
-          "status": "REGISTERED",
-          "league": "PACIFIC",
-          "team": "千葉ロッテマリーンズ",
-          "position": "外野手",
-          "number": "3",
-          "player_name": "角中 勝也",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-02"
-        },
-        {
-          "status": "REMOVED",
-          "league": "PACIFIC",
-          "team": "福岡ソフトバンクホークス",
-          "position": "投手",
-          "number": "10",
-          "player_name": "上沢 直之",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-02"
-        },
-        {
-          "status": "REMOVED",
-          "league": "PACIFIC",
-          "team": "千葉ロッテマリーンズ",
-          "position": "投手",
-          "number": "58",
-          "player_name": "河村 説人",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-02"
-        },
-        {
-          "status": "REMOVED",
-          "league": "PACIFIC",
-          "team": "千葉ロッテマリーンズ",
-          "position": "投手",
-          "number": "73",
-          "player_name": "Ｓ．ロング",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-02"
-        }
-      ],
-      "rest_travel": {
-        "home": {
-          "state": "VERIFIED",
-          "rest_days": 0.625,
-          "games_last_3d": 2,
-          "games_last_7d": 6,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "away": {
-          "state": "VERIFIED",
-          "rest_days": 0.625,
-          "games_last_3d": 1,
-          "games_last_7d": 4,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "state": "VERIFIED"
-      },
-      "prediction": {
-        "incumbent_status": "DEFERRED",
-        "score_status": "DEFERRED",
-        "low_high_status": "DEFERRED",
-        "score_choices": [],
-        "shadow_status": "DEFERRED",
-        "shadow_not_promoted": true,
-        "incumbent_reason": "STARTERS_UNCONFIRMED"
-      }
-    }
-  ],
-  "state_hash": "8a99797e6ebd574486e5f9f32e91f12917f6a6adf797fdff20c110ffe322f395"
+  "games": [],
+  "state_hash": "ebbb7936a293ebbcc804afd8d04aba04c08c3eb770f56604f83be0966583aa8c"
 }
