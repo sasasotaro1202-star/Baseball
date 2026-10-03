@@ -3,28 +3,28 @@
   "status": "DEFERRED",
   "prediction_status": "DEFERRED",
   "prediction_summary": {
-    "games": 4,
+    "games": 0,
     "pass": 0,
-    "deferred": 4
+    "deferred": 0
   },
   "schedule_summary": {
     "games_seen": 5,
-    "future_games": 4,
-    "started_or_in_progress_games": 1,
+    "future_games": 0,
+    "started_or_in_progress_games": 5,
     "games": [
       {
         "home": "読売ジャイアンツ",
         "away": "横浜DeNAベイスターズ",
         "venue": "東京ドーム",
         "start_datetime_jst": "2026-10-03T18:00:00+09:00",
-        "schedule_state": "FUTURE"
+        "schedule_state": "STARTED_OR_IN_PROGRESS"
       },
       {
         "home": "東京ヤクルトスワローズ",
         "away": "中日ドラゴンズ",
         "venue": "神",
         "start_datetime_jst": "2026-10-03T18:00:00+09:00",
-        "schedule_state": "FUTURE"
+        "schedule_state": "STARTED_OR_IN_PROGRESS"
       },
       {
         "home": "広島東洋カープ",
@@ -38,18 +38,18 @@
         "away": "オリックス・バファローズ",
         "venue": "楽天モバイル",
         "start_datetime_jst": "2026-10-03T18:00:00+09:00",
-        "schedule_state": "FUTURE"
+        "schedule_state": "STARTED_OR_IN_PROGRESS"
       },
       {
         "home": "千葉ロッテマリーンズ",
         "away": "福岡ソフトバンクホークス",
         "venue": "ZOZOマリン",
         "start_datetime_jst": "2026-10-03T18:00:00+09:00",
-        "schedule_state": "FUTURE"
+        "schedule_state": "STARTED_OR_IN_PROGRESS"
       }
     ]
   },
-  "prediction_time_utc": "2026-10-03T07:06:49.454439+00:00",
+  "prediction_time_utc": "2026-10-03T11:07:36.518794+00:00",
   "target_date_jst": "2026-10-03",
   "source_policy": {
     "schedule": "NPB.jp",
@@ -272,471 +272,6 @@
       }
     ]
   },
-  "games": [
-    {
-      "date": "2026-10-03",
-      "home": "読売ジャイアンツ",
-      "away": "横浜DeNAベイスターズ",
-      "venue": "東京ドーム",
-      "hour": 18,
-      "minute": 0,
-      "official_schedule": true,
-      "schedule_state": "FUTURE",
-      "start_datetime_jst": "2026-10-03T18:00:00+09:00",
-      "game_id": "",
-      "datetime": "2026-10-03 09:00:00+00:00",
-      "starter_home": "井上 温大",
-      "starter_away": "島田 舜也",
-      "starter_state": "VERIFIED",
-      "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-10-03T07:06:49.454439+00:00",
-      "prediction_time_utc": "2026-10-03T07:06:49.454439+00:00",
-      "lineup": {
-        "home": [],
-        "away": []
-      },
-      "lineup_state": "UNKNOWN",
-      "lineup_source": "",
-      "lineup_available_at": "",
-      "weather": {
-        "state": "VERIFIED",
-        "source": "Open-Meteo forecast",
-        "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-10-03T07:12:21.149717+00:00",
-        "valid_time_local": "2026-10-03T18:00",
-        "temperature_c": 20.6,
-        "humidity_pct": 58.0,
-        "precip_mm": 0.0,
-        "wind_kmh": 6.8,
-        "wind_direction_deg": 93.0,
-        "available_at": "2026-10-03T07:12:21.149731+00:00"
-      },
-      "weather_available_at": "2026-10-03T07:12:21.149731+00:00",
-      "weather_state": "PROJECTED",
-      "roster_events": [
-        {
-          "status": "REGISTERED",
-          "league": "CENTRAL",
-          "team": "横浜DeNAベイスターズ",
-          "position": "投手",
-          "number": "15",
-          "player_name": "島田 舜也",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        },
-        {
-          "status": "REGISTERED",
-          "league": "CENTRAL",
-          "team": "読売ジャイアンツ",
-          "position": "投手",
-          "number": "63",
-          "player_name": "泉 圭輔",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        },
-        {
-          "status": "REMOVED",
-          "league": "CENTRAL",
-          "team": "読売ジャイアンツ",
-          "position": "投手",
-          "number": "19",
-          "player_name": "山﨑 伊織",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        }
-      ],
-      "rest_travel": {
-        "home": {
-          "state": "VERIFIED",
-          "rest_days": 1.625,
-          "games_last_3d": 1,
-          "games_last_7d": 3,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "away": {
-          "state": "VERIFIED",
-          "rest_days": 5.791666666666667,
-          "games_last_3d": 0,
-          "games_last_7d": 2,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "state": "VERIFIED"
-      },
-      "prediction": {
-        "incumbent_status": "DEFERRED",
-        "score_status": "DEFERRED",
-        "low_high_status": "DEFERRED",
-        "score_choices": [],
-        "shadow_status": "DEFERRED",
-        "shadow_not_promoted": true,
-        "shadow_reason": "TypeError: BaseballBacktest.ensemble_proba() missing 1 required positional argument: 'league'"
-      }
-    },
-    {
-      "date": "2026-10-03",
-      "home": "東京ヤクルトスワローズ",
-      "away": "中日ドラゴンズ",
-      "venue": "神",
-      "hour": 18,
-      "minute": 0,
-      "official_schedule": true,
-      "schedule_state": "FUTURE",
-      "start_datetime_jst": "2026-10-03T18:00:00+09:00",
-      "game_id": "",
-      "datetime": "2026-10-03 09:00:00+00:00",
-      "starter_home": "高梨 裕稔",
-      "starter_away": "髙橋 宏斗",
-      "starter_state": "VERIFIED",
-      "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-10-03T07:06:49.454439+00:00",
-      "prediction_time_utc": "2026-10-03T07:06:49.454439+00:00",
-      "lineup": {
-        "home": [],
-        "away": []
-      },
-      "lineup_state": "UNKNOWN",
-      "lineup_source": "",
-      "lineup_available_at": "",
-      "weather": {
-        "state": "VERIFIED",
-        "source": "Open-Meteo forecast",
-        "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-10-03T07:12:21.718840+00:00",
-        "valid_time_local": "2026-10-03T18:00",
-        "temperature_c": 20.5,
-        "humidity_pct": 59.0,
-        "precip_mm": 0.0,
-        "wind_kmh": 5.8,
-        "wind_direction_deg": 97.0,
-        "available_at": "2026-10-03T07:12:21.718855+00:00"
-      },
-      "weather_available_at": "2026-10-03T07:12:21.718855+00:00",
-      "weather_state": "PROJECTED",
-      "roster_events": [
-        {
-          "status": "REGISTERED",
-          "league": "CENTRAL",
-          "team": "東京ヤクルトスワローズ",
-          "position": "投手",
-          "number": "19",
-          "player_name": "石川 雅規",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        },
-        {
-          "status": "REMOVED",
-          "league": "CENTRAL",
-          "team": "東京ヤクルトスワローズ",
-          "position": "投手",
-          "number": "26",
-          "player_name": "山野 太一",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        }
-      ],
-      "rest_travel": {
-        "home": {
-          "state": "VERIFIED",
-          "rest_days": 2.625,
-          "games_last_3d": 1,
-          "games_last_7d": 3,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "away": {
-          "state": "VERIFIED",
-          "rest_days": 1.625,
-          "games_last_3d": 1,
-          "games_last_7d": 2,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "state": "VERIFIED"
-      },
-      "prediction": {
-        "incumbent_status": "DEFERRED",
-        "score_status": "DEFERRED",
-        "low_high_status": "DEFERRED",
-        "score_choices": [],
-        "shadow_status": "DEFERRED",
-        "shadow_not_promoted": true,
-        "shadow_reason": "TypeError: BaseballBacktest.ensemble_proba() missing 1 required positional argument: 'league'"
-      }
-    },
-    {
-      "date": "2026-10-03",
-      "home": "東北楽天ゴールデンイーグルス",
-      "away": "オリックス・バファローズ",
-      "venue": "楽天モバイル",
-      "hour": 18,
-      "minute": 0,
-      "official_schedule": true,
-      "schedule_state": "FUTURE",
-      "start_datetime_jst": "2026-10-03T18:00:00+09:00",
-      "game_id": "",
-      "datetime": "2026-10-03 09:00:00+00:00",
-      "starter_home": "辛島 航",
-      "starter_away": "九里 亜蓮",
-      "starter_state": "VERIFIED",
-      "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-10-03T07:06:49.454439+00:00",
-      "prediction_time_utc": "2026-10-03T07:06:49.454439+00:00",
-      "lineup": {
-        "home": [],
-        "away": []
-      },
-      "lineup_state": "UNKNOWN",
-      "lineup_source": "",
-      "lineup_available_at": "",
-      "weather": {
-        "state": "VERIFIED",
-        "source": "Open-Meteo forecast",
-        "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-10-03T07:12:22.275409+00:00",
-        "valid_time_local": "2026-10-03T18:00",
-        "temperature_c": 17.6,
-        "humidity_pct": 54.0,
-        "precip_mm": 0.0,
-        "wind_kmh": 4.4,
-        "wind_direction_deg": 325.0,
-        "available_at": "2026-10-03T07:12:22.275424+00:00"
-      },
-      "weather_available_at": "2026-10-03T07:12:22.275424+00:00",
-      "weather_state": "PROJECTED",
-      "roster_events": [
-        {
-          "status": "REGISTERED",
-          "league": "PACIFIC",
-          "team": "オリックス・バファローズ",
-          "position": "投手",
-          "number": "66",
-          "player_name": "博志",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        },
-        {
-          "status": "REGISTERED",
-          "league": "PACIFIC",
-          "team": "オリックス・バファローズ",
-          "position": "捕手",
-          "number": "32",
-          "player_name": "福永 奨",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        },
-        {
-          "status": "REGISTERED",
-          "league": "PACIFIC",
-          "team": "オリックス・バファローズ",
-          "position": "内野手",
-          "number": "53",
-          "player_name": "宜保 翔",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        },
-        {
-          "status": "REGISTERED",
-          "league": "PACIFIC",
-          "team": "東北楽天ゴールデンイーグルス",
-          "position": "投手",
-          "number": "45",
-          "player_name": "九谷 瑠",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        },
-        {
-          "status": "REGISTERED",
-          "league": "PACIFIC",
-          "team": "東北楽天ゴールデンイーグルス",
-          "position": "投手",
-          "number": "58",
-          "player_name": "辛島 航",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        },
-        {
-          "status": "REMOVED",
-          "league": "PACIFIC",
-          "team": "東北楽天ゴールデンイーグルス",
-          "position": "投手",
-          "number": "29",
-          "player_name": "田中 千晴",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        }
-      ],
-      "rest_travel": {
-        "home": {
-          "state": "VERIFIED",
-          "rest_days": 1.625,
-          "games_last_3d": 2,
-          "games_last_7d": 4,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "away": {
-          "state": "VERIFIED",
-          "rest_days": 3.625,
-          "games_last_3d": 0,
-          "games_last_7d": 3,
-          "travel_miles": 189.04075121330965,
-          "history_cutoff": "strictly_before_target"
-        },
-        "state": "VERIFIED"
-      },
-      "prediction": {
-        "incumbent_status": "DEFERRED",
-        "score_status": "DEFERRED",
-        "low_high_status": "DEFERRED",
-        "score_choices": [],
-        "shadow_status": "DEFERRED",
-        "shadow_not_promoted": true,
-        "shadow_reason": "TypeError: BaseballBacktest.ensemble_proba() missing 1 required positional argument: 'league'"
-      }
-    },
-    {
-      "date": "2026-10-03",
-      "home": "千葉ロッテマリーンズ",
-      "away": "福岡ソフトバンクホークス",
-      "venue": "ZOZOマリン",
-      "hour": 18,
-      "minute": 0,
-      "official_schedule": true,
-      "schedule_state": "FUTURE",
-      "start_datetime_jst": "2026-10-03T18:00:00+09:00",
-      "game_id": "",
-      "datetime": "2026-10-03 09:00:00+00:00",
-      "starter_home": "唐川 侑己",
-      "starter_away": "松本 晴",
-      "starter_state": "VERIFIED",
-      "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-10-03T07:06:49.454439+00:00",
-      "prediction_time_utc": "2026-10-03T07:06:49.454439+00:00",
-      "lineup": {
-        "home": [],
-        "away": []
-      },
-      "lineup_state": "UNKNOWN",
-      "lineup_source": "",
-      "lineup_available_at": "",
-      "weather": {
-        "state": "VERIFIED",
-        "source": "Open-Meteo forecast",
-        "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-10-03T07:12:22.833559+00:00",
-        "valid_time_local": "2026-10-03T18:00",
-        "temperature_c": 20.4,
-        "humidity_pct": 56.0,
-        "precip_mm": 0.0,
-        "wind_kmh": 16.0,
-        "wind_direction_deg": 82.0,
-        "available_at": "2026-10-03T07:12:22.833601+00:00"
-      },
-      "weather_available_at": "2026-10-03T07:12:22.833601+00:00",
-      "weather_state": "PROJECTED",
-      "roster_events": [
-        {
-          "status": "REGISTERED",
-          "league": "PACIFIC",
-          "team": "千葉ロッテマリーンズ",
-          "position": "投手",
-          "number": "19",
-          "player_name": "唐川 侑己",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        },
-        {
-          "status": "REGISTERED",
-          "league": "PACIFIC",
-          "team": "千葉ロッテマリーンズ",
-          "position": "投手",
-          "number": "46",
-          "player_name": "冨士 隼斗",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        },
-        {
-          "status": "REGISTERED",
-          "league": "PACIFIC",
-          "team": "千葉ロッテマリーンズ",
-          "position": "投手",
-          "number": "60",
-          "player_name": "大聖",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        },
-        {
-          "status": "REMOVED",
-          "league": "PACIFIC",
-          "team": "福岡ソフトバンクホークス",
-          "position": "投手",
-          "number": "41",
-          "player_name": "前田 悠伍",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        },
-        {
-          "status": "REMOVED",
-          "league": "PACIFIC",
-          "team": "千葉ロッテマリーンズ",
-          "position": "投手",
-          "number": "35",
-          "player_name": "田中 晴也",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        },
-        {
-          "status": "REMOVED",
-          "league": "PACIFIC",
-          "team": "千葉ロッテマリーンズ",
-          "position": "内野手",
-          "number": "5",
-          "player_name": "安田 尚憲",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        },
-        {
-          "status": "REMOVED",
-          "league": "PACIFIC",
-          "team": "千葉ロッテマリーンズ",
-          "position": "外野手",
-          "number": "3",
-          "player_name": "角中 勝也",
-          "source": "NPB.jp roster",
-          "target_date": "2026-10-03"
-        }
-      ],
-      "rest_travel": {
-        "home": {
-          "state": "VERIFIED",
-          "rest_days": 0.625,
-          "games_last_3d": 3,
-          "games_last_7d": 6,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "away": {
-          "state": "VERIFIED",
-          "rest_days": 0.625,
-          "games_last_3d": 2,
-          "games_last_7d": 4,
-          "travel_miles": 0.0,
-          "history_cutoff": "strictly_before_target"
-        },
-        "state": "VERIFIED"
-      },
-      "prediction": {
-        "incumbent_status": "DEFERRED",
-        "score_status": "DEFERRED",
-        "low_high_status": "DEFERRED",
-        "score_choices": [],
-        "shadow_status": "DEFERRED",
-        "shadow_not_promoted": true,
-        "shadow_reason": "TypeError: BaseballBacktest.ensemble_proba() missing 1 required positional argument: 'league'"
-      }
-    }
-  ],
-  "state_hash": "1a788d0fd62d96bbcc98bbdb83d8ae87c6d03b131464dca2f788ff2ce51fc569"
+  "games": [],
+  "state_hash": "f45661a498e4fabe11fe2b92aaa86fc898f1bfd5eef16a0f85b30a01a4fd8e7e"
 }
