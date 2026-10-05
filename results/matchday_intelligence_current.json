@@ -28,7 +28,7 @@
       }
     ]
   },
-  "prediction_time_utc": "2026-10-05T03:44:51.776012+00:00",
+  "prediction_time_utc": "2026-10-05T05:42:29.238633+00:00",
   "target_date_jst": "2026-10-05",
   "source_policy": {
     "schedule": "NPB.jp",
@@ -67,8 +67,8 @@
       "starter_away": "上茶谷 大河",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-10-05T03:44:51.776012+00:00",
-      "prediction_time_utc": "2026-10-05T03:44:51.776012+00:00",
+      "starter_available_at": "2026-10-05T05:42:29.238633+00:00",
+      "prediction_time_utc": "2026-10-05T05:42:29.238633+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -80,16 +80,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-10-05T03:50:19.043709+00:00",
+        "retrieved_at": "2026-10-05T05:46:15.654001+00:00",
         "valid_time_local": "2026-10-05T18:00",
-        "temperature_c": 18.7,
+        "temperature_c": 18.5,
         "humidity_pct": 95.0,
-        "precip_mm": 0.1,
-        "wind_kmh": 2.6,
-        "wind_direction_deg": 326.0,
-        "available_at": "2026-10-05T03:50:19.043731+00:00"
+        "precip_mm": 0.2,
+        "wind_kmh": 3.2,
+        "wind_direction_deg": 297.0,
+        "available_at": "2026-10-05T05:46:15.654018+00:00"
       },
-      "weather_available_at": "2026-10-05T03:50:19.043731+00:00",
+      "weather_available_at": "2026-10-05T05:46:15.654018+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -137,8 +137,8 @@
       "starter_away": "髙橋 光成",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-10-05T03:44:51.776012+00:00",
-      "prediction_time_utc": "2026-10-05T03:44:51.776012+00:00",
+      "starter_available_at": "2026-10-05T05:42:29.238633+00:00",
+      "prediction_time_utc": "2026-10-05T05:42:29.238633+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -150,16 +150,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-10-05T03:50:19.628726+00:00",
+        "retrieved_at": "2026-10-05T05:46:15.829370+00:00",
         "valid_time_local": "2026-10-05T18:00",
-        "temperature_c": 21.7,
-        "humidity_pct": 86.0,
+        "temperature_c": 21.6,
+        "humidity_pct": 84.0,
         "precip_mm": 0.0,
-        "wind_kmh": 15.1,
+        "wind_kmh": 14.4,
         "wind_direction_deg": 360.0,
-        "available_at": "2026-10-05T03:50:19.628747+00:00"
+        "available_at": "2026-10-05T05:46:15.829383+00:00"
       },
-      "weather_available_at": "2026-10-05T03:50:19.628747+00:00",
+      "weather_available_at": "2026-10-05T05:46:15.829383+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -192,5 +192,5 @@
       }
     }
   ],
-  "state_hash": "0750fc38bea057d64a13ce814afd3a96bdebb19f2277cb3acbeb3f84f9277632"
+  "state_hash": "f4505f3437af2b6970c62fad30aae8581c37987c17aafe0dae9808c9f6ba9e90"
 }
