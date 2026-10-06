@@ -28,7 +28,7 @@
       }
     ]
   },
-  "prediction_time_utc": "2026-10-06T00:35:47.617498+00:00",
+  "prediction_time_utc": "2026-10-06T00:56:06.365273+00:00",
   "target_date_jst": "2026-10-06",
   "source_policy": {
     "schedule": "NPB.jp",
@@ -67,8 +67,8 @@
       "starter_away": "工藤 泰己",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-10-06T00:35:47.617498+00:00",
-      "prediction_time_utc": "2026-10-06T00:35:47.617498+00:00",
+      "starter_available_at": "2026-10-06T00:56:06.365273+00:00",
+      "prediction_time_utc": "2026-10-06T00:56:06.365273+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -80,16 +80,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-10-06T00:40:08.530818+00:00",
+        "retrieved_at": "2026-10-06T01:00:37.189414+00:00",
         "valid_time_local": "2026-10-06T18:00",
         "temperature_c": 21.9,
         "humidity_pct": 54.0,
         "precip_mm": 0.0,
         "wind_kmh": 14.8,
         "wind_direction_deg": 1.0,
-        "available_at": "2026-10-06T00:40:08.530838+00:00"
+        "available_at": "2026-10-06T01:00:37.189432+00:00"
       },
-      "weather_available_at": "2026-10-06T00:40:08.530838+00:00",
+      "weather_available_at": "2026-10-06T01:00:37.189432+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -137,8 +137,8 @@
       "starter_away": "武内 夏暉",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-10-06T00:35:47.617498+00:00",
-      "prediction_time_utc": "2026-10-06T00:35:47.617498+00:00",
+      "starter_available_at": "2026-10-06T00:56:06.365273+00:00",
+      "prediction_time_utc": "2026-10-06T00:56:06.365273+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -150,16 +150,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-10-06T00:40:09.140019+00:00",
+        "retrieved_at": "2026-10-06T01:00:37.617705+00:00",
         "valid_time_local": "2026-10-06T18:00",
         "temperature_c": 23.1,
         "humidity_pct": 67.0,
         "precip_mm": 0.0,
         "wind_kmh": 20.8,
         "wind_direction_deg": 28.0,
-        "available_at": "2026-10-06T00:40:09.140037+00:00"
+        "available_at": "2026-10-06T01:00:37.617723+00:00"
       },
-      "weather_available_at": "2026-10-06T00:40:09.140037+00:00",
+      "weather_available_at": "2026-10-06T01:00:37.617723+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -192,5 +192,5 @@
       }
     }
   ],
-  "state_hash": "cc06b6fbffb82c29f11205ffdcb28d23e444fbcc6d7a0241bf395de31c9c9f43"
+  "state_hash": "e5ed9c21ce29c48559cbb25068884210aec082d6b589113bebd1dbcbb1f3086c"
 }
