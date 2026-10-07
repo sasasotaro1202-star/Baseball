@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-07T13:56:23.690607+00:00",
+  "generated_at": "2026-10-07T23:41:09.976371+00:00",
   "model": "local-deterministic-advisor-v1",
   "source_policy": "prior_rows_only",
   "advisory_only": true,
