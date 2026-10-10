@@ -5,7 +5,7 @@
   "bootstrap_start_year": 2020,
   "chunk_days": 45,
   "last_mode": "INCREMENTAL DELTA",
-  "last_run_utc": "2026-10-10T09:01:36.892396+00:00",
+  "last_run_utc": "2026-10-10T12:33:39.845783+00:00",
   "last_start": "2026-10-02",
   "last_end": "2026-10-10",
   "completed_ranges_tail": [
