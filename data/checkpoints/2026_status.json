@@ -1,12 +1,12 @@
 {
   "year": 2026,
-  "schedule_games": 951,
-  "checkpoint_games": 951,
-  "done": 2,
+  "schedule_games": 952,
+  "checkpoint_games": 952,
+  "done": 1,
   "failures": 0,
-  "both_starters": 951,
-  "both_starter_lines": 942,
+  "both_starters": 952,
+  "both_starter_lines": 943,
   "coverage_pct": 99.05,
   "complete": true,
-  "updated_at": "2026-10-11T16:47:33.463698+00:00"
+  "updated_at": "2026-10-12T20:25:17.754477+00:00"
 }
