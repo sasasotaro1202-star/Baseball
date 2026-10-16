@@ -21,7 +21,7 @@
       }
     ]
   },
-  "prediction_time_utc": "2026-10-16T20:31:18.839240+00:00",
+  "prediction_time_utc": "2026-10-16T21:10:00.764348+00:00",
   "target_date_jst": "2026-10-17",
   "source_policy": {
     "schedule": "NPB.jp",
@@ -60,8 +60,8 @@
       "starter_away": "東 克樹",
       "starter_state": "VERIFIED",
       "starter_source": "NPB.jp official announced starters",
-      "starter_available_at": "2026-10-16T20:31:18.839240+00:00",
-      "prediction_time_utc": "2026-10-16T20:31:18.839240+00:00",
+      "starter_available_at": "2026-10-16T21:10:00.764348+00:00",
+      "prediction_time_utc": "2026-10-16T21:10:00.764348+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -73,16 +73,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-10-16T20:36:53.734556+00:00",
+        "retrieved_at": "2026-10-16T21:15:36.150524+00:00",
         "valid_time_local": "2026-10-17T14:00",
         "temperature_c": 24.0,
         "humidity_pct": 42.0,
         "precip_mm": 0.0,
         "wind_kmh": 17.1,
         "wind_direction_deg": 22.0,
-        "available_at": "2026-10-16T20:36:53.734574+00:00"
+        "available_at": "2026-10-16T21:15:36.150542+00:00"
       },
-      "weather_available_at": "2026-10-16T20:36:53.734574+00:00",
+      "weather_available_at": "2026-10-16T21:15:36.150542+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -115,5 +115,5 @@
       }
     }
   ],
-  "state_hash": "a4576fe75da478e71c0d416f291bd0e3a5b45d60cd5a5c64543ba86e6125c45a"
+  "state_hash": "9952f91bed117c2c8013e681164434ee9a0956d4a27ce571a4438fc8ea811e4b"
 }
