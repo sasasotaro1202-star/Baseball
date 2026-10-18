@@ -5,16 +5,16 @@
   "bootstrap_start_year": 2020,
   "chunk_days": 45,
   "last_mode": "INCREMENTAL DELTA",
-  "last_run_utc": "2026-10-17T22:59:27.159805+00:00",
+  "last_run_utc": "2026-10-18T04:56:32.440238+00:00",
   "last_start": "2026-10-09",
-  "last_end": "2026-10-17",
+  "last_end": "2026-10-18",
   "completed_ranges_tail": [
     {
       "start": "2026-10-09",
-      "end": "2026-10-17",
+      "end": "2026-10-18",
       "path": "incremental-live",
-      "rows": 8
+      "rows": 9
     }
   ],
-  "total_rows": 18566
+  "total_rows": 18567
 }
