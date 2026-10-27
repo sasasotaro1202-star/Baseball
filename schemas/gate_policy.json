@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "principles": {
+    "no_fabrication": true,
+    "no_scope_reduction": true,
+    "fail_closed": true
+  },
+  "cutoff": {
+    "prediction_cutoff_at": "must be supplied by the source or an independently recorded historical prediction snapshot",
+    "source_timestamp": "must represent source publication/availability time, not local ingestion time",
+    "rule": "feature source_timestamp must be <= prediction_cutoff_at",
+    "missing_cutoff": "FAIL",
+    "missing_source_timestamp": "FAIL",
+    "unknown_timestamp_semantics": "FAIL"
+  },
+  "identity": {
+    "game": "source game_id preferred; deterministic derived identity allowed only when source ID is absent and provenance records the derivation",
+    "team": "deterministic canonical team_id",
+    "player": "deterministic canonical player_id",
+    "cross_source_aliases": "must be resolved through an explicit registry; never by fuzzy matching without an auditable mapping"
+  },
+  "schema": {
+    "required_columns": "schemas/complete_sports_data_schema.json",
+    "extra_columns": "allowed and preserved",
+    "missing_required_columns": "FAIL"
+  }
+}
