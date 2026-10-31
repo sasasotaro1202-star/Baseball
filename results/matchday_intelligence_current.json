@@ -21,7 +21,7 @@
       }
     ]
   },
-  "prediction_time_utc": "2026-10-31T18:37:02.601199+00:00",
+  "prediction_time_utc": "2026-10-31T19:26:32.499144+00:00",
   "target_date_jst": "2026-11-01",
   "source_policy": {
     "schedule": "NPB.jp",
@@ -61,7 +61,7 @@
       "starter_state": "UNKNOWN",
       "starter_source": "",
       "starter_available_at": "",
-      "prediction_time_utc": "2026-10-31T18:37:02.601199+00:00",
+      "prediction_time_utc": "2026-10-31T19:26:32.499144+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -73,16 +73,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-10-31T18:42:29.808722+00:00",
+        "retrieved_at": "2026-10-31T19:31:56.041506+00:00",
         "valid_time_local": "2026-11-01T18:00",
         "temperature_c": 18.6,
         "humidity_pct": 68.0,
         "precip_mm": 0.0,
         "wind_kmh": 8.3,
         "wind_direction_deg": 146.0,
-        "available_at": "2026-10-31T18:42:29.808742+00:00"
+        "available_at": "2026-10-31T19:31:56.041520+00:00"
       },
-      "weather_available_at": "2026-10-31T18:42:29.808742+00:00",
+      "weather_available_at": "2026-10-31T19:31:56.041520+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -115,5 +115,5 @@
       }
     }
   ],
-  "state_hash": "3bb352887167da8cce0415e89f718dff16ac9dbd2144d50a2a0f09148146a8b1"
+  "state_hash": "3c1bae45464f7725178b06dd4dbbce30af4df986d9b15835c5576d22236e0aa2"
 }
