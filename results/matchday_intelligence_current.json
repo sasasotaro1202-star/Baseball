@@ -21,7 +21,7 @@
       }
     ]
   },
-  "prediction_time_utc": "2026-11-01T06:06:08.921796+00:00",
+  "prediction_time_utc": "2026-11-01T06:33:49.285745+00:00",
   "target_date_jst": "2026-11-01",
   "source_policy": {
     "schedule": "NPB.jp",
@@ -61,7 +61,7 @@
       "starter_state": "UNKNOWN",
       "starter_source": "",
       "starter_available_at": "",
-      "prediction_time_utc": "2026-11-01T06:06:08.921796+00:00",
+      "prediction_time_utc": "2026-11-01T06:33:49.285745+00:00",
       "lineup": {
         "home": [],
         "away": []
@@ -73,16 +73,16 @@
         "state": "VERIFIED",
         "source": "Open-Meteo forecast",
         "quality": "EXACT_HOUR",
-        "retrieved_at": "2026-11-01T06:11:19.140293+00:00",
+        "retrieved_at": "2026-11-01T06:39:20.690364+00:00",
         "valid_time_local": "2026-11-01T18:00",
-        "temperature_c": 19.0,
+        "temperature_c": 18.9,
         "humidity_pct": 66.0,
         "precip_mm": 0.0,
-        "wind_kmh": 9.3,
-        "wind_direction_deg": 167.0,
-        "available_at": "2026-11-01T06:11:19.140317+00:00"
+        "wind_kmh": 7.1,
+        "wind_direction_deg": 165.0,
+        "available_at": "2026-11-01T06:39:20.690384+00:00"
       },
-      "weather_available_at": "2026-11-01T06:11:19.140317+00:00",
+      "weather_available_at": "2026-11-01T06:39:20.690384+00:00",
       "weather_state": "PROJECTED",
       "roster_events": [],
       "rest_travel": {
@@ -115,5 +115,5 @@
       }
     }
   ],
-  "state_hash": "ad70c46e33fd6bb83eed586cea25c8b96298b2c5250f60fff8954b237f26fc55"
+  "state_hash": "77dee6ff8de3726748d0de669f44056bd4a45e088e4885cc0e7ab06ea4c2f40e"
 }
