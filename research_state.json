@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-03T19:49:14.444787+00:00",
+  "updated_at": "2026-11-04T02:07:32.566441+00:00",
   "goal": "maximize validated out-of-sample accuracy for every prediction item",
   "processing_budget_seconds": 3600,
   "focus": {
