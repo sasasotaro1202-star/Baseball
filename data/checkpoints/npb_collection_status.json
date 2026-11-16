@@ -13,7 +13,7 @@
       "both_starter_lines": 0,
       "coverage_pct": 0.0,
       "complete": true,
-      "updated_at": "2026-11-15T17:41:33.821762+00:00"
+      "updated_at": "2026-11-16T21:00:00.221097+00:00"
     },
     {
       "year": 2018,
@@ -25,7 +25,7 @@
       "both_starter_lines": 0,
       "coverage_pct": 0.0,
       "complete": true,
-      "updated_at": "2026-11-15T17:42:14.677768+00:00"
+      "updated_at": "2026-11-16T21:01:04.396112+00:00"
     },
     {
       "year": 2019,
@@ -37,7 +37,7 @@
       "both_starter_lines": 769,
       "coverage_pct": 99.48,
       "complete": true,
-      "updated_at": "2026-11-15T17:42:23.661170+00:00"
+      "updated_at": "2026-11-16T21:01:48.661596+00:00"
     },
     {
       "year": 2020,
@@ -49,7 +49,7 @@
       "both_starter_lines": 785,
       "coverage_pct": 99.75,
       "complete": true,
-      "updated_at": "2026-11-15T17:42:31.332734+00:00"
+      "updated_at": "2026-11-16T21:04:02.526683+00:00"
     },
     {
       "year": 2021,
@@ -61,7 +61,7 @@
       "both_starter_lines": 955,
       "coverage_pct": 99.69,
       "complete": true,
-      "updated_at": "2026-11-15T17:43:43.858657+00:00"
+      "updated_at": "2026-11-16T21:04:53.696439+00:00"
     },
     {
       "year": 2022,
@@ -73,7 +73,7 @@
       "both_starter_lines": 967,
       "coverage_pct": 100.0,
       "complete": true,
-      "updated_at": "2026-11-15T17:43:53.036208+00:00"
+      "updated_at": "2026-11-16T21:05:36.137285+00:00"
     },
     {
       "year": 2023,
@@ -85,7 +85,7 @@
       "both_starter_lines": 975,
       "coverage_pct": 100.0,
       "complete": true,
-      "updated_at": "2026-11-15T17:45:06.846783+00:00"
+      "updated_at": "2026-11-16T21:06:56.163905+00:00"
     },
     {
       "year": 2024,
@@ -97,7 +97,7 @@
       "both_starter_lines": 893,
       "coverage_pct": 98.57,
       "complete": true,
-      "updated_at": "2026-11-15T17:45:15.335734+00:00"
+      "updated_at": "2026-11-16T21:07:40.960825+00:00"
     },
     {
       "year": 2025,
@@ -109,7 +109,7 @@
       "both_starter_lines": 965,
       "coverage_pct": 99.9,
       "complete": true,
-      "updated_at": "2026-11-15T17:45:23.552888+00:00"
+      "updated_at": "2026-11-16T21:08:21.265255+00:00"
     },
     {
       "year": 2026,
@@ -121,10 +121,10 @@
       "both_starter_lines": 954,
       "coverage_pct": 99.07,
       "complete": true,
-      "updated_at": "2026-11-15T17:47:30.589792+00:00"
+      "updated_at": "2026-11-16T21:10:58.567047+00:00"
     }
   ],
   "aggregate_games": 9413,
   "complete": true,
-  "updated_at": "2026-11-15T17:47:36.193722+00:00"
+  "updated_at": "2026-11-16T21:11:05.959453+00:00"
 }
